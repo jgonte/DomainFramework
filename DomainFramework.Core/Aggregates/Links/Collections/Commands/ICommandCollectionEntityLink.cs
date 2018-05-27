@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
@@ -10,7 +11,9 @@ namespace DomainFramework.Core
     }
 
     public interface ICommandCollectionEntityLink<TEntity, TLinkedEntity> : ICommandCollectionEntityLink<TEntity>,
-        ICollectionEntityLink<TLinkedEntity>
+        ICollectionEntityLink<TEntity, TLinkedEntity>
+        where TEntity : IEntity
+        where TLinkedEntity : IEntity
     {
         void AddEntity(TLinkedEntity entity);
     }

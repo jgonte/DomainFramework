@@ -20,6 +20,7 @@ namespace DomainFramework.Core
     /// <typeparam name="TLinkedEntity"></typeparam>
     public interface ICommandSingleEntityLink<TEntity, TLinkedEntity> : ICommandSingleEntityLink<TEntity>,
         ISingleEntityLink<TLinkedEntity>
+        where TLinkedEntity : IEntity
     {
         void SetEntity(TLinkedEntity entity);
     }

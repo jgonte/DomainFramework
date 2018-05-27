@@ -1,24 +1,14 @@
-<<<<<<< HEAD
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace DomainFramework.Core
 {
     public class QueryAggregate<TKey, TEntity> : IQueryAggregate<TKey, TEntity>
         where TEntity : IEntity<TKey>
-=======
-﻿using System;
-using System.Collections.Generic;
-
-namespace DomainFramework.Core
-{
-    public class QueryAggregate<TEntity> : IQueryAggregate<TEntity>
->>>>>>> bd9dc060af59b6a4d3f8b8d2e65aaf2f692497d3
     {
         public IRepositoryContext RepositoryContext { get; set; }
 
         public TEntity RootEntity { get; set; }
 
-<<<<<<< HEAD
         public List<IQueryInheritanceEntityLink> InheritanceEntityLinks { get; set; }
 
         public List<IQuerySingleEntityLink> SingleEntityLinks { get; set; }
@@ -62,17 +52,6 @@ namespace DomainFramework.Core
                     link.PopulateEntities(repository, RootEntity);
                 }
             }
-=======
-        public List<IInheritanceEntityLink> InheritanceEntityLinks { get; set; }
-
-        public List<ISingleEntityLink> SingleEntityLinks { get; set; }
-
-        public List<ICollectionEntityLink> CollectionEntityLinks { get; set; }
-
-        public object Load(IUnitOfWork unitOfWork = null)
-        {
-            throw new NotImplementedException();
->>>>>>> bd9dc060af59b6a4d3f8b8d2e65aaf2f692497d3
         }
     }
 }

@@ -45,7 +45,6 @@
       <HintPath>..\packages\MSTest.TestFramework.1.1.18\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-<<<<<<< HEAD
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Configuration.ConfigurationManager.4.4.1\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
@@ -100,36 +99,12 @@
     <Compile Include="OneToOne\Countries\CountryEntity.cs" />
     <Compile Include="OneToOne\Countries\CountryCommandRepository.cs" />
     <Compile Include="OneToOne\Countries\CountryQueryRepository.cs" />
-=======
-    <Reference Include="System.Core" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="OneToMany\PageCommandRepository.cs" />
-    <Compile Include="OneToMany\BookEntity.cs" />
-    <Compile Include="OneToMany\Book.cs" />
-    <Compile Include="Entitites\IPersonRole.cs" />
-    <Compile Include="OneToMany\BookPagesAggregate.cs" />
-    <Compile Include="OneToMany\BookCommandRepository.cs" />
-    <Compile Include="OneToMany\CollectionPageEntityLink.cs" />
-    <Compile Include="OneToMany\Page.cs" />
-    <Compile Include="OneToMany\PageEntity.cs" />
-    <Compile Include="Entitites\Person.cs" />
-    <Compile Include="Entitites\PersonEntity.cs" />
-    <Compile Include="Entitites\PersonRoleEntity.cs" />
-    <Compile Include="Entitites\StudentRole.cs" />
-    <Compile Include="Entitites\StudentRoleEntity.cs" />
-    <Compile Include="OneToMany\BookPagesAggregateTests.cs" />
-    <Compile Include="Repositories\RepositoryTests.cs" />
->>>>>>> bd9dc060af59b6a4d3f8b8d2e65aaf2f692497d3
     <Compile Include="ValueObject\Money.cs" />
     <Compile Include="ValueObject\ValueObjectTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <None Include="App.config" />
-=======
->>>>>>> bd9dc060af59b6a4d3f8b8d2e65aaf2f692497d3
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

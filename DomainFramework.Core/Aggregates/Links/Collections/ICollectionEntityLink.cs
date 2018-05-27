@@ -4,14 +4,12 @@ namespace DomainFramework.Core
 {
     public interface ICollectionEntityLink : IEntityLink
     {
-        /// <summary>
-        /// Retrieves the entities to persist or the ones read
-        /// </summary>
-        /// <returns></returns>
         IEnumerable<IEntity> GetLinkedEntities();
     }
 
-    public interface ICollectionEntityLink<TLinkedEntity> : ICollectionEntityLink
+    public interface ICollectionEntityLink<TEntity, TLinkedEntity> : ICollectionEntityLink
+        where TEntity : IEntity
+        where TLinkedEntity: IEntity
     {
         List<TLinkedEntity> LinkedEntities { get; set; }
     }

@@ -5,7 +5,7 @@ using System.Linq;
 namespace DomainFramework.Core
 {
     public abstract class QueryCollectionEntityLink<TEntity, TLinkedEntity> : IQueryCollectionEntityLink,
-        ICollectionEntityLink<TLinkedEntity>
+        ICollectionEntityLink<TEntity, TLinkedEntity>
         where TEntity : IEntity
         where TLinkedEntity : IEntity
     {

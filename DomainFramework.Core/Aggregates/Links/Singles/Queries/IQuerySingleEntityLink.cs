@@ -7,6 +7,7 @@
 
     public interface IQuerySingleEntityLink<TEntity, TLinkedEntity> : IQuerySingleEntityLink,
         ISingleEntityLink<TLinkedEntity>
+        where TLinkedEntity : IEntity
     {
         void PopulateEntity(IQueryRepository repository, TEntity entity);
     }

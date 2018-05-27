@@ -3,8 +3,7 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public class CommandInheritanceEntityLink<TEntity, TLinkedEntity> : ICommandInheritanceEntityLink<TEntity>,
-        IInheritanceEntityLink<TLinkedEntity>
+    public class CommandInheritanceEntityLink<TEntity, TLinkedEntity> : ICommandInheritanceEntityLink<TEntity>
         where TEntity : IEntity
         where TLinkedEntity : IEntity
     {

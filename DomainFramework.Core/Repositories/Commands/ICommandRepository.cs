@@ -1,12 +1,8 @@
-<<<<<<< HEAD
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DomainFramework.Core
-=======
-﻿namespace DomainFramework.Core
->>>>>>> bd9dc060af59b6a4d3f8b8d2e65aaf2f692497d3
 {
     /// <summary>
     /// Defines a write only repository
@@ -20,7 +16,6 @@ namespace DomainFramework.Core
         bool Update(IEntity entity, IUnitOfWork unitOfWork = null);
 
         bool Delete(IEntity entity, IUnitOfWork unitOfWork = null);
-<<<<<<< HEAD
 
         Task SaveAsync(IEntity entity, IUnitOfWork unitOfWork = null);
 
@@ -31,10 +26,8 @@ namespace DomainFramework.Core
         Task<bool> DeleteAsync(IEntity entity, IUnitOfWork unitOfWork = null);
 
         /// <summary>
-        /// The entities whise ids are required by the linked and join entities at the time of persistance
+        /// The entities whose ids are required by the linked and join entities at the time of persistance
         /// </summary>
         Func<IEnumerable<IEntity>> TransferEntities { get; set; }
-=======
->>>>>>> bd9dc060af59b6a4d3f8b8d2e65aaf2f692497d3
     }
 }

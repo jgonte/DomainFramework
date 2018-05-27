@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace DomainFramework.Core
 {
     public class CommandCollectionEntityLink<TEntity, TLinkedEntity> : ICommandCollectionEntityLink<TEntity, TLinkedEntity>,
-        ICollectionEntityLink<TLinkedEntity>
+        ICollectionEntityLink<TEntity, TLinkedEntity>
         where TEntity : IEntity
         where TLinkedEntity : IEntity
     {
