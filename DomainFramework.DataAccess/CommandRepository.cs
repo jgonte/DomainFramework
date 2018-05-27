@@ -1,5 +1,6 @@
 ﻿using DataAccess;
 using DomainFramework.Core;
+<<<<<<< HEAD
 using System.Threading.Tasks;
 
 namespace DomainFramework.DataAccess
@@ -13,6 +14,15 @@ namespace DomainFramework.DataAccess
         where TEntity : Entity<TKey>
     {
         public override void Insert(TEntity entity, IUnitOfWork unitOfWork = null)
+=======
+
+namespace DomainFramework.DataAccess
+{
+    public abstract class CommandRepository<E, K, T> : Core.CommandRepository<E, K, T>
+        where E : Entity<K, T>
+    {
+        public override void Insert(E entity, IUnitOfWork unitOfWork = null)
+>>>>>>> bd9dc060af59b6a4d3f8b8d2e65aaf2f692497d3
         {
             var command = CreateInsertCommand(entity);
 
@@ -22,11 +32,19 @@ namespace DomainFramework.DataAccess
             }
             else
             {
+<<<<<<< HEAD
                 HandleInsert(command);
             }
         }
 
         public override bool Update(TEntity entity, IUnitOfWork unitOfWork = null)
+=======
+                HandleInsert(command, entity);
+            }
+        }
+
+        public override bool Update(E entity, IUnitOfWork unitOfWork = null)
+>>>>>>> bd9dc060af59b6a4d3f8b8d2e65aaf2f692497d3
         {
             var command = CreateUpdateCommand(entity);
 
@@ -38,6 +56,7 @@ namespace DomainFramework.DataAccess
             }
             else
             {
+<<<<<<< HEAD
                 return HandleUpdate(command);
             }
         }
@@ -90,6 +109,14 @@ namespace DomainFramework.DataAccess
 
 
         public override async Task<bool> DeleteAsync(TEntity entity, IUnitOfWork unitOfWork = null)
+=======
+                return HandleUpdate(command, entity);
+            }
+        }
+
+
+        public override bool Delete(E entity, IUnitOfWork unitOfWork = null)
+>>>>>>> bd9dc060af59b6a4d3f8b8d2e65aaf2f692497d3
         {
             var command = CreateDeleteCommand(entity);
 
@@ -101,6 +128,7 @@ namespace DomainFramework.DataAccess
             }
             else
             {
+<<<<<<< HEAD
                 return await HandleDeleteAsync(command);
             }
         }
@@ -122,5 +150,23 @@ namespace DomainFramework.DataAccess
         protected abstract Task<bool> HandleUpdateAsync(Command command);
 
         protected abstract Task<bool> HandleDeleteAsync(Command command);
+=======
+                return HandleDelete(command, entity);
+            }
+        }
+
+        protected abstract Command CreateInsertCommand(E entity);
+
+        protected abstract void HandleInsert(Command command, E entity);
+
+        protected abstract Command CreateUpdateCommand(E entity);
+
+        protected abstract bool HandleUpdate(Command command, E entity);
+
+        protected abstract Command CreateDeleteCommand(E entity);
+
+        protected abstract bool HandleDelete(Command command, E entity);
+
+>>>>>>> bd9dc060af59b6a4d3f8b8d2e65aaf2f692497d3
     }
 }

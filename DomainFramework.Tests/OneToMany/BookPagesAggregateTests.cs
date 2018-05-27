@@ -1,14 +1,21 @@
+<<<<<<< HEAD
 ﻿using DataAccess;
 using DomainFramework.DataAccess;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Threading.Tasks;
+=======
+﻿using DomainFramework.DataAccess;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
+>>>>>>> bd9dc060af59b6a4d3f8b8d2e65aaf2f692497d3
 
 namespace DomainFramework.Tests
 {
     [TestClass]
     public class BookPagesTests
     {
+<<<<<<< HEAD
         static readonly string connectionName = "SqlServerTest.DomainFrameworkOneToManyTest.ConnectionString";
 
         #region Additional test attributes
@@ -251,11 +258,20 @@ GO
             var bookEntity = new BookEntity(new BookData { Title = "Programming Java" });
 
             var context = new RepositoryContext("SqlServerTest.DomainFrameworkOneToManyTest.ConnectionString");
+=======
+        [TestMethod]
+        public void Insert_Book_With_Pages_Tests()
+        {
+            var bookEntity = new BookEntity(new Book { Title = "Programming C#" });
+
+            var context = new RepositoryContext("connectionName");
+>>>>>>> bd9dc060af59b6a4d3f8b8d2e65aaf2f692497d3
 
             context.RegisterCommandRepository<BookEntity>(new BookCommandRepository());
 
             context.RegisterCommandRepository<PageEntity>(new PageCommandRepository());
 
+<<<<<<< HEAD
             // Insert
 
             var bookCommandAggregate = new BookPagesCommandAggregate(context, bookEntity);
@@ -341,6 +357,21 @@ GO
             Assert.AreEqual(2, bookEntity.Id);
 
             var pages = bookCommandAggregate.Pages;
+=======
+            var aggregate = new BookPagesAggregate(context, bookEntity);
+
+            aggregate.AddPage(new PageEntity(new Page { Index = 1 }));
+
+            aggregate.AddPage(new PageEntity(new Page { Index = 2 }));
+
+            aggregate.AddPage(new PageEntity(new Page { Index = 3 }));
+
+            aggregate.Save();
+
+            Assert.AreEqual(1, bookEntity.Id);
+
+            var pages = aggregate.Pages;
+>>>>>>> bd9dc060af59b6a4d3f8b8d2e65aaf2f692497d3
 
             Assert.AreEqual(3, pages.Count());
 
@@ -348,6 +379,7 @@ GO
 
             Assert.AreEqual(1, page.Id);
 
+<<<<<<< HEAD
             Assert.AreEqual(1, page.Data.Index);
 
             Assert.AreEqual(2, page.BookId);
@@ -475,6 +507,15 @@ GO
             bookQueryAggregate.Load(2);
 
             Assert.IsNull(bookQueryAggregate.RootEntity);
+=======
+            //var queryRepository = new InMemoryQueryRepository<BookEntity, Book>(context);
+
+            //var entity = queryRepository.GetById(1);
+
+            //Assert.AreEqual(1, entity.Id);
+
+            //Assert.AreEqual("Programming C#", entity.Data.Title);
+>>>>>>> bd9dc060af59b6a4d3f8b8d2e65aaf2f692497d3
         }
     }
 }
