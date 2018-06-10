@@ -1,6 +1,6 @@
 ﻿namespace DomainFramework.Core
 {
-    public interface ISingleEntityLink : IEntityLink
+    public interface ISingleEntityLink
     {
         IEntity GetLinkedEntity();
     }

@@ -9,21 +9,21 @@ namespace DomainFramework.Core
     /// </summary>
     public interface ICommandRepository : IRepository
     {
-        void Save(IEntity entity, IUnitOfWork unitOfWork = null);
+        void Save(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
-        void Insert(IEntity entity, IUnitOfWork unitOfWork = null);
+        void Insert(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
-        bool Update(IEntity entity, IUnitOfWork unitOfWork = null);
+        bool Update(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
-        bool Delete(IEntity entity, IUnitOfWork unitOfWork = null);
+        bool Delete(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
-        Task SaveAsync(IEntity entity, IUnitOfWork unitOfWork = null);
+        Task SaveAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
-        Task InsertAsync(IEntity entity, IUnitOfWork unitOfWork = null);
+        Task InsertAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
-        Task<bool> UpdateAsync(IEntity entity, IUnitOfWork unitOfWork = null);
+        Task<bool> UpdateAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
-        Task<bool> DeleteAsync(IEntity entity, IUnitOfWork unitOfWork = null);
+        Task<bool> DeleteAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
         /// <summary>
         /// The entities whose ids are required by the linked and join entities at the time of persistance

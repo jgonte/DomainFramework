@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace DomainFramework.Core
 {
     /// <summary>
-    /// Coordinates transactions through more than one entity
+    /// Ensure business invariant by executing operations inside a unit fo work
     /// </summary>
     public class CommandAggregate<TEntity> : ICommandAggregate<TEntity>
         where TEntity : IEntity
@@ -14,16 +14,19 @@ namespace DomainFramework.Core
 
         public TEntity RootEntity { get; set; }
 
-        public List<ICommandInheritanceEntityLink<TEntity>> InheritanceEntityLinks { get; set; }
+        /// <summary>
+        /// The save operations that are performed inside a unit of work
+        /// </summary>
+        public Queue<ITransactedOperation> TransactedSaveOperations { get; set; } = new Queue<ITransactedOperation>();
 
-        public List<ICommandSingleEntityLink<TEntity>> SingleEntityLinks { get; set; }
+        protected virtual bool RequiresSaveUnitOfWork => TransactedSaveOperations.Count() > 1 || TransactedSaveOperations.Any(to => to.RequiresUnitOfWork);
 
-        public List<ICommandCollectionEntityLink<TEntity>> CollectionEntityLinks { get; set; }
+        /// <summary>
+        /// The delete operations that are performed inside a unit of work
+        /// </summary>
+        public Queue<ITransactedOperation> TransactedDeleteOperations { get; set; } = new Queue<ITransactedOperation>();
 
-        protected virtual bool RequiresUnitOfWork =>
-            (InheritanceEntityLinks != null && InheritanceEntityLinks.Any()) ||
-            (SingleEntityLinks != null && SingleEntityLinks.Any() && SingleEntityLinks.Select(l => l.GetLinkedEntity()).Any(e => e != null)) ||
-            (CollectionEntityLinks != null && CollectionEntityLinks.Any() && CollectionEntityLinks.SelectMany(l => l.GetLinkedEntities()).Any());
+        protected virtual bool RequiresDeleteUnitOfWork => TransactedDeleteOperations.Count() > 1 || TransactedDeleteOperations.Any(to => to.RequiresUnitOfWork);
 
         public CommandAggregate(RepositoryContext context, TEntity entity)
         {
@@ -32,49 +35,20 @@ namespace DomainFramework.Core
             RootEntity = entity;
         }
 
-        public virtual void Save(IUnitOfWork unitOfWork = null)
+        public virtual void Save(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null, IEnumerable<IEntity> transferEntities = null)
         {
             var ownsUnitOfWork = false;
 
-            if (unitOfWork == null && RequiresUnitOfWork)
+            if (unitOfWork == null && RequiresSaveUnitOfWork)
             {
                 unitOfWork = RepositoryContext.CreateUnitOfWork();
 
                 ownsUnitOfWork = true;
             }
 
-            if (InheritanceEntityLinks != null)
+            foreach (var operation in TransactedSaveOperations)
             {
-                foreach (var link in InheritanceEntityLinks)
-                {
-                    var repository = RepositoryContext.GetCommandRepository(link.LinkedEntityType);
-
-                    var linkedEntity = link.GetLinkedEntity();
-
-                    repository.TransferEntities = () => new IEntity[] { RootEntity };
-
-                    repository.Save(linkedEntity, unitOfWork);
-                }
-            }
-
-            var rootRepository = RepositoryContext.GetCommandRepository(typeof(TEntity));
-
-            rootRepository.Save(RootEntity, unitOfWork);
-
-            if (SingleEntityLinks != null)
-            {
-                foreach (var link in SingleEntityLinks)
-                {
-                    link.Save(RepositoryContext, unitOfWork, RootEntity);
-                }
-            }
-
-            if (CollectionEntityLinks != null)
-            {
-                foreach (var link in CollectionEntityLinks)
-                {
-                    link.Save(RepositoryContext, unitOfWork, RootEntity);
-                }
+                operation.Execute(RepositoryContext, user, unitOfWork);
             }
 
             if (ownsUnitOfWork)
@@ -83,63 +57,81 @@ namespace DomainFramework.Core
             }
         }
 
-        public virtual void Delete(IUnitOfWork unitOfWork = null)
-        {
-            var rootRepository = RepositoryContext.GetCommandRepository(typeof(TEntity));
-
-            rootRepository.Delete(RootEntity);
-
-            // Assume delete cascade for the linked entities
-        }
-
-        public virtual async Task SaveAsync(IUnitOfWork unitOfWork = null)
+        public virtual void Delete(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null)
         {
             var ownsUnitOfWork = false;
 
-            if (unitOfWork == null && RequiresUnitOfWork)
+            if (unitOfWork == null && RequiresDeleteUnitOfWork)
             {
                 unitOfWork = RepositoryContext.CreateUnitOfWork();
 
                 ownsUnitOfWork = true;
             }
 
-            if (InheritanceEntityLinks != null)
+            foreach (var operation in TransactedDeleteOperations)
             {
-                foreach (var link in InheritanceEntityLinks)
-                {
-                    var repository = RepositoryContext.GetCommandRepository(link.LinkedEntityType);
-
-                    var linkedEntity = link.GetLinkedEntity();
-
-                    repository.TransferEntities = () => new IEntity[] { RootEntity };
-
-                    await repository.SaveAsync(linkedEntity, unitOfWork);
-                }
-            }
-
-            var rootRepository = RepositoryContext.GetCommandRepository(typeof(TEntity));
-
-            rootRepository.Save(RootEntity, unitOfWork);
-
-            if (SingleEntityLinks != null)
-            {
-                foreach (var link in SingleEntityLinks)
-                {
-                    await link.SaveAsync(RepositoryContext, unitOfWork, RootEntity);
-                }
-            }
-
-            if (CollectionEntityLinks != null)
-            {
-                foreach (var link in CollectionEntityLinks)
-                {
-                    await link.SaveAsync(RepositoryContext, unitOfWork, RootEntity);
-                }
+                operation.Execute(RepositoryContext, user, unitOfWork);
             }
 
             if (ownsUnitOfWork)
             {
                 unitOfWork.Save();
+            }
+        }
+
+        public virtual async Task SaveAsync(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null, IEnumerable<IEntity> transferEntities = null)
+        {
+            var ownsUnitOfWork = false;
+
+            if (unitOfWork == null && RequiresSaveUnitOfWork)
+            {
+                unitOfWork = RepositoryContext.CreateUnitOfWork();
+
+                ownsUnitOfWork = true;
+            }
+
+            var tasks = new Queue<Task>();
+
+            foreach (var operation in TransactedSaveOperations)
+            {
+                tasks.Enqueue(
+                    operation.ExecuteAsync(RepositoryContext, user, unitOfWork)
+                );
+            }
+
+            await Task.WhenAll(tasks);
+
+            if (ownsUnitOfWork)
+            {
+                await unitOfWork.SaveAsync();
+            }
+        }
+
+        public virtual async Task DeleteAsync(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null)
+        {
+            var ownsUnitOfWork = false;
+
+            if (unitOfWork == null && RequiresDeleteUnitOfWork)
+            {
+                unitOfWork = RepositoryContext.CreateUnitOfWork();
+
+                ownsUnitOfWork = true;
+            }
+
+            var tasks = new Queue<Task>();
+
+            foreach (var operation in TransactedDeleteOperations)
+            {
+                tasks.Enqueue(
+                    operation.ExecuteAsync(RepositoryContext, user, unitOfWork)
+                );
+            }
+
+            await Task.WhenAll(tasks);
+
+            if (ownsUnitOfWork)
+            {
+                await unitOfWork.SaveAsync();
             }
         }
     }

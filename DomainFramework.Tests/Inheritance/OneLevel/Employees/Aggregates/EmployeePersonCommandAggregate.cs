@@ -1,26 +1,33 @@
 ﻿using DomainFramework.Core;
-using System.Collections.Generic;
 
-namespace DomainFramework.Tests.OneLevelInheritance
+namespace DomainFramework.Tests
 {
     class EmployeePersonCommandAggregate : CommandAggregate<EmployeeEntity>
     {
-        public EmployeePersonCommandAggregate(Core.RepositoryContext context, EmployeeEntity entity) : base(context, entity)
+        public PersonEntity Person { get; private set; }
+
+        public EmployeePersonCommandAggregate(DataAccess.RepositoryContext context, string firstName, int salary) :base(context, null)
         {
-            // Create the links to the collection of entity links
-            InheritanceEntityLinks = new List<ICommandInheritanceEntityLink<EmployeeEntity>>();
+            Person = new PersonEntity
+            {
+                FirstName = firstName
+            };
 
-            // Register the link to the pages collection
-            InheritanceEntityLinks.Add(PersonLink);
-        }
+            RootEntity = new EmployeeEntity
+            {
+                Salary = salary
+            };
 
-        public CommandInheritanceEntityLink<EmployeeEntity, PersonEntity> PersonLink { get; set; } = new CommandInheritanceEntityLink<EmployeeEntity, PersonEntity>();
+            TransactedSaveOperations.Enqueue(
+                new SaveEntityWithInheritanceTransactedOperation<EmployeeEntity>(
+                    RootEntity,
+                    new SaveBaseEntityTransactedOperation<PersonEntity, EmployeeEntity>(Person)
+                )
+            );
 
-        public PersonEntity Person => PersonLink.LinkedEntity;
-
-        public void SetPerson(PersonEntity personEntity)
-        {
-            PersonLink.SetEntity(personEntity);
+            TransactedDeleteOperations.Enqueue(
+                new DeleteEntityTransactedOperation<EmployeeEntity>(RootEntity)
+            );
         }
     }
 }

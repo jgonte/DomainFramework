@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
@@ -9,37 +10,64 @@ namespace DomainFramework.Core
 
         public TEntity RootEntity { get; set; }
 
-        public List<IQueryInheritanceEntityLink> InheritanceEntityLinks { get; set; }
+        public List<IQueryInheritanceEntityLink<TKey>> InheritanceEntityLinks { get; set; }
 
         public List<IQuerySingleEntityLink> SingleEntityLinks { get; set; }
 
         public List<IQueryCollectionEntityLink> CollectionEntityLinks { get; set; }
 
-        public QueryAggregate(RepositoryContext context, TEntity entity)
+        public QueryAggregate()
         {
-            RepositoryContext = context;
-
-            RootEntity = entity;
         }
 
-        public void Load(TKey id, IUnitOfWork unitOfWork = null)
+        public QueryAggregate(RepositoryContext repositoryContext)
+        {
+            RepositoryContext = repositoryContext;
+        }
+
+        public void Load(TKey rootEntityId, IAuthenticatedUser user = null)
         {
             var rootRepository = RepositoryContext.GetQueryRepository(typeof(TEntity));
 
-            RootEntity = (TEntity)rootRepository.GetById(id);
+            RootEntity = (TEntity)rootRepository.GetById(rootEntityId);
 
             if (RootEntity == null)
             {
                 return;
             }
 
+            LoadAggregatedEntities(user);
+        }
+
+        public async Task LoadAsync(TKey rootEntityId, IAuthenticatedUser user = null)
+        {
+            var rootRepository = RepositoryContext.GetQueryRepository(typeof(TEntity));
+
+            RootEntity = (TEntity)rootRepository.GetById(rootEntityId);
+
+            if (RootEntity == null)
+            {
+                return;
+            }
+
+            await LoadAggregatedEntitiesAsync(user);
+        }
+
+        public void LoadAggregatedEntities(IAuthenticatedUser user = null)
+        {
+            if (InheritanceEntityLinks != null)
+            {
+                foreach (var link in InheritanceEntityLinks)
+                {
+                    link.PopulateEntity(RepositoryContext, RootEntity.Id); // The id must be the same for the inheritance chain
+                }
+            }
+
             if (SingleEntityLinks != null)
             {
                 foreach (var link in SingleEntityLinks)
                 {
-                    var repository = RepositoryContext.GetQueryRepository(link.LinkedEntityType);
-
-                    link.PopulateEntity(repository, RootEntity);
+                    link.PopulateEntity(RepositoryContext, RootEntity);
                 }
             }
 
@@ -47,9 +75,34 @@ namespace DomainFramework.Core
             {
                 foreach (var link in CollectionEntityLinks)
                 {
-                    var repository = RepositoryContext.GetQueryRepository(link.LinkedEntityType);
+                    link.PopulateEntities(RepositoryContext, RootEntity);
+                }
+            }
+        }
 
-                    link.PopulateEntities(repository, RootEntity);
+        public async Task LoadAggregatedEntitiesAsync(IAuthenticatedUser user = null)
+        {
+            if (InheritanceEntityLinks != null)
+            {
+                foreach (var link in InheritanceEntityLinks)
+                {
+                    await link.PopulateEntityAsync(RepositoryContext, RootEntity.Id); // The id must be the same for the inheritance chain
+                }
+            }
+
+            if (SingleEntityLinks != null)
+            {
+                foreach (var link in SingleEntityLinks)
+                {
+                    await link.PopulateEntityAsync(RepositoryContext, RootEntity);
+                }
+            }
+
+            if (CollectionEntityLinks != null)
+            {
+                foreach (var link in CollectionEntityLinks)
+                {
+                    await link.PopulateEntitiesAsync(RepositoryContext, RootEntity);
                 }
             }
         }

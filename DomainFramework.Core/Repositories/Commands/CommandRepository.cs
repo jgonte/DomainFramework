@@ -16,41 +16,41 @@ namespace DomainFramework.Core
 
         public Func<IEnumerable<IEntity>> TransferEntities { get; set; }
 
-        public virtual void Save(TEntity entity, IUnitOfWork unitOfWork = null)
+        public virtual void Save(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
             if (entity.Id == null)
             {
-                Insert(entity, unitOfWork);
+                Insert(entity, user, unitOfWork);
             }
             else
             {
-                Update(entity, unitOfWork);
+                Update(entity, user, unitOfWork);
             }
         }
 
-        public abstract void Insert(TEntity entity, IUnitOfWork unitOfWork = null);
+        public abstract void Insert(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
-        public abstract bool Update(TEntity entity, IUnitOfWork unitOfWork = null);
+        public abstract bool Update(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
-        public abstract bool Delete(TEntity entity, IUnitOfWork unitOfWork = null);
+        public abstract bool Delete(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
-        public virtual async Task SaveAsync(TEntity entity, IUnitOfWork unitOfWork = null)
+        public virtual async Task SaveAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
             if (entity.Id == null)
             {
-                await InsertAsync(entity, unitOfWork);
+                await InsertAsync(entity, user, unitOfWork);
             }
             else
             {
-                await UpdateAsync(entity, unitOfWork);
+                await UpdateAsync(entity, user, unitOfWork);
             }
         }
 
-        public abstract Task InsertAsync(TEntity entity, IUnitOfWork unitOfWork = null);
+        public abstract Task InsertAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
-        public abstract Task<bool> UpdateAsync(TEntity entity, IUnitOfWork unitOfWork = null);
+        public abstract Task<bool> UpdateAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
-        public abstract Task<bool> DeleteAsync(TEntity entity, IUnitOfWork unitOfWork = null);
+        public abstract Task<bool> DeleteAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
         protected void UpdateEntityId(TEntity entity, TKey id)
         {
@@ -59,44 +59,44 @@ namespace DomainFramework.Core
 
         #region ICommandRepository members
 
-        void ICommandRepository.Save(IEntity entity, IUnitOfWork unitOfWork)
+        void ICommandRepository.Save(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            Save((TEntity)entity, unitOfWork);
+            Save((TEntity)entity, user, unitOfWork);
         }
 
-        void ICommandRepository.Insert(IEntity entity, IUnitOfWork unitOfWork)
+        void ICommandRepository.Insert(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            Insert((TEntity)entity);
+            Insert((TEntity)entity, user, unitOfWork);
         }
 
-        bool ICommandRepository.Update(IEntity entity, IUnitOfWork unitOfWork)
+        bool ICommandRepository.Update(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            return Update((TEntity)entity);
+            return Update((TEntity)entity, user, unitOfWork);
         }
 
-        bool ICommandRepository.Delete(IEntity entity, IUnitOfWork unitOfWork)
+        bool ICommandRepository.Delete(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            return Delete((TEntity)entity);
+            return Delete((TEntity)entity, user, unitOfWork);
         }
 
-        public async Task SaveAsync(IEntity entity, IUnitOfWork unitOfWork = null)
+        public async Task SaveAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            await SaveAsync((TEntity)entity, unitOfWork);
+            await SaveAsync((TEntity)entity, user, unitOfWork);
         }
 
-        public async Task InsertAsync(IEntity entity, IUnitOfWork unitOfWork = null)
+        public async Task InsertAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            await InsertAsync((TEntity)entity, unitOfWork);
+            await InsertAsync((TEntity)entity, user, unitOfWork);
         }
 
-        public async Task<bool> UpdateAsync(IEntity entity, IUnitOfWork unitOfWork = null)
+        public async Task<bool> UpdateAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            return await UpdateAsync((TEntity)entity, unitOfWork);
+            return await UpdateAsync((TEntity)entity, user, unitOfWork);
         }
 
-        public async Task<bool> DeleteAsync(IEntity entity, IUnitOfWork unitOfWork = null)
+        public async Task<bool> DeleteAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            return await DeleteAsync((TEntity)entity, unitOfWork);
+            return await DeleteAsync((TEntity)entity, user, unitOfWork);
         }
 
         #endregion

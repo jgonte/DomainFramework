@@ -1,17 +1,24 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public interface ICommandAggregate<TEntity> : IAggregate<TEntity>
+    public interface ICommandAggregate : IAggregate
     {
-        List<ICommandInheritanceEntityLink<TEntity>> InheritanceEntityLinks { get; set; }
+        void Save(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null, IEnumerable<IEntity> transferEntities = null);
 
-        List<ICommandSingleEntityLink<TEntity>> SingleEntityLinks { get; set; }
+        void Delete(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null);
 
-        List<ICommandCollectionEntityLink<TEntity>> CollectionEntityLinks { get; set; }
+        Task SaveAsync(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null, IEnumerable<IEntity> transferEntities = null);
 
-        void Save(IUnitOfWork unitOfWork = null);
+        Task DeleteAsync(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null);
+    }
 
-        void Delete(IUnitOfWork unitOfWork = null);
+    public interface ICommandAggregate<TEntity> : IAggregate<TEntity>, ICommandAggregate
+        where TEntity : IEntity
+    {
+        Queue<ITransactedOperation> TransactedSaveOperations { get; set; }
+
+        Queue<ITransactedOperation> TransactedDeleteOperations { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
@@ -13,11 +14,18 @@ namespace DomainFramework.Core
 
         public IEntity GetLinkedEntity() => LinkedEntity;
 
-        public void PopulateEntity(IQueryRepository repository, IEntity entity)
+        public void PopulateEntity(IRepositoryContext repositoryContext, IEntity entity)
         {
-            PopulateEntity(repository, (TEntity)entity);
+            PopulateEntity(repositoryContext, (TEntity)entity);
         }
 
-        public abstract void PopulateEntity(IQueryRepository repository, TEntity entity);
+        public abstract void PopulateEntity(IRepositoryContext repositoryContext, TEntity entity);
+
+        public async Task PopulateEntityAsync(IRepositoryContext repositoryContext, IEntity entity)
+        {
+            await PopulateEntityAsync(repositoryContext, (TEntity)entity);
+        }
+
+        public abstract Task PopulateEntityAsync(IRepositoryContext repositoryContext, TEntity entity);
     }
 }

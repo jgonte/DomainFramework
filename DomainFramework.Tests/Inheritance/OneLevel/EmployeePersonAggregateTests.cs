@@ -1,11 +1,9 @@
-﻿using System;
+﻿using DataAccess;
+using DomainFramework.DataAccess;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
-using DataAccess;
-using System.Linq;
-using DomainFramework.DataAccess;
 
-namespace DomainFramework.Tests.OneLevelInheritance
+namespace DomainFramework.Tests
 {
     [TestClass]
     public class EmployeePersonAggregateTests
@@ -43,26 +41,25 @@ GO
 USE DomainFrameworkInheritanceOneLevelTest
 GO
 
+CREATE TABLE DomainFrameworkInheritanceOneLevelTest..Person(
+    [PersonId] INT NOT NULL IDENTITY,
+    [FirstName] VARCHAR(50) NOT NULL
+)
+
+ALTER TABLE DomainFrameworkInheritanceOneLevelTest..Person
+ADD CONSTRAINT Person_PK PRIMARY KEY (PersonId)
+
 CREATE TABLE DomainFrameworkInheritanceOneLevelTest..Employee(
-    [EmployeeId] INT NOT NULL IDENTITY,
-    [Title] VARCHAR(50)
+    [EmployeeId] INT NOT NULL,
+    [Salary] MONEY NOT NULL
 )
 
 ALTER TABLE DomainFrameworkInheritanceOneLevelTest..Employee
 ADD CONSTRAINT Employee_PK PRIMARY KEY (EmployeeId)
 GO
 
-CREATE TABLE DomainFrameworkInheritanceOneLevelTest..Person(
-    [PersonId] INT NOT NULL IDENTITY,
-    [Index] INT NOT NULL,
-    [EmployeeId] INT  NOT NULL
-)
-
-ALTER TABLE DomainFrameworkInheritanceOneLevelTest..Person
-ADD CONSTRAINT Person_PK PRIMARY KEY (PersonId)
-
-ALTER TABLE DomainFrameworkInheritanceOneLevelTest..Person
-ADD CONSTRAINT Person_Employee_FK FOREIGN KEY (EmployeeId) REFERENCES DomainFrameworkInheritanceOneLevelTest..Employee(EmployeeId)
+ALTER TABLE DomainFrameworkInheritanceOneLevelTest..Employee
+ADD CONSTRAINT Employee_Person_FK FOREIGN KEY (EmployeeId) REFERENCES DomainFrameworkInheritanceOneLevelTest..Person(PersonId)
 ON DELETE CASCADE;
 
 GO
@@ -70,38 +67,9 @@ GO
             "^GO");
 
             await ScriptExecutor.ExecuteScriptAsync(ConnectionManager.GetConnection(connectionName),
-            @"
-CREATE PROCEDURE [p_Employee_Create]
-    @title VARCHAR(50)
-AS
-BEGIN
-    DECLARE @outputData TABLE
-    (
-        [EmployeeId] INT NOT NULL
-    );
-
-    INSERT INTO Employee
-    (
-        [Title]
-    )
-    OUTPUT
-        INSERTED.[EmployeeId]
-    INTO @outputData
-    VALUES
-    (
-        @title
-    );
-
-    SELECT
-        [EmployeeId]
-    FROM @outputData;
-
-END;
-GO
-
+@"
 CREATE PROCEDURE [p_Person_Create]
-    @index INT,
-    @bookId INT
+    @firstName VARCHAR(50)
 AS
 BEGIN
     DECLARE @outputData TABLE
@@ -111,16 +79,14 @@ BEGIN
 
     INSERT INTO Person
     (
-        [Index],
-        [EmployeeId]
+        [FirstName]
     )
     OUTPUT
         INSERTED.[PersonId]
     INTO @outputData
     VALUES
     (
-        @index,
-        @bookId
+        @firstName
     );
 
     SELECT
@@ -130,86 +96,85 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE [p_Employee_Create]
+    @employeeId INT,
+    @salary MONEY
+AS
+BEGIN
+    INSERT INTO Employee
+    (
+        [EmployeeId],
+        [Salary]
+    )
+    VALUES
+    (
+        @employeeId,
+        @salary
+    );
+END;
+GO
+
 CREATE PROCEDURE [p_Employee_Get]
-    @bookId INT
+    @employeeId INT
 AS
 BEGIN
 
     SET NOCOUNT ON;
 
     SELECT
-        [Title]
-    FROM [Employee]
-        WHERE [EmployeeId] = @bookId
+        e.EmployeeId AS Id,
+        e.[Salary]
+    FROM [Employee] e
+    WHERE e.[EmployeeId] = @employeeId
 
 END;
 GO
 
 CREATE PROCEDURE [p_Person_Get]
-    @pageId INT
+    @personId INT
 AS
 BEGIN
 
     SET NOCOUNT ON;
 
     SELECT
-        [Index],
-        [EmployeeId]
-    FROM [Person]
-        WHERE [PersonId] = @pageId
-
-END;
-GO
-
-CREATE PROCEDURE [p_Employee_GetPersons]
-    @bookId INT
-AS
-BEGIN
-
-    SET NOCOUNT ON;
-
-    SELECT
-        [PersonId],
-        [Index],
-        [EmployeeId]
-    FROM [Person]
-        WHERE [EmployeeId] = @bookId
+        p.[FirstName]
+    FROM [Person] p
+    WHERE p.PersonId  = @personId
 
 END;
 GO
 
 CREATE PROCEDURE [p_Employee_Update]
-    @bookId INT,
-    @title VARCHAR(50)
+    @employeeId INT,
+    @salary MONEY
 AS
 BEGIN
 
     UPDATE Employee
     SET
-        [Title] = @title
-    WHERE [EmployeeId] = @bookId;
+        [Salary] = @salary
+    WHERE [EmployeeId] = @employeeId;
 
 END;
 GO
 
 CREATE PROCEDURE [p_Person_Update]
-    @pageId INT,
-    @index INT,
-    @bookId INT
+    @personId INT,
+    @firstName VARCHAR(50)
 AS
 BEGIN
 
     UPDATE Person
     SET
-        [Index] = @index,
-        [EmployeeId] = @bookId
-    WHERE [PersonId] = @pageId;
+        [FirstName] = @firstName
+    WHERE [PersonId] = @personId;
 
 END;
 GO
 
 CREATE PROCEDURE [p_Employee_Delete]
-    @bookId INT
+    @employeeId INT
 AS
 BEGIN
 
@@ -217,7 +182,7 @@ BEGIN
 
     DELETE
     FROM [Employee]
-        WHERE [EmployeeId] = @bookId
+    WHERE [EmployeeId] = @employeeId
 
 END;
 GO
@@ -247,169 +212,142 @@ GO
         #endregion
 
         [TestMethod]
-        public async Task Employee_Aggregate_Inherits_From_Person_Tests()
+        public async Task Employee_Aggregate_Inherits_From_Person_Save_Async_Tests()
         {
-            var personEntity = new PersonEntity
-            {
-                FirstName = "John"
-            };
+            var context = new RepositoryContext(connectionName);
 
-            var employeeEntity = new EmployeeEntity
-            {
-                Salary = 65000
-            };
+            context.RegisterCommandRepositoryFactory<PersonEntity>(() => new PersonCommandRepository());
 
-            var context = new RepositoryContext("SqlServerTest.DomainFrameworkInheritanceOneLevelTest.ConnectionString");
-
-            context.RegisterCommandRepository<PersonEntity>(new PersonCommandRepository());
-
-            context.RegisterCommandRepository<EmployeeEntity>(new EmployeeCommandRepository());
+            context.RegisterCommandRepositoryFactory<EmployeeEntity>(() => new EmployeeCommandRepository());
 
             // Insert
 
-            var employeeCommandAggregate = new EmployeePersonCommandAggregate(context, employeeEntity);
+            var commandAggregate = new EmployeePersonCommandAggregate(context, firstName: "Johnny", salary: 65000);
 
-            employeeCommandAggregate.SetPerson(personEntity);
+            await commandAggregate.SaveAsync();
 
-            await employeeCommandAggregate.SaveAsync();
+            var employeeEntity = commandAggregate.RootEntity;
 
-            Assert.AreEqual(1, employeeEntity.Id);
+            Assert.IsNotNull(employeeEntity.Id);
 
-            //var pages = employeeCommandAggregate.Persons;
+            var employeeId = employeeEntity.Id;
 
-            //Assert.AreEqual(3, pages.Count());
+            // Read
 
-            //var page = pages.ElementAt(0);
+            context.RegisterQueryRepository<EmployeeEntity>(new EmployeeQueryRepository());
 
-            //Assert.AreEqual(1, page.Id);
+            context.RegisterQueryRepository<PersonEntity>(new PersonQueryRepository());
 
-            //Assert.AreEqual(1, page.Data.Index);
+            var queryAggregate = new EmployeePersonQueryAggregate(context);
 
-            //Assert.AreEqual(2, page.EmployeeId);
+            queryAggregate.Load(employeeId);
 
-            //page = pages.ElementAt(1);
+            employeeEntity = queryAggregate.RootEntity;
 
-            //Assert.AreEqual(2, page.Id);
+            Assert.AreEqual(employeeId, employeeEntity.Id);
 
-            //Assert.AreEqual(2, page.Data.Index);
+            Assert.AreEqual(65000, employeeEntity.Salary);
 
-            //Assert.AreEqual(2, page.EmployeeId);
+            Assert.AreEqual("Johnny", queryAggregate.Person.FirstName);
 
-            //page = pages.ElementAt(2);
+            // Update
 
-            //Assert.AreEqual(3, page.Id);
+            employeeEntity = commandAggregate.RootEntity;
 
-            //Assert.AreEqual(3, page.Data.Index);
+            employeeEntity.Salary = 75000;
 
-            //Assert.AreEqual(2, page.EmployeeId);
+            commandAggregate.Person.FirstName = "John";
 
-            //// Read
+            await commandAggregate.SaveAsync();
 
-            //context.RegisterQueryRepository<EmployeeEntity>(new EmployeeQueryRepository());
+            // Read after update
 
-            //context.RegisterQueryRepository<PersonEntity>(new PersonQueryRepository());
+            queryAggregate.Load(employeeId);
 
-            //var bookQueryAggregate = new EmployeePersonsQueryAggregate(context, employeeEntity);
+            employeeEntity = queryAggregate.RootEntity;
 
-            //bookQueryAggregate.Load(2);
+            Assert.AreEqual(employeeId, employeeEntity.Id);
 
-            //employeeEntity = bookQueryAggregate.RootEntity;
+            Assert.AreEqual(75000, employeeEntity.Salary);
 
-            //Assert.AreEqual(2, employeeEntity.Id);
+            Assert.AreEqual("John", queryAggregate.Person.FirstName);
 
-            //Assert.AreEqual("Programming C#", employeeEntity.Data.Title);
+            // Delete
+            await commandAggregate.DeleteAsync();
 
-            //Assert.AreEqual(3, bookQueryAggregate.Persons.Count());
+            queryAggregate.Load(employeeId);
 
-            //page = bookQueryAggregate.Persons.ElementAt(0);
+            Assert.IsNull(queryAggregate.RootEntity);
+        }
 
-            //Assert.AreEqual(1, page.Id);
+        [TestMethod]
+        public void Employee_Aggregate_Inherits_From_Person_Tests()
+        {
+            var context = new RepositoryContext(connectionName);
 
-            //Assert.AreEqual(1, page.Data.Index);
+            context.RegisterCommandRepositoryFactory<PersonEntity>(() => new PersonCommandRepository());
 
-            //Assert.AreEqual(2, page.EmployeeId);
+            context.RegisterCommandRepositoryFactory<EmployeeEntity>(() => new EmployeeCommandRepository());
 
-            //page = bookQueryAggregate.Persons.ElementAt(1);
+            // Insert
 
-            //Assert.AreEqual(2, page.Id);
+            var commandAggregate = new EmployeePersonCommandAggregate(context, firstName: "Jack", salary: 75000);
 
-            //Assert.AreEqual(2, page.Data.Index);
+            commandAggregate.Save();
 
-            //Assert.AreEqual(2, page.EmployeeId);
+            var employeeEntity = commandAggregate.RootEntity;
 
-            //page = bookQueryAggregate.Persons.ElementAt(2);
+            Assert.IsNotNull(employeeEntity.Id);
 
-            //Assert.AreEqual(3, page.Id);
+            var employeeId = employeeEntity.Id;
 
-            //Assert.AreEqual(3, page.Data.Index);
+            // Read
 
-            //Assert.AreEqual(2, page.EmployeeId);
+            context.RegisterQueryRepository<EmployeeEntity>(new EmployeeQueryRepository());
 
-            //// Update
+            context.RegisterQueryRepository<PersonEntity>(new PersonQueryRepository());
 
-            //employeeEntity = employeeCommandAggregate.RootEntity;
+            var queryAggregate = new EmployeePersonQueryAggregate(context);
 
-            //employeeEntity.Data.Title = "Programming C# 2nd Ed.";
+            queryAggregate.Load(employeeId);
 
-            //pages = employeeCommandAggregate.Persons;
+            employeeEntity = queryAggregate.RootEntity;
 
-            //page = pages.ElementAt(0);
+            Assert.AreEqual(employeeId, employeeEntity.Id);
 
-            //page.Data.Index = 10;
+            Assert.AreEqual(75000, employeeEntity.Salary);
 
-            //page = pages.ElementAt(1);
+            Assert.AreEqual("Jack", queryAggregate.Person.FirstName);
 
-            //page.Data.Index = 20;
+            // Update
 
-            //page = pages.ElementAt(2);
+            employeeEntity = commandAggregate.RootEntity;
 
-            //page.Data.Index = 30;
+            employeeEntity.Salary = 80000;
 
-            //employeeCommandAggregate.Save();
+            commandAggregate.Person.FirstName = "Jacob";
 
-            //// Read after update
+            commandAggregate.Save();
 
-            //bookQueryAggregate.Load(2);
+            // Read after update
 
-            //employeeEntity = bookQueryAggregate.RootEntity;
+            queryAggregate.Load(employeeId);
 
-            //Assert.AreEqual(2, employeeEntity.Id);
+            employeeEntity = queryAggregate.RootEntity;
 
-            //Assert.AreEqual("Programming C# 2nd Ed.", employeeEntity.Data.Title);
+            Assert.AreEqual(employeeId, employeeEntity.Id);
 
-            //Assert.AreEqual(3, bookQueryAggregate.Persons.Count());
+            Assert.AreEqual(80000, employeeEntity.Salary);
 
-            //page = bookQueryAggregate.Persons.ElementAt(0);
+            Assert.AreEqual("Jacob", queryAggregate.Person.FirstName);
 
-            //Assert.AreEqual(1, page.Id);
+            // Delete
 
-            //Assert.AreEqual(10, page.Data.Index);
+            commandAggregate.Delete();
 
-            //Assert.AreEqual(2, page.EmployeeId);
+            queryAggregate.Load(employeeId);
 
-            //page = bookQueryAggregate.Persons.ElementAt(1);
-
-            //Assert.AreEqual(2, page.Id);
-
-            //Assert.AreEqual(20, page.Data.Index);
-
-            //Assert.AreEqual(2, page.EmployeeId);
-
-            //page = bookQueryAggregate.Persons.ElementAt(2);
-
-            //Assert.AreEqual(3, page.Id);
-
-            //Assert.AreEqual(30, page.Data.Index);
-
-            //Assert.AreEqual(2, page.EmployeeId);
-
-            //// Delete
-
-            //employeeCommandAggregate.Delete();
-
-            //bookQueryAggregate.Load(2);
-
-            //Assert.IsNull(bookQueryAggregate.RootEntity);
+            Assert.IsNull(queryAggregate.RootEntity);
         }
     }
 }

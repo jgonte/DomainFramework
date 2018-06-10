@@ -1,22 +1,49 @@
-﻿using System.Threading.Tasks;
-using DataAccess;
-using DomainFramework.DataAccess;
+﻿using DataAccess;
+using DomainFramework.Core;
+using System;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
-namespace DomainFramework.Tests.OneLevelInheritance
+namespace DomainFramework.Tests
 {
-    class PersonCommandRepository : CommandRepository<PersonEntity, int?>
+    class PersonCommandRepository : DataAccess.CommandRepository<PersonEntity, int?>
     {
-        protected override Command CreateInsertCommand(PersonEntity entity)
+        protected override Command CreateInsertCommand(PersonEntity entity, IAuthenticatedUser user)
         {
-            throw new System.NotImplementedException();
+            return Query<PersonEntity>
+                .Single()
+                .Connection(ConnectionName)
+                .StoredProcedure("p_Person_Create")
+                .AutoGenerateParameters(
+                    qbeObject: entity,
+                    excludedProperties: new Expression<Func<PersonEntity, object>>[]{
+                        m => m.Id,
+                    }
+                )
+                .Instance(entity)
+                .MapProperties(
+                    pm => pm.Map(m => m.Id)//.Index(0),
+                );
         }
 
-        protected override Command CreateUpdateCommand(PersonEntity entity)
+        protected override Command CreateUpdateCommand(PersonEntity entity, IAuthenticatedUser user)
         {
-            throw new System.NotImplementedException();
+            return Command
+                .NonQuery()
+                .Connection(ConnectionName)
+                .StoredProcedure("p_Person_Update")
+                .Parameters(
+                    p => p.Name("personId").Value(entity.Id.Value)
+                )
+                .AutoGenerateParameters(
+                    qbeObject: entity,
+                    excludedProperties: new Expression<Func<PersonEntity, object>>[]{
+                        m => m.Id,
+                    }
+                );
         }
 
-        protected override Command CreateDeleteCommand(PersonEntity entity)
+        protected override Command CreateDeleteCommand(PersonEntity entity, IAuthenticatedUser user)
         {
             throw new System.NotImplementedException();
         }

@@ -1,5 +1,6 @@
 ﻿using DataAccess;
 using DomainFramework.Core;
+using System.Threading.Tasks;
 
 namespace DomainFramework.DataAccess
 {
@@ -25,6 +26,11 @@ namespace DomainFramework.DataAccess
         public void Save()
         {
             _transaction.Execute();
+        }
+
+        public async Task SaveAsync()
+        {
+            await _transaction.ExecuteAsync();
         }
     }
 }

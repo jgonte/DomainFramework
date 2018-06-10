@@ -9,11 +9,11 @@ namespace DomainFramework.Core
         /// </summary>
         string ConnectionName { get; set; }
 
-        void RegisterCommandRepository<E>(ICommandRepository repository);
+        void RegisterCommandRepositoryFactory<EntityType>(Func<ICommandRepository> repository);
 
-        ICommandRepository GetCommandRepository(Type type);
+        ICommandRepository CreateCommandRepository(Type type);
 
-        void RegisterQueryRepository<E>(IQueryRepository repository);
+        void RegisterQueryRepository<EntityType>(IQueryRepository repository);
 
         IQueryRepository GetQueryRepository(Type type);
 

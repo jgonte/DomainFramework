@@ -2,7 +2,7 @@
 
 namespace DomainFramework.Core
 {
-    public interface ICollectionEntityLink : IEntityLink
+    public interface ICollectionEntityLink
     {
         IEnumerable<IEntity> GetLinkedEntities();
     }

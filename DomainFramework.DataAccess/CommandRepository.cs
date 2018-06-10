@@ -12,9 +12,9 @@ namespace DomainFramework.DataAccess
     public abstract class CommandRepository<TEntity, TKey> : Core.CommandRepository<TEntity, TKey>
         where TEntity : Entity<TKey>
     {
-        public override void Insert(TEntity entity, IUnitOfWork unitOfWork = null)
+        public override void Insert(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var command = CreateInsertCommand(entity);
+            var command = CreateInsertCommand(entity, user);
 
             if (unitOfWork != null)
             {
@@ -26,9 +26,9 @@ namespace DomainFramework.DataAccess
             }
         }
 
-        public override bool Update(TEntity entity, IUnitOfWork unitOfWork = null)
+        public override bool Update(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var command = CreateUpdateCommand(entity);
+            var command = CreateUpdateCommand(entity, user);
 
             if (unitOfWork != null)
             {
@@ -42,9 +42,9 @@ namespace DomainFramework.DataAccess
             }
         }
 
-        public override bool Delete(TEntity entity, IUnitOfWork unitOfWork = null)
+        public override bool Delete(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var command = CreateDeleteCommand(entity);
+            var command = CreateDeleteCommand(entity, user);
 
             if (unitOfWork != null)
             {
@@ -58,9 +58,9 @@ namespace DomainFramework.DataAccess
             }
         }
 
-        public override async Task InsertAsync(TEntity entity, IUnitOfWork unitOfWork = null)
+        public override async Task InsertAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var command = CreateInsertCommand(entity);
+            var command = CreateInsertCommand(entity, user);
 
             if (unitOfWork != null)
             {
@@ -72,9 +72,9 @@ namespace DomainFramework.DataAccess
             }
         }
 
-        public override async Task<bool> UpdateAsync(TEntity entity, IUnitOfWork unitOfWork = null)
+        public override async Task<bool> UpdateAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var command = CreateUpdateCommand(entity);
+            var command = CreateUpdateCommand(entity, user);
 
             if (unitOfWork != null)
             {
@@ -89,9 +89,9 @@ namespace DomainFramework.DataAccess
         }
 
 
-        public override async Task<bool> DeleteAsync(TEntity entity, IUnitOfWork unitOfWork = null)
+        public override async Task<bool> DeleteAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var command = CreateDeleteCommand(entity);
+            var command = CreateDeleteCommand(entity, user);
 
             if (unitOfWork != null)
             {
@@ -105,11 +105,11 @@ namespace DomainFramework.DataAccess
             }
         }
 
-        protected abstract Command CreateInsertCommand(TEntity entity);
+        protected abstract Command CreateInsertCommand(TEntity entity, IAuthenticatedUser user);
 
-        protected abstract Command CreateUpdateCommand(TEntity entity);
+        protected abstract Command CreateUpdateCommand(TEntity entity, IAuthenticatedUser user);
 
-        protected abstract Command CreateDeleteCommand(TEntity entity);
+        protected abstract Command CreateDeleteCommand(TEntity entity, IAuthenticatedUser user);
 
         protected abstract void HandleInsert(Command command);
 

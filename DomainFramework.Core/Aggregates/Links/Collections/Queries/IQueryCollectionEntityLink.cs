@@ -1,8 +1,12 @@
-﻿namespace DomainFramework.Core
+﻿using System.Threading.Tasks;
+
+namespace DomainFramework.Core
 {
-    public interface IQueryCollectionEntityLink : IEntityLink
+    public interface IQueryCollectionEntityLink
     {
-        void PopulateEntities(IQueryRepository repository, IEntity entity);
+        void PopulateEntities(IRepositoryContext repositoryContext, IEntity entity);
+
+        Task PopulateEntitiesAsync(IRepositoryContext repositoryContext, IEntity entity);
     }
 
     public interface IQueryCollectionEntityLink<TEntity, TLinkedEntity> : IQueryCollectionEntityLink,
@@ -10,6 +14,8 @@
         where TEntity : IEntity
         where TLinkedEntity : IEntity
     {
-        void PopulateEntities(IQueryRepository repository, TEntity entity);
+        void PopulateEntities(IRepositoryContext repositoryContext, TEntity entity);
+
+        Task PopulateEntitiesAsync(IRepositoryContext repositoryContext, TEntity entity);
     }
 }
