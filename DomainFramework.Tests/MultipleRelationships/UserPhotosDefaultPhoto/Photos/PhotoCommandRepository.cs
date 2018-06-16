@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Tests
 {
-    class PhotoCommandRepository : DataAccess.CommandRepository<PhotoEntity, int?>
+    class PhotoCommandRepository : DataAccess.CommandEntityRepository<PhotoEntity>
     {
         protected override Command CreateInsertCommand(PhotoEntity entity, IAuthenticatedUser user)
         {

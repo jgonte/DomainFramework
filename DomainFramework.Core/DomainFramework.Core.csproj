@@ -8,4 +8,8 @@
     <ProjectReference Include="..\..\Utilities.Solution\Utilities\Utilities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entitites\Links\Singles\" />
+  </ItemGroup>
+
 </Project>

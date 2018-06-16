@@ -8,9 +8,8 @@ namespace DomainFramework.DataAccess
     /// Implementation of a command repository to work using the DataAccess library
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    /// <typeparam name="TKey"></typeparam>
-    public abstract class CommandRepository<TEntity, TKey> : Core.CommandRepository<TEntity, TKey>
-        where TEntity : Entity<TKey>
+    public abstract class CommandEntityRepository<TEntity> : Core.CommandEntityRepository<TEntity>
+        where TEntity : IEntity
     {
         public override void Insert(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {

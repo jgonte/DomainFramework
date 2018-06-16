@@ -1,11 +1,13 @@
 ﻿namespace DomainFramework.Core
 {
+    /// <summary>
+    /// Defines an entity
+    /// </summary>
     public interface IEntity
     {
-    }
-
-    public interface IEntity<TKey> : IEntity
-    {
-        TKey Id { get; set; }
+        /// <summary>
+        /// The identifier of the entity
+        /// </summary>
+        object Id { get; set; }
     }
 }

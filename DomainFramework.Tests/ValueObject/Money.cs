@@ -1,12 +1,11 @@
 ﻿using DomainFramework.Core;
-using System;
 using System.Collections.Generic;
 
 namespace DomainFramework.Tests
 {
     class Money : ValueObject<Money>
     {
-        protected readonly decimal Value;
+        public decimal Value { get; private set; }
 
         public Money() : this(0m)
         {
@@ -29,7 +28,7 @@ namespace DomainFramework.Tests
 
         protected override IEnumerable<object> GetFieldsToCheckForEquality()
         {
-            return new List<Object>() { Value };
+            return new List<object>() { Value };
         }
     }
 }

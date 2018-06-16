@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Tests
 {
-    class PersonCommandRepository3 : DataAccess.CommandRepository<PersonEntity, int?>
+    class PersonCommandRepository3 : DataAccess.CommandEntityRepository<PersonEntity>
     {
         protected override Command CreateInsertCommand(PersonEntity entity, IAuthenticatedUser user)
         {

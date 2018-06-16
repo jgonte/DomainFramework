@@ -8,9 +8,10 @@ namespace DomainFramework.Core
         public string ConnectionName { get; set; }
 
         /// <summary>
-        /// Maps the entity to the repository to retrieve the repository for the entity
-        /// One entity can be mapped to one repository
+        /// Maps the entity or value object to a factory method to create the repository
+        /// Only one entity or value object can be mapped to one repository
         /// </summary>
+        // A value object needs to be mapped to a repository when one entity contains several value objects
         private Dictionary<Type, Func<ICommandRepository>> _commandRepositoryFactoryMap { get; set; } = new Dictionary<Type, Func<ICommandRepository>>();
 
         /// <summary>
@@ -19,19 +20,19 @@ namespace DomainFramework.Core
         /// </summary>
         private Dictionary<Type, IQueryRepository> _queryRepositoryMap { get; set; } = new Dictionary<Type, IQueryRepository>();
 
-        public void RegisterCommandRepositoryFactory<EntityType>(Func<ICommandRepository> factory)
+        public void RegisterCommandRepositoryFactory<EntityOrValueObjectType>(Func<ICommandRepository> factory)
         {
-            _commandRepositoryFactoryMap.Add(typeof(EntityType), factory);
+            _commandRepositoryFactoryMap.Add(typeof(EntityOrValueObjectType), factory);
         }
 
-        public ICommandRepository CreateCommandRepository(Type entityType)
+        public ICommandRepository CreateCommandRepository(Type entityOrValueObjectType)
         {
-            if (!_commandRepositoryFactoryMap.ContainsKey(entityType))
+            if (!_commandRepositoryFactoryMap.ContainsKey(entityOrValueObjectType))
             {
-                throw new InvalidOperationException($"Repository factory not found for entity type: {entityType}");
+                throw new InvalidOperationException($"Repository factory not found for entity type: {entityOrValueObjectType}");
             }
 
-            var repository = _commandRepositoryFactoryMap[entityType]();
+            var repository = _commandRepositoryFactoryMap[entityOrValueObjectType]();
 
             repository.ConnectionName = ConnectionName;
 

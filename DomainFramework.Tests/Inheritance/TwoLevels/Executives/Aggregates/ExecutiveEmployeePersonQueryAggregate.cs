@@ -7,11 +7,11 @@ namespace DomainFramework.Tests
     {
         public QueryInheritanceEmployeePersonEntityLink EmployeePersonLink { get; set; } = new QueryInheritanceEmployeePersonEntityLink();
 
-        public PersonEntity Person => EmployeePersonLink.LinkedEntity;
+        public PersonEntity Person => EmployeePersonLink.BaseEntity;
 
         public QueryInheritanceExecutiveEmployeePersonEntityLink ExecuteEmployeeLink { get; set; } = new QueryInheritanceExecutiveEmployeePersonEntityLink();
 
-        public EmployeeEntity Employee => ExecuteEmployeeLink.LinkedEntity;
+        public EmployeeEntity Employee => ExecuteEmployeeLink.BaseEntity;
 
         public ExecutiveEmployeePersonQueryAggregate(RepositoryContext context) : base(context)
         {

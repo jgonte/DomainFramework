@@ -8,7 +8,7 @@ namespace DomainFramework.Core
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class ValueObject<T> : IEquatable<T>
+    public abstract class ValueObject<T> : IValueObject, IEquatable<T>
         where T : ValueObject<T>
     {
         public override bool Equals(object other)

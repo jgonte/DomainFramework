@@ -4,14 +4,13 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public abstract class QueryCollectionEntityLink<TEntity, TLinkedEntity> : IQueryCollectionEntityLink,
-        ICollectionEntityLink<TEntity, TLinkedEntity>
+    public abstract class QueryCollectionEntityLink<TEntity, TLinkedEntity> : IQueryCollectionEntityLink
         where TEntity : IEntity
         where TLinkedEntity : IEntity
     {
         public List<TLinkedEntity> LinkedEntities { get; set; }
 
-        public IEnumerable<IEntity> GetLinkedEntities() => LinkedEntities.Cast<IEntity>();
+        IEnumerable<IEntity> IQueryCollectionEntityLink.LinkedEntities => LinkedEntities.Cast<IEntity>();
 
         public void PopulateEntities(IRepositoryContext repositoryContext, IEntity entity)
         {

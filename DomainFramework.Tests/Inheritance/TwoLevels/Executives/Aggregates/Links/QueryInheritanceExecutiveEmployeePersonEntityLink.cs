@@ -9,14 +9,14 @@ namespace DomainFramework.Tests
         {
             var repository = (EmployeeQueryRepository)repositoryContext.GetQueryRepository(typeof(EmployeeEntity));
 
-            LinkedEntity = (repository).GetById(derivedEntityId);
+            BaseEntity = (repository).GetById(derivedEntityId);
         }
 
         public override async Task PopulateEntityAsync(IRepositoryContext repositoryContext, int? derivedEntityId)
         {
             var repository = (EmployeeQueryRepository)repositoryContext.GetQueryRepository(typeof(EmployeeEntity));
 
-            LinkedEntity = await (repository).GetByIdAsync(derivedEntityId);
+            BaseEntity = await (repository).GetByIdAsync(derivedEntityId);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using DomainFramework.Core;
+﻿
+using DomainFramework.Core;
 using System.Collections.Generic;
 
 namespace DomainFramework.Tests

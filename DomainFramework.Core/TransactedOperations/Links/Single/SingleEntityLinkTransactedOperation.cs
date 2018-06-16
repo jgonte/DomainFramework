@@ -32,7 +32,7 @@ namespace DomainFramework.Core
 
         public void Execute(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var repository = repositoryContext.CreateCommandRepository(typeof(TLinkedEntity));
+            var repository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedEntity));
 
             repository.TransferEntities = () => new IEntity[] { _rootEntity };
 
@@ -41,7 +41,7 @@ namespace DomainFramework.Core
 
         public async Task ExecuteAsync(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var repository = repositoryContext.CreateCommandRepository(typeof(TLinkedEntity));
+            var repository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedEntity));
 
             repository.TransferEntities = () => new IEntity[] { _rootEntity };
 

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace DomainFramework.Core
 {
     public class QueryAggregate<TKey, TEntity> : IQueryAggregate<TKey, TEntity>
-        where TEntity : IEntity<TKey>
+        where TEntity : Entity<TKey>
     {
         public IRepositoryContext RepositoryContext { get; set; }
 

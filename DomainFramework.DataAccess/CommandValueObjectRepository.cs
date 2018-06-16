@@ -1,0 +1,86 @@
+﻿using DataAccess;
+using DomainFramework.Core;
+using System.Threading.Tasks;
+
+namespace DomainFramework.DataAccess
+{
+    /// <summary>
+    /// Implementation of a command repository to work using the DataAccess library
+    /// </summary>
+    /// <typeparam name="TValueObject"></typeparam>
+    public abstract class CommandValueObjectRepository<TValueObject> : Core.CommandValueObjectRepository<TValueObject>
+        where TValueObject : IValueObject
+    {
+        public override void Insert(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        {
+            var command = CreateInsertCommand(valueObject, user);
+
+            if (unitOfWork != null)
+            {
+                ((UnitOfWork)unitOfWork).Commands(command);
+            }
+            else
+            {
+                HandleInsert(command);
+            }
+        }
+
+        public override bool DeleteAll(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        {
+            var command = CreateDeleteAllCommand(valueObject, user);
+
+            if (unitOfWork != null)
+            {
+                ((UnitOfWork)unitOfWork).Commands(command);
+
+                return true;
+            }
+            else
+            {
+                return HandleDeleteAll(command);
+            }
+        }
+
+        public override async Task InsertAsync(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        {
+            var command = CreateInsertCommand(valueObject, user);
+
+            if (unitOfWork != null)
+            {
+                ((UnitOfWork)unitOfWork).Commands(command);
+            }
+            else
+            {
+                await HandleInsertAsync(command);
+            }
+        }
+
+        public override async Task<bool> DeleteAllAsync(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        {
+            var command = CreateDeleteAllCommand(valueObject, user);
+
+            if (unitOfWork != null)
+            {
+                ((UnitOfWork)unitOfWork).Commands(command);
+
+                return true;
+            }
+            else
+            {
+                return await HandleDeleteAllAsync(command);
+            }
+        }
+
+        protected abstract Command CreateInsertCommand(IValueObject valueObject, IAuthenticatedUser user);
+
+        protected abstract Command CreateDeleteAllCommand(IValueObject valueObject, IAuthenticatedUser user);
+
+        protected abstract void HandleInsert(Command command);
+
+        protected abstract bool HandleDeleteAll(Command command);
+
+        protected abstract Task HandleInsertAsync(Command command);
+
+        protected abstract Task<bool> HandleDeleteAllAsync(Command command);
+    }
+}

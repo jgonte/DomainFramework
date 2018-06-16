@@ -1,18 +1,14 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public abstract class QuerySingleEntityLink<TEntity, TLinkedEntity> : IQuerySingleEntityLink<TEntity, TLinkedEntity>,
-        ISingleEntityLink<TLinkedEntity>
+    public abstract class QuerySingleEntityLink<TEntity, TLinkedEntity> : IQuerySingleEntityLink
         where TEntity : IEntity
         where TLinkedEntity : IEntity
     {
-        public Type LinkedEntityType => typeof(TLinkedEntity);
-
         public TLinkedEntity LinkedEntity { get; set; }
 
-        public IEntity GetLinkedEntity() => LinkedEntity;
+        IEntity IQuerySingleEntityLink.LinkedEntity { get => LinkedEntity; }
 
         public void PopulateEntity(IRepositoryContext repositoryContext, IEntity entity)
         {

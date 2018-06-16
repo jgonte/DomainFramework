@@ -3,17 +3,16 @@
 namespace DomainFramework.Core
 {
     /// <summary>
-    /// Defines an object as an entity by inheriting from it
+    /// Defines an entity
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
-    public abstract class Entity<TKey> : IEquatable<Entity<TKey>>,
-        IEntity<TKey>
+    public abstract class Entity<TKey> : IEntity, IEquatable<Entity<TKey>>
     {
         // Since we are using the convention of null id to insert and non-null id for update
         // do not make this property virtual
         public TKey Id { get; set; }
 
-        public object GetId() => Id;
+        object IEntity.Id { get => Id; set => Id = (TKey)value; }
 
         /// <summary>
         /// Required since a template constructor cannot receive arguments

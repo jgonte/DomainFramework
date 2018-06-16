@@ -37,7 +37,7 @@ namespace DomainFramework.Core
 
         public void Execute(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            ICommandRepository repository = null;
+            ICommandEntityRepository repository = null;
 
             foreach (var operation in InheritanceTransactedOperations)
             {
@@ -53,7 +53,7 @@ namespace DomainFramework.Core
 
         public async Task ExecuteAsync(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            ICommandRepository repository = null;
+            ICommandEntityRepository repository = null;
 
             var tasks = new Queue<Task>();
 

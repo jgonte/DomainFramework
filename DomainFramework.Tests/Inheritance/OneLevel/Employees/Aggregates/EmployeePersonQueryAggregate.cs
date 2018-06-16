@@ -7,7 +7,7 @@ namespace DomainFramework.Tests
     {
         public QueryInheritanceEmployeePersonEntityLink EmployeePersonLink { get; set; } = new QueryInheritanceEmployeePersonEntityLink();
 
-        public PersonEntity Person => EmployeePersonLink.LinkedEntity;
+        public PersonEntity Person => EmployeePersonLink.BaseEntity;
 
         public EmployeePersonQueryAggregate(RepositoryContext context) : base(context)
         {

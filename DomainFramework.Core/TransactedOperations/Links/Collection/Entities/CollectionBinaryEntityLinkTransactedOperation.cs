@@ -48,13 +48,13 @@ namespace DomainFramework.Core
 
             foreach (var linkedEntity in _linkedEntities)
             {
-                var linkedEntityRepository = repositoryContext.CreateCommandRepository(typeof(TLinkedEntity));
+                var linkedEntityRepository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedEntity));
 
                 linkedEntityRepository.TransferEntities = () => new IEntity[] { _rootEntity };
 
                 linkedEntityRepository.Save(linkedEntity, user, unitOfWork);
 
-                var joinEntityRepository = repositoryContext.CreateCommandRepository(typeof(TBinaryEntity));
+                var joinEntityRepository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TBinaryEntity));
 
                 joinEntityRepository.TransferEntities = () => new IEntity[] { _rootEntity, linkedEntity };
 
@@ -70,7 +70,7 @@ namespace DomainFramework.Core
 
             foreach (var linkedEntity in _linkedEntities)
             {
-                var linkedEntityRepository = repositoryContext.CreateCommandRepository(typeof(TLinkedEntity));
+                var linkedEntityRepository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedEntity));
 
                 linkedEntityRepository.TransferEntities = () => new IEntity[] { _rootEntity };
 
@@ -78,7 +78,7 @@ namespace DomainFramework.Core
                     linkedEntityRepository.SaveAsync(linkedEntity, user, unitOfWork)
                 );
 
-                var joinEntityRepository = repositoryContext.CreateCommandRepository(typeof(TBinaryEntity));
+                var joinEntityRepository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TBinaryEntity));
 
                 joinEntityRepository.TransferEntities = () => new IEntity[] { _rootEntity, linkedEntity };
 

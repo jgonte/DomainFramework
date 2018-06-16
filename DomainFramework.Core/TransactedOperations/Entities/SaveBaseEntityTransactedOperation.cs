@@ -16,7 +16,7 @@ namespace DomainFramework.Core
         /// <summary>
         /// The repository to be passed between the save base entity transacted operations
         /// </summary>
-        public ICommandRepository Repository { get; set; }
+        public ICommandEntityRepository Repository { get; set; }
 
         public bool RequiresUnitOfWork => false; // By itself it does not require a transaction (one save)
 
@@ -35,13 +35,13 @@ namespace DomainFramework.Core
             // Use the existing repository or create one if it does not exist
             if (Repository == null)
             {
-                Repository = repositoryContext.CreateCommandRepository(typeof(TBaseEntity));
+                Repository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TBaseEntity));
             }
 
             Repository.Save(_baseEntity, user, unitOfWork);
 
             // Setup the derived repository for later use
-            Repository = repositoryContext.CreateCommandRepository(typeof(TDerivedEntity));
+            Repository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TDerivedEntity));
 
             Repository.TransferEntities = () => new IEntity[] { _baseEntity };
         }
@@ -51,13 +51,13 @@ namespace DomainFramework.Core
             // Use the existing repository or create one if it does not exist
             if (Repository == null)
             {
-                Repository = repositoryContext.CreateCommandRepository(typeof(TBaseEntity));
+                Repository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TBaseEntity));
             }
 
             await Repository.SaveAsync(_baseEntity, user, unitOfWork);
 
             // Setup the derived repository for later use
-            Repository = repositoryContext.CreateCommandRepository(typeof(TDerivedEntity));
+            Repository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TDerivedEntity));
 
             Repository.TransferEntities = () => new IEntity[] { _baseEntity };
         }
