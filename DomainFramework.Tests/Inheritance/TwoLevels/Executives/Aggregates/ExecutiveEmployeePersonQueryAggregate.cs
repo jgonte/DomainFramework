@@ -1,26 +1,30 @@
 ﻿using DomainFramework.Core;
-using System.Collections.Generic;
 
 namespace DomainFramework.Tests
 {
     class ExecutiveEmployeePersonQueryAggregate : QueryAggregate<int?, ExecutiveEntity>
     {
-        public QueryInheritanceEmployeePersonEntityLink EmployeePersonLink { get; set; } = new QueryInheritanceEmployeePersonEntityLink();
+        public GetEntityLoadOperation<PersonEntity> PersonLoadOperation { get; }
 
-        public PersonEntity Person => EmployeePersonLink.BaseEntity;
+        public PersonEntity Person => PersonLoadOperation.Entity;
 
-        public QueryInheritanceExecutiveEmployeePersonEntityLink ExecuteEmployeeLink { get; set; } = new QueryInheritanceExecutiveEmployeePersonEntityLink();
+        public GetEntityLoadOperation<EmployeeEntity> EmployeeLoadOperation { get; }
 
-        public EmployeeEntity Employee => ExecuteEmployeeLink.BaseEntity;
+        public EmployeeEntity Employee => EmployeeLoadOperation.Entity;       
 
         public ExecutiveEmployeePersonQueryAggregate(RepositoryContext context) : base(context)
         {
-            // Create the links to the inheritance entity links
-            InheritanceEntityLinks = new List<IQueryInheritanceEntityLink<int?>>();
+            PersonLoadOperation = new GetEntityLoadOperation<PersonEntity>();
 
-            InheritanceEntityLinks.Add(EmployeePersonLink);
+            LoadOperations.Enqueue(
+                PersonLoadOperation
+            );
 
-            InheritanceEntityLinks.Add(ExecuteEmployeeLink);
+            EmployeeLoadOperation = new GetEntityLoadOperation<EmployeeEntity>();
+
+            LoadOperations.Enqueue(
+                EmployeeLoadOperation
+            );
         }
 
     }

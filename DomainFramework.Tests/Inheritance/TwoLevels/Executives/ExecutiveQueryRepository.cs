@@ -7,17 +7,17 @@ namespace DomainFramework.Tests
 {
     class ExecutiveQueryRepository : QueryRepository<ExecutiveEntity, int?>
     {
-        public override IEnumerable<IEntity> Get(QueryParameters parameters)
+        public override IEnumerable<IEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
         {
             throw new System.NotImplementedException();
         }
 
-        public override Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters)
+        public override Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user)
         {
             throw new System.NotImplementedException();
         }
 
-        public override ExecutiveEntity GetById(int? id)
+        public override ExecutiveEntity GetById(int? id, IAuthenticatedUser user)
         {
             var result = Query<ExecutiveEntity>
                 .Single()
@@ -31,7 +31,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public override async Task<ExecutiveEntity> GetByIdAsync(int? id)
+        public override async Task<ExecutiveEntity> GetByIdAsync(int? id, IAuthenticatedUser user)
         {
             var result = await Query<ExecutiveEntity>
                 .Single()

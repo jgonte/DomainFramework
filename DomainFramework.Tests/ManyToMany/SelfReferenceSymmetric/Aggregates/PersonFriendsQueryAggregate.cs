@@ -1,22 +1,33 @@
 ﻿using DomainFramework.Core;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DomainFramework.Tests
 {
     class PersonFriendsQueryAggregate : QueryAggregate<int?, PersonEntity>
     {
-        public IEnumerable<PersonEntity> Friends => FriendLinks.LinkedEntities;
+        public GetCollectionLinkedEntityLoadOperation<PersonEntity> GetFriendsLoadOperation { get; }
+
+        public IEnumerable<PersonEntity> Friends => GetFriendsLoadOperation.LinkedEntities;
 
         public PersonFriendsQueryAggregate(RepositoryContext context) : base(context)
         {
-            // Create the links to the collection of entity links
-            CollectionEntityLinks = new List<IQueryCollectionEntityLink>();
+            GetFriendsLoadOperation = new GetCollectionLinkedEntityLoadOperation<PersonEntity>
+            {
+                GetLinkedEntities = (repository, entity, user) =>
+                    ((PersonQueryRepository3)repository).GetForPerson(RootEntity.Id, user).ToList(),
 
-            // Register the link to the pages collection
-            CollectionEntityLinks.Add(FriendLinks);
+                GetLinkedEntitiesAsync = async (repository, entity, user) =>
+                {
+                    var entities = await ((PersonQueryRepository3)repository).GetForPersonAsync(RootEntity.Id, user: null);
+
+                    return entities.ToList();
+                }
+            };
+
+            LoadOperations.Enqueue(
+                GetFriendsLoadOperation
+            );
         }
-
-        public QueryCollectionFriendEntityLink FriendLinks { get; set; } = new QueryCollectionFriendEntityLink();
     }
 }

@@ -7,17 +7,17 @@ namespace DomainFramework.Tests
 {
     public class PageQueryRepository : QueryRepository<PageEntity, int?>
     {
-        public override IEnumerable<IEntity> Get(QueryParameters parameters)
+        public override IEnumerable<IEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
         {
             throw new System.NotImplementedException();
         }
 
-        public override Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters)
+        public override Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user)
         {
             throw new System.NotImplementedException();
         }
 
-        public override PageEntity GetById(int? id)
+        public override PageEntity GetById(int? id, IAuthenticatedUser user)
         {
             var result = Query<PageEntity>
                 .Single()
@@ -44,7 +44,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public override async Task<PageEntity> GetByIdAsync(int? id)
+        public override async Task<PageEntity> GetByIdAsync(int? id, IAuthenticatedUser user)
         {
             var result = await Query<PageEntity>
                 .Single()
@@ -71,7 +71,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public IEnumerable<PageEntity> GetForBook(int? id)
+        public IEnumerable<PageEntity> GetForBook(int? id, IAuthenticatedUser user)
         {
             var result = Query<PageEntity>
                 .Collection()
@@ -94,6 +94,33 @@ namespace DomainFramework.Tests
                     entity.BookId = reader.GetInt32(2);
                 })
                 .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<IEnumerable<PageEntity>> GetForBookAsync(int? id, IAuthenticatedUser user)
+        {
+            var result = await Query<PageEntity>
+                .Collection()
+                .Connection(ConnectionName)
+                .StoredProcedure("p_Book_GetPages")
+                .Parameters(
+                    p => p.Name("bookId").Value(id.Value)
+                )
+                .OnRecordRead((reader, entity) =>
+                {
+                    entity.Id = reader.GetInt32(0);
+
+                    var page = new PageData
+                    {
+                        Index = reader.GetInt32(1)
+                    };
+
+                    entity.Data = page;
+
+                    entity.BookId = reader.GetInt32(2);
+                })
+                .ExecuteAsync();
 
             return result.Data;
         }

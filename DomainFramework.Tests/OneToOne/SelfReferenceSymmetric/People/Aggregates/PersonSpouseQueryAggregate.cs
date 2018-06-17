@@ -1,21 +1,27 @@
 ﻿using DomainFramework.Core;
-using System.Collections.Generic;
 
 namespace DomainFramework.Tests
 {
     class PersonSpouseQueryAggregate : QueryAggregate<int?, PersonEntity2>
     {
-        public QuerySingleSpouseEntityLink SpouseLink { get; set; } = new QuerySingleSpouseEntityLink();
+        public GetSingleLinkedEntityLoadOperation<PersonEntity2> GetSpouseLoadOperation { get; }
 
-        public PersonEntity2 Spouse => SpouseLink.LinkedEntity;
+        public PersonEntity2 Spouse => GetSpouseLoadOperation.LinkedEntity;
 
         public PersonSpouseQueryAggregate(DataAccess.RepositoryContext context) : base(context)
         {
-            // Create the links to the collection of entity links
-            SingleEntityLinks = new List<IQuerySingleEntityLink>();
+            GetSpouseLoadOperation = new GetSingleLinkedEntityLoadOperation<PersonEntity2>
+            {
+                GetLinkedEntity = (repository, entity, user) =>
+                    ((PersonQueryRepository2)repository).GetForPerson(RootEntity.Id, user: null),
 
-            // Register the link to the pages collection
-            SingleEntityLinks.Add(SpouseLink);
+                GetLinkedEntityAsync = async (repository, entity, user) =>
+                    await ((PersonQueryRepository2)repository).GetForPersonAsync(RootEntity.Id, user: null)
+            };
+
+            LoadOperations.Enqueue(
+                GetSpouseLoadOperation
+            );
         }
 
     }

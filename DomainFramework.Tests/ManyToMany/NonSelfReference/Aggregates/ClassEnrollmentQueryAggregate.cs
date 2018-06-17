@@ -1,22 +1,34 @@
 ﻿using DomainFramework.Core;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DomainFramework.Tests
 {
     class ClassEnrollmentQueryAggregate : QueryAggregate<Guid?, ClassEntity>
     {
-        public IEnumerable<StudentEntity> Students => StudentLinks.LinkedEntities;
+        public GetCollectionLinkedEntityLoadOperation<StudentEntity> GetStudentsLoadOperation { get; }
+
+        public IEnumerable<StudentEntity> Students => GetStudentsLoadOperation.LinkedEntities;
 
         public ClassEnrollmentQueryAggregate(RepositoryContext context) : base(context)
         {
-            // Create the links to the collection of entity links
-            CollectionEntityLinks = new List<IQueryCollectionEntityLink>();
+            GetStudentsLoadOperation = new GetCollectionLinkedEntityLoadOperation<StudentEntity>
+            {
+                GetLinkedEntities = (repository, entity, user) =>
+                    ((StudentQueryRepository)repository).GetForClass(RootEntity.Id, user).ToList(),
 
-            // Register the link to the pages collection
-            CollectionEntityLinks.Add(StudentLinks);
+                GetLinkedEntitiesAsync = async (repository, entity, user) =>
+                {
+                    var entities = await ((StudentQueryRepository)repository).GetForClassAsync(RootEntity.Id, user: null);
+
+                    return entities.ToList();
+                }
+            };
+
+            LoadOperations.Enqueue(
+                GetStudentsLoadOperation
+            );
         }
-
-        public QueryCollectionStudentEntityLink StudentLinks { get; set; } = new QueryCollectionStudentEntityLink();
     }
 }

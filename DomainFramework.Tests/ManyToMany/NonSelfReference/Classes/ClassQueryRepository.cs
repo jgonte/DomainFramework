@@ -8,17 +8,17 @@ namespace DomainFramework.Tests
 {
     class ClassQueryRepository : Core.QueryRepository<ClassEntity, Guid?>
     {
-        public override IEnumerable<IEntity> Get(QueryParameters parameters)
+        public override IEnumerable<IEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
         {
             throw new NotImplementedException();
         }
 
-        public override Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters)
+        public override Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user)
         {
             throw new NotImplementedException();
         }
 
-        public override ClassEntity GetById(Guid? id)
+        public override ClassEntity GetById(Guid? id, IAuthenticatedUser user)
         {
             var result = Query<ClassEntity>
                 .Single()
@@ -36,7 +36,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public override async Task<ClassEntity> GetByIdAsync(Guid? id)
+        public override async Task<ClassEntity> GetByIdAsync(Guid? id, IAuthenticatedUser user)
         {
             var result = await Query<ClassEntity>
                 .Single()

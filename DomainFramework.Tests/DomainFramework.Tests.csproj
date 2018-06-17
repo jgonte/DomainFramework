@@ -85,13 +85,11 @@
     <Compile Include="EntityWithValueObjectCollection\PhoneCommandRepository.cs" />
     <Compile Include="EntityWithValueObjectCollection\QueryCollectionPhoneValueObjectLink.cs" />
     <Compile Include="Inheritance\OneLevel\Employees\Aggregates\EmployeePersonQueryAggregate.cs" />
-    <Compile Include="Inheritance\OneLevel\Employees\Aggregates\Links\QueryInheritanceEmployeePersonEntityLink.cs" />
     <Compile Include="Inheritance\OneLevel\Employees\EmployeeQueryRepository.cs" />
     <Compile Include="Inheritance\OneLevel\Employees\Aggregates\EmployeePersonCommandAggregate.cs" />
     <Compile Include="Inheritance\OneLevel\Employees\EmployeeCommandRepository.cs" />
     <Compile Include="Inheritance\OneLevel\People\PersonCommandRepository.cs" />
     <Compile Include="Inheritance\OneLevel\People\PersonQueryRepository.cs" />
-    <Compile Include="ManyToMany\SelfReferenceSymmetric\Aggregates\Links\QueryCollectionFriendEntityLink.cs" />
     <Compile Include="ManyToMany\SelfReferenceSymmetric\Aggregates\PersonFriendsCommandAggregate.cs" />
     <Compile Include="ManyToMany\SelfReferenceSymmetric\Aggregates\PersonFriendsQueryAggregate.cs" />
     <Compile Include="ManyToMany\SelfReferenceSymmetric\Friendship\FriendshipCommandRepository.cs" />
@@ -114,7 +112,6 @@
     <Compile Include="NestedAggregates\DepartmentManager\DepartmentManagerTests.cs" />
     <Compile Include="NestedAggregates\DepartmentManager\Roles\Employees\EmployeeRoleEntity.cs" />
     <Compile Include="OneToMany\SelfReference\People\PersonQueryRepository4.cs" />
-    <Compile Include="OneToMany\SelfReference\Aggregates\Links\QueryCollectionEmployeeEntityLink.cs" />
     <Compile Include="OneToMany\SelfReference\ManagerEmployeesAggregateTests.cs" />
     <Compile Include="OneToMany\SelfReference\Aggregates\ManagerEmployeesCommandAggregate.cs" />
     <Compile Include="OneToMany\SelfReference\Aggregates\ManagerEmployeesQueryAggregate.cs" />
@@ -125,13 +122,11 @@
     <Compile Include="Inheritance\TwoLevels\Executives\ExecutiveQueryRepository.cs" />
     <Compile Include="Inheritance\TwoLevels\Executives\Aggregates\ExecutiveEmployeePersonQueryAggregate.cs" />
     <Compile Include="Inheritance\TwoLevels\Executives\Aggregates\ExecutiveEmployeePersonCommandAggregate.cs" />
-    <Compile Include="Inheritance\TwoLevels\Executives\Aggregates\Links\QueryInheritanceExecutiveEmployeePersonEntityLink.cs" />
     <Compile Include="Inheritance\TwoLevels\Executives\ExecutiveCommandRepository.cs" />
     <Compile Include="Inheritance\TwoLevels\ExecutiveEmployeePersonAggregateTests.cs" />
     <Compile Include="Inheritance\TwoLevels\Executives\ExecutiveEntity.cs" />
     <Compile Include="ManyToMany\NonSelfReference\Aggregates\ClassEnrollmentQueryAggregate.cs" />
     <Compile Include="ManyToMany\NonSelfReference\Aggregates\ClassEnrollmentCommandAggregate.cs" />
-    <Compile Include="ManyToMany\NonSelfReference\Aggregates\Links\QueryCollectionStudentEntityLink.cs" />
     <Compile Include="ManyToMany\NonSelfReference\Classes\ClassQueryRepository.cs" />
     <Compile Include="ManyToMany\NonSelfReference\Classes\ClassCommandRepository.cs" />
     <Compile Include="ManyToMany\NonSelfReference\Classes\ClassEntity.cs" />
@@ -155,12 +150,10 @@
     <Compile Include="OneToMany\NonSelfReference\Pages\PageData.cs" />
     <Compile Include="OneToMany\NonSelfReference\Pages\PageEntity.cs" />
     <Compile Include="OneToMany\NonSelfReference\BookPagesAggregateTests.cs" />
-    <Compile Include="OneToMany\NonSelfReference\Aggregates\Links\QueryCollectionPageEntityLink.cs" />
     <Compile Include="OneToOne\NonSelfReference\Capitals\CapitalCityQueryRepository.cs" />
     <Compile Include="OneToOne\NonSelfReference\Capitals\CapitalCityCommandRepository.cs" />
     <Compile Include="OneToOne\NonSelfReference\Capitals\CapitalCityEntity.cs" />
     <Compile Include="OneToOne\NonSelfReference\Capitals\CapitalCityData.cs" />
-    <Compile Include="OneToOne\NonSelfReference\Countries\Aggregates\Links\QuerySingleCapitalCityEntityLink.cs" />
     <Compile Include="OneToOne\NonSelfReference\Countries\CountryData.cs" />
     <Compile Include="OneToOne\NonSelfReference\Countries\Aggregates\CountryCapitalCityCommandAggregate.cs" />
     <Compile Include="OneToOne\NonSelfReference\Countries\Aggregates\CountryCapitalCityQueryAggregate.cs" />
@@ -172,7 +165,6 @@
     <Compile Include="OneToOne\SelfReferenceSymmetric\People\PersonEntity2.cs" />
     <Compile Include="OneToOne\SelfReferenceSymmetric\People\Aggregates\PersonSpouseQueryAggregate.cs" />
     <Compile Include="OneToOne\SelfReferenceSymmetric\PersonSpouseTests.cs" />
-    <Compile Include="OneToOne\SelfReferenceSymmetric\People\Aggregates\Links\QuerySingleSpouseEntityLink.cs" />
     <Compile Include="ValueObject\Money.cs" />
     <Compile Include="ValueObject\ValueObjectTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -195,7 +187,9 @@
       <Name>DomainFramework.DataAccess</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Inheritance\OneLevel\Employees\Aggregates\Links\" />
+  </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -1,14 +1,14 @@
-﻿
-using DomainFramework.Core;
+﻿using DomainFramework.Core;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DomainFramework.Tests
 {
     class BookPagesQueryAggregate : QueryAggregate<int?, BookEntity>
     {
-        public QueryCollectionPageEntityLink PagesLink { get; set; } = new QueryCollectionPageEntityLink();
+        public GetCollectionLinkedEntityLoadOperation<PageEntity> GetPagesLoadOperation { get; }
 
-        public IEnumerable<PageEntity> Pages => PagesLink.LinkedEntities;
+        public IEnumerable<PageEntity> Pages => GetPagesLoadOperation.LinkedEntities;
 
         public BookPagesQueryAggregate() : this(null)
         {
@@ -16,11 +16,22 @@ namespace DomainFramework.Tests
 
         public BookPagesQueryAggregate(RepositoryContext context) : base(context)
         {
-            // Create the links to the collection of entity links
-            CollectionEntityLinks = new List<IQueryCollectionEntityLink>();
+            GetPagesLoadOperation = new GetCollectionLinkedEntityLoadOperation<PageEntity>
+            {
+                GetLinkedEntities = (repository, entity, user) =>
+                    ((PageQueryRepository)repository).GetForBook(RootEntity.Id, user).ToList(),
 
-            // Register the link to the pages collection
-            CollectionEntityLinks.Add(PagesLink);
+                GetLinkedEntitiesAsync = async (repository, entity, user) =>
+                {
+                    var entities = await ((PageQueryRepository)repository).GetForBookAsync(RootEntity.Id, user: null);
+
+                    return entities.ToList();
+                }
+            };
+
+            LoadOperations.Enqueue(
+                GetPagesLoadOperation
+            );
         }
     }
 }

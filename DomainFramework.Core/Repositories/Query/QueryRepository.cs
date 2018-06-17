@@ -13,30 +13,22 @@ namespace DomainFramework.Core
     {
         public string ConnectionName { get; set; }
 
-        public abstract TEntity GetById(TKey id);
+        public abstract TEntity GetById(TKey id, IAuthenticatedUser user);
 
-        public IEntity GetById(object id)
+        public IEntity GetById(object id, IAuthenticatedUser user)
         {
-            return GetById((TKey)id);
+            return GetById((TKey)id, user);
         }
 
-        public abstract Task<TEntity> GetByIdAsync(TKey id);
+        public abstract Task<TEntity> GetByIdAsync(TKey id, IAuthenticatedUser user);
 
-        public async Task<IEntity> GetByIdAsync(object id)
+        public async Task<IEntity> GetByIdAsync(object id, IAuthenticatedUser user)
         {
-            return await GetByIdAsync((TKey)id);
+            return await GetByIdAsync((TKey)id, user);
         }
 
-        public abstract IEnumerable<IEntity>Get(QueryParameters parameters);
+        public abstract IEnumerable<IEntity>Get(QueryParameters parameters, IAuthenticatedUser user);
 
-        public abstract Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters);
-
-        protected TEntity CreateEntity(TKey id)
-        {
-            return new TEntity
-            {
-                Id = id
-            };
-        }
+        public abstract Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user);
     }
 }

@@ -269,7 +269,7 @@ GO
                 RootEntity = firstManagerEntity
             };
 
-            await firstManagerQueryAggregate.LoadAggregatedEntitiesAsync();
+            await firstManagerQueryAggregate.LoadLinksAsync();
 
             Assert.AreEqual(2, firstManagerQueryAggregate.Employees.Count());
 
@@ -286,7 +286,7 @@ GO
                 RootEntity = secondManagerEntity
             };
 
-            await secondManagerQueryAggregate.LoadAggregatedEntitiesAsync();
+            await secondManagerQueryAggregate.LoadLinksAsync();
 
             Assert.AreEqual(2, secondManagerQueryAggregate.Employees.Count());
 

@@ -7,17 +7,17 @@ namespace DomainFramework.Tests
 {
     class CountryQueryRepository : Core.QueryRepository<CountryEntity, string>
     {
-        public override IEnumerable<IEntity> Get(QueryParameters parameters)
+        public override IEnumerable<IEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
         {
             throw new System.NotImplementedException();
         }
 
-        public override Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters)
+        public override Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user)
         {
             throw new System.NotImplementedException();
         }
 
-        public override CountryEntity GetById(string id)
+        public override CountryEntity GetById(string id, IAuthenticatedUser user)
         {
             var result = Query<CountryEntity>
                 .Single()
@@ -42,7 +42,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public override async Task<CountryEntity> GetByIdAsync(string id)
+        public override async Task<CountryEntity> GetByIdAsync(string id, IAuthenticatedUser user)
         {
             var result = await Query<CountryEntity>
                 .Single()

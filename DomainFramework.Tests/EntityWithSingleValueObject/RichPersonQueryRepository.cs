@@ -7,17 +7,17 @@ namespace DomainFramework.Tests.EntityWithValueObjects
 {
     class RichPersonQueryRepository : QueryRepository<RichPersonEntity, int?>
     {
-        public override IEnumerable<IEntity> Get(QueryParameters parameters)
+        public override IEnumerable<IEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
         {
             throw new System.NotImplementedException();
         }
 
-        public override Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters)
+        public override Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user)
         {
             throw new System.NotImplementedException();
         }
 
-        public override RichPersonEntity GetById(int? id)
+        public override RichPersonEntity GetById(int? id, IAuthenticatedUser user)
         {
             var result = Query<RichPersonEntity>
                 .Single()
@@ -39,7 +39,7 @@ namespace DomainFramework.Tests.EntityWithValueObjects
             return result.Data;
         }
 
-        public override async Task<RichPersonEntity> GetByIdAsync(int? id)
+        public override async Task<RichPersonEntity> GetByIdAsync(int? id, IAuthenticatedUser user)
         {
             var result = await Query<RichPersonEntity>
                 .Single()

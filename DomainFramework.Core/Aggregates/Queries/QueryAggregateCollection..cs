@@ -28,7 +28,7 @@ namespace DomainFramework.Core
 
             var repository = RepositoryContext.GetQueryRepository(typeof(TEntity));
 
-            var entities = repository.Get(queryParameters).Cast<TEntity>();
+            var entities = repository.Get(queryParameters, user).Cast<TEntity>();
 
             foreach (var entity in entities)
             {
@@ -38,7 +38,7 @@ namespace DomainFramework.Core
                     RootEntity = entity
                 };
 
-                aggregate.LoadAggregatedEntities();
+                aggregate.LoadLinks();
 
                 ((List<TAggregate>)Aggregates).Add(aggregate);
             }
@@ -50,7 +50,7 @@ namespace DomainFramework.Core
 
             var repository = RepositoryContext.GetQueryRepository(typeof(TEntity));
 
-            var entities = repository.Get(queryParameters).Cast<TEntity>();
+            var entities = repository.Get(queryParameters, user).Cast<TEntity>();
 
             var tasks = new Queue<Task>();
 
@@ -63,7 +63,7 @@ namespace DomainFramework.Core
                 };
 
                 tasks.Enqueue(
-                    aggregate.LoadAggregatedEntitiesAsync()
+                    aggregate.LoadLinksAsync()
                 );
 
                 ((List<TAggregate>)Aggregates).Add(aggregate);

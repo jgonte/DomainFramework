@@ -1,21 +1,27 @@
 ﻿using DomainFramework.Core;
-using System.Collections.Generic;
 
 namespace DomainFramework.Tests
 {
     class CountryCapitalCityQueryAggregate : QueryAggregate<string, CountryEntity>
     {
-        public CapitalCityEntity CapitalCity => CapitalCityLink.LinkedEntity;
+        public GetSingleLinkedEntityLoadOperation<CapitalCityEntity> GetCapitalCityLoadOperation { get; }
+
+        public CapitalCityEntity CapitalCity => GetCapitalCityLoadOperation.LinkedEntity;
 
         public CountryCapitalCityQueryAggregate(RepositoryContext context) : base(context)
         {
-            // Create the links to the collection of entity links
-            SingleEntityLinks = new List<IQuerySingleEntityLink>();
+            GetCapitalCityLoadOperation = new GetSingleLinkedEntityLoadOperation<CapitalCityEntity>
+            {
+                GetLinkedEntity = (repository, entity, user) =>
+                    ((CapitalCityQueryRepository)repository).GetForCountry(RootEntity.Id, user),
 
-            // Register the link to the pages collection
-            SingleEntityLinks.Add(CapitalCityLink);
+                GetLinkedEntityAsync = async (repository, entity, user) =>
+                    await ((CapitalCityQueryRepository)repository).GetForCountryAsync(RootEntity.Id, user)
+            };
+
+            LoadOperations.Enqueue(
+                GetCapitalCityLoadOperation
+            );
         }
-
-        public QuerySingleCapitalCityEntityLink CapitalCityLink { get; set; } = new QuerySingleCapitalCityEntityLink();
     }
 }

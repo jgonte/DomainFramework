@@ -8,17 +8,17 @@ namespace DomainFramework.Tests
 {
     class StudentQueryRepository : Core.QueryRepository<StudentEntity, Guid?>
     {
-        public override IEnumerable<IEntity> Get(QueryParameters parameters)
+        public override IEnumerable<IEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
         {
             throw new NotImplementedException();
         }
 
-        public override Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters)
+        public override Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user)
         {
             throw new NotImplementedException();
         }
 
-        public override StudentEntity GetById(Guid? id)
+        public override StudentEntity GetById(Guid? id, IAuthenticatedUser user)
         {
             var result = Query<StudentEntity>
                 .Single()
@@ -34,7 +34,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public override async Task<StudentEntity> GetByIdAsync(Guid? id)
+        public override async Task<StudentEntity> GetByIdAsync(Guid? id, IAuthenticatedUser user)
         {
             var result = await Query<StudentEntity>
                 .Single()
@@ -50,7 +50,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public IEnumerable<StudentEntity> GetForClass(Guid? id)
+        public IEnumerable<StudentEntity> GetForClass(Guid? id, IAuthenticatedUser user)
         {
             var result = Query<StudentEntity>
                 .Collection()
@@ -64,7 +64,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public async Task<IEnumerable<StudentEntity>> GetForClassAsync(Guid? id)
+        public async Task<IEnumerable<StudentEntity>> GetForClassAsync(Guid? id, IAuthenticatedUser user)
         {
             var result = await Query<StudentEntity>
                 .Collection()

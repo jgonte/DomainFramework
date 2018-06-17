@@ -10,7 +10,7 @@ namespace DomainFramework.Tests
         {
             var repository = (PersonQueryRepository5)repositoryContext.GetQueryRepository(typeof(PersonEntity4));
 
-            LinkedValueObjects = repository.GetPhones(entity.Id).ToList();
+            LinkedValueObjects = repository.GetPhones(entity.Id, user: null).ToList();
         }
 
         public override Task PopulateValueObjectsAsync(IRepositoryContext repositoryContext, PersonEntity4 entity)

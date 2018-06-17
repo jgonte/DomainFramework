@@ -1,21 +1,20 @@
 ﻿using DomainFramework.Core;
-using System.Collections.Generic;
 
 namespace DomainFramework.Tests
 {
     class EmployeePersonQueryAggregate : QueryAggregate<int?, EmployeeEntity>
     {
-        public QueryInheritanceEmployeePersonEntityLink EmployeePersonLink { get; set; } = new QueryInheritanceEmployeePersonEntityLink();
+        public GetEntityLoadOperation<PersonEntity> PersonLoadOperation { get; }
 
-        public PersonEntity Person => EmployeePersonLink.BaseEntity;
+        public PersonEntity Person => PersonLoadOperation.Entity;
 
         public EmployeePersonQueryAggregate(RepositoryContext context) : base(context)
         {
-            // Create the links to the inheritance entity links
-            InheritanceEntityLinks = new List<IQueryInheritanceEntityLink<int?>>();
+            PersonLoadOperation = new GetEntityLoadOperation<PersonEntity>();
 
-            // Register the link to the pages collection
-            InheritanceEntityLinks.Add(EmployeePersonLink);
+            LoadOperations.Enqueue(
+                PersonLoadOperation
+            );
         }       
     }
 }

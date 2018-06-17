@@ -10,11 +10,7 @@ namespace DomainFramework.Core
 
         public TEntity RootEntity { get; set; }
 
-        public List<IQueryInheritanceEntityLink<TKey>> InheritanceEntityLinks { get; set; }
-
-        public List<IQuerySingleEntityLink> SingleEntityLinks { get; set; }
-
-        public List<IQueryCollectionEntityLink> CollectionEntityLinks { get; set; }
+        public Queue<ILoadOperation> LoadOperations { get; set; } = new Queue<ILoadOperation>();
 
         public QueryAggregate()
         {
@@ -29,82 +25,52 @@ namespace DomainFramework.Core
         {
             var rootRepository = RepositoryContext.GetQueryRepository(typeof(TEntity));
 
-            RootEntity = (TEntity)rootRepository.GetById(rootEntityId);
+            RootEntity = (TEntity)rootRepository.GetById(rootEntityId, user);
 
-            if (RootEntity == null)
+            if (RootEntity == null) // Not found
             {
                 return;
             }
 
-            LoadAggregatedEntities(user);
+            LoadLinks(user);
+        }
+
+        public void LoadLinks(IAuthenticatedUser user = null)
+        {
+            foreach (var operation in LoadOperations)
+            {
+                operation.Execute(RepositoryContext, RootEntity, user);
+            }
         }
 
         public async Task LoadAsync(TKey rootEntityId, IAuthenticatedUser user = null)
         {
             var rootRepository = RepositoryContext.GetQueryRepository(typeof(TEntity));
 
-            RootEntity = (TEntity)rootRepository.GetById(rootEntityId);
+            var entity = await rootRepository.GetByIdAsync(rootEntityId, user);
 
-            if (RootEntity == null)
+            if (entity == null) // Not found
             {
                 return;
             }
 
-            await LoadAggregatedEntitiesAsync(user);
+            RootEntity = (TEntity)entity;
+
+            await LoadLinksAsync(user);
         }
 
-        public void LoadAggregatedEntities(IAuthenticatedUser user = null)
+        public async Task LoadLinksAsync(IAuthenticatedUser user = null)
         {
-            if (InheritanceEntityLinks != null)
+            var tasks = new Queue<Task>();
+
+            foreach (var operation in LoadOperations)
             {
-                foreach (var link in InheritanceEntityLinks)
-                {
-                    link.PopulateEntity(RepositoryContext, RootEntity.Id); // The id must be the same for the inheritance chain
-                }
+                tasks.Enqueue(
+                    operation.ExecuteAsync(RepositoryContext, RootEntity, user)
+                );
             }
 
-            if (SingleEntityLinks != null)
-            {
-                foreach (var link in SingleEntityLinks)
-                {
-                    link.PopulateEntity(RepositoryContext, RootEntity);
-                }
-            }
-
-            if (CollectionEntityLinks != null)
-            {
-                foreach (var link in CollectionEntityLinks)
-                {
-                    link.PopulateEntities(RepositoryContext, RootEntity);
-                }
-            }
-        }
-
-        public async Task LoadAggregatedEntitiesAsync(IAuthenticatedUser user = null)
-        {
-            if (InheritanceEntityLinks != null)
-            {
-                foreach (var link in InheritanceEntityLinks)
-                {
-                    await link.PopulateEntityAsync(RepositoryContext, RootEntity.Id); // The id must be the same for the inheritance chain
-                }
-            }
-
-            if (SingleEntityLinks != null)
-            {
-                foreach (var link in SingleEntityLinks)
-                {
-                    await link.PopulateEntityAsync(RepositoryContext, RootEntity);
-                }
-            }
-
-            if (CollectionEntityLinks != null)
-            {
-                foreach (var link in CollectionEntityLinks)
-                {
-                    await link.PopulateEntitiesAsync(RepositoryContext, RootEntity);
-                }
-            }
+            await Task.WhenAll(tasks);
         }
     }
 }

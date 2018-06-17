@@ -15,11 +15,7 @@ namespace DomainFramework.Tests
 
         public PersonPhonesQueryAggregate(DataAccess.RepositoryContext context) : base(context)
         {
-            // Create the links to the collection of entity links
-            CollectionEntityLinks = new List<IQueryCollectionEntityLink>();
-
-            // Register the link to the pages collection
-            //CollectionEntityLinks.Add(PhonesLink);
+            
         }
     }
 }

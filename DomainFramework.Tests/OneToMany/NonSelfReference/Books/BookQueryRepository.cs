@@ -7,7 +7,7 @@ namespace DomainFramework.Tests
 {
     public class BookQueryRepository : Core.QueryRepository<BookEntity, int?>
     {
-        public override IEnumerable<IEntity> Get(QueryParameters parameters)
+        public override IEnumerable<IEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
         {
             var result = Query<BookEntity>
                 .Collection()
@@ -29,12 +29,12 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public override Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters)
+        public override Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user)
         {
             throw new System.NotImplementedException();
         }
 
-        public override BookEntity GetById(int? id)
+        public override BookEntity GetById(int? id, IAuthenticatedUser user)
         {
             var result = Query<BookEntity>
                 .Single()
@@ -59,7 +59,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public override async Task<BookEntity> GetByIdAsync(int? id)
+        public override async Task<BookEntity> GetByIdAsync(int? id, IAuthenticatedUser user)
         {
             var result = await Query<BookEntity>
                 .Single()
