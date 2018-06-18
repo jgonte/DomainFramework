@@ -13,9 +13,9 @@ namespace DomainFramework.Core
 
         ICommandRepository CreateCommandRepository(Type type);
 
-        void RegisterQueryRepository<EntityType>(IQueryRepository repository);
+        void RegisterQueryRepository<EntityType>(IQueryEntityRepository repository);
 
-        IQueryRepository GetQueryRepository(Type type);
+        IQueryEntityRepository GetQueryRepository(Type type);
 
         /// <summary>
         /// Factory to create the unit of work

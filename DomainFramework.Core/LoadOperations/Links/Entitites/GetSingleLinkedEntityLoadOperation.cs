@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public class GetCollectionLinkedEntityLoadOperation<TLinkedEntity> : ILoadOperation
+    public class GetSingleLinkedEntityLoadOperation<TLinkedEntity> : ILoadOperation
         where TLinkedEntity : IEntity
     {
-        public List<TLinkedEntity> LinkedEntities { get; private set; }
+        public TLinkedEntity LinkedEntity { get; private set; }
 
-        public Func<IQueryRepository, IEntity, IAuthenticatedUser, List<TLinkedEntity>> GetLinkedEntities { get; set; }
+        public Func<IQueryEntityRepository, IEntity, IAuthenticatedUser, TLinkedEntity> GetLinkedEntity { get; set; }
 
-        public Func<IQueryRepository, IEntity, IAuthenticatedUser, Task<List<TLinkedEntity>>> GetLinkedEntitiesAsync { get; set; }
+        public Func<IQueryEntityRepository, IEntity, IAuthenticatedUser, Task<TLinkedEntity>> GetLinkedEntityAsync { get; set; }
 
         public void Execute(IRepositoryContext repositoryContext, IEntity entity, IAuthenticatedUser user)
         {
-            LinkedEntities = GetLinkedEntities(
+            LinkedEntity = GetLinkedEntity(
                 repositoryContext.GetQueryRepository(typeof(TLinkedEntity)), 
                 entity, 
                 user);
@@ -23,7 +22,7 @@ namespace DomainFramework.Core
 
         public async Task ExecuteAsync(IRepositoryContext repositoryContext, IEntity entity, IAuthenticatedUser user)
         {
-            LinkedEntities = await GetLinkedEntitiesAsync(
+            LinkedEntity = await GetLinkedEntityAsync(
                 repositoryContext.GetQueryRepository(typeof(TLinkedEntity)), 
                 entity, 
                 user);

@@ -25,9 +25,9 @@ namespace DomainFramework.DataAccess
             }
         }
 
-        public override bool DeleteAll(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        public override bool DeleteAll(IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var command = CreateDeleteAllCommand(valueObject, user);
+            var command = CreateDeleteAllCommand(user);
 
             if (unitOfWork != null)
             {
@@ -55,9 +55,9 @@ namespace DomainFramework.DataAccess
             }
         }
 
-        public override async Task<bool> DeleteAllAsync(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        public override async Task<bool> DeleteAllAsync(IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var command = CreateDeleteAllCommand(valueObject, user);
+            var command = CreateDeleteAllCommand(user);
 
             if (unitOfWork != null)
             {
@@ -73,7 +73,7 @@ namespace DomainFramework.DataAccess
 
         protected abstract Command CreateInsertCommand(IValueObject valueObject, IAuthenticatedUser user);
 
-        protected abstract Command CreateDeleteAllCommand(IValueObject valueObject, IAuthenticatedUser user);
+        protected abstract Command CreateDeleteAllCommand(IAuthenticatedUser user);
 
         protected abstract void HandleInsert(Command command);
 

@@ -14,10 +14,10 @@ namespace DomainFramework.Core
     {
         void Insert(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
-        bool DeleteAll(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork);
+        bool DeleteAll(IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
         Task InsertAsync(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
-        Task<bool> DeleteAllAsync(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork);
+        Task<bool> DeleteAllAsync(IAuthenticatedUser user, IUnitOfWork unitOfWork);
     }
 }

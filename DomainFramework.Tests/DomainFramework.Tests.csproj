@@ -83,7 +83,6 @@
     <Compile Include="EntityWithValueObjectCollection\PersonWithPhonesTests.cs" />
     <Compile Include="EntityWithValueObjectCollection\Phone.cs" />
     <Compile Include="EntityWithValueObjectCollection\PhoneCommandRepository.cs" />
-    <Compile Include="EntityWithValueObjectCollection\QueryCollectionPhoneValueObjectLink.cs" />
     <Compile Include="Inheritance\OneLevel\Employees\Aggregates\EmployeePersonQueryAggregate.cs" />
     <Compile Include="Inheritance\OneLevel\Employees\EmployeeQueryRepository.cs" />
     <Compile Include="Inheritance\OneLevel\Employees\Aggregates\EmployeePersonCommandAggregate.cs" />

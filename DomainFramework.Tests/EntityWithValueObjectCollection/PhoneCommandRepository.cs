@@ -29,9 +29,23 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
             return command;
         }
 
-        protected override Command CreateDeleteAllCommand(IValueObject valueObject, IAuthenticatedUser user)
+        protected override Command CreateDeleteAllCommand(IAuthenticatedUser user)
         {
-            throw new System.NotImplementedException();
+            var command = Command
+                .NonQuery()
+                .Connection(ConnectionName)
+                .StoredProcedure("p_Delete_Phones_For_Person");
+
+            command.OnBeforeCommandExecuted(() =>
+            {
+                var entity = (PersonEntity4)TransferEntities().Single();
+
+                command.Parameters( // Map the extra parameters for the foreign key(s)
+                    p => p.Name("personId").Value(entity.Id)
+                );
+            });
+
+            return command;
         }
 
         protected override bool HandleDeleteAll(Command command)

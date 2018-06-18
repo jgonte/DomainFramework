@@ -6,7 +6,7 @@ using DomainFramework.Core;
 
 namespace DomainFramework.Tests
 {
-    class StudentQueryRepository : Core.QueryRepository<StudentEntity, Guid?>
+    class StudentQueryRepository : Core.QueryEntityRepository<StudentEntity, Guid?>
     {
         public override IEnumerable<IEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
         {

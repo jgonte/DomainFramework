@@ -55,7 +55,7 @@ GO
 CREATE TABLE DomainFrameworkOneEntityWithValueObjectCollectionTest..Phone(
     [PersonId] INT NOT NULL,
     [Number] VARCHAR(15) NOT NULL,
-    [Type] INT NOT NULL
+    [PhoneType] INT NOT NULL
 )
 
 ALTER TABLE DomainFrameworkOneEntityWithValueObjectCollectionTest..Phone
@@ -98,10 +98,24 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE [p_Delete_Phones_For_Person]
+    @personId INT
+AS
+BEGIN
+
+    SET NOCOUNT ON;
+
+    DELETE
+    FROM [Phone]
+    WHERE [PersonId] = @personId
+
+END;
+GO
+
 CREATE PROCEDURE [p_Phone_Create]
     @personId INT,
     @number VARCHAR(15),
-    @type INT
+    @phoneType INT
 AS
 BEGIN
     
@@ -109,13 +123,13 @@ BEGIN
     (
         [PersonId],
         [Number],
-        [Type]
+        [PhoneType]
     )
     VALUES
     (
         @personId,
         @number,
-        @type
+        @phoneType
     );
 
 END;
@@ -132,7 +146,24 @@ BEGIN
         [PersonId] AS Id,
         [FirstName]
     FROM [Person]
-        WHERE [PersonId] = @personId;
+    WHERE [PersonId] = @personId;
+
+END;
+GO
+
+CREATE PROCEDURE [p_Person_GetPhones]
+    @personId INT
+AS
+BEGIN
+
+    SET NOCOUNT ON;
+
+    SELECT
+        [PersonId],
+        [Number],
+        [PhoneType]
+    FROM [Phone]
+    WHERE [PersonId] = @personId;
 
 END;
 GO
@@ -160,7 +191,7 @@ BEGIN
 
     DELETE
     FROM [Person]
-        WHERE [PersonId] = @personId
+    WHERE [PersonId] = @personId
 
 END;
 GO
@@ -197,6 +228,8 @@ GO
 
             context.RegisterCommandRepositoryFactory<Phone>(() => new PhoneCommandRepository());
 
+            context.RegisterQueryRepository<PersonEntity4>(new PersonQueryRepository5());
+
             // We need an aggregate since saving the person and her phones need to happen within a transaction
             var personCommandAggregate = new PersonPhonesCommandAggregate(context, 
                 firstName: "Mary",
@@ -216,12 +249,9 @@ GO
             var personQueryAggregate = new PersonPhonesQueryAggregate(context);
 
             // Read
-            var queryRepository = new PersonQueryRepository5
-            {
-                ConnectionName = connectionName
-            };
+            personQueryAggregate.Load(id, user: null);
 
-            personEntity = queryRepository.GetById(id, user: null);
+            personEntity = personQueryAggregate.RootEntity;
 
             Assert.AreEqual(id, personEntity.Id);
 
@@ -242,6 +272,8 @@ GO
             Assert.AreEqual(new Phone(number: "954-444-1111", type: Phone.Types.Work), phone);
 
             // Update
+            personEntity = personCommandAggregate.RootEntity;
+
             personEntity.FirstName = "Mariah";
 
             // After updating this should be the only phone in the list
@@ -253,13 +285,15 @@ GO
             personCommandAggregate.Save();
 
             // Read changes
-            personEntity = queryRepository.GetById(id, user: null);
+            personQueryAggregate.Load(id, user: null);
+
+            personEntity = personQueryAggregate.RootEntity;
 
             Assert.AreEqual(id, personEntity.Id);
 
             Assert.AreEqual("Mariah", personEntity.FirstName);
 
-            Assert.AreEqual(3, personEntity.Phones.Count);
+            Assert.AreEqual(1, personEntity.Phones.Count); // The three previous phones must be replaced by only one
 
             phone = personEntity.Phones.ElementAt(0);
 

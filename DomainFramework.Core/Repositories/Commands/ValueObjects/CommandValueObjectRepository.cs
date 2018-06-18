@@ -13,11 +13,11 @@ namespace DomainFramework.Core
 
         public abstract void Insert(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
-        public abstract bool DeleteAll(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork);
+        public abstract bool DeleteAll(IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
         public abstract Task InsertAsync(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
-        public abstract Task<bool> DeleteAllAsync(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork);
+        public abstract Task<bool> DeleteAllAsync(IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
         #region ICommandValueObjectRepository members
 
@@ -26,9 +26,9 @@ namespace DomainFramework.Core
             Insert(valueObject, user, unitOfWork);
         }
 
-        bool ICommandValueObjectRepository.DeleteAll(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        bool ICommandValueObjectRepository.DeleteAll(IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            return DeleteAll(valueObject, user, unitOfWork);
+            return DeleteAll(user, unitOfWork);
         }
 
         async Task ICommandValueObjectRepository.InsertAsync(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
@@ -36,9 +36,9 @@ namespace DomainFramework.Core
             await InsertAsync(valueObject, user, unitOfWork);
         }
 
-        Task<bool> ICommandValueObjectRepository.DeleteAllAsync(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        Task<bool> ICommandValueObjectRepository.DeleteAllAsync(IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            return DeleteAllAsync(valueObject, user, unitOfWork);
+            return DeleteAllAsync(user, unitOfWork);
         }
 
         #endregion

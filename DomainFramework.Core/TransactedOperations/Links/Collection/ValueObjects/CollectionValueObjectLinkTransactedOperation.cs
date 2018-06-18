@@ -14,7 +14,7 @@ namespace DomainFramework.Core
 
         public IEnumerable<TLinkedValueObject> LinkedValueObjects => _linkedValueObjects;
 
-        public bool RequiresUnitOfWork => _linkedValueObjects.Count > 1; // One save per linked entity
+        public bool RequiresUnitOfWork => _linkedValueObjects.Count > 1; // One save per value object
 
         public CollectionValueObjectLinkTransactedOperation(TEntity rootEntity)
         {
@@ -33,9 +33,16 @@ namespace DomainFramework.Core
 
         public void Execute(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
+            // Remove all the value objects attached to the entity
+            var repository = (ICommandValueObjectRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedValueObject));
+
+            repository.TransferEntities = () => new IEntity[] { _rootEntity };
+
+            repository.DeleteAll(user, unitOfWork);
+
             foreach (var linkedValueObject in _linkedValueObjects)
             {
-                var repository = (ICommandValueObjectRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedValueObject));
+                repository = (ICommandValueObjectRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedValueObject));
 
                 repository.TransferEntities = () => new IEntity[] { _rootEntity };
 
@@ -47,9 +54,18 @@ namespace DomainFramework.Core
         {
             var tasks = new Queue<Task>();
 
+            // Remove all the value objects attached to the entity
+            var repository = (ICommandValueObjectRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedValueObject));
+
+            repository.TransferEntities = () => new IEntity[] { _rootEntity };
+
+            tasks.Enqueue(
+                repository.DeleteAllAsync(user, unitOfWork)
+            );
+
             foreach (var linkedValueObject in _linkedValueObjects)
             {
-                var repository = (ICommandValueObjectRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedValueObject));
+                repository = (ICommandValueObjectRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedValueObject));
 
                 repository.TransferEntities = () => new IEntity[] { _rootEntity };
 

@@ -1,13 +1,11 @@
 ﻿using DomainFramework.Core;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace DomainFramework.Tests
 {
     class PersonPhonesQueryAggregate : QueryAggregate<int?, PersonEntity4>
     {
-        public QueryCollectionPhoneValueObjectLink PhonesLink { get; set; } = new QueryCollectionPhoneValueObjectLink();
-
-        public List<Phone> Phones => PhonesLink.LinkedValueObjects;
+        public SetCollectionLinkedValueObjectLoadOperation<PersonEntity4, Phone> SetPhonesLoadOperation { get; }
 
         public PersonPhonesQueryAggregate() : this(null)
         {
@@ -15,7 +13,22 @@ namespace DomainFramework.Tests
 
         public PersonPhonesQueryAggregate(DataAccess.RepositoryContext context) : base(context)
         {
-            
+            SetPhonesLoadOperation = new SetCollectionLinkedValueObjectLoadOperation<PersonEntity4, Phone>
+            {
+                SetLinkedValueObjects = (repository, entity, user) =>
+                    entity.Phones = ((PersonQueryRepository5)repository).GetPhones(RootEntity.Id, user).ToList(),
+
+                //SetLinkedValueObjectsAsync = async (repository, entity, user) =>
+                //{
+                //    var entities = await ((PersonQueryRepository5)repository).GetPhonesAsync(RootEntity.Id, user: null);
+
+                //    entity.Phones = entities.ToList();
+                //}
+            };
+
+            LoadOperations.Enqueue(
+                SetPhonesLoadOperation
+            );
         }
     }
 }
