@@ -10,15 +10,14 @@ namespace DomainFramework.Tests
     {
         protected override Command CreateInsertCommand(ClassEnrollmentEntity entity, IAuthenticatedUser user)
         {
-            var command = Command
+            return Command
                 .NonQuery()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_ClassEnrollment_Create")
                 .AutoGenerateParameters(
                     qbeObject: entity
-                );
-
-            command.OnBeforeCommandExecuted(() =>
+                )
+                .OnBeforeCommandExecuted(cmd =>
             {
                 var entities = TransferEntities();
 
@@ -32,13 +31,11 @@ namespace DomainFramework.Tests
                     StudentId = studentEntity.Id.Value
                 };
 
-                command.Parameters( // Map the extra parameters for the foreign key(s)
+                cmd.Parameters( // Map the extra parameters for the foreign key(s)
                     p => p.Name("ClassId").Value(classEntity.Id),
                     p => p.Name("StudentId").Value(studentEntity.Id)
                 );
             });
-
-            return command;
         }
 
         protected override Command CreateUpdateCommand(ClassEnrollmentEntity entity, IAuthenticatedUser user)

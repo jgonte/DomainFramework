@@ -5,7 +5,7 @@ namespace DomainFramework.Core
     /// <summary>
     /// Defines a write only repository
     /// </summary>
-    public interface ICommandEntityRepository : ICommandRepository
+    public interface IEntityCommandRepository : ICommandRepository
     {
         void Save(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 

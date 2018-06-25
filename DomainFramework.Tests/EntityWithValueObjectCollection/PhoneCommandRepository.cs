@@ -9,43 +9,37 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
     {
         protected override Command CreateInsertCommand(IValueObject valueObject, IAuthenticatedUser user)
         {
-            var command = Query<PageEntity>
+            return Query<PageEntity>
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Phone_Create")
                 .AutoGenerateParameters( // Generate the parameters from the data
                     qbeObject: valueObject
-                );
+                )
+                .OnBeforeCommandExecuted(cmd =>
+                {
+                    var entity = (PersonEntity4)TransferEntities().Single();
 
-            command.OnBeforeCommandExecuted(() =>
-            {
-                var entity = (PersonEntity4)TransferEntities().Single();
-
-                command.Parameters( // Map the extra parameters for the foreign key(s)
-                    p => p.Name("personId").Value(entity.Id)
-                );
-            });
-
-            return command;
+                    cmd.Parameters( // Map the extra parameters for the foreign key(s)
+                        p => p.Name("personId").Value(entity.Id)
+                    );
+                });
         }
 
         protected override Command CreateDeleteAllCommand(IAuthenticatedUser user)
         {
-            var command = Command
+            return Command
                 .NonQuery()
                 .Connection(ConnectionName)
-                .StoredProcedure("p_Delete_Phones_For_Person");
+                .StoredProcedure("p_Delete_Phones_For_Person")
+                .OnBeforeCommandExecuted(cmd =>
+                {
+                    var entity = (PersonEntity4)TransferEntities().Single();
 
-            command.OnBeforeCommandExecuted(() =>
-            {
-                var entity = (PersonEntity4)TransferEntities().Single();
-
-                command.Parameters( // Map the extra parameters for the foreign key(s)
-                    p => p.Name("personId").Value(entity.Id)
-                );
-            });
-
-            return command;
+                    cmd.Parameters( // Map the extra parameters for the foreign key(s)
+                        p => p.Name("personId").Value(entity.Id)
+                    );
+                });
         }
 
         protected override bool HandleDeleteAll(Command command)

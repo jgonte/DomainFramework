@@ -10,7 +10,7 @@ namespace DomainFramework.Tests
     {
         protected override Command CreateInsertCommand(CapitalCityEntity entity, IAuthenticatedUser user)
         {
-            var command = Query<CapitalCityEntity>
+            return Query<CapitalCityEntity>
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_CapitalCity_Create")
@@ -20,20 +20,17 @@ namespace DomainFramework.Tests
                 .Instance(entity)
                 .MapProperties(
                     pm => pm.Map(m => m.Id)//.Index(0),
-                );
+                )
+                .OnBeforeCommandExecuted(cmd =>
+                {
+                    var e = (CountryEntity)TransferEntities().Single();
 
-            command.OnBeforeCommandExecuted(() =>
-            {
-                var e = (CountryEntity)TransferEntities().Single();
+                    entity.CountryCode = e.Id;
 
-                entity.CountryCode = e.Id;
-
-                command.Parameters( // Map the extra parameters for the foreign key(s)
-                    p => p.Name("CountryCode").Value(entity.CountryCode)
-                );
-            });
-
-            return command;
+                    cmd.Parameters( // Map the extra parameters for the foreign key(s)
+                        p => p.Name("CountryCode").Value(entity.CountryCode)
+                    );
+                });
         }
 
         protected override Command CreateUpdateCommand(CapitalCityEntity entity, IAuthenticatedUser user)

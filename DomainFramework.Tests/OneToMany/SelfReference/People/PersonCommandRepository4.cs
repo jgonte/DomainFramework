@@ -38,21 +38,20 @@ namespace DomainFramework.Tests
                 .Instance(entity)
                 .MapProperties(
                     pm => pm.Map(m => m.Id)//.Index(0),
-                );
-
-            command.OnBeforeCommandExecuted(() =>
-            {
-                if (TransferEntities != null)
+                )
+                .OnBeforeCommandExecuted(cmd =>
                 {
-                    var e = (PersonEntity3)TransferEntities().Single();
+                    if (TransferEntities != null)
+                    {
+                        var e = (PersonEntity3)TransferEntities().Single();
 
-                    entity.ManagerId = e.Id.Value;
+                        entity.ManagerId = e.Id.Value;
 
-                    command.Parameters( // Map the extra parameters for the foreign key(s)
-                        p => p.Name("ManagerId").Value(entity.ManagerId)
-                    );
-                }
-            });
+                        cmd.Parameters( // Map the extra parameters for the foreign key(s)
+                            p => p.Name("ManagerId").Value(entity.ManagerId)
+                        );
+                    }
+                });
 
             return command;
         }
@@ -88,7 +87,7 @@ namespace DomainFramework.Tests
             }
             else
             {
-                command.OnBeforeCommandExecuted(() =>
+                command.OnBeforeCommandExecuted(cmd =>
                 {
                     command.Parameters(
                         p => p.Name("personId").Value(entity.Id.Value)
@@ -101,7 +100,7 @@ namespace DomainFramework.Tests
                 excludedProperties: excludedProperties
             );
 
-            command.OnBeforeCommandExecuted(() =>
+            command.OnBeforeCommandExecuted(cmd =>
             {
                 if (TransferEntities != null)
                 {
@@ -109,7 +108,7 @@ namespace DomainFramework.Tests
 
                     entity.ManagerId = e.Id.Value;
 
-                    command.Parameters( // Map the extra parameters for the foreign key(s)
+                    cmd.Parameters( // Map the extra parameters for the foreign key(s)
                         p => p.Name("ManagerId").Value(entity.ManagerId)
                     );
                 }

@@ -31,28 +31,28 @@ namespace DomainFramework.Core
 
         public void Execute(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var linkedEntityRepository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TEntity));
+            var linkedEntityRepository = (IEntityCommandRepository)repositoryContext.CreateCommandRepository(typeof(TEntity));
 
             linkedEntityRepository.TransferEntities = () => new IEntity[] { _rootEntity };
 
             linkedEntityRepository.Save(_linkedEntity, user, unitOfWork);
 
             // Add a command to update the root entity with the id of the linked one (symmetric relationship)
-            var rootEntityRepository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TEntity));
+            var rootEntityRepository = (IEntityCommandRepository)repositoryContext.CreateCommandRepository(typeof(TEntity));
 
             rootEntityRepository.Update(_rootEntity, user, unitOfWork);
         }
 
         public async Task ExecuteAsync(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var linkedEntityRepository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TEntity));
+            var linkedEntityRepository = (IEntityCommandRepository)repositoryContext.CreateCommandRepository(typeof(TEntity));
 
             linkedEntityRepository.TransferEntities = () => new IEntity[] { _rootEntity };
 
             await linkedEntityRepository.SaveAsync(_linkedEntity, user, unitOfWork);
 
             // Add a command to update the root entity with the id of the linked one (symmetric relationship)
-            var rootEntityRepository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TEntity));
+            var rootEntityRepository = (IEntityCommandRepository)repositoryContext.CreateCommandRepository(typeof(TEntity));
 
             await rootEntityRepository.UpdateAsync(_rootEntity, user, unitOfWork);
         }

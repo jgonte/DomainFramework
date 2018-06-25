@@ -8,9 +8,9 @@ namespace DomainFramework.Core
     {
         public TLinkedEntity LinkedEntity { get; private set; }
 
-        public Func<IQueryEntityRepository, IEntity, IAuthenticatedUser, TLinkedEntity> GetLinkedEntity { get; set; }
+        public Func<IEntityQueryRepository, IEntity, IAuthenticatedUser, TLinkedEntity> GetLinkedEntity { get; set; }
 
-        public Func<IQueryEntityRepository, IEntity, IAuthenticatedUser, Task<TLinkedEntity>> GetLinkedEntityAsync { get; set; }
+        public Func<IEntityQueryRepository, IEntity, IAuthenticatedUser, Task<TLinkedEntity>> GetLinkedEntityAsync { get; set; }
 
         public void Execute(IRepositoryContext repositoryContext, IEntity entity, IAuthenticatedUser user)
         {

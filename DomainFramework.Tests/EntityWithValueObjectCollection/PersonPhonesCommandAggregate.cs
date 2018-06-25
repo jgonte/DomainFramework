@@ -7,8 +7,6 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
     {
         private CollectionValueObjectLinkTransactedOperation<PersonEntity4, Phone> _phonesLink;
 
-        public IEnumerable<Phone> Pages => _phonesLink.LinkedValueObjects;
-
         public PersonPhonesCommandAggregate(DataAccess.RepositoryContext context, string firstName, List<Phone> phones) : base(context, null)
         {
             RootEntity = new PersonEntity4
@@ -21,12 +19,10 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
                 new SaveEntityTransactedOperation<PersonEntity4>(RootEntity)
             );
 
-            _phonesLink = new CollectionValueObjectLinkTransactedOperation<PersonEntity4, Phone>(RootEntity);
-
-            foreach (var phone in phones)
+            _phonesLink = new CollectionValueObjectLinkTransactedOperation<PersonEntity4, Phone>(RootEntity)
             {
-                _phonesLink.AddLinkedValueObject(phone);
-            }
+                GetLinkedValueObjects = entity => entity.Phones
+            };
 
             TransactedSaveOperations.Enqueue(
                 _phonesLink

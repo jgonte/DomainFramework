@@ -116,6 +116,7 @@
     <Compile Include="OneToMany\SelfReference\Aggregates\ManagerEmployeesQueryAggregate.cs" />
     <Compile Include="OneToMany\SelfReference\People\PersonEntity3.cs" />
     <Compile Include="OneToMany\SelfReference\People\PersonCommandRepository4.cs" />
+    <Compile Include="OneToOne\SelfReferenceSymmetric\People\Aggregates\PersonSpouseDto.cs" />
     <Compile Include="OneToOne\SelfReferenceSymmetric\People\PersonCommandRepository2.cs" />
     <Compile Include="OneToOne\SelfReferenceSymmetric\People\PersonQueryRepository2.cs" />
     <Compile Include="Inheritance\TwoLevels\Executives\ExecutiveQueryRepository.cs" />

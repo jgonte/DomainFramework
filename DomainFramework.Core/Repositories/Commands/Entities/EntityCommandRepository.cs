@@ -8,7 +8,7 @@ namespace DomainFramework.Core
     /// Repository that performs write operations to a database for an entity
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity to persist</typeparam>
-    public abstract class CommandEntityRepository<TEntity> : ICommandEntityRepository
+    public abstract class EntityCommandRepository<TEntity> : IEntityCommandRepository
         where TEntity : IEntity
     {
         public string ConnectionName { get; set; }
@@ -53,22 +53,22 @@ namespace DomainFramework.Core
 
         #region ICommandRepository members
 
-        void ICommandEntityRepository.Save(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        void IEntityCommandRepository.Save(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
             Save((TEntity)entity, user, unitOfWork);
         }
 
-        void ICommandEntityRepository.Insert(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        void IEntityCommandRepository.Insert(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
             Insert((TEntity)entity, user, unitOfWork);
         }
 
-        bool ICommandEntityRepository.Update(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        bool IEntityCommandRepository.Update(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
             return Update((TEntity)entity, user, unitOfWork);
         }
 
-        bool ICommandEntityRepository.Delete(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        bool IEntityCommandRepository.Delete(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
             return Delete((TEntity)entity, user, unitOfWork);
         }

@@ -251,22 +251,6 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [p_CapitalCity_Update]
-    @capitalCityId INT,
-    @name VARCHAR(50),
-    @countryCode INT
-AS
-BEGIN
-
-    UPDATE CapitalCity
-    SET
-        [Name] = @name,
-        [DepartmentId] = @countryCode
-    WHERE [CapitalCityId] = @capitalCityId;
-
-END;
-GO
-
 CREATE PROCEDURE [p_Department_Delete]
     @countryCode INT
 AS
@@ -332,7 +316,7 @@ GO
             var employeeEntity = departmentCommandAggregate.AddEmployee(firstName: "John", salary: 70000);
 
             // Set the manager
-            //departmentCommandAggregate.SetManager(employeeEntity);
+            departmentCommandAggregate.SetManager(employeeEntity);
 
             // Save
             departmentCommandAggregate.Save();
@@ -365,7 +349,7 @@ GO
             var employeeEntity = departmentCommandAggregate.AddEmployee(firstName: "John", salary: 70000);
 
             // Set the manager
-            //departmentCommandAggregate.SetManager(employeeEntity);
+            departmentCommandAggregate.SetManager(employeeEntity);
 
             // Save
             await departmentCommandAggregate.SaveAsync();

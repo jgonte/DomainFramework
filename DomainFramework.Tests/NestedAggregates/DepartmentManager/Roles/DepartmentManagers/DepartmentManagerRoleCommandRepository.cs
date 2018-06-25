@@ -28,7 +28,7 @@ namespace DomainFramework.Tests
                 };
             }
 
-            var command = Query<DepartmentManagerRoleEntity>
+            return Query<DepartmentManagerRoleEntity>
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_DepartmentManagerRole_Create")
@@ -39,9 +39,8 @@ namespace DomainFramework.Tests
                 .Instance(entity)
                 .MapProperties(
                     pm => pm.Map(m => m.Id)//.Index(0),
-                );
-
-            command.OnBeforeCommandExecuted(() =>
+                )
+                .OnBeforeCommandExecuted(cmd =>
             {
                 if (TransferEntities != null)
                 {
@@ -53,14 +52,12 @@ namespace DomainFramework.Tests
 
                     entity.ManagesDepartmentId = departmentEntity.Id.Value;
 
-                    command.Parameters( // Map the extra parameters for the foreign key(s)
+                    cmd.Parameters( // Map the extra parameters for the foreign key(s)
                         p => p.Name("employeeRoleId").Value(entity.EmployeeRoleId),
                         p => p.Name("managesDepartmentId").Value(entity.ManagesDepartmentId)
                     );
                 }
             });
-
-            return command;
         }
 
         protected override Command CreateUpdateCommand(DepartmentManagerRoleEntity entity, IAuthenticatedUser user)

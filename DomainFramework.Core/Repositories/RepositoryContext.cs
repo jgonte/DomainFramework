@@ -18,7 +18,7 @@ namespace DomainFramework.Core
         /// Maps the entity to the repository to retrieve the repository for the entity
         /// One entity can be mapped to one repository
         /// </summary>
-        private Dictionary<Type, IQueryEntityRepository> _queryRepositoryMap { get; set; } = new Dictionary<Type, IQueryEntityRepository>();
+        private Dictionary<Type, IEntityQueryRepository> _queryRepositoryMap { get; set; } = new Dictionary<Type, IEntityQueryRepository>();
 
         public void RegisterCommandRepositoryFactory<EntityOrValueObjectType>(Func<ICommandRepository> factory)
         {
@@ -39,7 +39,7 @@ namespace DomainFramework.Core
             return repository;
         }
 
-        public void RegisterQueryRepository<EntityType>(IQueryEntityRepository repository)
+        public void RegisterQueryRepository<EntityType>(IEntityQueryRepository repository)
         {
             if (string.IsNullOrWhiteSpace(repository.ConnectionName))
             {
@@ -49,7 +49,7 @@ namespace DomainFramework.Core
             _queryRepositoryMap.Add(typeof(EntityType), repository);
         }
 
-        public IQueryEntityRepository GetQueryRepository(Type type)
+        public IEntityQueryRepository GetQueryRepository(Type type)
         {
             return _queryRepositoryMap[type];
         }

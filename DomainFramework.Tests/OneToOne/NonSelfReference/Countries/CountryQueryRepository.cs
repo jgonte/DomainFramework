@@ -5,7 +5,7 @@ using DomainFramework.Core;
 
 namespace DomainFramework.Tests
 {
-    class CountryQueryRepository : Core.QueryEntityRepository<CountryEntity, string>
+    class CountryQueryRepository : Core.EntityQueryRepository<CountryEntity, string>
     {
         public override IEnumerable<IEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
         {

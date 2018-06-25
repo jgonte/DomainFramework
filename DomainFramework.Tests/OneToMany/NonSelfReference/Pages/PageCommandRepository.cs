@@ -10,7 +10,7 @@ namespace DomainFramework.Tests
     {
         protected override Command CreateInsertCommand(PageEntity entity, IAuthenticatedUser user)
         {
-            var command = Query<PageEntity>
+            return Query<PageEntity>
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Page_Create")
@@ -20,20 +20,17 @@ namespace DomainFramework.Tests
                 .Instance(entity)
                 .MapProperties(
                     pm => pm.Map(m => m.Id)//.Index(0),
-                );
+                )
+                .OnBeforeCommandExecuted(cmd =>
+                {
+                    var e = (BookEntity)TransferEntities().Single();
 
-            command.OnBeforeCommandExecuted(() =>
-            {
-                var e = (BookEntity)TransferEntities().Single();
+                    entity.BookId = e.Id.Value;
 
-                entity.BookId = e.Id.Value;
-
-                command.Parameters( // Map the extra parameters for the foreign key(s)
-                    p => p.Name("BookId").Value(entity.BookId)
-                );
-            });
-
-            return command;
+                    cmd.Parameters( // Map the extra parameters for the foreign key(s)
+                        p => p.Name("BookId").Value(entity.BookId)
+                    );
+                });
         }
 
         protected override Command CreateUpdateCommand(PageEntity entity, IAuthenticatedUser user)

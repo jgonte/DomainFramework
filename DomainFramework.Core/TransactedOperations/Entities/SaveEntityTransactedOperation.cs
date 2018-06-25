@@ -26,14 +26,14 @@ namespace DomainFramework.Core
 
         public void Execute(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var repository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TEntity));
+            var repository = (IEntityCommandRepository)repositoryContext.CreateCommandRepository(typeof(TEntity));
 
             repository.Save(_entity, user, unitOfWork);
         }
 
         public async Task ExecuteAsync(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var repository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TEntity));
+            var repository = (IEntityCommandRepository)repositoryContext.CreateCommandRepository(typeof(TEntity));
 
             await repository.SaveAsync(_entity, user, unitOfWork);
         }

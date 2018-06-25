@@ -11,7 +11,7 @@ namespace DomainFramework.Tests
     {
         protected override Command CreateInsertCommand(EmployeeRoleEntity entity, IAuthenticatedUser user)
         {
-            var command = Query<EmployeeRoleEntity>
+            return Query<EmployeeRoleEntity>
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_EmployeeRole_Create")
@@ -21,25 +21,23 @@ namespace DomainFramework.Tests
                         m => m.Id,
                         m => m.DepartmentId
                     }
-                );
+                )
+                .OnBeforeCommandExecuted(cmd =>
+                {
+                    var entities = TransferEntities();
 
-            command.OnBeforeCommandExecuted(() =>
-            {
-                var entities = TransferEntities();
+                    var departmentEntity = (DepartmentEntity)entities.ElementAt(0);
 
-                var departmentEntity = (DepartmentEntity)entities.ElementAt(0);
+                    var personEntity = (PersonEntity)entities.ElementAt(1);
 
-                var personEntity = (PersonEntity)entities.ElementAt(1);
+                    entity.Id = personEntity.Id;
 
-                entity.Id = personEntity.Id;
+                    cmd.Parameters( // Map the extra parameters for the foreign key(s)
+                        p => p.Name("departmentId").Value(departmentEntity.Id),
+                        p => p.Name("personId").Value(personEntity.Id)
+                    );
+                });
 
-                command.Parameters( // Map the extra parameters for the foreign key(s)
-                    p => p.Name("departmentId").Value(departmentEntity.Id),
-                    p => p.Name("personId").Value(personEntity.Id)
-                );
-            });
-
-            return command;
         }
 
         protected override Command CreateUpdateCommand(EmployeeRoleEntity entity, IAuthenticatedUser user)

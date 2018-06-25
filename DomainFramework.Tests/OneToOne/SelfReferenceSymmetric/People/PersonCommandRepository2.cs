@@ -40,7 +40,7 @@ namespace DomainFramework.Tests
                     pm => pm.Map(m => m.Id)//.Index(0),
                 );
 
-            command.OnBeforeCommandExecuted(() =>
+            command.OnBeforeCommandExecuted(cmd =>
             {
                 if (TransferEntities != null) // It is a self reference for Spouse
                 {
@@ -48,7 +48,7 @@ namespace DomainFramework.Tests
 
                     entity.SpouseId = e.Id;
 
-                    command.Parameters( // Map the extra parameters for the foreign key(s)
+                    cmd.Parameters( // Map the extra parameters for the foreign key(s)
                         p => p.Name("SpouseId").Value(entity.SpouseId)
                     );
                 }
@@ -82,9 +82,9 @@ namespace DomainFramework.Tests
             }
             else
             {
-                command.OnBeforeCommandExecuted(() =>
+                command.OnBeforeCommandExecuted(cmd =>
                 {
-                    command.Parameters(
+                    cmd.Parameters(
                         p => p.Name("personId").Value(entity.Id.Value)
                     );
                 });
