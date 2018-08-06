@@ -19,5 +19,6 @@ namespace DomainFramework.Tests.OneToOne.SelfReference
 
             return result;
         }
+
     }
 }
