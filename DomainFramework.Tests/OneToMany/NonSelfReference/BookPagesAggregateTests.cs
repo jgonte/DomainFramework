@@ -263,8 +263,6 @@ GO
         [TestMethod]
         public void Book_Aggregate_With_Pages_Book_Only_Tests()
         {
-            var bookEntity = new BookEntity(new BookData { Title = "Programming Java" });
-
             var context = new RepositoryContext(connectionName);
 
             context.RegisterCommandRepositoryFactory<BookEntity>(() => new BookCommandRepository());
@@ -273,9 +271,16 @@ GO
 
             // Insert
 
-            var bookCommandAggregate = new BookPagesCommandAggregate(context, bookEntity);
+            var inputDto = new BookPagesDto
+            {
+                Title = "Programming Java"
+            };
+
+            var bookCommandAggregate = new BookPagesCommandAggregate(context, inputDto);
 
             bookCommandAggregate.Save();
+
+            var bookEntity = bookCommandAggregate.RootEntity;
 
             Assert.IsNotNull(bookEntity.Id);
 
@@ -335,8 +340,6 @@ GO
         [TestMethod]
         public void Book_Aggregate_With_Pages_Tests()
         {
-            var bookEntity = new BookEntity(new BookData { Title = "Programming C#" });
-
             var context = new RepositoryContext(connectionName);
 
             context.RegisterCommandRepositoryFactory<BookEntity>(() => new BookCommandRepository());
@@ -345,15 +348,29 @@ GO
 
             // Insert
 
-            var bookCommandAggregate = new BookPagesCommandAggregate(context, bookEntity);
-
-            bookCommandAggregate.AddPage(new PageEntity(new PageData { Index = 1 }));
-
-            bookCommandAggregate.AddPage(new PageEntity(new PageData { Index = 2 }));
-
-            bookCommandAggregate.AddPage(new PageEntity(new PageData { Index = 3 }));
+            var bookCommandAggregate = new BookPagesCommandAggregate(context, new BookPagesDto
+            {
+                Title = "Programming C#",
+                Pages = new List<PageDto>
+                {
+                    new PageDto
+                    {
+                        Index = 1
+                    },
+                    new PageDto
+                    {
+                        Index = 2
+                    },
+                    new PageDto
+                    {
+                        Index = 3
+                    },
+                }
+            });
 
             bookCommandAggregate.Save();
+
+            var bookEntity = bookCommandAggregate.RootEntity;
 
             Assert.IsNotNull(bookEntity.Id);
 
@@ -508,33 +525,69 @@ GO
             // Insert
             var aggregates = new List<BookPagesCommandAggregate>();
 
-            var bookCommandAggregate = new BookPagesCommandAggregate(context, new BookEntity(new BookData { Title = "Book1" }));
-
-            bookCommandAggregate.AddPage(new PageEntity(new PageData { Index = 1 }));
-
-            bookCommandAggregate.AddPage(new PageEntity(new PageData { Index = 2 }));
-
-            bookCommandAggregate.AddPage(new PageEntity(new PageData { Index = 3 }));
+            var bookCommandAggregate = new BookPagesCommandAggregate(context, new BookPagesDto
+            {
+                Title = "Book1",
+                Pages = new List<PageDto>
+                {
+                    new PageDto
+                    {
+                        Index = 1
+                    },
+                    new PageDto
+                    {
+                        Index = 2
+                    },
+                    new PageDto
+                    {
+                        Index = 3
+                    },
+                }
+            });
 
             aggregates.Add(bookCommandAggregate);
 
-            bookCommandAggregate = new BookPagesCommandAggregate(context, new BookEntity(new BookData { Title = "Book2" }));
-
-            bookCommandAggregate.AddPage(new PageEntity(new PageData { Index = 4 }));
-
-            bookCommandAggregate.AddPage(new PageEntity(new PageData { Index = 5 }));
-
-            bookCommandAggregate.AddPage(new PageEntity(new PageData { Index = 6 }));
+            bookCommandAggregate = new BookPagesCommandAggregate(context, new BookPagesDto
+            {
+                Title = "Book2",
+                Pages = new List<PageDto>
+                {
+                    new PageDto
+                    {
+                        Index = 4
+                    },
+                    new PageDto
+                    {
+                        Index = 5
+                    },
+                    new PageDto
+                    {
+                        Index = 6
+                    },
+                }
+            });
 
             aggregates.Add(bookCommandAggregate);
 
-            bookCommandAggregate = new BookPagesCommandAggregate(context, new BookEntity(new BookData { Title = "Book3" }));
-
-            bookCommandAggregate.AddPage(new PageEntity(new PageData { Index = 7 }));
-
-            bookCommandAggregate.AddPage(new PageEntity(new PageData { Index = 8 }));
-
-            bookCommandAggregate.AddPage(new PageEntity(new PageData { Index = 9 }));
+            bookCommandAggregate = new BookPagesCommandAggregate(context, new BookPagesDto
+            {
+                Title = "Book3",
+                Pages = new List<PageDto>
+                {
+                    new PageDto
+                    {
+                        Index = 7
+                    },
+                    new PageDto
+                    {
+                        Index = 8
+                    },
+                    new PageDto
+                    {
+                        Index = 9
+                    },
+                }
+            });
 
             aggregates.Add(bookCommandAggregate);
 

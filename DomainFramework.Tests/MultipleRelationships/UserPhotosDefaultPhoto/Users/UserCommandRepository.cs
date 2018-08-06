@@ -46,7 +46,7 @@ namespace DomainFramework.Tests
                 };
             }
 
-            var command = Query<UserEntity>
+            return Query<UserEntity>
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_User_Update")
@@ -57,28 +57,26 @@ namespace DomainFramework.Tests
                 .Instance(entity)
                 .MapProperties(
                     pm => pm.Map(m => m.Id)//.Index(0),
-                );
-
-            command.OnBeforeCommandExecuted(() =>
-            {
-                if (TransferEntities != null)
+                )
+                .OnBeforeCommandExecuted(cmd =>
                 {
-                    var userEntity = (UserEntity)TransferEntities().ElementAt(0);
+                    if (TransferEntities != null)
+                    {
+                        var userEntity = (UserEntity)TransferEntities().ElementAt(0);
 
-                    var defaultPhotoEntity = (PhotoEntity)TransferEntities().ElementAt(1);
+                        var defaultPhotoEntity = (PhotoEntity)TransferEntities().ElementAt(1);
 
-                    entity.Id = userEntity.Id;
+                        entity.Id = userEntity.Id;
 
-                    entity.DefaultPhotoId = defaultPhotoEntity.Id;
+                        entity.DefaultPhotoId = defaultPhotoEntity.Id;
 
-                    command.Parameters( // Map the extra parameters for the foreign key(s)
-                        p => p.Name("userId").Value(userEntity.Id),
-                        p => p.Name("defaultPhotoId").Value(defaultPhotoEntity.Id)
-                    );
-                }
-            });
+                        cmd.Parameters( // Map the extra parameters for the foreign key(s)
+                            p => p.Name("userId").Value(userEntity.Id),
+                            p => p.Name("defaultPhotoId").Value(defaultPhotoEntity.Id)
+                        );
+                    }
+                });
 
-            return command;
         }
 
         protected override Command CreateDeleteCommand(UserEntity entity, IAuthenticatedUser user)

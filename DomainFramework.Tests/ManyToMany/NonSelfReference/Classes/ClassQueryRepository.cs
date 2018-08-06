@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace DomainFramework.Tests
 {
-    class ClassQueryRepository : Core.QueryEntityRepository<ClassEntity, Guid?>
+    class ClassQueryRepository : Core.EntityQueryRepository<ClassEntity, Guid?>
     {
         public override IEnumerable<IEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
         {

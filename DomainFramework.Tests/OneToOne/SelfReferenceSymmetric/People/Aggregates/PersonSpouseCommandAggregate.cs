@@ -6,11 +6,11 @@ namespace DomainFramework.Tests.OneToOne.SelfReference
     {
         public PersonEntity2 Spouse { get; private set; }
 
-        public PersonSpouseCommandAggregate(DataAccess.RepositoryContext context, string firstName, string spouseName) : base(context, null)
+        public PersonSpouseCommandAggregate(DataAccess.RepositoryContext context, PersonSpouseDto personSpouse) : base(context, null)
         {
             RootEntity = new PersonEntity2
             {
-                FirstName = firstName
+                FirstName = personSpouse.FirstName
             };
 
             TransactedSaveOperations.Enqueue(
@@ -19,7 +19,7 @@ namespace DomainFramework.Tests.OneToOne.SelfReference
 
             Spouse = new PersonEntity2
             {
-                FirstName = spouseName
+                FirstName = personSpouse.SpouseName
             };
 
             TransactedSaveOperations.Enqueue(

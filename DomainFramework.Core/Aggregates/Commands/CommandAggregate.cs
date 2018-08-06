@@ -8,7 +8,7 @@ namespace DomainFramework.Core
     /// Ensure business invariant by executing operations inside a unit fo work
     /// </summary>
     public class CommandAggregate<TEntity> : ICommandAggregate<TEntity>
-        where TEntity : IEntity
+        where TEntity : class, IEntity
     {
         public IRepositoryContext RepositoryContext { get; set; }
 
@@ -28,7 +28,7 @@ namespace DomainFramework.Core
 
         protected virtual bool RequiresDeleteUnitOfWork => TransactedDeleteOperations.Count() > 1 || TransactedDeleteOperations.Any(to => to.RequiresUnitOfWork);
 
-        public CommandAggregate(RepositoryContext context, TEntity entity)
+        public CommandAggregate(RepositoryContext context, TEntity entity = null)
         {
             RepositoryContext = context;
 

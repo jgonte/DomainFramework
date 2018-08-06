@@ -8,7 +8,7 @@ namespace DomainFramework.DataAccess
     /// Implementation of a command repository to work using the DataAccess library
     /// </summary>
     /// <typeparam name="TValueObject"></typeparam>
-    public abstract class CommandValueObjectRepository<TValueObject> : Core.CommandValueObjectRepository<TValueObject>
+    public abstract class CommandValueObjectRepository<TValueObject> : Core.ValueObjectCommandRepository<TValueObject>
         where TValueObject : IValueObject
     {
         public override void Insert(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)

@@ -10,15 +10,14 @@ namespace DomainFramework.Tests
     {
         protected override Command CreateInsertCommand(FriendshipEntity entity, IAuthenticatedUser user)
         {
-            var command = Command
+            return Command
                 .NonQuery()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Friendship_Create")
                 .AutoGenerateParameters(
                     qbeObject: entity
-                );
-
-            command.OnBeforeCommandExecuted(() =>
+                )
+                .OnBeforeCommandExecuted(cmd =>
             {
                 var entities = TransferEntities();
 
@@ -32,13 +31,11 @@ namespace DomainFramework.Tests
                     FriendId = friendEntity.Id.Value
                 };
 
-                command.Parameters( // Map the extra parameters for the foreign key(s)
+                cmd.Parameters( // Map the extra parameters for the foreign key(s)
                     p => p.Name("PersonId").Value(personEntity.Id),
                     p => p.Name("FriendId").Value(friendEntity.Id)
                 );
             });
-
-            return command;
         }
 
         protected override Command CreateUpdateCommand(FriendshipEntity entity, IAuthenticatedUser user)

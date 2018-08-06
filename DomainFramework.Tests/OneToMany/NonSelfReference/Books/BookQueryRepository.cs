@@ -5,7 +5,7 @@ using DomainFramework.Core;
 
 namespace DomainFramework.Tests
 {
-    public class BookQueryRepository : Core.QueryEntityRepository<BookEntity, int?>
+    public class BookQueryRepository : Core.EntityQueryRepository<BookEntity, int?>
     {
         public override IEnumerable<IEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
         {

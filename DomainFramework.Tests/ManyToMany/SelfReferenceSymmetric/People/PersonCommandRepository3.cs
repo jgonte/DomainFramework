@@ -41,7 +41,7 @@ namespace DomainFramework.Tests
             }
             else
             {
-                command.OnBeforeCommandExecuted(() =>
+                command.OnBeforeCommandExecuted(cmd =>
                 {
                     command.Parameters(
                         p => p.Name("personId").Value(entity.Id.Value)

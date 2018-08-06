@@ -8,7 +8,7 @@ namespace DomainFramework.Core
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity to retrieve</typeparam>
     /// <typeparam name="TKey">The type of the key of the entity</typeparam>
-    public abstract class QueryEntityRepository<TEntity, TKey> : IQueryEntityRepository
+    public abstract class EntityQueryRepository<TEntity, TKey> : IEntityQueryRepository
         where TEntity : Entity<TKey>, new()
     {
         public string ConnectionName { get; set; }

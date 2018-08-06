@@ -11,7 +11,7 @@ namespace DomainFramework.Tests
     {
         protected override Command CreateInsertCommand(ExecutiveEntity entity, IAuthenticatedUser user)
         {
-            var command = Command
+            return Command
                 .NonQuery()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Executive_Create")
@@ -20,22 +20,20 @@ namespace DomainFramework.Tests
                     excludedProperties: new Expression<Func<ExecutiveEntity, object>>[]{
                         m => m.Id
                     }
-                );
+                )
+                .OnBeforeCommandExecuted(cmd =>
+                {
+                    var entities = TransferEntities();
 
-            command.OnBeforeCommandExecuted(() =>
-            {
-                var entities = TransferEntities();
+                    var employeeEntity = (EmployeeEntity)entities.Single();
 
-                var employeeEntity = (EmployeeEntity)entities.Single();
+                    entity.Id = employeeEntity.Id;
 
-                entity.Id = employeeEntity.Id;
+                    cmd.Parameters( // Map the extra parameters for the foreign key(s)
+                        p => p.Name("executiveId").Value(entity.Id)
+                    );
+                });
 
-                command.Parameters( // Map the extra parameters for the foreign key(s)
-                    p => p.Name("executiveId").Value(entity.Id)
-                );
-            });
-
-            return command;
         }
 
         protected override Command CreateUpdateCommand(ExecutiveEntity entity, IAuthenticatedUser user)

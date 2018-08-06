@@ -245,7 +245,13 @@ GO
             context.RegisterCommandRepositoryFactory<CapitalCityEntity>(() => new CapitalCityCommandRepository());
 
             // Insert
-            var commandAggregate = new CountryCapitalCityCommandAggregate(context, countryCode: "il", countryName: "ISRAEL", capitalCity: null);
+            var commandAggregate = new CountryCapitalCityCommandAggregate(context,
+                new CountryWithCapitalCityDto
+                {
+                    CountryCode = "il",
+                    Name = "ISRAEL",
+                    CapitalCity = null
+                });
 
             commandAggregate.Save();
 
@@ -308,13 +314,19 @@ GO
             context.RegisterCommandRepositoryFactory<CapitalCityEntity>(() => new CapitalCityCommandRepository());
 
             // Insert
-
-            var commandAggregate = new CountryCapitalCityCommandAggregate(context, countryCode: "us", countryName: "United States", capitalCity: "Washington");
+            var commandAggregate = new CountryCapitalCityCommandAggregate(context, new CountryWithCapitalCityDto
+            {
+                CountryCode = "us",
+                Name = "United States",
+                CapitalCity = new CapitalCityDto
+                {
+                    Name = "Washington"
+                }
+            });
 
             commandAggregate.Save();
 
             var countryEntity = commandAggregate.RootEntity;
-
 
             Assert.AreEqual("us", countryEntity.Id);
 
@@ -327,7 +339,6 @@ GO
             Assert.AreEqual("us", capitalCity.CountryCode);
 
             // Read
-
             context.RegisterQueryRepository<CountryEntity>(new CountryQueryRepository());
 
             context.RegisterQueryRepository<CapitalCityEntity>(new CapitalCityQueryRepository());

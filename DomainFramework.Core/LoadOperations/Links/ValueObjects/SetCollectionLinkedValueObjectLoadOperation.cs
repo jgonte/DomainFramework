@@ -7,9 +7,9 @@ namespace DomainFramework.Core
         where TEntity : IEntity
         where TLinkedValueObject : IValueObject
     {
-        public Action<IQueryEntityRepository, TEntity, IAuthenticatedUser> SetLinkedValueObjects { get; set; }
+        public Action<IEntityQueryRepository, TEntity, IAuthenticatedUser> SetLinkedValueObjects { get; set; }
 
-        public Func<IQueryEntityRepository, TEntity, IAuthenticatedUser, Task> SetLinkedValueObjectsAsync { get; set; }
+        public Func<IEntityQueryRepository, TEntity, IAuthenticatedUser, Task> SetLinkedValueObjectsAsync { get; set; }
 
         public void Execute(IRepositoryContext repositoryContext, IEntity entity, IAuthenticatedUser user)
         {

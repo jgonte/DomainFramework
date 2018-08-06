@@ -5,7 +5,7 @@ using DomainFramework.Core;
 
 namespace DomainFramework.Tests
 {
-    class EmployeeQueryRepository : QueryEntityRepository<EmployeeEntity, int?>
+    class EmployeeQueryRepository : EntityQueryRepository<EmployeeEntity, int?>
     {
         public override IEnumerable<IEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
         {

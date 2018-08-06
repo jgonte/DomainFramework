@@ -1,5 +1,4 @@
 ﻿using DomainFramework.Core;
-using System;
 
 namespace DomainFramework.Tests
 {

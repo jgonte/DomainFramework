@@ -189,7 +189,12 @@ GO
             context.RegisterCommandRepositoryFactory<PersonEntity2>(() => new PersonCommandRepository2());
 
             // Insert
-            var commandAggregate = new PersonSpouseCommandAggregate(context, firstName: "Jorge", spouseName: "Yana");
+            var commandAggregate = new PersonSpouseCommandAggregate(context, 
+                new PersonSpouseDto
+                {
+                    FirstName = "Jorge",
+                    SpouseName = "Yana"
+                });
 
             commandAggregate.Save();
 

@@ -6,21 +6,21 @@ namespace DomainFramework.Tests
     {
         public CapitalCityEntity CapitalCity { get; private set; }
 
-        public CountryCapitalCityCommandAggregate(DataAccess.RepositoryContext context, string countryCode, string countryName, string capitalCity) : base(context, null)
+        public CountryCapitalCityCommandAggregate(DataAccess.RepositoryContext context, CountryWithCapitalCityDto countryWithCapitalCity) : base(context, null)
         {
             RootEntity = new CountryEntity(new CountryData
             {
-                CountryCode = countryCode,
-                Name = countryName
+                CountryCode = countryWithCapitalCity.CountryCode,
+                Name = countryWithCapitalCity.Name
             });
 
             TransactedSaveOperations.Enqueue(
                 new SaveEntityTransactedOperation<CountryEntity>(RootEntity)
             );
 
-            if (!string.IsNullOrEmpty(capitalCity))
+            if (countryWithCapitalCity.CapitalCity != null)
             {
-                CapitalCity = new CapitalCityEntity(new CapitalCityData { Name = capitalCity });
+                CapitalCity = new CapitalCityEntity(new CapitalCityData { Name = countryWithCapitalCity.CapitalCity.Name });
 
                 TransactedSaveOperations.Enqueue(
                     new SingleEntityLinkTransactedOperation<CountryEntity, CapitalCityEntity>(RootEntity, CapitalCity)

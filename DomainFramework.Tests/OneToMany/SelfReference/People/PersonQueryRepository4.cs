@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Tests
 {
-    class PersonQueryRepository4 : Core.QueryEntityRepository<PersonEntity3, int?>
+    class PersonQueryRepository4 : Core.EntityQueryRepository<PersonEntity3, int?>
     {
         public override IEnumerable<IEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
         {

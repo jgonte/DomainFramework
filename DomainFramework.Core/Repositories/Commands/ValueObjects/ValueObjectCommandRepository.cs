@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public abstract class CommandValueObjectRepository<TValueObject> : ICommandValueObjectRepository
+    public abstract class ValueObjectCommandRepository<TValueObject> : IValueObjectCommandRepository
         where TValueObject : IValueObject
     {
         public string ConnectionName { get; set; }
@@ -21,22 +21,22 @@ namespace DomainFramework.Core
 
         #region ICommandValueObjectRepository members
 
-        void ICommandValueObjectRepository.Insert(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        void IValueObjectCommandRepository.Insert(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
             Insert(valueObject, user, unitOfWork);
         }
 
-        bool ICommandValueObjectRepository.DeleteAll(IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        bool IValueObjectCommandRepository.DeleteAll(IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
             return DeleteAll(user, unitOfWork);
         }
 
-        async Task ICommandValueObjectRepository.InsertAsync(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        async Task IValueObjectCommandRepository.InsertAsync(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
             await InsertAsync(valueObject, user, unitOfWork);
         }
 
-        Task<bool> ICommandValueObjectRepository.DeleteAllAsync(IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        Task<bool> IValueObjectCommandRepository.DeleteAllAsync(IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
             return DeleteAllAsync(user, unitOfWork);
         }

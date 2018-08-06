@@ -2,6 +2,7 @@
 using DomainFramework.DataAccess;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -272,36 +273,35 @@ GO
             context.RegisterCommandRepositoryFactory<ClassEnrollmentEntity>(() => new ClassEnrollmentCommandRepository());
 
             // Suppose the class and the student do not exist by the time we enroll it so we need to create the class and student records in the database
+            var commandAggregate = new ClassEnrollmentCommandAggregate(context, 
+                new ClassEnrollmentDto
+                {
+                    Name = "Programming",
+                    StudentsToEnroll = new List<StudentToEnrollDto>
+                    {
+                        new StudentToEnrollDto
+                        {
+                            FirstName = "Sarah",
+                            StartedDateTime = new DateTime(2017, 3, 12, 9, 16, 37)
+                        },
+                        new StudentToEnrollDto
+                        {
+                            FirstName = "Yana",
+                            StartedDateTime = new DateTime(2017, 4, 12, 10, 26, 47)
+                        },
+                        new StudentToEnrollDto
+                        {
+                            FirstName = "Mark",
+                            StartedDateTime = new DateTime(2017, 5, 14, 11, 24, 57)
+                        }
+                    }
+                });
 
-            var classEntity = new ClassEntity
-            {
-                Name = "Programming"
-            };
+            commandAggregate.Save();
 
-            var classAggregate = new ClassEnrollmentCommandAggregate(context, classEntity);
-
-            classAggregate.EnrollStudent(new StudentEntity
-            {
-                FirstName = "Sarah"
-            }, 
-            new DateTime(2017, 3, 12, 9, 16, 37));
-
-            classAggregate.EnrollStudent(new StudentEntity
-            {
-                FirstName = "Yana"
-            },
-            new DateTime(2017, 4, 12, 10, 26, 47));
-
-            classAggregate.EnrollStudent(new StudentEntity
-            {
-                FirstName = "Mark"
-            },
-            new DateTime(2017, 5, 14, 11, 24, 57));
-
-            classAggregate.Save();
+            var classEntity = commandAggregate.RootEntity;
 
             // Read
-
             context.RegisterQueryRepository<ClassEntity>(new ClassQueryRepository());
 
             context.RegisterQueryRepository<StudentEntity>(new StudentQueryRepository());
@@ -353,33 +353,37 @@ GO
             context.RegisterCommandRepositoryFactory<ClassEnrollmentEntity>(() => new ClassEnrollmentCommandRepository());
 
             // Suppose the class and the student do not exist by the time we enroll it so we need to create the class and student records in the database
+            var commandAggregate = new ClassEnrollmentCommandAggregate(context,
+                new ClassEnrollmentDto
+                {
+                    Name = "Programming",
+                    StudentsToEnroll = new List<StudentToEnrollDto>
+                    {
+                        new StudentToEnrollDto
+                        {
+                            FirstName = "Sarah",
+                            StartedDateTime = new DateTime(2017, 3, 12, 9, 16, 37)
+                        },
+                        new StudentToEnrollDto
+                        {
+                            FirstName = "Yana",
+                            StartedDateTime = new DateTime(2017, 4, 12, 10, 26, 47)
+                        },
+                        new StudentToEnrollDto
+                        {
+                            FirstName = "Mark",
+                            StartedDateTime = new DateTime(2017, 5, 14, 11, 24, 57)
+                        }
+                    }
+                });
+            
+            await commandAggregate.SaveAsync();
 
-            var classEntity = new ClassEntity
-            {
-                Name = "Programming"
-            };
+            var classEntity = commandAggregate.RootEntity;
 
-            var classAggregate = new ClassEnrollmentCommandAggregate(context, classEntity);
+            Assert.AreEqual(3, commandAggregate.StudentsToEnroll.Count());
 
-            classAggregate.EnrollStudent(new StudentEntity
-            {
-                FirstName = "Sarah"
-            },
-            new DateTime(2017, 3, 12, 9, 16, 37));
-
-            classAggregate.EnrollStudent(new StudentEntity
-            {
-                FirstName = "Yana"
-            },
-            new DateTime(2017, 4, 12, 10, 26, 47));
-
-            classAggregate.EnrollStudent(new StudentEntity
-            {
-                FirstName = "Mark"
-            },
-            new DateTime(2017, 5, 14, 11, 24, 57));
-
-            await classAggregate.SaveAsync();
+            Assert.AreEqual(3, commandAggregate.ClassEnrollments.Count());
 
             // Read
 

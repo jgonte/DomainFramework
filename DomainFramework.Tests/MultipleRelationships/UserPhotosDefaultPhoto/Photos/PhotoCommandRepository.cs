@@ -11,7 +11,7 @@ namespace DomainFramework.Tests
     {
         protected override Command CreateInsertCommand(PhotoEntity entity, IAuthenticatedUser user)
         {
-            var command = Query<PhotoEntity>
+            return Query<PhotoEntity>
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Photo_Create")
@@ -25,20 +25,17 @@ namespace DomainFramework.Tests
                 .Instance(entity)
                 .MapProperties(
                     pm => pm.Map(m => m.Id)//.Index(0),
-                );
-
-            command.OnBeforeCommandExecuted(() =>
+                )
+                .OnBeforeCommandExecuted(cmd =>
             {
                 var e = (UserEntity)TransferEntities().Single();
 
                 entity.UserId = e.Id.Value;
 
-                command.Parameters( // Map the extra parameters for the foreign key(s)
+                cmd.Parameters( // Map the extra parameters for the foreign key(s)
                     p => p.Name("userId").Value(entity.UserId)
                 );
             });
-
-            return command;
         }
 
         protected override Command CreateUpdateCommand(PhotoEntity entity, IAuthenticatedUser user)

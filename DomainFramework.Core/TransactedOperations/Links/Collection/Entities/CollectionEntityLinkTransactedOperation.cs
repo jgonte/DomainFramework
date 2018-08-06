@@ -35,7 +35,7 @@ namespace DomainFramework.Core
         {
             foreach (var linkedEntity in _linkedEntities)
             {
-                var repository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedEntity));
+                var repository = (IEntityCommandRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedEntity));
 
                 repository.TransferEntities = () => new IEntity[] { _rootEntity };
 
@@ -49,7 +49,7 @@ namespace DomainFramework.Core
 
             foreach (var linkedEntity in _linkedEntities)
             {
-                var repository = (ICommandEntityRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedEntity));
+                var repository = (IEntityCommandRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedEntity));
 
                 repository.TransferEntities = () => new IEntity[] { _rootEntity };
 

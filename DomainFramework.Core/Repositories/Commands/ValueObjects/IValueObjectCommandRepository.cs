@@ -10,7 +10,7 @@ namespace DomainFramework.Core
     /// there are no updates for those items
     /// </summary>
     /// <typeparam name="IValueObject"></typeparam>
-    public interface ICommandValueObjectRepository : ICommandRepository
+    public interface IValueObjectCommandRepository : ICommandRepository
     {
         void Insert(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 

@@ -89,6 +89,8 @@
     <Compile Include="Inheritance\OneLevel\Employees\EmployeeCommandRepository.cs" />
     <Compile Include="Inheritance\OneLevel\People\PersonCommandRepository.cs" />
     <Compile Include="Inheritance\OneLevel\People\PersonQueryRepository.cs" />
+    <Compile Include="ManyToMany\NonSelfReference\Aggregates\ClassEnrollmentDto.cs" />
+    <Compile Include="ManyToMany\NonSelfReference\Aggregates\StudentToEnrollDto.cs" />
     <Compile Include="ManyToMany\SelfReferenceSymmetric\Aggregates\PersonFriendsCommandAggregate.cs" />
     <Compile Include="ManyToMany\SelfReferenceSymmetric\Aggregates\PersonFriendsQueryAggregate.cs" />
     <Compile Include="ManyToMany\SelfReferenceSymmetric\Friendship\FriendshipCommandRepository.cs" />
@@ -110,12 +112,16 @@
     <Compile Include="NestedAggregates\DepartmentManager\Departments\DepartmentEntity.cs" />
     <Compile Include="NestedAggregates\DepartmentManager\DepartmentManagerTests.cs" />
     <Compile Include="NestedAggregates\DepartmentManager\Roles\Employees\EmployeeRoleEntity.cs" />
+    <Compile Include="OneToMany\NonSelfReference\Aggregates\BookPagesDto.cs" />
     <Compile Include="OneToMany\SelfReference\People\PersonQueryRepository4.cs" />
     <Compile Include="OneToMany\SelfReference\ManagerEmployeesAggregateTests.cs" />
     <Compile Include="OneToMany\SelfReference\Aggregates\ManagerEmployeesCommandAggregate.cs" />
     <Compile Include="OneToMany\SelfReference\Aggregates\ManagerEmployeesQueryAggregate.cs" />
     <Compile Include="OneToMany\SelfReference\People\PersonEntity3.cs" />
     <Compile Include="OneToMany\SelfReference\People\PersonCommandRepository4.cs" />
+    <Compile Include="OneToOne\NonSelfReference\Countries\Aggregates\CapitalCityDto.cs" />
+    <Compile Include="OneToOne\NonSelfReference\Countries\Aggregates\CountryWithCapitalCityDto.cs" />
+    <Compile Include="OneToOne\SelfReferenceSymmetric\People\Aggregates\PersonSpouseDto.cs" />
     <Compile Include="OneToOne\SelfReferenceSymmetric\People\PersonCommandRepository2.cs" />
     <Compile Include="OneToOne\SelfReferenceSymmetric\People\PersonQueryRepository2.cs" />
     <Compile Include="Inheritance\TwoLevels\Executives\ExecutiveQueryRepository.cs" />
@@ -176,6 +182,10 @@
     <ProjectReference Include="..\..\DataAccess.Solution\DataAccess.Core\DataAccess.Core.csproj">
       <Project>{9A486894-A01D-44FA-AE69-EDB4D0C9A104}</Project>
       <Name>DataAccess.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Utilities.Solution\Utilities\Utilities.csproj">
+      <Project>{6cad6826-2a67-4f2a-b45a-9dff4544511d}</Project>
+      <Name>Utilities</Name>
     </ProjectReference>
     <ProjectReference Include="..\DomainFramework.Core\DomainFramework.Core.csproj">
       <Project>{18283DE0-642C-469A-A846-F4E457D22395}</Project>

@@ -14,17 +14,17 @@ namespace DomainFramework.Core
 
         object IEntity.Id { get => Id; set => Id = (TKey)value; }
 
-        /// <summary>
-        /// Required since a template constructor cannot receive arguments
-        /// </summary>
-        public Entity()
-        {
-        }
+        ///// <summary>
+        ///// Required since a template constructor cannot receive arguments
+        ///// </summary>
+        //public Entity()
+        //{
+        //}
 
-        protected Entity(TKey id)
-        {
-            Id = id;
-        }
+        //protected Entity(TKey id)
+        //{
+        //    Id = id;
+        //}
 
         public override bool Equals(object obj)
         {
