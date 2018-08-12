@@ -11,7 +11,7 @@ namespace DomainFramework.DataAccess
     public abstract class CommandValueObjectRepository<TValueObject> : Core.ValueObjectCommandRepository<TValueObject>
         where TValueObject : IValueObject
     {
-        public override void Insert(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        public override void Insert(TValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
             var command = CreateInsertCommand(valueObject, user);
 
@@ -41,7 +41,7 @@ namespace DomainFramework.DataAccess
             }
         }
 
-        public override async Task InsertAsync(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        public override async Task InsertAsync(TValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
             var command = CreateInsertCommand(valueObject, user);
 
@@ -71,7 +71,7 @@ namespace DomainFramework.DataAccess
             }
         }
 
-        protected abstract Command CreateInsertCommand(IValueObject valueObject, IAuthenticatedUser user);
+        protected abstract Command CreateInsertCommand(TValueObject valueObject, IAuthenticatedUser user);
 
         protected abstract Command CreateDeleteAllCommand(IAuthenticatedUser user);
 

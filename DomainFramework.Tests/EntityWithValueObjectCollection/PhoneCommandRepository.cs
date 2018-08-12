@@ -7,14 +7,14 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
 {
     class PhoneCommandRepository : DataAccess.CommandValueObjectRepository<Phone>
     {
-        protected override Command CreateInsertCommand(IValueObject valueObject, IAuthenticatedUser user)
+        protected override Command CreateInsertCommand(Phone phone, IAuthenticatedUser user)
         {
             return Query<PageEntity>
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Phone_Create")
                 .AutoGenerateParameters( // Generate the parameters from the data
-                    qbeObject: valueObject
+                    qbeObject: phone
                 )
                 .OnBeforeCommandExecuted(cmd =>
                 {

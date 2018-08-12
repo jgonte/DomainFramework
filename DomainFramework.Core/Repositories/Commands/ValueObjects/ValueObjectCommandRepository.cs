@@ -11,11 +11,11 @@ namespace DomainFramework.Core
 
         public Func<IEnumerable<IEntity>> TransferEntities { get; set; }
 
-        public abstract void Insert(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork);
+        public abstract void Insert(TValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
         public abstract bool DeleteAll(IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
-        public abstract Task InsertAsync(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork);
+        public abstract Task InsertAsync(TValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
         public abstract Task<bool> DeleteAllAsync(IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
@@ -23,7 +23,7 @@ namespace DomainFramework.Core
 
         void IValueObjectCommandRepository.Insert(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            Insert(valueObject, user, unitOfWork);
+            Insert((TValueObject)valueObject, user, unitOfWork);
         }
 
         bool IValueObjectCommandRepository.DeleteAll(IAuthenticatedUser user, IUnitOfWork unitOfWork)
@@ -33,7 +33,7 @@ namespace DomainFramework.Core
 
         async Task IValueObjectCommandRepository.InsertAsync(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            await InsertAsync(valueObject, user, unitOfWork);
+            await InsertAsync((TValueObject)valueObject, user, unitOfWork);
         }
 
         Task<bool> IValueObjectCommandRepository.DeleteAllAsync(IAuthenticatedUser user, IUnitOfWork unitOfWork)

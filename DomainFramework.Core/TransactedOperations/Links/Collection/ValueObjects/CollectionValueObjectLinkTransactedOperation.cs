@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public class CollectionValueObjectLinkTransactedOperation<TEntity, TLinkedValueObject> : ITransactedOperation
+    public class CollectionValueObjectLinkTransactedOperation<TEntity, TLinkedValueObject, TRepositoryKey> : ITransactedOperation
         where TEntity : IEntity
         where TLinkedValueObject : IValueObject
     {
@@ -28,7 +28,7 @@ namespace DomainFramework.Core
         public void Execute(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
             // Remove all the value objects attached to the entity
-            var repository = (IValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedValueObject));
+            var repository = (IValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TRepositoryKey));
 
             repository.TransferEntities = () => new IEntity[] { _rootEntity };
 
@@ -36,7 +36,7 @@ namespace DomainFramework.Core
 
             foreach (var linkedValueObject in GetLinkedValueObjects(_rootEntity))
             {
-                repository = (IValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedValueObject));
+                repository = (IValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TRepositoryKey));
 
                 repository.TransferEntities = () => new IEntity[] { _rootEntity };
 
