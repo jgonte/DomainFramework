@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DomainFramework.Tests
 {
-    class BookPagesQueryAggregate : QueryAggregate<int?, BookEntity>
+    class BookPagesQueryAggregate : QueryAggregate<BookEntity, int?>
     {
         public GetCollectionLinkedEntityLoadOperation<PageEntity> GetPagesLoadOperation { get; }
 
@@ -32,6 +32,27 @@ namespace DomainFramework.Tests
             LoadOperations.Enqueue(
                 GetPagesLoadOperation
             );
+        }
+
+        public BookPagesOutputDto GetById(int? rootEntityId, IAuthenticatedUser user = null)
+        {
+            Load(rootEntityId, user);
+
+            var dto = new BookPagesOutputDto();
+
+            dto.Id = RootEntity.Id;
+
+            dto.Title = RootEntity.Data.Title;
+
+            dto.Pages = Pages.Select(page => new PageOutputDto
+            {
+                Id = page.Id,
+                Index = page.Data.Index,
+                BookId = page.BookId
+            })
+            .ToList();
+
+            return dto;
         }
     }
 }

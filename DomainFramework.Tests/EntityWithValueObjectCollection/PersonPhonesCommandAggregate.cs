@@ -5,7 +5,7 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
 {
     class PersonPhonesCommandAggregate : CommandAggregate<PersonEntity4>
     {
-        private CollectionValueObjectLinkTransactedOperation<PersonEntity4, Phone> _phonesLink;
+        private CollectionValueObjectLinkTransactedOperation<PersonEntity4, Phone, PhoneCommandRepository.RepositoryKey> _phonesLink;
 
         public PersonPhonesCommandAggregate(DataAccess.RepositoryContext context, string firstName, List<Phone> phones) : base(context, null)
         {
@@ -19,7 +19,7 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
                 new SaveEntityTransactedOperation<PersonEntity4>(RootEntity)
             );
 
-            _phonesLink = new CollectionValueObjectLinkTransactedOperation<PersonEntity4, Phone>(RootEntity)
+            _phonesLink = new CollectionValueObjectLinkTransactedOperation<PersonEntity4, Phone, PhoneCommandRepository.RepositoryKey>(RootEntity)
             {
                 GetLinkedValueObjects = entity => entity.Phones
             };

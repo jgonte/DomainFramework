@@ -4,11 +4,11 @@ using Utilities.Validation;
 
 namespace DomainFramework.Tests
 {
-    public class BookPagesDto : IInputDataTransferObject
+    public class BookPagesInputDto : IInputDataTransferObject
     {
         public string Title { get; set; }
 
-        public IEnumerable<PageDto> Pages { get; set; }
+        public IEnumerable<PageInputDto> Pages { get; set; }
 
         public ValidationResult Validate()
         {
@@ -16,7 +16,7 @@ namespace DomainFramework.Tests
         }
     }
 
-    public class PageDto : IInputDataTransferObject
+    public class PageInputDto : IInputDataTransferObject
     {
         public int Index { get; set; }
 
@@ -25,5 +25,4 @@ namespace DomainFramework.Tests
             throw new System.NotImplementedException();
         }
     }
-
 }

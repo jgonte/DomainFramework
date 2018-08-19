@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Tests
 {
-    class FriendshipCommandRepository : DataAccess.CommandEntityRepository<FriendshipEntity>
+    class FriendshipCommandRepository : DataAccess.EntityCommandRepository<FriendshipEntity>
     {
         protected override Command CreateInsertCommand(FriendshipEntity entity, IAuthenticatedUser user)
         {

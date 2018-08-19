@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public class QueryAggregate<TKey, TEntity> : IQueryAggregate<TKey, TEntity>
+    public class QueryAggregate<TEntity, TKey> : IQueryAggregate<TEntity, TKey>
         where TEntity : Entity<TKey>
     {
         public IRepositoryContext RepositoryContext { get; set; }

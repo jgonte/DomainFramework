@@ -5,7 +5,7 @@ using DomainFramework.Core;
 
 namespace DomainFramework.Tests.EntityWithValueObjectCollection
 {
-    class PhoneCommandRepository : DataAccess.CommandValueObjectRepository<Phone>
+    class PhoneCommandRepository : DataAccess.ValueObjectCommandRepository<Phone>
     {
         protected override Command CreateInsertCommand(Phone phone, IAuthenticatedUser user)
         {
@@ -60,6 +60,10 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
         protected override Task HandleInsertAsync(Command command)
         {
             throw new System.NotImplementedException();
+        }
+
+        public class RepositoryKey
+        {
         }
     }
 }

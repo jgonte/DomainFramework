@@ -2,7 +2,7 @@
 
 namespace DomainFramework.Tests
 {
-    class CountryCapitalCityQueryAggregate : QueryAggregate<string, CountryEntity>
+    class CountryCapitalCityQueryAggregate : QueryAggregate<CountryEntity, string>
     {
         public GetSingleLinkedEntityLoadOperation<CapitalCityEntity> GetCapitalCityLoadOperation { get; }
 

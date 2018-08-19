@@ -8,12 +8,12 @@ namespace DomainFramework.Tests
 {
     class ClassQueryRepository : Core.EntityQueryRepository<ClassEntity, Guid?>
     {
-        public override IEnumerable<IEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
+        public override IEnumerable<ClassEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
         {
             throw new NotImplementedException();
         }
 
-        public override Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user)
+        public override Task<IEnumerable<ClassEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user)
         {
             throw new NotImplementedException();
         }

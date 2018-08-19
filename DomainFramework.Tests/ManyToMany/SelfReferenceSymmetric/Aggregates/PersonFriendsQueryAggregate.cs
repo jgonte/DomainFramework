@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DomainFramework.Tests
 {
-    class PersonFriendsQueryAggregate : QueryAggregate<int?, PersonEntity>
+    class PersonFriendsQueryAggregate : QueryAggregate<PersonEntity, int?>
     {
         public GetCollectionLinkedEntityLoadOperation<PersonEntity> GetFriendsLoadOperation { get; }
 

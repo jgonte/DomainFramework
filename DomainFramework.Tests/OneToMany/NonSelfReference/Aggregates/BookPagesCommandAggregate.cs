@@ -10,7 +10,7 @@ namespace DomainFramework.Tests
 
         public IEnumerable<PageEntity> Pages => _pagesLink.LinkedEntities;
 
-        public BookPagesCommandAggregate(RepositoryContext context, BookPagesDto bookPages) : base(context, null)
+        public BookPagesCommandAggregate(RepositoryContext context, BookPagesInputDto bookPages) : base(context, null)
         {
             RootEntity = new BookEntity
             {

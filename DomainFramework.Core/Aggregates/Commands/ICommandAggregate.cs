@@ -5,11 +5,11 @@ namespace DomainFramework.Core
 {
     public interface ICommandAggregate : IAggregate
     {
-        void Save(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null, IEnumerable<IEntity> transferEntities = null);
+        void Save(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null);
 
         void Delete(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null);
 
-        Task SaveAsync(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null, IEnumerable<IEntity> transferEntities = null);
+        Task SaveAsync(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null);
 
         Task DeleteAsync(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null);
     }

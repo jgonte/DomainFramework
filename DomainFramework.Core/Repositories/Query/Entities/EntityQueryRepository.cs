@@ -27,8 +27,18 @@ namespace DomainFramework.Core
             return await GetByIdAsync((TKey)id, user);
         }
 
-        public abstract IEnumerable<IEntity>Get(QueryParameters parameters, IAuthenticatedUser user);
+        public abstract IEnumerable<TEntity>Get(QueryParameters parameters, IAuthenticatedUser user);
 
-        public abstract Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user);
+        IEnumerable<IEntity> IEntityQueryRepository.Get(QueryParameters parameters, IAuthenticatedUser user)
+        {
+            return Get(parameters, user);
+        }
+
+        public abstract Task<IEnumerable<TEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user);
+
+        async Task<IEnumerable<IEntity>> IEntityQueryRepository.GetAsync(QueryParameters parameters, IAuthenticatedUser user)
+        {
+            return await GetAsync(parameters, user);
+        }
     }
 }

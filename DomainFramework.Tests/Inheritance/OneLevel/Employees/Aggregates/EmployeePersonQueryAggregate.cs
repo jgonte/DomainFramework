@@ -2,7 +2,7 @@
 
 namespace DomainFramework.Tests
 {
-    class EmployeePersonQueryAggregate : QueryAggregate<int?, EmployeeEntity>
+    class EmployeePersonQueryAggregate : QueryAggregate<EmployeeEntity, int?>
     {
         public GetEntityLoadOperation<PersonEntity> PersonLoadOperation { get; }
 

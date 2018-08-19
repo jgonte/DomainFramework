@@ -271,7 +271,7 @@ GO
 
             // Insert
 
-            var inputDto = new BookPagesDto
+            var inputDto = new BookPagesInputDto
             {
                 Title = "Programming Java"
             };
@@ -348,20 +348,20 @@ GO
 
             // Insert
 
-            var bookCommandAggregate = new BookPagesCommandAggregate(context, new BookPagesDto
+            var bookCommandAggregate = new BookPagesCommandAggregate(context, new BookPagesInputDto
             {
                 Title = "Programming C#",
-                Pages = new List<PageDto>
+                Pages = new List<PageInputDto>
                 {
-                    new PageDto
+                    new PageInputDto
                     {
                         Index = 1
                     },
-                    new PageDto
+                    new PageInputDto
                     {
                         Index = 2
                     },
-                    new PageDto
+                    new PageInputDto
                     {
                         Index = 3
                     },
@@ -412,39 +412,37 @@ GO
 
             var queryAggregate = new BookPagesQueryAggregate(context);
 
-            queryAggregate.Load(bookId);
+            var outputDto = queryAggregate.GetById(bookId);
 
-            bookEntity = queryAggregate.RootEntity;
+            Assert.AreEqual(bookId, outputDto.Id);
 
-            Assert.AreEqual(bookId, bookEntity.Id);
+            Assert.AreEqual("Programming C#", outputDto.Title);
 
-            Assert.AreEqual("Programming C#", bookEntity.Data.Title);
+            Assert.AreEqual(3, outputDto.Pages.Count());
 
-            Assert.AreEqual(3, queryAggregate.Pages.Count());
+            var pageDto = outputDto.Pages.ElementAt(0);
 
-            page = queryAggregate.Pages.ElementAt(0);
+            Assert.AreEqual(1, pageDto.Id);
 
-            Assert.AreEqual(1, page.Id);
+            Assert.AreEqual(1, pageDto.Index);
 
-            Assert.AreEqual(1, page.Data.Index);
+            Assert.AreEqual(bookId, pageDto.BookId);
 
-            Assert.AreEqual(bookId, page.BookId);
+            pageDto = outputDto.Pages.ElementAt(1);
 
-            page = queryAggregate.Pages.ElementAt(1);
+            Assert.AreEqual(2, pageDto.Id);
 
-            Assert.AreEqual(2, page.Id);
+            Assert.AreEqual(2, pageDto.Index);
 
-            Assert.AreEqual(2, page.Data.Index);
+            Assert.AreEqual(bookId, pageDto.BookId);
 
-            Assert.AreEqual(bookId, page.BookId);
+            pageDto = outputDto.Pages.ElementAt(2);
 
-            page = queryAggregate.Pages.ElementAt(2);
+            Assert.AreEqual(3, pageDto.Id);
 
-            Assert.AreEqual(3, page.Id);
+            Assert.AreEqual(3, pageDto.Index);
 
-            Assert.AreEqual(3, page.Data.Index);
-
-            Assert.AreEqual(bookId, page.BookId);
+            Assert.AreEqual(bookId, pageDto.BookId);
 
             // Update
 
@@ -525,20 +523,20 @@ GO
             // Insert
             var aggregates = new List<BookPagesCommandAggregate>();
 
-            var bookCommandAggregate = new BookPagesCommandAggregate(context, new BookPagesDto
+            var bookCommandAggregate = new BookPagesCommandAggregate(context, new BookPagesInputDto
             {
                 Title = "Book1",
-                Pages = new List<PageDto>
+                Pages = new List<PageInputDto>
                 {
-                    new PageDto
+                    new PageInputDto
                     {
                         Index = 1
                     },
-                    new PageDto
+                    new PageInputDto
                     {
                         Index = 2
                     },
-                    new PageDto
+                    new PageInputDto
                     {
                         Index = 3
                     },
@@ -547,20 +545,20 @@ GO
 
             aggregates.Add(bookCommandAggregate);
 
-            bookCommandAggregate = new BookPagesCommandAggregate(context, new BookPagesDto
+            bookCommandAggregate = new BookPagesCommandAggregate(context, new BookPagesInputDto
             {
                 Title = "Book2",
-                Pages = new List<PageDto>
+                Pages = new List<PageInputDto>
                 {
-                    new PageDto
+                    new PageInputDto
                     {
                         Index = 4
                     },
-                    new PageDto
+                    new PageInputDto
                     {
                         Index = 5
                     },
-                    new PageDto
+                    new PageInputDto
                     {
                         Index = 6
                     },
@@ -569,20 +567,20 @@ GO
 
             aggregates.Add(bookCommandAggregate);
 
-            bookCommandAggregate = new BookPagesCommandAggregate(context, new BookPagesDto
+            bookCommandAggregate = new BookPagesCommandAggregate(context, new BookPagesInputDto
             {
                 Title = "Book3",
-                Pages = new List<PageDto>
+                Pages = new List<PageInputDto>
                 {
-                    new PageDto
+                    new PageInputDto
                     {
                         Index = 7
                     },
-                    new PageDto
+                    new PageInputDto
                     {
                         Index = 8
                     },
-                    new PageDto
+                    new PageInputDto
                     {
                         Index = 9
                     },

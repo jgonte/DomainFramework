@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace DomainFramework.Tests
 {
-    class PersonPhonesQueryAggregate : QueryAggregate<int?, PersonEntity4>
+    class PersonPhonesQueryAggregate : QueryAggregate<PersonEntity4, int?>
     {
         public SetCollectionLinkedValueObjectLoadOperation<PersonEntity4, Phone> SetPhonesLoadOperation { get; }
 

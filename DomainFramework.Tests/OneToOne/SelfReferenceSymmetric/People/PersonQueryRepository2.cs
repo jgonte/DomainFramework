@@ -7,12 +7,12 @@ namespace DomainFramework.Tests
 {
     class PersonQueryRepository2 : EntityQueryRepository<PersonEntity2, int?>
     {
-        public override IEnumerable<IEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
+        public override IEnumerable<PersonEntity2> Get(QueryParameters parameters, IAuthenticatedUser user)
         {
             throw new System.NotImplementedException();
         }
 
-        public override Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user)
+        public override Task<IEnumerable<PersonEntity2>> GetAsync(QueryParameters parameters, IAuthenticatedUser user)
         {
             throw new System.NotImplementedException();
         }

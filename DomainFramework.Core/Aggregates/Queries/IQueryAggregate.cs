@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public interface IQueryAggregate<TKey, TEntity> : IAggregate<TEntity>
+    public interface IQueryAggregate<TEntity, TKey> : IAggregate<TEntity>
     {
         /// <summary>
         /// Loads this aggregate by the id of its root entity

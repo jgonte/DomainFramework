@@ -2,7 +2,7 @@
 
 namespace DomainFramework.Tests
 {
-    class PersonSpouseQueryAggregate : QueryAggregate<int?, PersonEntity2>
+    class PersonSpouseQueryAggregate : QueryAggregate<PersonEntity2, int?>
     {
         public GetSingleLinkedEntityLoadOperation<PersonEntity2> GetSpouseLoadOperation { get; }
 

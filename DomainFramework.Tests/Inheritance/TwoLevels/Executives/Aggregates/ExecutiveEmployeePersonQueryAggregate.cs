@@ -2,7 +2,7 @@
 
 namespace DomainFramework.Tests
 {
-    class ExecutiveEmployeePersonQueryAggregate : QueryAggregate<int?, ExecutiveEntity>
+    class ExecutiveEmployeePersonQueryAggregate : QueryAggregate<ExecutiveEntity, int?>
     {
         public GetEntityLoadOperation<PersonEntity> PersonLoadOperation { get; }
 

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace DomainFramework.Tests
 {
-    class ClassEnrollmentQueryAggregate : QueryAggregate<Guid?, ClassEntity>
+    class ClassEnrollmentQueryAggregate : QueryAggregate<ClassEntity, Guid?>
     {
         public GetCollectionLinkedEntityLoadOperation<StudentEntity> GetStudentsLoadOperation { get; }
 

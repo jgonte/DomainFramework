@@ -112,7 +112,8 @@
     <Compile Include="NestedAggregates\DepartmentManager\Departments\DepartmentEntity.cs" />
     <Compile Include="NestedAggregates\DepartmentManager\DepartmentManagerTests.cs" />
     <Compile Include="NestedAggregates\DepartmentManager\Roles\Employees\EmployeeRoleEntity.cs" />
-    <Compile Include="OneToMany\NonSelfReference\Aggregates\BookPagesDto.cs" />
+    <Compile Include="OneToMany\NonSelfReference\Aggregates\BookPagesInputDto.cs" />
+    <Compile Include="OneToMany\NonSelfReference\Aggregates\BookPagesOutputDto.cs" />
     <Compile Include="OneToMany\SelfReference\People\PersonQueryRepository4.cs" />
     <Compile Include="OneToMany\SelfReference\ManagerEmployeesAggregateTests.cs" />
     <Compile Include="OneToMany\SelfReference\Aggregates\ManagerEmployeesCommandAggregate.cs" />

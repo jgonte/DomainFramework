@@ -4,7 +4,7 @@ using DomainFramework.Core;
 
 namespace DomainFramework.Tests
 {
-    class CountryCommandRepository : DataAccess.CommandEntityRepository<CountryEntity>
+    class CountryCommandRepository : DataAccess.EntityCommandRepository<CountryEntity>
     {
         protected override Command CreateInsertCommand(CountryEntity entity, IAuthenticatedUser user)
         {

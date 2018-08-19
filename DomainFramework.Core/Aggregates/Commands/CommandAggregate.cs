@@ -35,7 +35,7 @@ namespace DomainFramework.Core
             RootEntity = entity;
         }
 
-        public virtual void Save(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null, IEnumerable<IEntity> transferEntities = null)
+        public virtual void Save(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null)
         {
             var ownsUnitOfWork = false;
 
@@ -79,7 +79,7 @@ namespace DomainFramework.Core
             }
         }
 
-        public virtual async Task SaveAsync(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null, IEnumerable<IEntity> transferEntities = null)
+        public virtual async Task SaveAsync(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null)
         {
             var ownsUnitOfWork = false;
 

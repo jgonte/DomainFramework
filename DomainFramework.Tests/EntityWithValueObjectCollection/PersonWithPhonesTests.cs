@@ -226,7 +226,7 @@ GO
 
             context.RegisterCommandRepositoryFactory<PersonEntity4>(() => new PersonCommandRepository5());
 
-            context.RegisterCommandRepositoryFactory<Phone>(() => new PhoneCommandRepository());
+            context.RegisterCommandRepositoryFactory<PhoneCommandRepository.RepositoryKey>(() => new PhoneCommandRepository());
 
             context.RegisterQueryRepository<PersonEntity4>(new PersonQueryRepository5());
 
