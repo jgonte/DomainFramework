@@ -19,7 +19,8 @@ namespace DomainFramework.Tests
                 )
                 .Instance(entity)
                 .MapProperties(
-                    pm => pm.Map(m => m.Id)//.Index(0),
+                    pm => pm.Map<CapitalCityEntity>(m => m.Id),//.Index(0),
+                    pm => pm.Map<CapitalCityEntity>(m => m.Data).Ignore()
                 )
                 .OnBeforeCommandExecuted(cmd =>
                 {

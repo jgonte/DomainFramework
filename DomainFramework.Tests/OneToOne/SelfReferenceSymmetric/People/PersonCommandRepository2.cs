@@ -37,7 +37,7 @@ namespace DomainFramework.Tests
                 )
                 .Instance(entity)
                 .MapProperties(
-                    pm => pm.Map(m => m.Id)//.Index(0),
+                    pm => pm.Map<PersonEntity2>(m => m.Id)//.Index(0),
                 );
 
             command.OnBeforeCommandExecuted(cmd =>

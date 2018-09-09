@@ -28,8 +28,8 @@ namespace DomainFramework.Tests
                     p => p.Name("classId").Value(id.Value)
                 )
                 .MapProperties(
-                    m => m.Map(p => p.Id),//.Index(0),
-                    m => m.Map(p => p.Name)//.Index(1)
+                    m => m.Map<ClassEntity>(p => p.Id),//.Index(0),
+                    m => m.Map<ClassEntity>(p => p.Name)//.Index(1)
                 )
                 .Execute();
 
@@ -46,8 +46,8 @@ namespace DomainFramework.Tests
                     p => p.Name("classId").Value(id.Value)
                 )
                 .MapProperties(
-                    m => m.Map(p => p.Id),//.Index(0),
-                    m => m.Map(p => p.Name)//.Index(1)
+                    m => m.Map<ClassEntity>(p => p.Id),//.Index(0),
+                    m => m.Map<ClassEntity>(p => p.Name)//.Index(1)
                 )
                 .ExecuteAsync();
 

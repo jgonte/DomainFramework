@@ -8,8 +8,8 @@ namespace DomainFramework.Core
     /// </summary>
     public interface IValueObjectQueryRepository : IRepository
     {
-        IEnumerable<IValueObject> Get(QueryParameters parameters, IAuthenticatedUser user);
+        IEnumerable<IValueObject> Get(object ownerId, IAuthenticatedUser user);
 
-        Task<IEnumerable<IValueObject>> GetAsync(QueryParameters parameters, IAuthenticatedUser user);
+        Task<IEnumerable<IValueObject>> GetAsync(object ownerId, IAuthenticatedUser user);
     }
 }

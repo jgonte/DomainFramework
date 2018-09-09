@@ -22,7 +22,7 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
                 )
                 .Instance(entity)
                 .MapProperties(
-                    pm => pm.Map(m => m.Id)//.Index(0),
+                    pm => pm.Map<PersonEntity4>(m => m.Id)//.Index(0),
                 );
         }
 

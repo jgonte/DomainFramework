@@ -38,7 +38,7 @@ namespace DomainFramework.Tests
                 )
                 .Instance(entity)
                 .MapProperties(
-                    pm => pm.Map(m => m.Id)//.Index(0),
+                    pm => pm.Map<DepartmentManagerRoleEntity>(m => m.Id)//.Index(0),
                 )
                 .OnBeforeCommandExecuted(cmd =>
             {
