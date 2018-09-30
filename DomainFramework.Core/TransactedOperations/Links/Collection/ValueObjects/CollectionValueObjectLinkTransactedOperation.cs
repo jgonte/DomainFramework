@@ -49,7 +49,7 @@ namespace DomainFramework.Core
             var tasks = new Queue<Task>();
 
             // Remove all the value objects attached to the entity
-            var repository = (IValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedValueObject));
+            var repository = (IValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TRepositoryKey));
 
             repository.TransferEntities = () => new IEntity[] { _rootEntity };
 
@@ -59,7 +59,7 @@ namespace DomainFramework.Core
 
             foreach (var linkedValueObject in GetLinkedValueObjects(_rootEntity))
             {
-                repository = (IValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedValueObject));
+                repository = (IValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TRepositoryKey));
 
                 repository.TransferEntities = () => new IEntity[] { _rootEntity };
 

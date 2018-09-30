@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Utilities;
 
 namespace DomainFramework.Core
 {
@@ -24,7 +23,10 @@ namespace DomainFramework.Core
             }
             else
             {
-                Update(entity, user, unitOfWork);
+                if (!Update(entity, user, unitOfWork))
+                {
+                    throw new InvalidCastException($"No update occurred for command repository of entity: '{typeof(TEntity)}'. Id: {entity.Id}");
+                }
             }
         }
 
@@ -42,7 +44,10 @@ namespace DomainFramework.Core
             }
             else
             {
-                await UpdateAsync(entity, user, unitOfWork);
+                if (!await UpdateAsync(entity, user, unitOfWork))
+                {
+                    throw new InvalidCastException($"No update occurred for command repository of entity: '{typeof(TEntity)}'. Id: {entity.Id}");
+                }
             }
         }
 

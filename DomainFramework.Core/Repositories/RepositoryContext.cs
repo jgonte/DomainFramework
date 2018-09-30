@@ -51,6 +51,11 @@ namespace DomainFramework.Core
 
         public IEntityQueryRepository GetQueryRepository(Type type)
         {
+            if (!_queryRepositoryMap.ContainsKey(type))
+            {
+                throw new InvalidOperationException($"Type: '{type.Name}' is not registered with the repository context");
+            }
+
             return _queryRepositoryMap[type];
         }
 
