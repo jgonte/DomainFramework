@@ -2,7 +2,7 @@
 
 namespace DomainFramework.Tests
 {
-    class CountryCapitalCityQueryAggregate : QueryAggregate<CountryEntity, string>
+    class CountryCapitalCityQueryAggregate : QueryAggregate<CountryEntity, string, object>
     {
         public GetSingleLinkedEntityLoadOperation<CapitalCityEntity> GetCapitalCityLoadOperation { get; }
 
@@ -22,6 +22,11 @@ namespace DomainFramework.Tests
             LoadOperations.Enqueue(
                 GetCapitalCityLoadOperation
             );
+        }
+
+        public override object GetDataTransferObject()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

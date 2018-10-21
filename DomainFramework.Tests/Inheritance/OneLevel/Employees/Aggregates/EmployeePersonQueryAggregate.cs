@@ -2,7 +2,7 @@
 
 namespace DomainFramework.Tests
 {
-    class EmployeePersonQueryAggregate : QueryAggregate<EmployeeEntity, int?>
+    class EmployeePersonQueryAggregate : QueryAggregate<EmployeeEntity, int?, object>
     {
         public GetEntityLoadOperation<PersonEntity> PersonLoadOperation { get; }
 
@@ -15,6 +15,11 @@ namespace DomainFramework.Tests
             LoadOperations.Enqueue(
                 PersonLoadOperation
             );
-        }       
+        }
+
+        public override object GetDataTransferObject()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

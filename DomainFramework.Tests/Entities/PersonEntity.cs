@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DomainFramework.Tests.Entitites
 {
-    class PersonEntity : Entity<int?, Person>
+    class PersonEntity : ContainerEntity<int?, Person>
     {
         public List<PersonRoleEntity> PersonRoleEntities = new List<PersonRoleEntity>();
 

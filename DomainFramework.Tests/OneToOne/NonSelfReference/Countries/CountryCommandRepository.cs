@@ -15,7 +15,7 @@ namespace DomainFramework.Tests
                 .AutoGenerateParameters(
                     qbeObject: entity.Data
                 )
-                .OnAfterCommandExecuted(() => entity.Id = entity.Data.CountryCode);
+                .OnAfterCommandExecuted(cmd => entity.Id = entity.Data.CountryCode);
         }
 
         protected override Command CreateUpdateCommand(CountryEntity entity, IAuthenticatedUser user)

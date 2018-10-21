@@ -2,7 +2,7 @@
 
 namespace DomainFramework.Tests.Entitites
 {
-    class StudentRoleEntity : Entity<int?, StudentRole>
+    class StudentRoleEntity : ContainerEntity<int?, StudentRole>
     {
         public StudentRoleEntity()
         {

@@ -2,7 +2,7 @@
 
 namespace DomainFramework.Tests.Entitites
 {
-    public abstract class PersonRoleEntity : Entity<int?, IPersonRole>
+    public abstract class PersonRoleEntity : ContainerEntity<int?, IPersonRole>
     {
         internal PersonRoleEntity(IPersonRole data, int? id = null) : base(data, id)
         {
