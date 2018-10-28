@@ -10,7 +10,7 @@ namespace DomainFramework.Tests
 
         public IEnumerable<PageInputDto> Pages { get; set; }
 
-        public ValidationResult Validate()
+        public void Validate(ValidationResult result)
         {
             throw new System.NotImplementedException();
         }
@@ -20,7 +20,7 @@ namespace DomainFramework.Tests
     {
         public int Index { get; set; }
 
-        public ValidationResult Validate()
+        public void Validate(ValidationResult result)
         {
             throw new System.NotImplementedException();
         }

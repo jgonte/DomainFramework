@@ -54,7 +54,7 @@ namespace DomainFramework.Tests
                 }
             });
 
-            command.OnAfterCommandExecuted(() =>  // Handle symmetric relationship
+            command.OnAfterCommandExecuted(cmd =>  // Handle symmetric relationship
             {
                 if (TransferEntities != null) // It is a self reference for Spouse
                 {

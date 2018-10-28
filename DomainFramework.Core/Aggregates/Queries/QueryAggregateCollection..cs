@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public class QueryAggregateCollection<TAggregate, TEntity, TKey> : IQueryAggregateCollection<TAggregate, TEntity>
-        where TAggregate : IQueryAggregate<TEntity, TKey>, new()
+    public class QueryAggregateCollection<TAggregate, TEntity, TKey, TDto> : IQueryAggregateCollection<TAggregate, TEntity>
+        where TAggregate : IQueryAggregate<TEntity, TKey, TDto>, new()
     {
         public IRepositoryContext RepositoryContext { get; set; }
 
@@ -14,6 +14,20 @@ namespace DomainFramework.Core
         public QueryAggregateCollection(RepositoryContext context)
         {
             RepositoryContext = context;
+        }
+
+        public IEnumerable<TDto> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        {
+            Load(queryParameters, user);
+
+            return Aggregates.Select(a => a.GetDataTransferObject());
+        }
+
+        public async Task<IEnumerable<TDto>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        {
+            await LoadAsync(queryParameters, user);
+
+            return Aggregates.Select(a => a.GetDataTransferObject());
         }
 
         /// <summary>

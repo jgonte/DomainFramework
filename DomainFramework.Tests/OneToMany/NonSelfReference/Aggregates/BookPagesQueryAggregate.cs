@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DomainFramework.Tests
 {
-    class BookPagesQueryAggregate : QueryAggregate<BookEntity, int?>
+    class BookPagesQueryAggregate : QueryAggregate<BookEntity, int?, object>
     {
         public GetCollectionLinkedEntityLoadOperation<PageEntity> GetPagesLoadOperation { get; }
 
@@ -53,6 +53,11 @@ namespace DomainFramework.Tests
             .ToList();
 
             return dto;
+        }
+
+        public override object GetDataTransferObject()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

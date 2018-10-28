@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace DomainFramework.Tests
 {
-    class PersonPhonesQueryAggregate : QueryAggregate<PersonEntity4, int?>
+    class PersonPhonesQueryAggregate : QueryAggregate<PersonEntity4, int?, object>
     {
         public SetCollectionLinkedValueObjectLoadOperation<PersonEntity4, Phone> SetPhonesLoadOperation { get; }
 
@@ -29,6 +29,11 @@ namespace DomainFramework.Tests
             LoadOperations.Enqueue(
                 SetPhonesLoadOperation
             );
+        }
+
+        public override object GetDataTransferObject()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

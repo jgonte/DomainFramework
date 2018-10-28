@@ -2,8 +2,14 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public interface IQueryAggregate<TEntity, TKey> : IAggregate<TEntity>
+    public interface IQueryAggregate<TEntity, TKey, TDto> : IAggregate<TEntity>
     {
+        /// <summary>
+        /// Retrieves the output data transfer object from the aggregate
+        /// </summary>
+        /// <returns></returns>
+        TDto GetDataTransferObject();
+
         /// <summary>
         /// Loads this aggregate by the id of its root entity
         /// </summary>

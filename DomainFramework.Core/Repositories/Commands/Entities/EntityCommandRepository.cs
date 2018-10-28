@@ -23,10 +23,7 @@ namespace DomainFramework.Core
             }
             else
             {
-                if (!Update(entity, user, unitOfWork))
-                {
-                    throw new InvalidCastException($"No update occurred for command repository of entity: '{typeof(TEntity)}'. Id: {entity.Id}");
-                }
+                Update(entity, user, unitOfWork);
             }
         }
 
@@ -44,10 +41,7 @@ namespace DomainFramework.Core
             }
             else
             {
-                if (!await UpdateAsync(entity, user, unitOfWork))
-                {
-                    throw new InvalidCastException($"No update occurred for command repository of entity: '{typeof(TEntity)}'. Id: {entity.Id}");
-                }
+                await UpdateAsync(entity, user, unitOfWork);
             }
         }
 

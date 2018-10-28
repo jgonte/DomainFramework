@@ -9,16 +9,11 @@ namespace DomainFramework.Tests.OneToOne.SelfReference
 
         public string SpouseName { get; internal set; }
 
-        public ValidationResult Validate()
+        public void Validate(ValidationResult result)
         {
-            var result = new ValidationResult();
-
             FirstName.ValidateNotEmpty(result, nameof(FirstName));
 
             SpouseName.ValidateNotEmpty(result, nameof(SpouseName));
-
-            return result;
         }
-
     }
 }

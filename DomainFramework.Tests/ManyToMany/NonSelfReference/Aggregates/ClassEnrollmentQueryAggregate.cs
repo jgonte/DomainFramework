@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace DomainFramework.Tests
 {
-    class ClassEnrollmentQueryAggregate : QueryAggregate<ClassEntity, Guid?>
+    class ClassEnrollmentQueryAggregate : QueryAggregate<ClassEntity, Guid?, object>
     {
         public GetCollectionLinkedEntityLoadOperation<StudentEntity> GetStudentsLoadOperation { get; }
 
@@ -29,6 +29,11 @@ namespace DomainFramework.Tests
             LoadOperations.Enqueue(
                 GetStudentsLoadOperation
             );
+        }
+
+        public override object GetDataTransferObject()
+        {
+            throw new NotImplementedException();
         }
     }
 }

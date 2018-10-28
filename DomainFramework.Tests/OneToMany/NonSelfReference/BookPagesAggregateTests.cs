@@ -602,7 +602,7 @@ GO
 
             context.RegisterQueryRepository<PageEntity>(new PageQueryRepository());
 
-            var queryAggregateCollection = new Core.QueryAggregateCollection<BookPagesQueryAggregate, BookEntity, int?>(context);
+            var queryAggregateCollection = new Core.QueryAggregateCollection<BookPagesQueryAggregate, BookEntity, int?, object>(context);
 
             queryAggregateCollection.Load(new Core.QueryParameters());
 
