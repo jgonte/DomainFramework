@@ -21,7 +21,7 @@ namespace DomainFramework.Tests.ManyToMany.SelfReferenceSymmetric
         public static async Task MyPersonInitialize(TestContext testContext)
         {
             // Test script executor (create database)
-            await ScriptExecutor.ExecuteScriptAsync(ConnectionManager.GetConnection("master"),
+            await ScriptExecutor.ExecuteScriptAsync(ConnectionManager.GetConnection("Master"),
 @"
 USE master
 GO
