@@ -229,9 +229,8 @@ BEGIN
 
     SET NOCOUNT ON;
 
-    DELETE
-    FROM [Book]
-        WHERE [BookId] = @bookId
+    DELETE FROM [Book]
+    WHERE [BookId] = @bookId
 
 END;
 GO
@@ -276,17 +275,17 @@ GO
                 Title = "Programming Java"
             };
 
-            var bookCommandAggregate = new BookPagesCommandAggregate(context, inputDto);
+            var saveAggregate = new SaveBookPagesCommandAggregate(context, inputDto);
 
-            bookCommandAggregate.Save();
+            saveAggregate.Save();
 
-            var bookEntity = bookCommandAggregate.RootEntity;
+            var bookEntity = saveAggregate.RootEntity;
 
             Assert.IsNotNull(bookEntity.Id);
 
             var bookId = bookEntity.Id;
 
-            var pages = bookCommandAggregate.Pages;
+            var pages = saveAggregate.Pages;
 
             Assert.AreEqual(0, pages.Count());
 
@@ -310,11 +309,11 @@ GO
 
             // Update
 
-            bookEntity = bookCommandAggregate.RootEntity;
+            bookEntity = saveAggregate.RootEntity;
 
             bookEntity.Data.Title = "Programming Java 2nd Ed.";
 
-            bookCommandAggregate.Save();
+            saveAggregate.Save();
 
             // Read after update
 
@@ -329,8 +328,9 @@ GO
             Assert.AreEqual(0, bookQueryAggregate.Pages.Count());
 
             // Delete
+            var deleteAggregate = new DeleteBookPagesCommandAggregate(context, bookId);
 
-            bookCommandAggregate.Delete();
+            deleteAggregate.Save();
 
             bookQueryAggregate.Load(bookId);
 
@@ -348,7 +348,7 @@ GO
 
             // Insert
 
-            var bookCommandAggregate = new BookPagesCommandAggregate(context, new BookPagesInputDto
+            var saveAggregate = new SaveBookPagesCommandAggregate(context, new BookPagesInputDto
             {
                 Title = "Programming C#",
                 Pages = new List<PageInputDto>
@@ -368,15 +368,15 @@ GO
                 }
             });
 
-            bookCommandAggregate.Save();
+            saveAggregate.Save();
 
-            var bookEntity = bookCommandAggregate.RootEntity;
+            var bookEntity = saveAggregate.RootEntity;
 
             Assert.IsNotNull(bookEntity.Id);
 
             var bookId = bookEntity.Id;
 
-            var pages = bookCommandAggregate.Pages;
+            var pages = saveAggregate.Pages;
 
             Assert.AreEqual(3, pages.Count());
 
@@ -446,11 +446,11 @@ GO
 
             // Update
 
-            bookEntity = bookCommandAggregate.RootEntity;
+            bookEntity = saveAggregate.RootEntity;
 
             bookEntity.Data.Title = "Programming C# 2nd Ed.";
 
-            pages = bookCommandAggregate.Pages;
+            pages = saveAggregate.Pages;
 
             page = pages.ElementAt(0);
 
@@ -464,7 +464,7 @@ GO
 
             page.Data.Index = 30;
 
-            bookCommandAggregate.Save();
+            saveAggregate.Save();
 
             // Read after update
 
@@ -504,7 +504,9 @@ GO
 
             // Delete
 
-            bookCommandAggregate.Delete();
+            var deleteAggregate = new DeleteBookPagesCommandAggregate(context, bookId);
+
+            deleteAggregate.Save();
 
             queryAggregate.Load(bookId);
 
@@ -521,9 +523,9 @@ GO
             context.RegisterCommandRepositoryFactory<PageEntity>(() => new PageCommandRepository());
 
             // Insert
-            var aggregates = new List<BookPagesCommandAggregate>();
+            var aggregates = new List<SaveBookPagesCommandAggregate>();
 
-            var bookCommandAggregate = new BookPagesCommandAggregate(context, new BookPagesInputDto
+            var bookCommandAggregate = new SaveBookPagesCommandAggregate(context, new BookPagesInputDto
             {
                 Title = "Book1",
                 Pages = new List<PageInputDto>
@@ -545,7 +547,7 @@ GO
 
             aggregates.Add(bookCommandAggregate);
 
-            bookCommandAggregate = new BookPagesCommandAggregate(context, new BookPagesInputDto
+            bookCommandAggregate = new SaveBookPagesCommandAggregate(context, new BookPagesInputDto
             {
                 Title = "Book2",
                 Pages = new List<PageInputDto>
@@ -567,7 +569,7 @@ GO
 
             aggregates.Add(bookCommandAggregate);
 
-            bookCommandAggregate = new BookPagesCommandAggregate(context, new BookPagesInputDto
+            bookCommandAggregate = new SaveBookPagesCommandAggregate(context, new BookPagesInputDto
             {
                 Title = "Book3",
                 Pages = new List<PageInputDto>
@@ -589,7 +591,7 @@ GO
 
             aggregates.Add(bookCommandAggregate);
 
-            var commandAggregateCollection = new Core.CommandAggregateCollection<BookPagesCommandAggregate, BookEntity>(context)
+            var commandAggregateCollection = new Core.CommandAggregateCollection<SaveBookPagesCommandAggregate, BookEntity>(context)
             {
                 Aggregates = aggregates
             };

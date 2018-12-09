@@ -1,5 +1,6 @@
 ﻿using DomainFramework.Core;
 using System.Collections.Generic;
+using Utilities;
 
 namespace DomainFramework.Tests
 {
@@ -11,13 +12,13 @@ namespace DomainFramework.Tests
 
         public UserCommandAggregate(DataAccess.RepositoryContext context, UserEntity entity) : base(context, entity)
         {
-            TransactedSaveOperations.Enqueue(
-                new SaveEntityTransactedOperation<UserEntity>(entity)
+            TransactedOperations.Enqueue(
+                new EntityCommandTransactedOperation<UserEntity>(entity, CommandOperationTypes.Save)
             );
 
             _userPhotosLinks = new CollectionEntityLinkTransactedOperation<UserEntity, PhotoEntity>(entity);
 
-            TransactedSaveOperations.Enqueue(_userPhotosLinks);
+            TransactedOperations.Enqueue(_userPhotosLinks);
         }
 
         public void AddPhoto(PhotoEntity photo)
@@ -27,7 +28,7 @@ namespace DomainFramework.Tests
 
         public void SetDefaultPhoto(PhotoEntity defaultPhoto)
         {
-            TransactedSaveOperations.Enqueue(
+            TransactedOperations.Enqueue(
                 new SingleEntityLinkTransactedOperation<UserEntity, PhotoEntity>(RootEntity, defaultPhoto)
             );
         }

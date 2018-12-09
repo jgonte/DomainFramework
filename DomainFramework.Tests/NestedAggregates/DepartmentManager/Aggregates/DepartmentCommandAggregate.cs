@@ -1,4 +1,5 @@
 ﻿using DomainFramework.Core;
+using Utilities;
 
 namespace DomainFramework.Tests
 {
@@ -6,7 +7,7 @@ namespace DomainFramework.Tests
     {
         public DepartmentCommandAggregate(DataAccess.RepositoryContext context, DepartmentEntity entity) : base(context, entity)
         {
-            TransactedSaveOperations.Enqueue(new SaveEntityTransactedOperation<DepartmentEntity>(entity));
+            TransactedOperations.Enqueue(new EntityCommandTransactedOperation<DepartmentEntity>(entity, CommandOperationTypes.Save));
         }
 
         public EmployeeRoleEntity AddEmployee(string firstName, int salary)
@@ -17,8 +18,8 @@ namespace DomainFramework.Tests
                 FirstName = firstName
             };
 
-            TransactedSaveOperations.Enqueue(
-                new SaveEntityTransactedOperation<PersonEntity>(personEntity)
+            TransactedOperations.Enqueue(
+                new EntityCommandTransactedOperation<PersonEntity>(personEntity, CommandOperationTypes.Save)
             );
 
             var employeeRoleEntity = new EmployeeRoleEntity
@@ -26,7 +27,7 @@ namespace DomainFramework.Tests
                 Salary = salary
             };
 
-            TransactedSaveOperations.Enqueue(
+            TransactedOperations.Enqueue(
                 new SaveBinaryEntityTransactedOperation<EmployeeRoleEntity, DepartmentEntity, PersonEntity>(employeeRoleEntity, RootEntity, personEntity)
             );
 
@@ -37,7 +38,7 @@ namespace DomainFramework.Tests
         {
             var departmentManagerRoleEntity = new DepartmentManagerRoleEntity();
 
-            TransactedSaveOperations.Enqueue(
+            TransactedOperations.Enqueue(
                 new SaveBinaryEntityTransactedOperation<DepartmentManagerRoleEntity, EmployeeRoleEntity, DepartmentEntity>(departmentManagerRoleEntity, employeeRoleEntity, RootEntity)
             );
         }

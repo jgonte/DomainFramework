@@ -1,13 +1,14 @@
 ﻿using DomainFramework.Core;
 using System.Collections.Generic;
+using Utilities;
 
 namespace DomainFramework.Tests.EntityWithValueObjectCollection
 {
-    class PersonPhonesCommandAggregate : CommandAggregate<PersonEntity4>
+    class SavePersonPhonesCommandAggregate : CommandAggregate<PersonEntity4>
     {
         private CollectionValueObjectLinkTransactedOperation<PersonEntity4, Phone, PhoneCommandRepository.RepositoryKey> _phonesLink;
 
-        public PersonPhonesCommandAggregate(DataAccess.RepositoryContext context, string firstName, List<Phone> phones) : base(context, null)
+        public SavePersonPhonesCommandAggregate(DataAccess.RepositoryContext context, string firstName, List<Phone> phones) : base(context, null)
         {
             RootEntity = new PersonEntity4
             {
@@ -15,8 +16,8 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
                 Phones = phones
             };
 
-            TransactedSaveOperations.Enqueue(
-                new SaveEntityTransactedOperation<PersonEntity4>(RootEntity)
+            TransactedOperations.Enqueue(
+                new EntityCommandTransactedOperation<PersonEntity4>(RootEntity, CommandOperationTypes.Save)
             );
 
             _phonesLink = new CollectionValueObjectLinkTransactedOperation<PersonEntity4, Phone, PhoneCommandRepository.RepositoryKey>(RootEntity)
@@ -24,12 +25,8 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
                 GetLinkedValueObjects = entity => entity.Phones
             };
 
-            TransactedSaveOperations.Enqueue(
+            TransactedOperations.Enqueue(
                 _phonesLink
-            );
-
-            TransactedDeleteOperations.Enqueue(
-                new DeleteEntityTransactedOperation<PersonEntity4>(RootEntity)
             );
         }
     }

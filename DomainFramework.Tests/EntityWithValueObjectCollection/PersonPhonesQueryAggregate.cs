@@ -5,7 +5,7 @@ namespace DomainFramework.Tests
 {
     class PersonPhonesQueryAggregate : QueryAggregate<PersonEntity4, int?, object>
     {
-        public SetCollectionLinkedValueObjectLoadOperation<PersonEntity4, Phone> SetPhonesLoadOperation { get; }
+        public SetCollectionLinkedValueObjectLoadOperation<PersonEntity4, Person_PhonesQueryRepository.RepositoryKey> SetPhonesLoadOperation { get; }
 
         public PersonPhonesQueryAggregate() : this(null)
         {
@@ -13,10 +13,10 @@ namespace DomainFramework.Tests
 
         public PersonPhonesQueryAggregate(DataAccess.RepositoryContext context) : base(context)
         {
-            SetPhonesLoadOperation = new SetCollectionLinkedValueObjectLoadOperation<PersonEntity4, Phone>
+            SetPhonesLoadOperation = new SetCollectionLinkedValueObjectLoadOperation<PersonEntity4, Person_PhonesQueryRepository.RepositoryKey>
             {
                 SetLinkedValueObjects = (repository, entity, user) =>
-                    entity.Phones = ((PersonQueryRepository5)repository).GetPhones(RootEntity.Id, user).ToList(),
+                    entity.Phones = ((Person_PhonesQueryRepository)repository).Get(RootEntity.Id, user).ToList(),
 
                 //SetLinkedValueObjectsAsync = async (repository, entity, user) =>
                 //{

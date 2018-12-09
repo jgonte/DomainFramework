@@ -17,16 +17,9 @@ namespace DomainFramework.Core
         /// <summary>
         /// The save operations that are performed inside a unit of work
         /// </summary>
-        public Queue<ITransactedOperation> TransactedSaveOperations { get; set; } = new Queue<ITransactedOperation>();
+        public Queue<ITransactedOperation> TransactedOperations { get; set; } = new Queue<ITransactedOperation>();
 
-        protected virtual bool RequiresSaveUnitOfWork => TransactedSaveOperations.Count() > 1 || TransactedSaveOperations.Any(to => to.RequiresUnitOfWork);
-
-        /// <summary>
-        /// The delete operations that are performed inside a unit of work
-        /// </summary>
-        public Queue<ITransactedOperation> TransactedDeleteOperations { get; set; } = new Queue<ITransactedOperation>();
-
-        protected virtual bool RequiresDeleteUnitOfWork => TransactedDeleteOperations.Count() > 1 || TransactedDeleteOperations.Any(to => to.RequiresUnitOfWork);
+        protected virtual bool RequiresUnitOfWork => TransactedOperations.Count() > 1 || TransactedOperations.Any(to => to.RequiresUnitOfWork);
 
         public CommandAggregate(RepositoryContext context, TEntity entity = null)
         {
@@ -39,36 +32,14 @@ namespace DomainFramework.Core
         {
             var ownsUnitOfWork = false;
 
-            if (unitOfWork == null && RequiresSaveUnitOfWork)
+            if (unitOfWork == null && RequiresUnitOfWork)
             {
                 unitOfWork = RepositoryContext.CreateUnitOfWork();
 
                 ownsUnitOfWork = true;
             }
 
-            foreach (var operation in TransactedSaveOperations)
-            {
-                operation.Execute(RepositoryContext, user, unitOfWork);
-            }
-
-            if (ownsUnitOfWork)
-            {
-                unitOfWork.Save();
-            }
-        }
-
-        public virtual void Delete(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null)
-        {
-            var ownsUnitOfWork = false;
-
-            if (unitOfWork == null && RequiresDeleteUnitOfWork)
-            {
-                unitOfWork = RepositoryContext.CreateUnitOfWork();
-
-                ownsUnitOfWork = true;
-            }
-
-            foreach (var operation in TransactedDeleteOperations)
+            foreach (var operation in TransactedOperations)
             {
                 operation.Execute(RepositoryContext, user, unitOfWork);
             }
@@ -83,7 +54,7 @@ namespace DomainFramework.Core
         {
             var ownsUnitOfWork = false;
 
-            if (unitOfWork == null && RequiresSaveUnitOfWork)
+            if (unitOfWork == null && RequiresUnitOfWork)
             {
                 unitOfWork = RepositoryContext.CreateUnitOfWork();
 
@@ -92,35 +63,7 @@ namespace DomainFramework.Core
 
             var tasks = new Queue<Task>();
 
-            foreach (var operation in TransactedSaveOperations)
-            {
-                tasks.Enqueue(
-                    operation.ExecuteAsync(RepositoryContext, user, unitOfWork)
-                );
-            }
-
-            await Task.WhenAll(tasks);
-
-            if (ownsUnitOfWork)
-            {
-                await unitOfWork.SaveAsync();
-            }
-        }
-
-        public virtual async Task DeleteAsync(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null)
-        {
-            var ownsUnitOfWork = false;
-
-            if (unitOfWork == null && RequiresDeleteUnitOfWork)
-            {
-                unitOfWork = RepositoryContext.CreateUnitOfWork();
-
-                ownsUnitOfWork = true;
-            }
-
-            var tasks = new Queue<Task>();
-
-            foreach (var operation in TransactedDeleteOperations)
+            foreach (var operation in TransactedOperations)
             {
                 tasks.Enqueue(
                     operation.ExecuteAsync(RepositoryContext, user, unitOfWork)

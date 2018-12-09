@@ -44,19 +44,5 @@ namespace DomainFramework.Tests
 
             return result.Data;
         }
-
-        public IEnumerable<Phone> GetPhones(int? id, IAuthenticatedUser user)
-        {
-            var result = Query<Phone>
-                .Collection()
-                .Connection(ConnectionName)
-                .StoredProcedure("p_Person_GetPhones")
-                .Parameters(
-                    p => p.Name("personId").Value(id.Value)
-                )
-                .Execute();
-
-            return result.Data;
-        }
     }
 }

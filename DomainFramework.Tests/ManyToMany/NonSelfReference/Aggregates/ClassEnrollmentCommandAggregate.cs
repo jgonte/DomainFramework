@@ -1,6 +1,7 @@
 ﻿using DomainFramework.Core;
 using System.Collections.Generic;
 using System.Linq;
+using Utilities;
 
 namespace DomainFramework.Tests
 {
@@ -19,8 +20,8 @@ namespace DomainFramework.Tests
                 Name = classEnrollment.Name
             };
 
-            TransactedSaveOperations.Enqueue(
-                new SaveEntityTransactedOperation<ClassEntity>(RootEntity)
+            TransactedOperations.Enqueue(
+                new EntityCommandTransactedOperation<ClassEntity>(RootEntity, CommandOperationTypes.Save)
             );
 
             _studentsToEnrollLink = new CollectionBinaryEntityLinkTransactedOperation<ClassEntity, StudentEntity, ClassEnrollmentEntity>(RootEntity);
@@ -44,7 +45,7 @@ namespace DomainFramework.Tests
                     _studentsToEnrollLink.AddBinaryEntity(classEnrollmentEntity);
                 }
 
-                TransactedSaveOperations.Enqueue(_studentsToEnrollLink);
+                TransactedOperations.Enqueue(_studentsToEnrollLink);
             }
         }
     }

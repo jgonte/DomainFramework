@@ -68,55 +68,5 @@ namespace DomainFramework.Core
                 await unitOfWork.SaveAsync();
             }
         }
-
-        public void Delete(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null)
-        {
-            var ownsUnitOfWork = false;
-
-            if (unitOfWork == null && RequiresUnitOfWork)
-            {
-                unitOfWork = RepositoryContext.CreateUnitOfWork();
-
-                ownsUnitOfWork = true;
-            }
-
-            foreach (var aggregate in Aggregates)
-            {
-                aggregate.Delete(user, unitOfWork);
-            }
-
-            if (ownsUnitOfWork)
-            {
-                unitOfWork.Save();
-            }
-        }
-
-        public async Task DeleteAsync(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null)
-        {
-            var ownsUnitOfWork = false;
-
-            if (unitOfWork == null && RequiresUnitOfWork)
-            {
-                unitOfWork = RepositoryContext.CreateUnitOfWork();
-
-                ownsUnitOfWork = true;
-            }
-
-            var tasks = new Queue<Task>();
-
-            foreach (var aggregate in Aggregates)
-            {
-                tasks.Enqueue(
-                    aggregate.DeleteAsync(user, unitOfWork)
-                );
-            }
-
-            await Task.WhenAll(tasks);
-
-            if (ownsUnitOfWork)
-            {
-                await unitOfWork.SaveAsync();
-            }
-        }
     }
 }

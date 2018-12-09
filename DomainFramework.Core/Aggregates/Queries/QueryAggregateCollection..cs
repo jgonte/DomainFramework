@@ -42,7 +42,7 @@ namespace DomainFramework.Core
 
             var repository = RepositoryContext.GetQueryRepository(typeof(TEntity));
 
-            var entities = repository.Get(queryParameters, user).Cast<TEntity>();
+            var entities = ((IEntityQueryRepository)repository).Get(queryParameters, user).Cast<TEntity>();
 
             foreach (var entity in entities)
             {
@@ -64,7 +64,7 @@ namespace DomainFramework.Core
 
             var repository = RepositoryContext.GetQueryRepository(typeof(TEntity));
 
-            var entities = repository.Get(queryParameters, user).Cast<TEntity>();
+            var entities = ((IEntityQueryRepository)repository).Get(queryParameters, user).Cast<TEntity>();
 
             var tasks = new Queue<Task>();
 

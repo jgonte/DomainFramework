@@ -1,12 +1,13 @@
 ﻿using DomainFramework.Core;
+using Utilities;
 
 namespace DomainFramework.Tests
 {
-    class CountryCapitalCityCommandAggregate : CommandAggregate<CountryEntity>
+    class SaveCountryCapitalCityCommandAggregate : CommandAggregate<CountryEntity>
     {
         public CapitalCityEntity CapitalCity { get; private set; }
 
-        public CountryCapitalCityCommandAggregate(DataAccess.RepositoryContext context, CountryWithCapitalCityDto countryWithCapitalCity) : base(context, null)
+        public SaveCountryCapitalCityCommandAggregate(DataAccess.RepositoryContext context, CountryWithCapitalCityDto countryWithCapitalCity) : base(context, null)
         {
             RootEntity = new CountryEntity(new CountryData
             {
@@ -14,22 +15,18 @@ namespace DomainFramework.Tests
                 Name = countryWithCapitalCity.Name
             });
 
-            TransactedSaveOperations.Enqueue(
-                new SaveEntityTransactedOperation<CountryEntity>(RootEntity)
+            TransactedOperations.Enqueue(
+                new EntityCommandTransactedOperation<CountryEntity>(RootEntity, CommandOperationTypes.Save)
             );
 
             if (countryWithCapitalCity.CapitalCity != null)
             {
                 CapitalCity = new CapitalCityEntity(new CapitalCityData { Name = countryWithCapitalCity.CapitalCity.Name });
 
-                TransactedSaveOperations.Enqueue(
+                TransactedOperations.Enqueue(
                     new SingleEntityLinkTransactedOperation<CountryEntity, CapitalCityEntity>(RootEntity, CapitalCity)
                 );
             }
-
-            TransactedDeleteOperations.Enqueue(
-                new DeleteEntityTransactedOperation<CountryEntity>(RootEntity)
-            );
         }
     }
 }

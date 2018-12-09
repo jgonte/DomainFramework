@@ -245,7 +245,7 @@ GO
             context.RegisterCommandRepositoryFactory<CapitalCityEntity>(() => new CapitalCityCommandRepository());
 
             // Insert
-            var commandAggregate = new CountryCapitalCityCommandAggregate(context,
+            var saveAggregate = new SaveCountryCapitalCityCommandAggregate(context,
                 new CountryWithCapitalCityDto
                 {
                     CountryCode = "il",
@@ -253,9 +253,9 @@ GO
                     CapitalCity = null
                 });
 
-            commandAggregate.Save();
+            saveAggregate.Save();
 
-            var countryEntity = commandAggregate.RootEntity;
+            var countryEntity = saveAggregate.RootEntity;
 
             Assert.AreEqual("ISRAEL", countryEntity.Data.Name);
 
@@ -279,11 +279,11 @@ GO
 
             // Update
 
-            countryEntity = commandAggregate.RootEntity;
+            countryEntity = saveAggregate.RootEntity;
 
             countryEntity.Data.Name = "Israel";
 
-            commandAggregate.Save();
+            saveAggregate.Save();
 
             // Read after update
 
@@ -297,7 +297,9 @@ GO
 
             // Delete
 
-            commandAggregate.Delete();
+            var deleteAggregate = new DeleteCountryCapitalCityCommandAggregate(context, "il");
+
+            deleteAggregate.Save();
 
             queryAggregate.Load("il");
 
@@ -314,7 +316,7 @@ GO
             context.RegisterCommandRepositoryFactory<CapitalCityEntity>(() => new CapitalCityCommandRepository());
 
             // Insert
-            var commandAggregate = new CountryCapitalCityCommandAggregate(context, new CountryWithCapitalCityDto
+            var saveAggregate = new SaveCountryCapitalCityCommandAggregate(context, new CountryWithCapitalCityDto
             {
                 CountryCode = "us",
                 Name = "United States",
@@ -324,13 +326,13 @@ GO
                 }
             });
 
-            commandAggregate.Save();
+            saveAggregate.Save();
 
-            var countryEntity = commandAggregate.RootEntity;
+            var countryEntity = saveAggregate.RootEntity;
 
             Assert.AreEqual("us", countryEntity.Id);
 
-            var capitalCity = commandAggregate.CapitalCity;
+            var capitalCity = saveAggregate.CapitalCity;
 
             Assert.AreEqual(1, capitalCity.Id);
 
@@ -363,15 +365,15 @@ GO
 
             // Update
 
-            countryEntity = commandAggregate.RootEntity;
+            countryEntity = saveAggregate.RootEntity;
 
             countryEntity.Data.Name = "United States of America";
 
-            capitalCity = commandAggregate.CapitalCity;
+            capitalCity = saveAggregate.CapitalCity;
 
             capitalCity.Data.Name = "Washington, DC.";
 
-            commandAggregate.Save();
+            saveAggregate.Save();
 
             // Read after update
 
@@ -389,7 +391,9 @@ GO
 
             // Delete
 
-            commandAggregate.Delete();
+            var deleteAggregate = new DeleteCountryCapitalCityCommandAggregate(context, "us");
+
+            deleteAggregate.Save();
 
             queryAggregate.Load("us");
 

@@ -50,9 +50,9 @@ namespace DomainFramework.Core
 
         public void Load(TKey rootEntityId, IAuthenticatedUser user = null)
         {
-            var rootRepository = RepositoryContext.GetQueryRepository(typeof(TEntity));
+            var repository = (IEntityQueryRepository)RepositoryContext.GetQueryRepository(typeof(TEntity));
 
-            RootEntity = (TEntity)rootRepository.GetById(rootEntityId, user);
+            RootEntity = (TEntity)repository.GetById(rootEntityId, user);
 
             if (RootEntity == null) // Not found
             {
@@ -72,16 +72,14 @@ namespace DomainFramework.Core
 
         public async Task LoadAsync(TKey rootEntityId, IAuthenticatedUser user = null)
         {
-            var rootRepository = RepositoryContext.GetQueryRepository(typeof(TEntity));
+            var repository = (IEntityQueryRepository)RepositoryContext.GetQueryRepository(typeof(TEntity));
 
-            var entity = await rootRepository.GetByIdAsync(rootEntityId, user);
+            RootEntity = (TEntity)await repository.GetByIdAsync(rootEntityId, user);
 
-            if (entity == null) // Not found
+            if (RootEntity == null) // Not found
             {
                 return;
             }
-
-            RootEntity = (TEntity)entity;
 
             await LoadLinksAsync(user);
         }

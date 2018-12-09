@@ -222,11 +222,11 @@ GO
 
             // Insert
 
-            var commandAggregate = new EmployeePersonCommandAggregate(context, firstName: "Johnny", salary: 65000);
+            var saveAggregate = new SaveEmployeePersonCommandAggregate(context, firstName: "Johnny", salary: 65000);
 
-            await commandAggregate.SaveAsync();
+            await saveAggregate.SaveAsync();
 
-            var employeeEntity = commandAggregate.RootEntity;
+            var employeeEntity = saveAggregate.RootEntity;
 
             Assert.IsNotNull(employeeEntity.Id);
 
@@ -252,13 +252,13 @@ GO
 
             // Update
 
-            employeeEntity = commandAggregate.RootEntity;
+            employeeEntity = saveAggregate.RootEntity;
 
             employeeEntity.Salary = 75000;
 
-            commandAggregate.Person.FirstName = "John";
+            saveAggregate.Person.FirstName = "John";
 
-            await commandAggregate.SaveAsync();
+            await saveAggregate.SaveAsync();
 
             // Read after update
 
@@ -273,7 +273,10 @@ GO
             Assert.AreEqual("John", queryAggregate.Person.FirstName);
 
             // Delete
-            await commandAggregate.DeleteAsync();
+
+            var deleteAggregate = new DeleteEmployeePersonCommandAggregate(context, employeeId);
+
+            await deleteAggregate.SaveAsync();
 
             queryAggregate.Load(employeeId);
 
@@ -291,11 +294,11 @@ GO
 
             // Insert
 
-            var commandAggregate = new EmployeePersonCommandAggregate(context, firstName: "Jack", salary: 75000);
+            var saveAggregate = new SaveEmployeePersonCommandAggregate(context, firstName: "Jack", salary: 75000);
 
-            commandAggregate.Save();
+            saveAggregate.Save();
 
-            var employeeEntity = commandAggregate.RootEntity;
+            var employeeEntity = saveAggregate.RootEntity;
 
             Assert.IsNotNull(employeeEntity.Id);
 
@@ -321,13 +324,13 @@ GO
 
             // Update
 
-            employeeEntity = commandAggregate.RootEntity;
+            employeeEntity = saveAggregate.RootEntity;
 
             employeeEntity.Salary = 80000;
 
-            commandAggregate.Person.FirstName = "Jacob";
+            saveAggregate.Person.FirstName = "Jacob";
 
-            commandAggregate.Save();
+            saveAggregate.Save();
 
             // Read after update
 
@@ -343,7 +346,9 @@ GO
 
             // Delete
 
-            commandAggregate.Delete();
+            var deleteAggregate = new DeleteEmployeePersonCommandAggregate(context, employeeId);
+
+            deleteAggregate.Save();
 
             queryAggregate.Load(employeeId);
 

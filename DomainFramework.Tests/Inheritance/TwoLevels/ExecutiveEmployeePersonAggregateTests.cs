@@ -299,11 +299,11 @@ GO
 
             // Insert
 
-            var commandAggregate = new ExecutiveEmployeePersonCommandAggregate(context, firstName: "Scottish", salary: 175000, bonus: 900000);
+            var saveAggregate = new SaveExecutiveEmployeePersonCommandAggregate(context, firstName: "Scottish", salary: 175000, bonus: 900000);
 
-            await commandAggregate.SaveAsync();
+            await saveAggregate.SaveAsync();
 
-            var executiveEntity = commandAggregate.RootEntity;
+            var executiveEntity = saveAggregate.RootEntity;
 
             Assert.IsNotNull(executiveEntity.Id);
 
@@ -333,13 +333,13 @@ GO
 
             // Update
 
-            commandAggregate.RootEntity.Bonus = 1000000;
+            saveAggregate.RootEntity.Bonus = 1000000;
 
-            commandAggregate.Employee.Salary = 180000;
+            saveAggregate.Employee.Salary = 180000;
 
-            commandAggregate.Person.FirstName = "Scott";
+            saveAggregate.Person.FirstName = "Scott";
 
-            await commandAggregate.SaveAsync();
+            await saveAggregate.SaveAsync();
 
             // Read after update
 
@@ -357,7 +357,9 @@ GO
 
             // Delete
 
-            await commandAggregate.DeleteAsync();
+            var deleteAggregate = new DeleteExecutiveEmployeePersonCommandAggregate(context, executiveId);
+
+            await deleteAggregate.SaveAsync();
 
             queryAggregate.Load(executiveId);
 
@@ -377,11 +379,11 @@ GO
 
             // Insert
 
-            var commandAggregate = new ExecutiveEmployeePersonCommandAggregate(context, firstName: "Allan", salary: 200000, bonus: 1000000);
+            var saveAggregate = new SaveExecutiveEmployeePersonCommandAggregate(context, firstName: "Allan", salary: 200000, bonus: 1000000);
 
-            commandAggregate.Save();
+            saveAggregate.Save();
 
-            var executiveEntity = commandAggregate.RootEntity;
+            var executiveEntity = saveAggregate.RootEntity;
 
             Assert.IsNotNull(executiveEntity.Id);
 
@@ -411,13 +413,13 @@ GO
 
             // Update
 
-            commandAggregate.RootEntity.Bonus = 1100000;
+            saveAggregate.RootEntity.Bonus = 1100000;
 
-            commandAggregate.Employee.Salary = 190000;
+            saveAggregate.Employee.Salary = 190000;
 
-            commandAggregate.Person.FirstName = "Alejandro";
+            saveAggregate.Person.FirstName = "Alejandro";
 
-            commandAggregate.Save();
+            saveAggregate.Save();
 
             // Read after update
 
@@ -435,7 +437,9 @@ GO
 
             // Delete
 
-            commandAggregate.Delete();
+            var deleteAggregate = new DeleteExecutiveEmployeePersonCommandAggregate(context, executiveId);
+
+            deleteAggregate.Save();
 
             queryAggregate.Load(executiveId);
 

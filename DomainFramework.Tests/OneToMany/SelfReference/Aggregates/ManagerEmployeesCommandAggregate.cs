@@ -1,5 +1,6 @@
 ﻿using DomainFramework.Core;
 using System.Collections.Generic;
+using Utilities;
 
 namespace DomainFramework.Tests
 {
@@ -11,13 +12,13 @@ namespace DomainFramework.Tests
 
         public ManagerEmployeesCommandAggregate(RepositoryContext context, PersonEntity3 entity) : base(context, entity)
         {
-            TransactedSaveOperations.Enqueue(
-                new SaveEntityTransactedOperation<PersonEntity3>(entity)
+            TransactedOperations.Enqueue(
+                new EntityCommandTransactedOperation<PersonEntity3>(entity, CommandOperationTypes.Save)
             );
 
             _employeesLink = new CollectionEntityLinkTransactedOperation<PersonEntity3, PersonEntity3>(entity);
 
-            TransactedSaveOperations.Enqueue(_employeesLink);
+            TransactedOperations.Enqueue(_employeesLink);
         }
 
         public void AddEmployee(PersonEntity3 employee)

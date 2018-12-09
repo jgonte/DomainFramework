@@ -34,13 +34,18 @@ namespace DomainFramework.Core
 
             repository.DeleteAll(user, unitOfWork);
 
-            foreach (var linkedValueObject in GetLinkedValueObjects(_rootEntity))
+            var linkedValueObjects = GetLinkedValueObjects(_rootEntity);
+
+            if (linkedValueObjects?.Any() == true)
             {
-                repository = (IValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TRepositoryKey));
+                foreach (var linkedValueObject in linkedValueObjects)
+                {
+                    repository = (IValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TRepositoryKey));
 
-                repository.TransferEntities = () => new IEntity[] { _rootEntity };
+                    repository.TransferEntities = () => new IEntity[] { _rootEntity };
 
-                repository.Insert(linkedValueObject, user, unitOfWork);
+                    repository.Insert(linkedValueObject, user, unitOfWork);
+                }
             }
         }
 
@@ -57,15 +62,20 @@ namespace DomainFramework.Core
                 repository.DeleteAllAsync(user, unitOfWork)
             );
 
-            foreach (var linkedValueObject in GetLinkedValueObjects(_rootEntity))
+            var linkedValueObjects = GetLinkedValueObjects(_rootEntity);
+
+            if (linkedValueObjects?.Any() == true)
             {
-                repository = (IValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TRepositoryKey));
+                foreach (var linkedValueObject in linkedValueObjects)
+                {
+                    repository = (IValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TRepositoryKey));
 
-                repository.TransferEntities = () => new IEntity[] { _rootEntity };
+                    repository.TransferEntities = () => new IEntity[] { _rootEntity };
 
-                tasks.Enqueue(
-                    repository.InsertAsync(linkedValueObject, user, unitOfWork)
-                );
+                    tasks.Enqueue(
+                        repository.InsertAsync(linkedValueObject, user, unitOfWork)
+                    );
+                }
             }
 
             await Task.WhenAll(tasks);

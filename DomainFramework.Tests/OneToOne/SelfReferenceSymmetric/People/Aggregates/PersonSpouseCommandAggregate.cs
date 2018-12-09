@@ -1,4 +1,5 @@
 ﻿using DomainFramework.Core;
+using Utilities;
 
 namespace DomainFramework.Tests.OneToOne.SelfReference
 {
@@ -13,8 +14,8 @@ namespace DomainFramework.Tests.OneToOne.SelfReference
                 FirstName = personSpouse.FirstName
             };
 
-            TransactedSaveOperations.Enqueue(
-                new SaveEntityTransactedOperation<PersonEntity2>(RootEntity)
+            TransactedOperations.Enqueue(
+                new EntityCommandTransactedOperation<PersonEntity2>(RootEntity, CommandOperationTypes.Save)
             );
 
             Spouse = new PersonEntity2
@@ -22,7 +23,7 @@ namespace DomainFramework.Tests.OneToOne.SelfReference
                 FirstName = personSpouse.SpouseName
             };
 
-            TransactedSaveOperations.Enqueue(
+            TransactedOperations.Enqueue(
                 new SingleSymetricEntityLinkTransactedOperation<PersonEntity2>(RootEntity, Spouse)
             );
         }

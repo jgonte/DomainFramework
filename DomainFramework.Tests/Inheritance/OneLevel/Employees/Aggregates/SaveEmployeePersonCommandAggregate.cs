@@ -2,11 +2,11 @@
 
 namespace DomainFramework.Tests
 {
-    class EmployeePersonCommandAggregate : CommandAggregate<EmployeeEntity>
+    class SaveEmployeePersonCommandAggregate : CommandAggregate<EmployeeEntity>
     {
         public PersonEntity Person { get; private set; }
 
-        public EmployeePersonCommandAggregate(DataAccess.RepositoryContext context, string firstName, int salary) :base(context, null)
+        public SaveEmployeePersonCommandAggregate(DataAccess.RepositoryContext context, string firstName, int salary) :base(context, null)
         {
             Person = new PersonEntity
             {
@@ -18,15 +18,11 @@ namespace DomainFramework.Tests
                 Salary = salary
             };
 
-            TransactedSaveOperations.Enqueue(
+            TransactedOperations.Enqueue(
                 new SaveEntityWithInheritanceTransactedOperation<EmployeeEntity>(
                     RootEntity,
                     new SaveBaseEntityTransactedOperation<PersonEntity, EmployeeEntity>(Person)
                 )
-            );
-
-            TransactedDeleteOperations.Enqueue(
-                new DeleteEntityTransactedOperation<EmployeeEntity>(RootEntity)
             );
         }
     }

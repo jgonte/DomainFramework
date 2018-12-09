@@ -6,7 +6,7 @@ namespace DomainFramework.Core
     /// <summary>
     /// Defines a read only repository
     /// </summary>
-    public interface IValueObjectQueryRepository : IRepository
+    public interface IValueObjectQueryRepository : IQueryRepository
     {
         IEnumerable<IValueObject> Get(object ownerId, IAuthenticatedUser user);
 

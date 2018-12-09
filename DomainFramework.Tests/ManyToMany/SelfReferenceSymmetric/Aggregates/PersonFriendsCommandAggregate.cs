@@ -1,6 +1,7 @@
 ﻿using DomainFramework.Core;
 using System;
 using System.Collections.Generic;
+using Utilities;
 
 namespace DomainFramework.Tests
 {
@@ -12,13 +13,13 @@ namespace DomainFramework.Tests
 
         public PersonFriendsCommandAggregate(RepositoryContext context, PersonEntity entity) : base(context, entity)
         {
-            TransactedSaveOperations.Enqueue(
-                new SaveEntityTransactedOperation<PersonEntity>(entity)
+            TransactedOperations.Enqueue(
+                new EntityCommandTransactedOperation<PersonEntity>(entity, CommandOperationTypes.Save)
             );
 
             _friendsLink = new CollectionBinaryEntityLinkTransactedOperation<PersonEntity, PersonEntity, FriendshipEntity>(entity);
 
-            TransactedSaveOperations.Enqueue(_friendsLink);
+            TransactedOperations.Enqueue(_friendsLink);
         }
 
         // Suppose the class and the student do not exist by the time we enroll it so we need to create the class and student records in the database

@@ -16,7 +16,7 @@ namespace DomainFramework.Core
         public void Execute(IRepositoryContext repositoryContext, IEntity entity, IAuthenticatedUser user)
         {
             LinkedEntities = GetLinkedEntities(
-                repositoryContext.GetQueryRepository(typeof(TLinkedEntity)), 
+                (IEntityQueryRepository)repositoryContext.GetQueryRepository(typeof(TLinkedEntity)), 
                 entity, 
                 user);
         }
@@ -24,7 +24,7 @@ namespace DomainFramework.Core
         public async Task ExecuteAsync(IRepositoryContext repositoryContext, IEntity entity, IAuthenticatedUser user)
         {
             LinkedEntities = await GetLinkedEntitiesAsync(
-                repositoryContext.GetQueryRepository(typeof(TLinkedEntity)), 
+                (IEntityQueryRepository)repositoryContext.GetQueryRepository(typeof(TLinkedEntity)), 
                 entity, 
                 user);
         }

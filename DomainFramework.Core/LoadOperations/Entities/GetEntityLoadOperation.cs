@@ -9,15 +9,16 @@ namespace DomainFramework.Core
 
         public void Execute(IRepositoryContext repositoryContext, IEntity entity, IAuthenticatedUser user)
         {
-            Entity = (TEntity)repositoryContext.GetQueryRepository(typeof(TEntity))
-                .GetById(entity.Id, user);
+            var repository = (IEntityQueryRepository)repositoryContext.GetQueryRepository(typeof(TEntity));
+
+            Entity = (TEntity)repository.GetById(entity.Id, user);
         }
 
         public async Task ExecuteAsync(IRepositoryContext repositoryContext, IEntity entity, IAuthenticatedUser user)
         {
-            var e = await repositoryContext.GetQueryRepository(typeof(TEntity)).GetByIdAsync(entity.Id, user);
+            var repository = (IEntityQueryRepository)repositoryContext.GetQueryRepository(typeof(TEntity));
 
-            Entity = (TEntity)e;
+            Entity = (TEntity)await repository.GetByIdAsync(entity.Id, user);
         }
     }
 }

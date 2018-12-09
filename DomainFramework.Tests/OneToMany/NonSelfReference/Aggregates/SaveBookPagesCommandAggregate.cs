@@ -1,16 +1,17 @@
 ﻿using DomainFramework.Core;
 using System.Collections.Generic;
 using System.Linq;
+using Utilities;
 
 namespace DomainFramework.Tests
 {
-    class BookPagesCommandAggregate : CommandAggregate<BookEntity>
+    class SaveBookPagesCommandAggregate : CommandAggregate<BookEntity>
     {
         private CollectionEntityLinkTransactedOperation<BookEntity, PageEntity> _pagesLink;
 
         public IEnumerable<PageEntity> Pages => _pagesLink.LinkedEntities;
 
-        public BookPagesCommandAggregate(RepositoryContext context, BookPagesInputDto bookPages) : base(context, null)
+        public SaveBookPagesCommandAggregate(RepositoryContext context, BookPagesInputDto bookPages) : base(context, null)
         {
             RootEntity = new BookEntity
             {
@@ -20,8 +21,8 @@ namespace DomainFramework.Tests
                 }
             };
 
-            TransactedSaveOperations.Enqueue(
-                new SaveEntityTransactedOperation<BookEntity>(RootEntity)
+            TransactedOperations.Enqueue(
+                new EntityCommandTransactedOperation<BookEntity>(RootEntity, CommandOperationTypes.Save)
             );
 
             // Create it regardless to wheather the pages are provided so the zero linked entitities can be accesses if needed to
@@ -42,14 +43,10 @@ namespace DomainFramework.Tests
                     _pagesLink.AddLinkedEntity(pageEntity);
                 }
 
-                TransactedSaveOperations.Enqueue(
+                TransactedOperations.Enqueue(
                     _pagesLink
                 );
             }           
-
-            TransactedDeleteOperations.Enqueue(
-                new DeleteEntityTransactedOperation<BookEntity>(RootEntity)
-            );
         }
     }
 }

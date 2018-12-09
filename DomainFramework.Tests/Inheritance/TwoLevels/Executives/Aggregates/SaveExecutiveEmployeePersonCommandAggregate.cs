@@ -1,14 +1,15 @@
 ﻿using DomainFramework.Core;
+using Utilities;
 
 namespace DomainFramework.Tests
 {
-    class ExecutiveEmployeePersonCommandAggregate : CommandAggregate<ExecutiveEntity>
+    class SaveExecutiveEmployeePersonCommandAggregate : CommandAggregate<ExecutiveEntity>
     {
         public PersonEntity Person { get; private set; }
 
         public EmployeeEntity Employee { get; private set; }
 
-        public ExecutiveEmployeePersonCommandAggregate(DataAccess.RepositoryContext context, string firstName, decimal salary, decimal bonus) : base(context, null)
+        public SaveExecutiveEmployeePersonCommandAggregate(DataAccess.RepositoryContext context, string firstName, decimal salary, decimal bonus) : base(context, null)
         {
             Person = new PersonEntity
             {
@@ -25,16 +26,12 @@ namespace DomainFramework.Tests
                 Bonus = bonus
             };
 
-            TransactedSaveOperations.Enqueue(
+            TransactedOperations.Enqueue(
                 new SaveEntityWithInheritanceTransactedOperation<ExecutiveEntity>(
                     RootEntity,
                     new SaveBaseEntityTransactedOperation<PersonEntity, EmployeeEntity>(Person),
                     new SaveBaseEntityTransactedOperation<EmployeeEntity, ExecutiveEntity>(Employee)
                 )
-            );
-
-            TransactedDeleteOperations.Enqueue(
-                new DeleteEntityTransactedOperation<ExecutiveEntity>(RootEntity)
             );
         }
     }

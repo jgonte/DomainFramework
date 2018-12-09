@@ -230,8 +230,10 @@ GO
 
             context.RegisterQueryRepository<PersonEntity4>(new PersonQueryRepository5());
 
+            context.RegisterQueryRepository<Person_PhonesQueryRepository.RepositoryKey>(new Person_PhonesQueryRepository());
+
             // We need an aggregate since saving the person and her phones need to happen within a transaction
-            var personCommandAggregate = new PersonPhonesCommandAggregate(context, 
+            var personCommandAggregate = new SavePersonPhonesCommandAggregate(context, 
                 firstName: "Mary",
                 phones: new List<Phone>
                 {

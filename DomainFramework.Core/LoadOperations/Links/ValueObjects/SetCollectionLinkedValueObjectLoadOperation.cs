@@ -3,18 +3,17 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public class SetCollectionLinkedValueObjectLoadOperation<TEntity, TLinkedValueObject> : ILoadOperation
+    public class SetCollectionLinkedValueObjectLoadOperation<TEntity, TRepositoryKey> : ILoadOperation
         where TEntity : IEntity
-        where TLinkedValueObject : IValueObject
     {
-        public Action<IEntityQueryRepository, TEntity, IAuthenticatedUser> SetLinkedValueObjects { get; set; }
+        public Action<IValueObjectQueryRepository, TEntity, IAuthenticatedUser> SetLinkedValueObjects { get; set; }
 
-        public Func<IEntityQueryRepository, TEntity, IAuthenticatedUser, Task> SetLinkedValueObjectsAsync { get; set; }
+        public Func<IValueObjectQueryRepository, TEntity, IAuthenticatedUser, Task> SetLinkedValueObjectsAsync { get; set; }
 
         public void Execute(IRepositoryContext repositoryContext, IEntity entity, IAuthenticatedUser user)
         {
             SetLinkedValueObjects(
-                repositoryContext.GetQueryRepository(typeof(TEntity)), 
+                (IValueObjectQueryRepository)repositoryContext.GetQueryRepository(typeof(TRepositoryKey)), 
                 (TEntity)entity, 
                 user);
         }
@@ -22,7 +21,7 @@ namespace DomainFramework.Core
         public async Task ExecuteAsync(IRepositoryContext repositoryContext, IEntity entity, IAuthenticatedUser user)
         {
             await SetLinkedValueObjectsAsync(
-                repositoryContext.GetQueryRepository(typeof(TEntity)), 
+                (IValueObjectQueryRepository)repositoryContext.GetQueryRepository(typeof(TRepositoryKey)), 
                 (TEntity)entity, 
                 user);
         }
