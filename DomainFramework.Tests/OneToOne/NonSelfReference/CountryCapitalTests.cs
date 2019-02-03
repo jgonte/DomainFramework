@@ -238,14 +238,8 @@ GO
         [TestMethod]
         public void Country_Aggregate_With_CapitalCity_Country_Only_Tests()
         {
-            var context = new RepositoryContext(connectionName);
-
-            context.RegisterCommandRepositoryFactory<CountryEntity>(() => new CountryCommandRepository());
-
-            context.RegisterCommandRepositoryFactory<CapitalCityEntity>(() => new CapitalCityCommandRepository());
-
             // Insert
-            var saveAggregate = new SaveCountryCapitalCityCommandAggregate(context,
+            var saveAggregate = new SaveCountryCapitalCityCommandAggregate(
                 new CountryWithCapitalCityDto
                 {
                     CountryCode = "il",
@@ -263,13 +257,9 @@ GO
 
             // Read
 
-            context.RegisterQueryRepository<CountryEntity>(new CountryQueryRepository());
+            var queryAggregate = new CountryCapitalCityQueryAggregate();
 
-            context.RegisterQueryRepository<CapitalCityEntity>(new CapitalCityQueryRepository());
-
-            var queryAggregate = new CountryCapitalCityQueryAggregate(context);
-
-            queryAggregate.Load("il");
+            queryAggregate.Get("il", null);
 
             countryEntity = queryAggregate.RootEntity;
 
@@ -287,7 +277,7 @@ GO
 
             // Read after update
 
-            queryAggregate.Load("il");
+            queryAggregate.Get("il");
 
             countryEntity = queryAggregate.RootEntity;
 
@@ -297,11 +287,15 @@ GO
 
             // Delete
 
-            var deleteAggregate = new DeleteCountryCapitalCityCommandAggregate(context, "il");
+            var context = new RepositoryContext(connectionName);
+
+            context.RegisterCommandRepositoryFactory<CountryEntity>(() => new CountryCommandRepository());
+
+            var deleteAggregate = new DeleteCountryCapitalCityCommandAggregate("il");
 
             deleteAggregate.Save();
 
-            queryAggregate.Load("il");
+            queryAggregate.Get("il");
 
             Assert.IsNull(queryAggregate.RootEntity);
         }
@@ -309,14 +303,8 @@ GO
         [TestMethod]
         public void Country_Aggregate_With_CapitalCity_Tests()
         {
-            var context = new RepositoryContext(connectionName);
-
-            context.RegisterCommandRepositoryFactory<CountryEntity>(() => new CountryCommandRepository());
-
-            context.RegisterCommandRepositoryFactory<CapitalCityEntity>(() => new CapitalCityCommandRepository());
-
             // Insert
-            var saveAggregate = new SaveCountryCapitalCityCommandAggregate(context, new CountryWithCapitalCityDto
+            var saveAggregate = new SaveCountryCapitalCityCommandAggregate(new CountryWithCapitalCityDto
             {
                 CountryCode = "us",
                 Name = "United States",
@@ -341,13 +329,9 @@ GO
             Assert.AreEqual("us", capitalCity.CountryCode);
 
             // Read
-            context.RegisterQueryRepository<CountryEntity>(new CountryQueryRepository());
+            var queryAggregate = new CountryCapitalCityQueryAggregate();
 
-            context.RegisterQueryRepository<CapitalCityEntity>(new CapitalCityQueryRepository());
-
-            var queryAggregate = new CountryCapitalCityQueryAggregate(context);
-
-            queryAggregate.Load("us");
+            queryAggregate.Get("us");
 
             countryEntity = queryAggregate.RootEntity;
 
@@ -377,7 +361,7 @@ GO
 
             // Read after update
 
-            queryAggregate.Load("us");
+            queryAggregate.Get("us");
 
             countryEntity = queryAggregate.RootEntity;
 
@@ -390,12 +374,11 @@ GO
             Assert.AreEqual("us", capitalCity.CountryCode);
 
             // Delete
-
-            var deleteAggregate = new DeleteCountryCapitalCityCommandAggregate(context, "us");
+            var deleteAggregate = new DeleteCountryCapitalCityCommandAggregate("us");
 
             deleteAggregate.Save();
 
-            queryAggregate.Load("us");
+            queryAggregate.Get("us");
 
             Assert.IsNull(queryAggregate.RootEntity);
         }

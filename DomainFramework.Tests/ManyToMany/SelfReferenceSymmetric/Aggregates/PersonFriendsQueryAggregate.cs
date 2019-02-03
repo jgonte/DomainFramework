@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DomainFramework.Tests
 {
-    class PersonFriendsQueryAggregate : QueryAggregate<PersonEntity, int?, object>
+    class PersonFriendsQueryAggregate : GetByIdQueryAggregate<PersonEntity, int?, object>
     {
         public GetCollectionLinkedEntityLoadOperation<PersonEntity> GetFriendsLoadOperation { get; }
 
@@ -32,7 +32,7 @@ namespace DomainFramework.Tests
 
         public override object GetDataTransferObject()
         {
-            throw new System.NotImplementedException();
+            return null;
         }
     }
 }

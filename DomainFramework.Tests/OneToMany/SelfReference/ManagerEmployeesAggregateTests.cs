@@ -250,7 +250,7 @@ GO
 
             var queryAggregate = new ManagerEmployeesQueryAggregate(context);
 
-            await queryAggregate.LoadAsync(rootManagerId);
+            await queryAggregate.GetAsync(rootManagerId, null);
 
             var personEntity = queryAggregate.RootEntity;
 

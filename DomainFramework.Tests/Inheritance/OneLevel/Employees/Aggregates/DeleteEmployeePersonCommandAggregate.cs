@@ -15,7 +15,7 @@ namespace DomainFramework.Tests
             };
 
             TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<EmployeeEntity>(RootEntity, CommandOperationTypes.Delete)
+                new EntityCommandTransactedOperation<EmployeeEntity>(RootEntity, CommandOperations.Delete)
             );
         }
     }

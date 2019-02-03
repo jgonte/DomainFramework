@@ -245,7 +245,7 @@ GO
 
             var queryAggregate = new PersonFriendsQueryAggregate(context);
 
-            await queryAggregate.LoadAsync(id);
+            await queryAggregate.GetAsync(id, null);
 
             entity = queryAggregate.RootEntity;
 

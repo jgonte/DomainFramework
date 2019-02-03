@@ -21,7 +21,7 @@ namespace DomainFramework.Tests
             };
 
             TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<ClassEntity>(RootEntity, CommandOperationTypes.Save)
+                new EntityCommandTransactedOperation<ClassEntity>(RootEntity, CommandOperations.Save)
             );
 
             _studentsToEnrollLink = new CollectionBinaryEntityLinkTransactedOperation<ClassEntity, StudentEntity, ClassEnrollmentEntity>(RootEntity);

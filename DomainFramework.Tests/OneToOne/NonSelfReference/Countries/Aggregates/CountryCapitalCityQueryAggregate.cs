@@ -2,14 +2,20 @@
 
 namespace DomainFramework.Tests
 {
-    class CountryCapitalCityQueryAggregate : QueryAggregate<CountryEntity, string, object>
+    class CountryCapitalCityQueryAggregate : GetByIdQueryAggregate<CountryEntity, string, object>
     {
         public GetSingleLinkedEntityLoadOperation<CapitalCityEntity> GetCapitalCityLoadOperation { get; }
 
         public CapitalCityEntity CapitalCity => GetCapitalCityLoadOperation.LinkedEntity;
 
-        public CountryCapitalCityQueryAggregate(RepositoryContext context) : base(context)
+        public CountryCapitalCityQueryAggregate()
         {
+            RepositoryContext = new DataAccess.RepositoryContext("SqlServerTest.DomainFrameworkOneToOneTest.ConnectionString");
+
+            RepositoryContext.RegisterQueryRepository<CountryEntity>(new CountryQueryRepository());
+
+            RepositoryContext.RegisterQueryRepository<CapitalCityEntity>(new CapitalCityQueryRepository());
+
             GetCapitalCityLoadOperation = new GetSingleLinkedEntityLoadOperation<CapitalCityEntity>
             {
                 GetLinkedEntity = (repository, entity, user) =>
@@ -26,7 +32,7 @@ namespace DomainFramework.Tests
 
         public override object GetDataTransferObject()
         {
-            throw new System.NotImplementedException();
+            return null;
         }
     }
 }

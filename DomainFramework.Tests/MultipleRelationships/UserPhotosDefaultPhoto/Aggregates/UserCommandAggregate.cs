@@ -13,7 +13,7 @@ namespace DomainFramework.Tests
         public UserCommandAggregate(DataAccess.RepositoryContext context, UserEntity entity) : base(context, entity)
         {
             TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<UserEntity>(entity, CommandOperationTypes.Save)
+                new EntityCommandTransactedOperation<UserEntity>(entity, CommandOperations.Save)
             );
 
             _userPhotosLinks = new CollectionEntityLinkTransactedOperation<UserEntity, PhotoEntity>(entity);

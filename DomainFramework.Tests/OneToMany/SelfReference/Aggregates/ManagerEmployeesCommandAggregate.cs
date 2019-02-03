@@ -13,7 +13,7 @@ namespace DomainFramework.Tests
         public ManagerEmployeesCommandAggregate(RepositoryContext context, PersonEntity3 entity) : base(context, entity)
         {
             TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<PersonEntity3>(entity, CommandOperationTypes.Save)
+                new EntityCommandTransactedOperation<PersonEntity3>(entity, CommandOperations.Save)
             );
 
             _employeesLink = new CollectionEntityLinkTransactedOperation<PersonEntity3, PersonEntity3>(entity);

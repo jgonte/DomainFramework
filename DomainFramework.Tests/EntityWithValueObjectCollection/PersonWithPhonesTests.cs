@@ -251,7 +251,7 @@ GO
             var personQueryAggregate = new PersonPhonesQueryAggregate(context);
 
             // Read
-            personQueryAggregate.Load(id, user: null);
+            personQueryAggregate.Get(id, user: null);
 
             personEntity = personQueryAggregate.RootEntity;
 
@@ -287,7 +287,7 @@ GO
             personCommandAggregate.Save();
 
             // Read changes
-            personQueryAggregate.Load(id, user: null);
+            personQueryAggregate.Get(id, user: null);
 
             personEntity = personQueryAggregate.RootEntity;
 

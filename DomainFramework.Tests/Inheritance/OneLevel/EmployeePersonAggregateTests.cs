@@ -240,7 +240,7 @@ GO
 
             var queryAggregate = new EmployeePersonQueryAggregate(context);
 
-            queryAggregate.Load(employeeId);
+            queryAggregate.Get(employeeId, null);
 
             employeeEntity = queryAggregate.RootEntity;
 
@@ -262,7 +262,7 @@ GO
 
             // Read after update
 
-            queryAggregate.Load(employeeId);
+            queryAggregate.Get(employeeId, null);
 
             employeeEntity = queryAggregate.RootEntity;
 
@@ -278,7 +278,7 @@ GO
 
             await deleteAggregate.SaveAsync();
 
-            queryAggregate.Load(employeeId);
+            queryAggregate.Get(employeeId, null);
 
             Assert.IsNull(queryAggregate.RootEntity);
         }
@@ -312,7 +312,7 @@ GO
 
             var queryAggregate = new EmployeePersonQueryAggregate(context);
 
-            queryAggregate.Load(employeeId);
+            queryAggregate.Get(employeeId, null);
 
             employeeEntity = queryAggregate.RootEntity;
 
@@ -334,7 +334,7 @@ GO
 
             // Read after update
 
-            queryAggregate.Load(employeeId);
+            queryAggregate.Get(employeeId, null);
 
             employeeEntity = queryAggregate.RootEntity;
 
@@ -350,7 +350,7 @@ GO
 
             deleteAggregate.Save();
 
-            queryAggregate.Load(employeeId);
+            queryAggregate.Get(employeeId, null);
 
             Assert.IsNull(queryAggregate.RootEntity);
         }

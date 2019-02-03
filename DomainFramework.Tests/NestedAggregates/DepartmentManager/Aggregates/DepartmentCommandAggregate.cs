@@ -7,7 +7,7 @@ namespace DomainFramework.Tests
     {
         public DepartmentCommandAggregate(DataAccess.RepositoryContext context, DepartmentEntity entity) : base(context, entity)
         {
-            TransactedOperations.Enqueue(new EntityCommandTransactedOperation<DepartmentEntity>(entity, CommandOperationTypes.Save));
+            TransactedOperations.Enqueue(new EntityCommandTransactedOperation<DepartmentEntity>(entity, CommandOperations.Save));
         }
 
         public EmployeeRoleEntity AddEmployee(string firstName, int salary)
@@ -19,7 +19,7 @@ namespace DomainFramework.Tests
             };
 
             TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<PersonEntity>(personEntity, CommandOperationTypes.Save)
+                new EntityCommandTransactedOperation<PersonEntity>(personEntity, CommandOperations.Save)
             );
 
             var employeeRoleEntity = new EmployeeRoleEntity

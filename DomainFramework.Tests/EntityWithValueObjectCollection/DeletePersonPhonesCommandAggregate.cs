@@ -13,7 +13,7 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
             };
 
             TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<PersonEntity4>(RootEntity, CommandOperationTypes.Delete)
+                new EntityCommandTransactedOperation<PersonEntity4>(RootEntity, CommandOperations.Delete)
             );
         }
     }

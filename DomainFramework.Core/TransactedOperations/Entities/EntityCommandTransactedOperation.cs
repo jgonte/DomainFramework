@@ -13,9 +13,9 @@ namespace DomainFramework.Core
     {
         private TEntity _entity;
 
-        private CommandOperationTypes _operationType;
+        private CommandOperations _operationType;
 
-        public EntityCommandTransactedOperation(TEntity entity, CommandOperationTypes operationType)
+        public EntityCommandTransactedOperation(TEntity entity, CommandOperations operationType)
         {
             if (entity == null)
             {
@@ -35,22 +35,22 @@ namespace DomainFramework.Core
 
             switch (_operationType)
             {
-                case CommandOperationTypes.Save:
+                case CommandOperations.Save:
                     {
                         repository.Save(_entity, user, unitOfWork);
                     }
                     break;
-                case CommandOperationTypes.Create:
+                case CommandOperations.Create:
                     {
                         repository.Insert(_entity, user, unitOfWork);
                     }
                     break;
-                case CommandOperationTypes.Update:
+                case CommandOperations.Update:
                     {
                         repository.Update(_entity, user, unitOfWork);
                     }
                     break;
-                case CommandOperationTypes.Delete:
+                case CommandOperations.Delete:
                     {
                         repository.Delete(_entity, user, unitOfWork);
                     }
@@ -65,22 +65,22 @@ namespace DomainFramework.Core
 
             switch (_operationType)
             {
-                case CommandOperationTypes.Save:
+                case CommandOperations.Save:
                     {
                         await repository.SaveAsync(_entity, user, unitOfWork);
                     }
                     break;
-                case CommandOperationTypes.Create:
+                case CommandOperations.Create:
                     {
                         await repository.InsertAsync(_entity, user, unitOfWork);
                     }
                     break;
-                case CommandOperationTypes.Update:
+                case CommandOperations.Update:
                     {
                         await repository.UpdateAsync(_entity, user, unitOfWork);
                     }
                     break;
-                case CommandOperationTypes.Delete:
+                case CommandOperations.Delete:
                     {
                         await repository.DeleteAsync(_entity, user, unitOfWork);
                     }

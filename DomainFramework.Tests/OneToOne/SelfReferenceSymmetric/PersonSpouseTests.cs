@@ -214,7 +214,7 @@ GO
 
             var queryAggregate = new PersonSpouseQueryAggregate(context);
 
-            queryAggregate.Load(id);
+            queryAggregate.Get(id);
 
             entity = queryAggregate.RootEntity;
 
@@ -246,7 +246,7 @@ GO
 
             // Read after update
 
-            queryAggregate.Load(id);
+            queryAggregate.Get(id);
 
             entity = queryAggregate.RootEntity;
 
@@ -268,7 +268,7 @@ GO
 
             //commandAggregate.Delete();
 
-            //queryAggregate.Load(entity.Id);
+            //queryAggregate.Get(entity.Id);
 
             //Assert.IsNull(queryAggregate.RootEntity);
         }

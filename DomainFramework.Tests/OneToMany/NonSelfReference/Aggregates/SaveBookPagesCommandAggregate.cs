@@ -22,7 +22,7 @@ namespace DomainFramework.Tests
             };
 
             TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<BookEntity>(RootEntity, CommandOperationTypes.Save)
+                new EntityCommandTransactedOperation<BookEntity>(RootEntity, CommandOperations.Save)
             );
 
             // Create it regardless to wheather the pages are provided so the zero linked entitities can be accesses if needed to

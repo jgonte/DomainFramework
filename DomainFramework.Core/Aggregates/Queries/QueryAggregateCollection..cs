@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public class QueryAggregateCollection<TAggregate, TEntity, TKey, TDto> : IQueryAggregateCollection<TAggregate, TEntity>
-        where TAggregate : IQueryAggregate<TEntity, TKey, TDto>, new()
+    public class QueryAggregateCollection<TAggregate, TEntity, TDto> : IQueryAggregateCollection<TAggregate, TEntity>
+        where TAggregate : IQueryAggregate<TEntity, TDto>, new()
     {
         public IRepositoryContext RepositoryContext { get; set; }
 

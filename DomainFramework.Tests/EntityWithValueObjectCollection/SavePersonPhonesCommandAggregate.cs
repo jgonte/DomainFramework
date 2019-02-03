@@ -17,7 +17,7 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
             };
 
             TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<PersonEntity4>(RootEntity, CommandOperationTypes.Save)
+                new EntityCommandTransactedOperation<PersonEntity4>(RootEntity, CommandOperations.Save)
             );
 
             _phonesLink = new CollectionValueObjectLinkTransactedOperation<PersonEntity4, Phone, PhoneCommandRepository.RepositoryKey>(RootEntity)

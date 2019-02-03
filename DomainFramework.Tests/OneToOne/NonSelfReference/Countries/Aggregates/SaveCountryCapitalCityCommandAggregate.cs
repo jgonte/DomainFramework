@@ -7,8 +7,14 @@ namespace DomainFramework.Tests
     {
         public CapitalCityEntity CapitalCity { get; private set; }
 
-        public SaveCountryCapitalCityCommandAggregate(DataAccess.RepositoryContext context, CountryWithCapitalCityDto countryWithCapitalCity) : base(context, null)
+        public SaveCountryCapitalCityCommandAggregate(CountryWithCapitalCityDto countryWithCapitalCity) 
         {
+            RepositoryContext = new DataAccess.RepositoryContext("SqlServerTest.DomainFrameworkOneToOneTest.ConnectionString");
+
+            RepositoryContext.RegisterCommandRepositoryFactory<CountryEntity>(() => new CountryCommandRepository());
+
+            RepositoryContext.RegisterCommandRepositoryFactory<CapitalCityEntity>(() => new CapitalCityCommandRepository());
+
             RootEntity = new CountryEntity(new CountryData
             {
                 CountryCode = countryWithCapitalCity.CountryCode,
@@ -16,7 +22,7 @@ namespace DomainFramework.Tests
             });
 
             TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<CountryEntity>(RootEntity, CommandOperationTypes.Save)
+                new EntityCommandTransactedOperation<CountryEntity>(RootEntity, CommandOperations.Save)
             );
 
             if (countryWithCapitalCity.CapitalCity != null)

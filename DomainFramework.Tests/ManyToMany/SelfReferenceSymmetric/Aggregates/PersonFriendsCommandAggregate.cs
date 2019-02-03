@@ -14,7 +14,7 @@ namespace DomainFramework.Tests
         public PersonFriendsCommandAggregate(RepositoryContext context, PersonEntity entity) : base(context, entity)
         {
             TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<PersonEntity>(entity, CommandOperationTypes.Save)
+                new EntityCommandTransactedOperation<PersonEntity>(entity, CommandOperations.Save)
             );
 
             _friendsLink = new CollectionBinaryEntityLinkTransactedOperation<PersonEntity, PersonEntity, FriendshipEntity>(entity);

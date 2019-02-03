@@ -21,6 +21,10 @@ namespace DomainFramework.Core
 
         protected virtual bool RequiresUnitOfWork => TransactedOperations.Count() > 1 || TransactedOperations.Any(to => to.RequiresUnitOfWork);
 
+        public CommandAggregate()
+        {
+        }
+
         public CommandAggregate(RepositoryContext context, TEntity entity = null)
         {
             RepositoryContext = context;

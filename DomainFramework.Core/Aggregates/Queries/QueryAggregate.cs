@@ -3,9 +3,8 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public abstract class QueryAggregate<TEntity, TKey, TDto> : IQueryAggregate<TEntity, TKey, TDto>
-        where TEntity : Entity<TKey>
-        where TDto: class
+    public abstract class QueryAggregate<TEntity, TDto> : IQueryAggregate<TEntity, TDto>
+        where TEntity : IEntity
     {
         public IRepositoryContext RepositoryContext { get; set; }
 
@@ -22,46 +21,6 @@ namespace DomainFramework.Core
             RepositoryContext = repositoryContext;
         }
 
-        public abstract TDto GetDataTransferObject();
-
-        public TDto GetById(TKey rootEntityId, IAuthenticatedUser user)
-        {
-            Load(rootEntityId, user);
-
-            if (RootEntity == null)
-            {
-                return null;
-            }
-
-            return GetDataTransferObject();
-        }
-
-        public async Task<TDto> GetByIdAsync(TKey rootEntityId, IAuthenticatedUser user)
-        {
-            await LoadAsync(rootEntityId, user);
-
-            if (RootEntity == null)
-            {
-                return null;
-            }
-
-            return GetDataTransferObject();
-        }
-
-        public void Load(TKey rootEntityId, IAuthenticatedUser user = null)
-        {
-            var repository = (IEntityQueryRepository)RepositoryContext.GetQueryRepository(typeof(TEntity));
-
-            RootEntity = (TEntity)repository.GetById(rootEntityId, user);
-
-            if (RootEntity == null) // Not found
-            {
-                return;
-            }
-
-            LoadLinks(user);
-        }
-
         public void LoadLinks(IAuthenticatedUser user = null)
         {
             foreach (var operation in LoadOperations)
@@ -69,21 +28,7 @@ namespace DomainFramework.Core
                 operation.Execute(RepositoryContext, RootEntity, user);
             }
         }
-
-        public async Task LoadAsync(TKey rootEntityId, IAuthenticatedUser user = null)
-        {
-            var repository = (IEntityQueryRepository)RepositoryContext.GetQueryRepository(typeof(TEntity));
-
-            RootEntity = (TEntity)await repository.GetByIdAsync(rootEntityId, user);
-
-            if (RootEntity == null) // Not found
-            {
-                return;
-            }
-
-            await LoadLinksAsync(user);
-        }
-
+    
         public async Task LoadLinksAsync(IAuthenticatedUser user = null)
         {
             var tasks = new Queue<Task>();
@@ -97,5 +42,7 @@ namespace DomainFramework.Core
 
             await Task.WhenAll(tasks);
         }
+
+        public abstract TDto GetDataTransferObject();
     }
 }

@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace DomainFramework.Tests
 {
-    class PersonPhonesQueryAggregate : QueryAggregate<PersonEntity4, int?, object>
+    class PersonPhonesQueryAggregate : GetByIdQueryAggregate<PersonEntity4, int?, object>
     {
         public SetCollectionLinkedValueObjectLoadOperation<PersonEntity4, Person_PhonesQueryRepository.RepositoryKey> SetPhonesLoadOperation { get; }
 
@@ -33,7 +33,7 @@ namespace DomainFramework.Tests
 
         public override object GetDataTransferObject()
         {
-            throw new System.NotImplementedException();
+            return null;
         }
     }
 }

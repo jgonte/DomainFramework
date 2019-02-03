@@ -312,7 +312,7 @@ GO
 
             var queryAggregate = new ClassEnrollmentQueryAggregate(context);
 
-            queryAggregate.Load(id);
+            queryAggregate.Get(id, null);
 
             classEntity = queryAggregate.RootEntity;
 
@@ -397,7 +397,7 @@ GO
 
             var queryAggregate = new ClassEnrollmentQueryAggregate(context);
 
-            await queryAggregate.LoadAsync(id);
+            await queryAggregate.GetAsync(id, null);
 
             classEntity = queryAggregate.RootEntity;
 

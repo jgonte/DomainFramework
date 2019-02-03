@@ -297,7 +297,7 @@ GO
 
             var bookQueryAggregate = new BookPagesQueryAggregate(context);
 
-            bookQueryAggregate.Load(bookId);
+            bookQueryAggregate.Get(bookId);
 
             bookEntity = bookQueryAggregate.RootEntity;
 
@@ -317,7 +317,7 @@ GO
 
             // Read after update
 
-            bookQueryAggregate.Load(bookId);
+            bookQueryAggregate.Get(bookId);
 
             bookEntity = bookQueryAggregate.RootEntity;
 
@@ -332,7 +332,7 @@ GO
 
             deleteAggregate.Save();
 
-            bookQueryAggregate.Load(bookId);
+            bookQueryAggregate.Get(bookId);
 
             Assert.IsNull(bookQueryAggregate.RootEntity);
         }
@@ -412,7 +412,7 @@ GO
 
             var queryAggregate = new BookPagesQueryAggregate(context);
 
-            var outputDto = queryAggregate.GetById(bookId);
+            var outputDto = queryAggregate.Get(bookId);
 
             Assert.AreEqual(bookId, outputDto.Id);
 
@@ -468,7 +468,7 @@ GO
 
             // Read after update
 
-            queryAggregate.Load(bookId);
+            queryAggregate.Get(bookId);
 
             bookEntity = queryAggregate.RootEntity;
 
@@ -508,7 +508,7 @@ GO
 
             deleteAggregate.Save();
 
-            queryAggregate.Load(bookId);
+            queryAggregate.Get(bookId);
 
             Assert.IsNull(queryAggregate.RootEntity);
         }
@@ -604,7 +604,7 @@ GO
 
             context.RegisterQueryRepository<PageEntity>(new PageQueryRepository());
 
-            var queryAggregateCollection = new Core.QueryAggregateCollection<BookPagesQueryAggregate, BookEntity, int?, object>(context);
+            var queryAggregateCollection = new Core.QueryAggregateCollection<BookPagesQueryAggregate, BookEntity, BookPagesOutputDto>(context);
 
             queryAggregateCollection.Load(new Core.QueryParameters());
 
@@ -744,7 +744,7 @@ GO
 
             //// Read after update
 
-            //queryAggregate.Load(2);
+            //queryAggregate.Get(2);
 
             //bookEntity = queryAggregate.RootEntity;
 
@@ -782,7 +782,7 @@ GO
 
             //bookCommandAggregate.Delete();
 
-            //queryAggregate.Load(2);
+            //queryAggregate.Get(2);
 
             //Assert.IsNull(queryAggregate.RootEntity);
         }

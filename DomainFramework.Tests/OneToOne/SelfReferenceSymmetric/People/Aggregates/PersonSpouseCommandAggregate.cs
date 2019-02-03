@@ -15,7 +15,7 @@ namespace DomainFramework.Tests.OneToOne.SelfReference
             };
 
             TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<PersonEntity2>(RootEntity, CommandOperationTypes.Save)
+                new EntityCommandTransactedOperation<PersonEntity2>(RootEntity, CommandOperations.Save)
             );
 
             Spouse = new PersonEntity2

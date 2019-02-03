@@ -2,7 +2,7 @@
 
 namespace DomainFramework.Tests
 {
-    class PersonSpouseQueryAggregate : QueryAggregate<PersonEntity2, int?, object>
+    class PersonSpouseQueryAggregate : GetByIdQueryAggregate<PersonEntity2, int?, object>
     {
         public GetSingleLinkedEntityLoadOperation<PersonEntity2> GetSpouseLoadOperation { get; }
 
@@ -26,7 +26,7 @@ namespace DomainFramework.Tests
 
         public override object GetDataTransferObject()
         {
-            throw new System.NotImplementedException();
+            return null;
         }
     }
 }

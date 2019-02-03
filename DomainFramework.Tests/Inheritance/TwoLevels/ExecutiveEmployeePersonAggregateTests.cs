@@ -319,7 +319,7 @@ GO
 
             var queryAggregate = new ExecutiveEmployeePersonQueryAggregate(context);
 
-            await queryAggregate.LoadAsync(executiveId);
+            await queryAggregate.GetAsync(executiveId, null);
 
             executiveEntity = queryAggregate.RootEntity;
 
@@ -343,7 +343,7 @@ GO
 
             // Read after update
 
-            await queryAggregate.LoadAsync(executiveId);
+            await queryAggregate.GetAsync(executiveId, null);
 
             executiveEntity = queryAggregate.RootEntity;
 
@@ -361,7 +361,7 @@ GO
 
             await deleteAggregate.SaveAsync();
 
-            queryAggregate.Load(executiveId);
+            queryAggregate.Get(executiveId, null);
 
             Assert.IsNull(queryAggregate.RootEntity);
         }
@@ -399,7 +399,7 @@ GO
 
             var queryAggregate = new ExecutiveEmployeePersonQueryAggregate(context);
 
-            queryAggregate.Load(executiveId);
+            queryAggregate.Get(executiveId, null);
 
             executiveEntity = queryAggregate.RootEntity;
 
@@ -423,7 +423,7 @@ GO
 
             // Read after update
 
-            queryAggregate.Load(executiveId);
+            queryAggregate.Get(executiveId, null);
 
             executiveEntity = queryAggregate.RootEntity;
 
@@ -441,7 +441,7 @@ GO
 
             deleteAggregate.Save();
 
-            queryAggregate.Load(executiveId);
+            queryAggregate.Get(executiveId, null);
 
             Assert.IsNull(queryAggregate.RootEntity);
         }

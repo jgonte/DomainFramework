@@ -13,7 +13,7 @@ namespace DomainFramework.Tests
             };
 
             TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<BookEntity>(RootEntity, CommandOperationTypes.Delete)
+                new EntityCommandTransactedOperation<BookEntity>(RootEntity, CommandOperations.Delete)
             );
         }
     }
