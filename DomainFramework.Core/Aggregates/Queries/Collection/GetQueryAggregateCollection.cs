@@ -4,39 +4,19 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public class QueryAggregateCollection<TAggregate, TEntity, TDto> : IQueryAggregateCollection<TAggregate, TEntity>
+    public class GetQueryAggregateCollection<TAggregate, TEntity, TDto> : QueryAggregateCollection<TAggregate, TEntity, TDto>
         where TAggregate : IQueryAggregate<TEntity, TDto>, new()
+        where TEntity : IEntity
     {
-        public IRepositoryContext RepositoryContext { get; set; }
-
-        public IEnumerable<TAggregate> Aggregates { get; set; }
-
-        public QueryAggregateCollection(RepositoryContext context)
+        public GetQueryAggregateCollection() : base(null)
         {
-            RepositoryContext = context;
+        }
+
+        public GetQueryAggregateCollection(RepositoryContext context) : base(context)
+        {
         }
 
         public IEnumerable<TDto> Get(QueryParameters queryParameters, IAuthenticatedUser user)
-        {
-            Load(queryParameters, user);
-
-            return Aggregates.Select(a => a.GetDataTransferObject());
-        }
-
-        public async Task<IEnumerable<TDto>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
-        {
-            await LoadAsync(queryParameters, user);
-
-            return Aggregates.Select(a => a.GetDataTransferObject());
-        }
-
-        /// <summary>
-        /// Loads a collection of aggregates based on the parameters provided
-        /// </summary>
-        /// <param name="queryParameters"></param>
-        /// <param name="user"></param>
-        /// <param name="unitOfWork"></param>
-        public virtual void Load(QueryParameters queryParameters, IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null)
         {
             Aggregates = new List<TAggregate>();
 
@@ -56,10 +36,12 @@ namespace DomainFramework.Core
 
                 ((List<TAggregate>)Aggregates).Add(aggregate);
             }
+
+            return Aggregates.Select(a => a.GetDataTransferObject());
         }
 
-        public virtual async Task LoadAsync(QueryParameters queryParameters, IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null)
-        {           
+        public async Task<IEnumerable<TDto>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        {
             Aggregates = new List<TAggregate>();
 
             var repository = RepositoryContext.GetQueryRepository(typeof(TEntity));
@@ -84,6 +66,8 @@ namespace DomainFramework.Core
             }
 
             await Task.WhenAll(tasks);
+
+            return Aggregates.Select(a => a.GetDataTransferObject());
         }
     }
 }
