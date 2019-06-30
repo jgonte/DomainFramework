@@ -23,7 +23,7 @@ namespace DomainFramework.Tests
                 )
                 .OnBeforeCommandExecuted(cmd =>
                 {
-                    var entities = TransferEntities();
+                    var entities = Dependencies();
 
                     var personEntity = (PersonEntity)entities.Single();
 
@@ -77,24 +77,5 @@ namespace DomainFramework.Tests
             return result.AffectedRows > 0;
         }
 
-        protected override void HandleInsert(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task HandleInsertAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override bool HandleUpdate(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleUpdateAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

@@ -70,19 +70,5 @@ namespace DomainFramework.Tests
             return result.AffectedRows > 0;
         }
 
-        protected override Task HandleInsertAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleUpdateAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleDeleteAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

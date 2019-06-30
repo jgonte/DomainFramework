@@ -6,24 +6,25 @@ namespace DomainFramework.Tests
     {
         public PersonEntity Person { get; private set; }
 
-        public SaveEmployeePersonCommandAggregate(DataAccess.RepositoryContext context, string firstName, int salary) :base(context, null)
+        public SaveEmployeePersonCommandAggregate(DataAccess.RepositoryContext context, string firstName, int salary) : base(context)
         {
             Person = new PersonEntity
             {
                 FirstName = firstName
             };
 
+            var savePerson = new SaveEntityCommandOperation<PersonEntity>(Person);
+
+            Enqueue(savePerson);
+
             RootEntity = new EmployeeEntity
             {
                 Salary = salary
             };
 
-            TransactedOperations.Enqueue(
-                new SaveEntityWithInheritanceTransactedOperation<EmployeeEntity>(
-                    RootEntity,
-                    new SaveBaseEntityTransactedOperation<PersonEntity, EmployeeEntity>(Person)
-                )
-            );
+            var saveEmployee = new SaveEntityCommandOperation<EmployeeEntity>(RootEntity, new IEntity [] { Person });
+
+            Enqueue(saveEmployee);
         }
     }
 }

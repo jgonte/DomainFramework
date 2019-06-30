@@ -30,12 +30,7 @@ namespace DomainFramework.Tests
                 {
                     entity.Id = id.Value;
 
-                    var capitalCity = new CapitalCityData
-                    {
-                        Name = reader.GetString(0)
-                    };
-
-                    entity.Data = capitalCity;
+                    entity.Name = reader.GetString(0);
 
                     entity.CountryCode = reader.GetString(1);
                 })
@@ -57,12 +52,7 @@ namespace DomainFramework.Tests
                 {
                     entity.Id = id.Value;
 
-                    var capitalCity = new CapitalCityData
-                    {
-                        Name = reader.GetString(0)
-                    };
-
-                    entity.Data = capitalCity;
+                    entity.Name = reader.GetString(0);
 
                     entity.CountryCode = reader.GetString(1);
                 })
@@ -84,12 +74,7 @@ namespace DomainFramework.Tests
                 {
                     entity.Id = reader.GetInt32(0);
 
-                    var capitalCity = new CapitalCityData
-                    {
-                        Name = reader.GetString(1)
-                    };
-
-                    entity.Data = capitalCity;
+                    entity.Name = reader.GetString(1);
 
                     entity.CountryCode = reader.GetString(2);
                 })
@@ -111,12 +96,7 @@ namespace DomainFramework.Tests
                 {
                     entity.Id = reader.GetInt32(0);
 
-                    var capitalCity = new CapitalCityData
-                    {
-                        Name = reader.GetString(1)
-                    };
-
-                    entity.Data = capitalCity;
+                    entity.Name = reader.GetString(1);
 
                     entity.CountryCode = reader.GetString(2);
                 })

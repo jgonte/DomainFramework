@@ -17,6 +17,7 @@ namespace DomainFramework.Tests
         public int? Id { get; internal set; }
 
         public int Index { get; set; }
+
         public int BookId { get; internal set; }
     }
 }

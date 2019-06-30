@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace DomainFramework.Core
@@ -20,21 +21,30 @@ namespace DomainFramework.Core
             return GetById((TKey)id, user);
         }
 
-        public abstract Task<TEntity> GetByIdAsync(TKey id, IAuthenticatedUser user);
+        public virtual Task<TEntity> GetByIdAsync(TKey id, IAuthenticatedUser user)
+        {
+            throw new NotImplementedException();
+        }
 
         public async Task<IEntity> GetByIdAsync(object id, IAuthenticatedUser user)
         {
             return await GetByIdAsync((TKey)id, user);
         }
 
-        public abstract IEnumerable<TEntity>Get(QueryParameters parameters, IAuthenticatedUser user);
+        public virtual IEnumerable<TEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
+        {
+            throw new NotImplementedException();
+        }
 
         IEnumerable<IEntity> IEntityQueryRepository.Get(QueryParameters parameters, IAuthenticatedUser user)
         {
             return Get(parameters, user);
         }
 
-        public abstract Task<IEnumerable<TEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user);
+        public virtual Task<IEnumerable<TEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user)
+        {
+            throw new NotImplementedException();
+        }
 
         async Task<IEnumerable<IEntity>> IEntityQueryRepository.GetAsync(QueryParameters parameters, IAuthenticatedUser user)
         {

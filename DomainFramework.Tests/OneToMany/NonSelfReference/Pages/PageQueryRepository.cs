@@ -28,12 +28,7 @@ namespace DomainFramework.Tests
                 )
                 .OnRecordRead((reader, entity) =>
                 {
-                    var page = new PageData
-                    {
-                        Index = reader.GetInt32(0)
-                    };
-
-                    entity.Data = page;
+                    entity.Index = reader.GetInt32(0);
 
                     entity.BookId = reader.GetInt32(1);
                 })
@@ -55,12 +50,7 @@ namespace DomainFramework.Tests
                 )
                 .OnRecordRead((reader, entity) =>
                 {
-                    var page = new PageData
-                    {
-                        Index = reader.GetInt32(0)
-                    };
-
-                    entity.Data = page;
+                    entity.Index = reader.GetInt32(0);
 
                     entity.BookId = reader.GetInt32(1);
                 })
@@ -84,12 +74,7 @@ namespace DomainFramework.Tests
                 {
                     entity.Id = reader.GetInt32(0);
 
-                    var page = new PageData
-                    {
-                        Index = reader.GetInt32(1)
-                    };
-
-                    entity.Data = page;
+                    entity.Index = reader.GetInt32(1);
 
                     entity.BookId = reader.GetInt32(2);
                 })
@@ -111,12 +96,7 @@ namespace DomainFramework.Tests
                 {
                     entity.Id = reader.GetInt32(0);
 
-                    var page = new PageData
-                    {
-                        Index = reader.GetInt32(1)
-                    };
-
-                    entity.Data = page;
+                    entity.Index = reader.GetInt32(1);
 
                     entity.BookId = reader.GetInt32(2);
                 })

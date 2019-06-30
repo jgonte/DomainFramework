@@ -42,40 +42,5 @@ namespace DomainFramework.Tests
                     }
                 );
         }
-
-        protected override Command CreateDeleteCommand(PersonEntity entity, IAuthenticatedUser user)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override bool HandleDelete(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleDeleteAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override void HandleInsert(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task HandleInsertAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override bool HandleUpdate(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleUpdateAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

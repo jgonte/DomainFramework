@@ -1,22 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using DataAccess;
+﻿using DataAccess;
 using DomainFramework.Core;
+using System.Threading.Tasks;
 
 namespace DomainFramework.Tests
 {
-    class CountryQueryRepository : Core.EntityQueryRepository<CountryEntity, string>
+    class CountryQueryRepository : EntityQueryRepository<CountryEntity, string>
     {
-        public override IEnumerable<CountryEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override Task<IEnumerable<CountryEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public override CountryEntity GetById(string id, IAuthenticatedUser user)
         {
             var result = Query<CountryEntity>
@@ -30,12 +19,7 @@ namespace DomainFramework.Tests
                 {
                     entity.Id = id;
 
-                    var country = new CountryData
-                    {
-                        Name = reader.GetString(0)
-                    };
-
-                    entity.Data = country;
+                    entity.Name = reader.GetString(0);
                 })
                 .Execute();
 
@@ -55,12 +39,7 @@ namespace DomainFramework.Tests
                 {
                     entity.Id = id;
 
-                    var country = new CountryData
-                    {
-                        Name = reader.GetString(0)
-                    };
-
-                    entity.Data = country;
+                    entity.Name = reader.GetString(0);
                 })
                 .ExecuteAsync();
 

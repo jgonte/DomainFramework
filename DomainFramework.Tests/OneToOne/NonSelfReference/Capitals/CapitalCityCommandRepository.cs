@@ -1,8 +1,6 @@
 ﻿using DataAccess;
 using DomainFramework.Core;
-using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace DomainFramework.Tests
 {
@@ -14,22 +12,21 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_CapitalCity_Create")
-                .AutoGenerateParameters( // Generate the parameters from the data
-                    qbeObject: entity.Data
+                .Parameters(
+                    p => p.Name("name").Value(entity.Name)
                 )
                 .Instance(entity)
                 .MapProperties(
-                    pm => pm.Map<CapitalCityEntity>(m => m.Id),//.Index(0),
-                    pm => pm.Map<CapitalCityEntity>(m => m.Data).Ignore()
+                    pm => pm.Map<CapitalCityEntity>(m => m.Id)//.Index(0),
                 )
                 .OnBeforeCommandExecuted(cmd =>
                 {
-                    var e = (CountryEntity)TransferEntities().Single();
+                    var e = (CountryEntity)Dependencies().Single();
 
                     entity.CountryCode = e.Id;
 
                     cmd.Parameters( // Map the extra parameters for the foreign key(s)
-                        p => p.Name("CountryCode").Value(entity.CountryCode)
+                        p => p.Name("countryCode").Value(entity.CountryCode)
                     );
                 });
         }
@@ -45,43 +42,13 @@ namespace DomainFramework.Tests
                     p => p.Name("countryCode").Value(entity.CountryCode)
                 )
                 .AutoGenerateParameters(
-                    qbeObject: entity.Data
+                    qbeObject: entity
                 );
-        }
-
-        protected override Command CreateDeleteCommand(CapitalCityEntity entity, IAuthenticatedUser user)
-        {
-            throw new NotImplementedException();
         }
 
         protected override void HandleInsert(Command command)
         {
             ((SingleQuery<CapitalCityEntity>)command).Execute();
-        }
-
-        protected override bool HandleUpdate(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override bool HandleDelete(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Task HandleInsertAsync(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Task<bool> HandleUpdateAsync(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Task<bool> HandleDeleteAsync(Command command)
-        {
-            throw new NotImplementedException();
         }
     }
 }

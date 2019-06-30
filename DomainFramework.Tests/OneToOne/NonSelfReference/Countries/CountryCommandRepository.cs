@@ -12,10 +12,10 @@ namespace DomainFramework.Tests
                 .NonQuery()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Country_Create")
-                .AutoGenerateParameters(
-                    qbeObject: entity.Data
-                )
-                .OnAfterCommandExecuted(cmd => entity.Id = entity.Data.CountryCode);
+                .Parameters(
+                    p => p.Name("countryCode").Value(entity.Id),
+                    p => p.Name("name").Value(entity.Name)
+                );
         }
 
         protected override Command CreateUpdateCommand(CountryEntity entity, IAuthenticatedUser user)
@@ -24,8 +24,9 @@ namespace DomainFramework.Tests
                 .NonQuery()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Country_Update")
-                .AutoGenerateParameters(
-                    qbeObject: entity.Data
+                .Parameters(
+                    p => p.Name("countryCode").Value(entity.Id),
+                    p => p.Name("name").Value(entity.Name)
                 );
         }
 
@@ -57,21 +58,6 @@ namespace DomainFramework.Tests
             var result = ((NonQueryCommand)command).Execute();
 
             return result.AffectedRows > 0;
-        }
-
-        protected override Task HandleInsertAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleUpdateAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleDeleteAsync(Command command)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

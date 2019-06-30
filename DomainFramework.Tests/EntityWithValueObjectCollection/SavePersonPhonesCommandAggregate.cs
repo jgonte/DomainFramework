@@ -6,28 +6,15 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
 {
     class SavePersonPhonesCommandAggregate : CommandAggregate<PersonEntity4>
     {
-        private CollectionValueObjectLinkTransactedOperation<PersonEntity4, Phone, PhoneCommandRepository.RepositoryKey> _phonesLink;
-
-        public SavePersonPhonesCommandAggregate(DataAccess.RepositoryContext context, string firstName, List<Phone> phones) : base(context, null)
+        public SavePersonPhonesCommandAggregate(DataAccess.RepositoryContext context, PersonEntity4 person, List<Phone> phones) : base(context)
         {
-            RootEntity = new PersonEntity4
-            {
-                FirstName = firstName,
-                Phones = phones
-            };
+            RootEntity = person;
 
-            TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<PersonEntity4>(RootEntity, CommandOperations.Save)
+            Enqueue(
+                new SaveEntityCommandOperation<PersonEntity4>(RootEntity)
             );
 
-            _phonesLink = new CollectionValueObjectLinkTransactedOperation<PersonEntity4, Phone, PhoneCommandRepository.RepositoryKey>(RootEntity)
-            {
-                GetLinkedValueObjects = entity => entity.Phones
-            };
-
-            TransactedOperations.Enqueue(
-                _phonesLink
-            );
+            this.ReplaceValueObjectsOperation<PersonEntity4, Phone, PhoneCommandRepository.RepositoryKey>(phones);
         }
     }
 }

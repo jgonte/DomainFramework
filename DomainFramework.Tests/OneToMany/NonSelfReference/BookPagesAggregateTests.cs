@@ -192,6 +192,20 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE [p_Book_RemovePages]
+    @bookId INT
+AS
+BEGIN
+
+    SET NOCOUNT ON;
+
+    DELETE
+    FROM [Page]
+        WHERE [BookId] = @bookId
+
+END;
+GO
+
 CREATE PROCEDURE [p_Book_Update]
     @bookId INT,
     @title VARCHAR(50)
@@ -303,7 +317,7 @@ GO
 
             Assert.AreEqual(bookId, bookEntity.Id);
 
-            Assert.AreEqual("Programming Java", bookEntity.Data.Title);
+            Assert.AreEqual("Programming Java", bookEntity.Title);
 
             Assert.AreEqual(0, bookQueryAggregate.Pages.Count());
 
@@ -311,7 +325,7 @@ GO
 
             bookEntity = saveAggregate.RootEntity;
 
-            bookEntity.Data.Title = "Programming Java 2nd Ed.";
+            bookEntity.Title = "Programming Java 2nd Ed.";
 
             saveAggregate.Save();
 
@@ -323,7 +337,7 @@ GO
 
             Assert.AreEqual(bookId, bookEntity.Id);
 
-            Assert.AreEqual("Programming Java 2nd Ed.", bookEntity.Data.Title);
+            Assert.AreEqual("Programming Java 2nd Ed.", bookEntity.Title);
 
             Assert.AreEqual(0, bookQueryAggregate.Pages.Count());
 
@@ -347,7 +361,6 @@ GO
             context.RegisterCommandRepositoryFactory<PageEntity>(() => new PageCommandRepository());
 
             // Insert
-
             var saveAggregate = new SaveBookPagesCommandAggregate(context, new BookPagesInputDto
             {
                 Title = "Programming C#",
@@ -384,7 +397,7 @@ GO
 
             Assert.AreEqual(1, page.Id);
 
-            Assert.AreEqual(1, page.Data.Index);
+            Assert.AreEqual(1, page.Index);
 
             Assert.AreEqual(bookId, page.BookId);
 
@@ -392,7 +405,7 @@ GO
 
             Assert.AreEqual(2, page.Id);
 
-            Assert.AreEqual(2, page.Data.Index);
+            Assert.AreEqual(2, page.Index);
 
             Assert.AreEqual(bookId, page.BookId);
 
@@ -400,7 +413,7 @@ GO
 
             Assert.AreEqual(3, page.Id);
 
-            Assert.AreEqual(3, page.Data.Index);
+            Assert.AreEqual(3, page.Index);
 
             Assert.AreEqual(bookId, page.BookId);
 
@@ -444,25 +457,32 @@ GO
 
             Assert.AreEqual(bookId, pageDto.BookId);
 
-            // Update
-
             bookEntity = saveAggregate.RootEntity;
 
-            bookEntity.Data.Title = "Programming C# 2nd Ed.";
-
-            pages = saveAggregate.Pages;
-
-            page = pages.ElementAt(0);
-
-            page.Data.Index = 10;
-
-            page = pages.ElementAt(1);
-
-            page.Data.Index = 20;
-
-            page = pages.ElementAt(2);
-
-            page.Data.Index = 30;
+            // Update
+            saveAggregate = new SaveBookPagesCommandAggregate(context, new BookPagesInputDto
+            {
+                Id = bookEntity.Id,
+                Title = "Programming C# 2nd Ed.",
+                Pages = new List<PageInputDto>
+                {
+                    new PageInputDto
+                    {
+                        Id = 1,
+                        Index = 10
+                    },
+                    new PageInputDto
+                    {
+                        Id = 2,
+                        Index = 20
+                    },
+                    new PageInputDto
+                    {
+                        Id = 3,
+                        Index = 30
+                    },
+                }
+            });
 
             saveAggregate.Save();
 
@@ -474,7 +494,7 @@ GO
 
             Assert.AreEqual(bookId, bookEntity.Id);
 
-            Assert.AreEqual("Programming C# 2nd Ed.", bookEntity.Data.Title);
+            Assert.AreEqual("Programming C# 2nd Ed.", bookEntity.Title);
 
             Assert.AreEqual(3, queryAggregate.Pages.Count());
 
@@ -482,7 +502,7 @@ GO
 
             Assert.AreEqual(1, page.Id);
 
-            Assert.AreEqual(10, page.Data.Index);
+            Assert.AreEqual(10, page.Index);
 
             Assert.AreEqual(bookId, page.BookId);
 
@@ -490,7 +510,7 @@ GO
 
             Assert.AreEqual(2, page.Id);
 
-            Assert.AreEqual(20, page.Data.Index);
+            Assert.AreEqual(20, page.Index);
 
             Assert.AreEqual(bookId, page.BookId);
 
@@ -498,12 +518,117 @@ GO
 
             Assert.AreEqual(3, page.Id);
 
-            Assert.AreEqual(30, page.Data.Index);
+            Assert.AreEqual(30, page.Index);
+
+            Assert.AreEqual(bookId, page.BookId);
+
+            // Add a single page to the book
+            var addPageAggregate = new AddPageAggregate(context, bookEntity, new PageInputDto
+            {
+                Index = 40
+            });
+
+            addPageAggregate.Save();
+
+            // Verify the page was added
+            queryAggregate.Get(bookId);
+
+            bookEntity = queryAggregate.RootEntity;
+
+            Assert.AreEqual(bookId, bookEntity.Id);
+
+            Assert.AreEqual("Programming C# 2nd Ed.", bookEntity.Title);
+
+            Assert.AreEqual(4, queryAggregate.Pages.Count());
+
+            page = queryAggregate.Pages.ElementAt(0);
+
+            Assert.AreEqual(1, page.Id);
+
+            Assert.AreEqual(10, page.Index);
+
+            Assert.AreEqual(bookId, page.BookId);
+
+            page = queryAggregate.Pages.ElementAt(1);
+
+            Assert.AreEqual(2, page.Id);
+
+            Assert.AreEqual(20, page.Index);
+
+            Assert.AreEqual(bookId, page.BookId);
+
+            page = queryAggregate.Pages.ElementAt(2);
+
+            Assert.AreEqual(3, page.Id);
+
+            Assert.AreEqual(30, page.Index);
+
+            Assert.AreEqual(bookId, page.BookId);
+
+            page = queryAggregate.Pages.ElementAt(3);
+
+            Assert.AreEqual(4, page.Id);
+
+            Assert.AreEqual(40, page.Index);
+
+            Assert.AreEqual(bookId, page.BookId);
+
+            // Replace all the existing pages if the book
+
+            var replacePagesAggregate = new ReplacePagesAggregate(context, bookEntity, new PageInputDto[]
+            {
+                new PageInputDto
+                {
+                    Index = 100
+                },
+                new PageInputDto
+                {
+                    Index = 200
+                },
+                new PageInputDto
+                {
+                    Index = 300
+                }
+            });
+
+            replacePagesAggregate.Save();
+
+            // Verify the pages were replaced
+            queryAggregate.Get(bookId);
+
+            bookEntity = queryAggregate.RootEntity;
+
+            Assert.AreEqual(bookId, bookEntity.Id);
+
+            Assert.AreEqual("Programming C# 2nd Ed.", bookEntity.Title);
+
+            Assert.AreEqual(3, queryAggregate.Pages.Count());
+
+            page = queryAggregate.Pages.ElementAt(0);
+
+            Assert.AreEqual(5, page.Id);
+
+            Assert.AreEqual(100, page.Index);
+
+            Assert.AreEqual(bookId, page.BookId);
+
+            page = queryAggregate.Pages.ElementAt(1);
+
+            Assert.AreEqual(6, page.Id);
+
+            Assert.AreEqual(200, page.Index);
+
+            Assert.AreEqual(bookId, page.BookId);
+
+            page = queryAggregate.Pages.ElementAt(2);
+
+            Assert.AreEqual(7, page.Id);
+
+            Assert.AreEqual(300, page.Index);
 
             Assert.AreEqual(bookId, page.BookId);
 
             // Delete
-
             var deleteAggregate = new DeleteBookPagesCommandAggregate(context, bookId);
 
             deleteAggregate.Save();
@@ -511,280 +636,6 @@ GO
             queryAggregate.Get(bookId);
 
             Assert.IsNull(queryAggregate.RootEntity);
-        }
-
-        [TestMethod]
-        public void Book_Aggregate_With_Pages_Aggregate_Collection_Tests()
-        {
-            var context = new RepositoryContext(connectionName);
-
-            context.RegisterCommandRepositoryFactory<BookEntity>(() => new BookCommandRepository());
-
-            context.RegisterCommandRepositoryFactory<PageEntity>(() => new PageCommandRepository());
-
-            // Insert
-            var aggregates = new List<SaveBookPagesCommandAggregate>();
-
-            var bookCommandAggregate = new SaveBookPagesCommandAggregate(context, new BookPagesInputDto
-            {
-                Title = "Book1",
-                Pages = new List<PageInputDto>
-                {
-                    new PageInputDto
-                    {
-                        Index = 1
-                    },
-                    new PageInputDto
-                    {
-                        Index = 2
-                    },
-                    new PageInputDto
-                    {
-                        Index = 3
-                    },
-                }
-            });
-
-            aggregates.Add(bookCommandAggregate);
-
-            bookCommandAggregate = new SaveBookPagesCommandAggregate(context, new BookPagesInputDto
-            {
-                Title = "Book2",
-                Pages = new List<PageInputDto>
-                {
-                    new PageInputDto
-                    {
-                        Index = 4
-                    },
-                    new PageInputDto
-                    {
-                        Index = 5
-                    },
-                    new PageInputDto
-                    {
-                        Index = 6
-                    },
-                }
-            });
-
-            aggregates.Add(bookCommandAggregate);
-
-            bookCommandAggregate = new SaveBookPagesCommandAggregate(context, new BookPagesInputDto
-            {
-                Title = "Book3",
-                Pages = new List<PageInputDto>
-                {
-                    new PageInputDto
-                    {
-                        Index = 7
-                    },
-                    new PageInputDto
-                    {
-                        Index = 8
-                    },
-                    new PageInputDto
-                    {
-                        Index = 9
-                    },
-                }
-            });
-
-            aggregates.Add(bookCommandAggregate);
-
-            var commandAggregateCollection = new Core.CommandAggregateCollection<SaveBookPagesCommandAggregate, BookEntity>(context)
-            {
-                Aggregates = aggregates
-            };
-
-            commandAggregateCollection.Save();
-
-            // Read
-
-            context.RegisterQueryRepository<BookEntity>(new BookQueryRepository());
-
-            context.RegisterQueryRepository<PageEntity>(new PageQueryRepository());
-
-            var queryAggregateCollection = new Core.QueryAggregateCollection<BookPagesQueryAggregate, BookEntity, BookPagesOutputDto>(context);
-
-            queryAggregateCollection.Load(new Core.QueryParameters());
-
-            var queryAggregates = queryAggregateCollection.Aggregates;
-
-            Assert.AreEqual(3, queryAggregates.Count());
-
-            // Book1
-
-            var queryAggregate = queryAggregates.ElementAt(0);
-
-            var bookEntity = queryAggregate.RootEntity;
-
-            Assert.IsNotNull(bookEntity.Id);
-
-            Assert.AreEqual("Book1", bookEntity.Data.Title);
-
-            Assert.AreEqual(3, queryAggregate.Pages.Count());
-
-            var page = queryAggregate.Pages.ElementAt(0);
-
-            Assert.IsNotNull(page.Id);
-
-            Assert.AreEqual(1, page.Data.Index);
-
-            Assert.AreEqual(bookEntity.Id, page.BookId);
-
-            page = queryAggregate.Pages.ElementAt(1);
-
-            Assert.IsNotNull(page.Id);
-
-            Assert.AreEqual(2, page.Data.Index);
-
-            Assert.AreEqual(bookEntity.Id, page.BookId);
-
-            page = queryAggregate.Pages.ElementAt(2);
-
-            Assert.IsNotNull(page.Id);
-
-            Assert.AreEqual(3, page.Data.Index);
-
-            Assert.AreEqual(bookEntity.Id, page.BookId);
-
-            // Book2
-
-            queryAggregate = queryAggregates.ElementAt(1);
-
-            bookEntity = queryAggregate.RootEntity;
-
-            Assert.IsNotNull(bookEntity.Id);
-
-            Assert.AreEqual("Book2", bookEntity.Data.Title);
-
-            Assert.AreEqual(3, queryAggregate.Pages.Count());
-
-            page = queryAggregate.Pages.ElementAt(0);
-
-            Assert.IsNotNull(page.Id);
-
-            Assert.AreEqual(4, page.Data.Index);
-
-            Assert.AreEqual(bookEntity.Id, page.BookId);
-
-            page = queryAggregate.Pages.ElementAt(1);
-
-            Assert.IsNotNull(page.Id);
-
-            Assert.AreEqual(5, page.Data.Index);
-
-            Assert.AreEqual(bookEntity.Id, page.BookId);
-
-            page = queryAggregate.Pages.ElementAt(2);
-
-            Assert.IsNotNull(page.Id);
-
-            Assert.AreEqual(6, page.Data.Index);
-
-            Assert.AreEqual(bookEntity.Id, page.BookId);
-
-            // Book3
-
-            queryAggregate = queryAggregates.ElementAt(2);
-
-            bookEntity = queryAggregate.RootEntity;
-
-            Assert.IsNotNull(bookEntity.Id);
-
-            Assert.AreEqual("Book3", bookEntity.Data.Title);
-
-            Assert.AreEqual(3, queryAggregate.Pages.Count());
-
-            page = queryAggregate.Pages.ElementAt(0);
-
-            Assert.IsNotNull(page.Id);
-
-            Assert.AreEqual(7, page.Data.Index);
-
-            Assert.AreEqual(bookEntity.Id, page.BookId);
-
-            page = queryAggregate.Pages.ElementAt(1);
-
-            Assert.IsNotNull(page.Id);
-
-            Assert.AreEqual(8, page.Data.Index);
-
-            Assert.AreEqual(bookEntity.Id, page.BookId);
-
-            page = queryAggregate.Pages.ElementAt(2);
-
-            Assert.IsNotNull(page.Id);
-
-            Assert.AreEqual(9, page.Data.Index);
-
-            Assert.AreEqual(bookEntity.Id, page.BookId);
-
-            //// Update
-
-            //bookEntity = bookCommandAggregate.RootEntity;
-
-            //bookEntity.Data.Title = "Programming C# 2nd Ed.";
-
-            //pages = bookCommandAggregate.Pages;
-
-            //page = pages.ElementAt(0);
-
-            //page.Data.Index = 10;
-
-            //page = pages.ElementAt(1);
-
-            //page.Data.Index = 20;
-
-            //page = pages.ElementAt(2);
-
-            //page.Data.Index = 30;
-
-            //bookCommandAggregate.Save();
-
-            //// Read after update
-
-            //queryAggregate.Get(2);
-
-            //bookEntity = queryAggregate.RootEntity;
-
-            //Assert.AreEqual(2, bookEntity.Id);
-
-            //Assert.AreEqual("Programming C# 2nd Ed.", bookEntity.Data.Title);
-
-            //Assert.AreEqual(3, queryAggregate.Pages.Count());
-
-            //page = queryAggregate.Pages.ElementAt(0);
-
-            //Assert.AreEqual(1, page.Id);
-
-            //Assert.AreEqual(10, page.Data.Index);
-
-            //Assert.AreEqual(2, page.BookId);
-
-            //page = queryAggregate.Pages.ElementAt(1);
-
-            //Assert.AreEqual(2, page.Id);
-
-            //Assert.AreEqual(20, page.Data.Index);
-
-            //Assert.AreEqual(2, page.BookId);
-
-            //page = queryAggregate.Pages.ElementAt(2);
-
-            //Assert.AreEqual(3, page.Id);
-
-            //Assert.AreEqual(30, page.Data.Index);
-
-            //Assert.AreEqual(2, page.BookId);
-
-            //// Delete
-
-            //bookCommandAggregate.Delete();
-
-            //queryAggregate.Get(2);
-
-            //Assert.IsNull(queryAggregate.RootEntity);
         }
     }
 }

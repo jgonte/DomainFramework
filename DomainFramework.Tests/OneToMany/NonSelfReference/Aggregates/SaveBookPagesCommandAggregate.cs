@@ -7,26 +7,19 @@ namespace DomainFramework.Tests
 {
     class SaveBookPagesCommandAggregate : CommandAggregate<BookEntity>
     {
-        private CollectionEntityLinkTransactedOperation<BookEntity, PageEntity> _pagesLink;
+        public List<PageEntity> Pages { get; set; } = new List<PageEntity>();
 
-        public IEnumerable<PageEntity> Pages => _pagesLink.LinkedEntities;
-
-        public SaveBookPagesCommandAggregate(RepositoryContext context, BookPagesInputDto bookPages) : base(context, null)
+        public SaveBookPagesCommandAggregate(RepositoryContext context, BookPagesInputDto bookPages) : base(context)
         {
             RootEntity = new BookEntity
             {
-                Data = new BookData
-                {
-                    Title = bookPages.Title
-                }
+                Id = bookPages.Id,
+                Title = bookPages.Title
             };
 
-            TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<BookEntity>(RootEntity, CommandOperations.Save)
+            Enqueue(
+                new SaveEntityCommandOperation<BookEntity>(RootEntity)
             );
-
-            // Create it regardless to wheather the pages are provided so the zero linked entitities can be accesses if needed to
-            _pagesLink = new CollectionEntityLinkTransactedOperation<BookEntity, PageEntity>(RootEntity);
 
             if (bookPages.Pages?.Any() == true)
             {
@@ -34,18 +27,30 @@ namespace DomainFramework.Tests
                 {
                     var pageEntity = new PageEntity
                     {
-                        Data = new PageData
-                        {
-                            Index = page.Index
-                        }
+                        Id = page.Id,
+                        Index = page.Index
                     };
 
-                    _pagesLink.AddLinkedEntity(pageEntity);
-                }
+                    Pages.Add(pageEntity);
 
-                TransactedOperations.Enqueue(
-                    _pagesLink
-                );
+                    if (pageEntity.Id != null)
+                    {
+                        pageEntity.BookId = RootEntity.Id.Value;
+
+                        Enqueue(
+                            new UpdateEntityCommandOperation<PageEntity>(pageEntity)
+                        );
+                    }
+                    else
+                    {
+                        Enqueue(
+                            new AddLinkedEntityCommandOperation<BookEntity, PageEntity>(
+                                RootEntity,
+                                getLinkedEntity: () => pageEntity
+                            )
+                        );
+                    }
+                }
             }           
         }
     }

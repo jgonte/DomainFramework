@@ -303,20 +303,29 @@ GO
             context.RegisterCommandRepositoryFactory<DepartmentManagerRoleEntity>(() => new DepartmentManagerRoleCommandRepository());
 
             // Configure the department
-            var departmentCommandAggregate = new DepartmentCommandAggregate(context, new DepartmentEntity
+            var departmentCommandAggregate = new DepartmentCommandAggregate(context, new DepartmentDto
             {
-                Name = "InformationTechnology"
+                Name = "InformationTechnology",
+                Employees = new Employee1Dto[]
+                {
+                    new Employee1Dto
+                    {
+                        FirstName = "Sam",
+                        Salary = 60000
+                    },
+                    new Employee1Dto
+                    {
+                        FirstName = "Kevin",
+                        Salary = 65000
+                    },
+                    new Employee1Dto
+                    {
+                        FirstName = "John",
+                        Salary = 70000,
+                        IsManager = true
+                    }
+                }
             });
-
-            // Add the employees
-            departmentCommandAggregate.AddEmployee(firstName: "Sam", salary: 60000);
-
-            departmentCommandAggregate.AddEmployee(firstName: "Kevin", salary: 65000);
-
-            var employeeEntity = departmentCommandAggregate.AddEmployee(firstName: "John", salary: 70000);
-
-            // Set the manager
-            departmentCommandAggregate.SetManager(employeeEntity);
 
             // Save
             departmentCommandAggregate.Save();
@@ -336,23 +345,33 @@ GO
             context.RegisterCommandRepositoryFactory<DepartmentManagerRoleEntity>(() => new DepartmentManagerRoleCommandRepository());
 
             // Configure the department
-            var departmentCommandAggregate = new DepartmentCommandAggregate(context, new DepartmentEntity
+            var departmentCommandAggregate = new DepartmentCommandAggregate(context, new DepartmentDto
             {
-                Name = "InformationTechnology"
+                Name = "InformationTechnology",
+                Employees = new Employee1Dto[]
+                {
+                    new Employee1Dto
+                    {
+                        FirstName = "Sam",
+                        Salary = 60000
+                    },
+                    new Employee1Dto
+                    {
+                        FirstName = "Kevin",
+                        Salary = 65000
+                    },
+                    new Employee1Dto
+                    {
+                        FirstName = "John",
+                        Salary = 70000,
+                        IsManager = true
+                    }
+                }
             });
-
-            // Add the employees
-            departmentCommandAggregate.AddEmployee(firstName: "Sam", salary: 60000);
-
-            departmentCommandAggregate.AddEmployee(firstName: "Kevin", salary: 65000);
-
-            var employeeEntity = departmentCommandAggregate.AddEmployee(firstName: "John", salary: 70000);
-
-            // Set the manager
-            departmentCommandAggregate.SetManager(employeeEntity);
-
             // Save
             await departmentCommandAggregate.SaveAsync();
+
+            //var getDepartmentsQueryAggregate = new GetDepartmentsQueryAggregate();
         }
     }
 }

@@ -6,24 +6,48 @@ namespace DomainFramework.Tests
 {
     class ManagerEmployeesCommandAggregate : CommandAggregate<PersonEntity3>
     {
-        private CollectionEntityLinkTransactedOperation<PersonEntity3, PersonEntity3> _employeesLink { get; set; }
+        public List<PersonEntity3> Employees { get; set; } = new List<PersonEntity3>();
 
-        public IEnumerable<PersonEntity3> Employees => _employeesLink.LinkedEntities;
-
-        public ManagerEmployeesCommandAggregate(RepositoryContext context, PersonEntity3 entity) : base(context, entity)
+        public ManagerEmployeesCommandAggregate(IRepositoryContext context, ManagerDto managerDto) : base(context)
         {
-            TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<PersonEntity3>(entity, CommandOperations.Save)
+            RootEntity = new PersonEntity3
+            {
+                FirstName = managerDto.Name
+            };
+
+            Enqueue(
+                new SaveEntityCommandOperation<PersonEntity3>(RootEntity)
             );
 
-            _employeesLink = new CollectionEntityLinkTransactedOperation<PersonEntity3, PersonEntity3>(entity);
+            foreach (var employeeDto in managerDto.Employees)
+            {
+                var employeeEntity = new PersonEntity3
+                {
+                    Id = employeeDto.Id,
+                    FirstName = employeeDto.FirstName
+                };
 
-            TransactedOperations.Enqueue(_employeesLink);
-        }
+                Employees.Add(employeeEntity);
 
-        public void AddEmployee(PersonEntity3 employee)
-        {
-            _employeesLink.AddLinkedEntity(employee);
+                if (employeeEntity.Id != null)
+                {
+                    Enqueue(
+                        new UpdateEntityCommandOperation<PersonEntity3>(
+                            employeeEntity,
+                            dependencies: new IEntity[] { RootEntity }
+                        )
+                    );
+                }
+                else
+                {
+                    Enqueue(
+                        new AddLinkedEntityCommandOperation<PersonEntity3, PersonEntity3>(
+                            RootEntity,
+                            getLinkedEntity: () => employeeEntity
+                        )
+                    );
+                }
+            }
         }
     }
 }

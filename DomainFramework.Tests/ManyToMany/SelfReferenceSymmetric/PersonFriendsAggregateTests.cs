@@ -207,37 +207,36 @@ GO
             context.RegisterCommandRepositoryFactory<FriendshipEntity>(() => new FriendshipCommandRepository());
 
             // Suppose the person and the student do not exist by the time we enroll it so we need to create the person and student records in the database
-
-            var entity = new PersonEntity
+            var commandAggregate = new PersonFriendsCommandAggregate(context, new PersonWithFriendsDto
             {
-                FirstName = "Jorge"
-            };
-
-            var commandAggregate = new PersonFriendsCommandAggregate(context, entity);
-
-            commandAggregate.AddFriend(new PersonEntity
-            {
-                FirstName = "Sarah"
-            },
-            new DateTime(2017, 3, 12, 9, 16, 37));
-
-            commandAggregate.AddFriend(new PersonEntity
-            {
-                FirstName = "Yana"
-            },
-            new DateTime(2017, 4, 12, 10, 26, 47));
-
-            commandAggregate.AddFriend(new PersonEntity
-            {
-                FirstName = "Mark"
-            },
-            new DateTime(2017, 5, 14, 11, 24, 57));
+                FirstName = "Jorge",
+                Friends = new FriendDto []
+                {
+                    new FriendDto
+                    {
+                        FirstName = "Sarah",
+                        AcceptedDateTime = new DateTime(2017, 3, 12, 9, 16, 37)
+                    },
+                    new FriendDto
+                    {
+                        FirstName = "Yana",
+                        AcceptedDateTime = new DateTime(2017, 4, 12, 10, 26, 47)
+                    },
+                    new FriendDto
+                    {
+                        FirstName = "Mark",
+                        AcceptedDateTime = new DateTime(2017, 5, 14, 11, 24, 57)
+                    }
+                }
+            });
 
             await commandAggregate.SaveAsync();
 
             // Read
 
             context.RegisterQueryRepository<PersonEntity>(new PersonQueryRepository3());
+
+            var entity = commandAggregate.RootEntity;
 
             var id = entity.Id; // Keep the generated id
 

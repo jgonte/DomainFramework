@@ -1,12 +1,12 @@
 ﻿using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace DomainFramework.Tests.EntityWithValueObjects
 {
-    class RichPersonCommandRepository : DataAccess.EntityCommandRepository<RichPersonEntity>
+    class RichPersonCommandRepository : EntityCommandRepository<RichPersonEntity>
     {
         protected override Command CreateInsertCommand(RichPersonEntity entity, IAuthenticatedUser user)
         {
@@ -49,29 +49,9 @@ namespace DomainFramework.Tests.EntityWithValueObjects
                 );
         }
 
-        protected override Command CreateDeleteCommand(RichPersonEntity entity, IAuthenticatedUser user)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override bool HandleDelete(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleDeleteAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
         protected override void HandleInsert(Command command)
         {
             ((SingleQuery<RichPersonEntity>)command).Execute();
-        }
-
-        protected override Task HandleInsertAsync(Command command)
-        {
-            throw new System.NotImplementedException();
         }
 
         protected override bool HandleUpdate(Command command)
@@ -81,9 +61,5 @@ namespace DomainFramework.Tests.EntityWithValueObjects
             return result.AffectedRows > 0;
         }
 
-        protected override Task<bool> HandleUpdateAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

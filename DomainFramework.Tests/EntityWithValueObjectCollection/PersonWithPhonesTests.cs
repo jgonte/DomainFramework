@@ -1,6 +1,7 @@
 ﻿using DataAccess;
 using DomainFramework.DataAccess;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -233,8 +234,11 @@ GO
             context.RegisterQueryRepository<Person_PhonesQueryRepository.RepositoryKey>(new Person_PhonesQueryRepository());
 
             // We need an aggregate since saving the person and her phones need to happen within a transaction
-            var personCommandAggregate = new SavePersonPhonesCommandAggregate(context, 
-                firstName: "Mary",
+            var personCommandAggregate = new SavePersonPhonesCommandAggregate(context,
+                new PersonEntity4
+                {
+                    FirstName = "Mary"
+                },
                 phones: new List<Phone>
                 {
                     new Phone(number: "786-111-2233"),
@@ -278,11 +282,12 @@ GO
 
             personEntity.FirstName = "Mariah";
 
-            // After updating this should be the only phone in the list
-            personEntity.Phones = new List<Phone>
-            {
-                new Phone(number: "786-111-4433")
-            };
+            personCommandAggregate = new SavePersonPhonesCommandAggregate(context,
+                personEntity,
+                phones: new List<Phone>
+                {   // After updating this should be the only phone in the list
+                    new Phone(number: "786-111-4433")
+                });
 
             personCommandAggregate.Save();
 
@@ -300,6 +305,30 @@ GO
             phone = personEntity.Phones.ElementAt(0);
 
             Assert.AreEqual(new Phone(number: "786-111-4433", type: Phone.Types.Cell), phone);
+
+            // Add an extra phone without deleting the existing ones
+            var addPhoneAggregate = new AddPhoneCommandAggregate(context, personEntity, new Phone(number: "999-999-9999"));
+
+            addPhoneAggregate.Save();
+
+            // Read changes
+            personQueryAggregate.Get(id, user: null);
+
+            personEntity = personQueryAggregate.RootEntity;
+
+            Assert.AreEqual(id, personEntity.Id);
+
+            Assert.AreEqual("Mariah", personEntity.FirstName);
+
+            Assert.AreEqual(2, personEntity.Phones.Count); // The three previous phones must be replaced by only one
+
+            phone = personEntity.Phones.ElementAt(0);
+
+            Assert.AreEqual(new Phone(number: "786-111-4433", type: Phone.Types.Cell), phone);
+
+            phone = personEntity.Phones.ElementAt(1);
+
+            Assert.AreEqual(new Phone(number: "999-999-9999", type: Phone.Types.Cell), phone);
         }
     }
 }

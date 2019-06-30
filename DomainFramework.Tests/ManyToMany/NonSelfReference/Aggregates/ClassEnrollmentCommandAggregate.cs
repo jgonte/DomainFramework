@@ -7,46 +7,56 @@ namespace DomainFramework.Tests
 {
     class ClassEnrollmentCommandAggregate : CommandAggregate<ClassEntity>
     {
-        private CollectionBinaryEntityLinkTransactedOperation<ClassEntity, StudentEntity, ClassEnrollmentEntity> _studentsToEnrollLink { get; set; }
+        public List<StudentEntity> StudentsToEnroll { get; internal set; } = new List<StudentEntity>();
 
-        public IEnumerable<StudentEntity> StudentsToEnroll => _studentsToEnrollLink.LinkedEntities;
+        public List<ClassEnrollmentEntity> ClassEnrollments { get; internal set; } = new List<ClassEnrollmentEntity>();
 
-        public IEnumerable<ClassEnrollmentEntity> ClassEnrollments => _studentsToEnrollLink.BinaryEntities;
-
-        public ClassEnrollmentCommandAggregate(RepositoryContext context, ClassEnrollmentDto classEnrollment) : base(context, null)
+        public ClassEnrollmentCommandAggregate(RepositoryContext context, ClassEnrollmentDto classEnrollment) : base(context)
         {
             RootEntity = new ClassEntity
             {
                 Name = classEnrollment.Name
             };
 
-            TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<ClassEntity>(RootEntity, CommandOperations.Save)
+            Enqueue(
+                new SaveEntityCommandOperation<ClassEntity>(RootEntity)
             );
-
-            _studentsToEnrollLink = new CollectionBinaryEntityLinkTransactedOperation<ClassEntity, StudentEntity, ClassEnrollmentEntity>(RootEntity);
 
             if (classEnrollment.StudentsToEnroll?.Any() == true)
             {
                 foreach (var studentToEnroll in classEnrollment.StudentsToEnroll)
                 {
-                    var student = new StudentEntity
+                    var studentEntity = new StudentEntity
                     {
                         FirstName = studentToEnroll.FirstName
                     };
 
-                    _studentsToEnrollLink.AddLinkedEntity(student);
+                    StudentsToEnroll.Add(studentEntity);
+
+                    var createStudentOperation = new InsertEntityCommandOperation<StudentEntity>(studentEntity);
+
+                    Enqueue(createStudentOperation);
 
                     var classEnrollmentEntity = new ClassEnrollmentEntity
                     {
                         StartedDateTime = studentToEnroll.StartedDateTime
                     };
 
-                    _studentsToEnrollLink.AddBinaryEntity(classEnrollmentEntity);
+                    ClassEnrollments.Add(classEnrollmentEntity);
+
+                    var createEnrollmentOperation = new InsertEntityCommandOperation<ClassEnrollmentEntity>(
+                        classEnrollmentEntity,
+                        new IEntity[] 
+                        {
+                            RootEntity,
+                            studentEntity
+                        });
+
+                    Enqueue(createEnrollmentOperation);
                 }
 
-                TransactedOperations.Enqueue(_studentsToEnrollLink);
             }
         }
+
     }
 }

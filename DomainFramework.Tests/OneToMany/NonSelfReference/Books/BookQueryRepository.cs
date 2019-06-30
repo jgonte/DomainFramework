@@ -17,12 +17,7 @@ namespace DomainFramework.Tests
                 {
                     entity.Id = reader.GetInt32(0);
 
-                    var book = new BookData
-                    {
-                        Title = reader.GetString(1)
-                    };
-
-                    entity.Data = book;
+                    entity.Title = reader.GetString(1);
                 })
                 .Execute();
 
@@ -47,12 +42,7 @@ namespace DomainFramework.Tests
                 {
                     entity.Id = id.Value;
 
-                    var book = new BookData
-                    {
-                        Title = reader.GetString(0)
-                    };
-
-                    entity.Data = book;
+                    entity.Title = reader.GetString(0);
                 })
                 .Execute();
 
@@ -72,12 +62,7 @@ namespace DomainFramework.Tests
                 {
                     entity.Id = id.Value;
 
-                    var book = new BookData
-                    {
-                        Title = reader.GetString(0)
-                    };
-
-                    entity.Data = book;
+                    entity.Title = reader.GetString(0);
                 })
                 .ExecuteAsync();
 

@@ -260,33 +260,27 @@ GO
             context.RegisterCommandRepositoryFactory<PhotoEntity>(() => new PhotoCommandRepository());
 
             // Configure the user
-            var commandAggregate = new UserCommandAggregate(context, new UserEntity
+            var commandAggregate = new UserCommandAggregate(context, new UserInputDto
             {
-                Name = "alanbrito"
+                Name = "alanbrito",
+                Photos = new PhotoInputDto[]
+                {
+                    new PhotoInputDto
+                    {
+                        Description = "Photo 1",
+                        IsDefault = true
+                    },
+                    new PhotoInputDto
+                    {
+                        Description = "Photo 2"
+                    },
+                    new PhotoInputDto
+                    {
+                        Description = "Photo 3"
+                    }
+                }
             });
-
-            var defaultPhoto = new PhotoEntity
-            {
-                Description = "Photo 1"
-            };
-
-            // Add the photos
-            commandAggregate.AddPhoto(defaultPhoto);
-
-            commandAggregate.AddPhoto(new PhotoEntity
-            {
-                Description = "Photo 2"
-            });
-
-            commandAggregate.AddPhoto(new PhotoEntity
-            {
-                Description = "Photo 3"
-            });
-
-            // Set the default photo
-            commandAggregate.SetDefaultPhoto(defaultPhoto);
-
-            // Save
+            
             commandAggregate.Save();
         }
     }

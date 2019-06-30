@@ -13,7 +13,7 @@ namespace DomainFramework.Tests
         {
             Expression<Func<PersonEntity2, object>>[] excludedProperties;
 
-            if (TransferEntities != null)
+            if (Dependencies != null)
             {
                 excludedProperties = new Expression<Func<PersonEntity2, object>>[]{
                     m => m.Id,
@@ -42,9 +42,9 @@ namespace DomainFramework.Tests
 
             command.OnBeforeCommandExecuted(cmd =>
             {
-                if (TransferEntities != null) // It is a self reference for Spouse
+                if (Dependencies != null) // It is a self reference for Spouse
                 {
-                    var e = (PersonEntity2)TransferEntities().Single();
+                    var e = (PersonEntity2)Dependencies().Single();
 
                     entity.SpouseId = e.Id;
 
@@ -56,9 +56,9 @@ namespace DomainFramework.Tests
 
             command.OnAfterCommandExecuted(cmd =>  // Handle symmetric relationship
             {
-                if (TransferEntities != null) // It is a self reference for Spouse
+                if (Dependencies != null) // It is a self reference for Spouse
                 {
-                    var e = (PersonEntity2)TransferEntities().Single();
+                    var e = (PersonEntity2)Dependencies().Single();
 
                     e.SpouseId = entity.Id; // Update the parent entity with the id of the created child one
                 }
@@ -98,41 +98,6 @@ namespace DomainFramework.Tests
             );
 
             return command;
-        }
-
-        protected override Command CreateDeleteCommand(PersonEntity2 entity, IAuthenticatedUser user)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override bool HandleDelete(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleDeleteAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override void HandleInsert(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task HandleInsertAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override bool HandleUpdate(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleUpdateAsync(Command command)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

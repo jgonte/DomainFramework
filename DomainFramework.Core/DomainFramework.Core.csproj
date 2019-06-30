@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <Folder Include="Entitites\Links\Singles\" />
+    <Folder Include="Operations\Queries\" />
   </ItemGroup>
 
 </Project>

@@ -1,12 +1,13 @@
 ﻿using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace DomainFramework.Tests.EntityWithValueObjectCollection
 {
-    class PersonCommandRepository5 : DataAccess.EntityCommandRepository<PersonEntity4>
+    class PersonCommandRepository5 : EntityCommandRepository<PersonEntity4>
     {
         protected override Command CreateInsertCommand(PersonEntity4 entity, IAuthenticatedUser user)
         {

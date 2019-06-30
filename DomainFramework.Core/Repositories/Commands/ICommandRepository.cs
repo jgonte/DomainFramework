@@ -4,13 +4,13 @@ using System.Collections.Generic;
 namespace DomainFramework.Core
 {
     /// <summary>
-    /// Common interface for Entity and ValueObject repositories
+    /// Common interface for Entity and LinkedValueObject command repositories
     /// </summary>
     public interface ICommandRepository : IRepository
     {
         /// <summary>
-        /// The entities whose ids are required by the linked and join entities at the time of persistance
+        /// The entities whose ids are not available until they are inserted
         /// </summary>
-        Func<IEnumerable<IEntity>> TransferEntities { get; set; }
+        Func<IEnumerable<IEntity>> Dependencies { get; set; }
     }
 }

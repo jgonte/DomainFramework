@@ -1,5 +1,4 @@
 ﻿using DomainFramework.Core;
-using Utilities;
 
 namespace DomainFramework.Tests
 {
@@ -9,30 +8,35 @@ namespace DomainFramework.Tests
 
         public EmployeeEntity Employee { get; private set; }
 
-        public SaveExecutiveEmployeePersonCommandAggregate(DataAccess.RepositoryContext context, string firstName, decimal salary, decimal bonus) : base(context, null)
+        public SaveExecutiveEmployeePersonCommandAggregate(DataAccess.RepositoryContext context, 
+            string firstName, decimal salary, decimal bonus) : base(context)
         {
             Person = new PersonEntity
             {
                 FirstName = firstName
             };
 
+            var savePerson = new SaveEntityCommandOperation<PersonEntity>(Person);
+
+            Enqueue(savePerson);
+
             Employee = new EmployeeEntity
             {
                 Salary = salary
             };
+
+            var saveEmployee = new SaveEntityCommandOperation<EmployeeEntity>(Employee, new IEntity[] { Person });
+
+            Enqueue(saveEmployee);
 
             RootEntity = new ExecutiveEntity
             {
                 Bonus = bonus
             };
 
-            TransactedOperations.Enqueue(
-                new SaveEntityWithInheritanceTransactedOperation<ExecutiveEntity>(
-                    RootEntity,
-                    new SaveBaseEntityTransactedOperation<PersonEntity, EmployeeEntity>(Person),
-                    new SaveBaseEntityTransactedOperation<EmployeeEntity, ExecutiveEntity>(Employee)
-                )
-            );
+            var saveExecutive = new SaveEntityCommandOperation<ExecutiveEntity>(RootEntity, new IEntity[] { Employee });
+
+            Enqueue(saveExecutive);
         }
     }
 }

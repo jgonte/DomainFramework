@@ -40,12 +40,12 @@ namespace DomainFramework.Tests
 
             dto.Id = RootEntity.Id;
 
-            dto.Title = RootEntity.Data.Title;
+            dto.Title = RootEntity.Title;
 
             dto.Pages = Pages.Select(page => new PageOutputDto
             {
                 Id = page.Id,
-                Index = page.Data.Index,
+                Index = page.Index,
                 BookId = page.BookId
             })
             .ToList();

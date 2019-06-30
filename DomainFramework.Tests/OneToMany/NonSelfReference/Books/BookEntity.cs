@@ -2,14 +2,8 @@
 
 namespace DomainFramework.Tests
 {
-    public class BookEntity : ContainerEntity<int?, BookData>
+    public class BookEntity : Entity<int?>
     {
-        public BookEntity()
-        {
-        }
-
-        internal BookEntity(BookData data, int? id = null) : base(data, id)
-        {
-        }       
+        public string Title { get; set; }
     }
 }

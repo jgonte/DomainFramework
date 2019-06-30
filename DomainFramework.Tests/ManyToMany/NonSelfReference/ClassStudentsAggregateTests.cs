@@ -160,6 +160,16 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE [p_Class_RemoveStudents]
+    @classId UNIQUEIDENTIFIER
+AS
+BEGIN
+
+    DELETE FROM ClassEnrollment
+    WHERE [ClassId] = @classId
+END;
+GO
+
 CREATE PROCEDURE [p_Class_Get]
     @classId UNIQUEIDENTIFIER
 AS
@@ -376,7 +386,7 @@ GO
                         }
                     }
                 });
-            
+
             await commandAggregate.SaveAsync();
 
             var classEntity = commandAggregate.RootEntity;
@@ -424,6 +434,103 @@ GO
             Assert.IsNotNull(student.Id);
 
             Assert.AreEqual("Mark", student.FirstName);
+
+            // Create a new student and add it to an existing class
+            var createStudentAggregate = new CreateStudentCommandAggregate(context, new StudentInputDto
+            {
+                FirstName = "Jorge"
+            });
+
+            createStudentAggregate.Save();
+
+            student = createStudentAggregate.RootEntity;
+
+            var addStudentAggregate = new AddStudentCommandAggregate(context, classEntity.Id.Value, student.Id.Value);
+
+            addStudentAggregate.Save();
+
+            await queryAggregate.GetAsync(id, null);
+
+            classEntity = queryAggregate.RootEntity;
+
+            Assert.AreEqual(id, classEntity.Id);
+
+            Assert.AreEqual("Programming", classEntity.Name);
+
+            Assert.AreEqual(4, queryAggregate.Students.Count());
+
+            student = queryAggregate.Students.ElementAt(0);
+
+            Assert.IsNotNull(student.Id);
+
+            Assert.AreEqual("Sarah", student.FirstName);
+
+            student = queryAggregate.Students.ElementAt(1);
+
+            Assert.IsNotNull(student.Id);
+
+            Assert.AreEqual("Yana", student.FirstName);
+
+            student = queryAggregate.Students.ElementAt(2);
+
+            Assert.IsNotNull(student.Id);
+
+            Assert.AreEqual("Mark", student.FirstName);
+
+            student = queryAggregate.Students.ElementAt(3);
+
+            Assert.IsNotNull(student.Id);
+
+            Assert.AreEqual("Jorge", student.FirstName);
+
+            // Create some students and replace the student of the class with those
+            Guid[] studentsId = new Guid[2];
+
+            createStudentAggregate = new CreateStudentCommandAggregate(context, new StudentInputDto
+            {
+                FirstName = "Vassili"
+            });
+
+            createStudentAggregate.Save();
+
+            studentsId[0] = createStudentAggregate.RootEntity.Id.Value;
+
+            createStudentAggregate = new CreateStudentCommandAggregate(context, new StudentInputDto
+            {
+                FirstName = "Tatiana"
+            });
+
+            createStudentAggregate.Save();
+
+            studentsId[1] = createStudentAggregate.RootEntity.Id.Value;
+
+            var replaceStudentsAggregate = new ReplaceStudentsAggregate(context, classEntity.Id.Value, studentsId);
+
+            replaceStudentsAggregate.Save();
+
+            // Verify the students were replaced
+
+            await queryAggregate.GetAsync(id, null);
+
+            classEntity = queryAggregate.RootEntity;
+
+            Assert.AreEqual(id, classEntity.Id);
+
+            Assert.AreEqual("Programming", classEntity.Name);
+
+            Assert.AreEqual(2, queryAggregate.Students.Count());
+
+            student = queryAggregate.Students.ElementAt(0);
+
+            Assert.IsNotNull(student.Id);
+
+            Assert.AreEqual("Vassili", student.FirstName);
+
+            student = queryAggregate.Students.ElementAt(1);
+
+            Assert.IsNotNull(student.Id);
+
+            Assert.AreEqual("Tatiana", student.FirstName);
         }
     }
 }

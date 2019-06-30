@@ -1,19 +1,18 @@
 ﻿using DomainFramework.Core;
-using Utilities;
 
 namespace DomainFramework.Tests.EntityWithValueObjectCollection
 {
     class DeletePersonPhonesCommandAggregate : CommandAggregate<PersonEntity4>
     {
-        public DeletePersonPhonesCommandAggregate(DataAccess.RepositoryContext context, int personId) : base(context, null)
+        public DeletePersonPhonesCommandAggregate(DataAccess.RepositoryContext context, int personId) : base(context)
         {
             RootEntity = new PersonEntity4
             {
                 Id = personId
             };
 
-            TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<PersonEntity4>(RootEntity, CommandOperations.Delete)
+            Enqueue(
+                new DeleteEntityCommandOperation<PersonEntity4>(RootEntity)
             );
         }
     }

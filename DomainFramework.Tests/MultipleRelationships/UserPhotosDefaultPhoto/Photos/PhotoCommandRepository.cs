@@ -28,7 +28,7 @@ namespace DomainFramework.Tests
                 )
                 .OnBeforeCommandExecuted(cmd =>
             {
-                var e = (UserEntity)TransferEntities().Single();
+                var e = (UserEntity)Dependencies().Single();
 
                 entity.UserId = e.Id.Value;
 
@@ -63,29 +63,5 @@ namespace DomainFramework.Tests
             ((SingleQuery<PhotoEntity>)command).Execute();
         }
 
-        protected override bool HandleUpdate(Command commandy)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override bool HandleDelete(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Task HandleInsertAsync(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Task<bool> HandleUpdateAsync(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Task<bool> HandleDeleteAsync(Command command)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

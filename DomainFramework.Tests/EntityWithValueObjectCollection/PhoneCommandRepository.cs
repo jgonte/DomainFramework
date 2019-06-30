@@ -1,15 +1,15 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using DataAccess;
+﻿using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
+using System.Linq;
 
 namespace DomainFramework.Tests.EntityWithValueObjectCollection
 {
-    class PhoneCommandRepository : DataAccess.ValueObjectCommandRepository<Phone>
+    class PhoneCommandRepository : LinkedValueObjectCommandRepository<Phone>
     {
         protected override Command CreateInsertCommand(Phone phone, IAuthenticatedUser user)
         {
-            return Query<PageEntity>
+            return Query<Phone>
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Phone_Create")
@@ -18,7 +18,7 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
                 )
                 .OnBeforeCommandExecuted(cmd =>
                 {
-                    var entity = (PersonEntity4)TransferEntities().Single();
+                    var entity = (PersonEntity4)Dependencies().Single();
 
                     cmd.Parameters( // Map the extra parameters for the foreign key(s)
                         p => p.Name("personId").Value(entity.Id)
@@ -26,7 +26,7 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
                 });
         }
 
-        protected override Command CreateDeleteAllCommand(IAuthenticatedUser user)
+        protected override Command CreateDeleteCollectionCommand(IAuthenticatedUser user)
         {
             return Command
                 .NonQuery()
@@ -34,7 +34,7 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
                 .StoredProcedure("p_Delete_Phones_For_Person")
                 .OnBeforeCommandExecuted(cmd =>
                 {
-                    var entity = (PersonEntity4)TransferEntities().Single();
+                    var entity = (PersonEntity4)Dependencies().Single();
 
                     cmd.Parameters( // Map the extra parameters for the foreign key(s)
                         p => p.Name("personId").Value(entity.Id)
@@ -42,24 +42,9 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
                 });
         }
 
-        protected override bool HandleDeleteAll(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleDeleteAllAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
         protected override void HandleInsert(Command command)
         {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task HandleInsertAsync(Command command)
-        {
-            throw new System.NotImplementedException();
+            ((SingleQuery<Phone>)command).Execute();
         }
 
         public class RepositoryKey

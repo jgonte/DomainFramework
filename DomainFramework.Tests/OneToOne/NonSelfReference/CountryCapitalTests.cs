@@ -239,7 +239,7 @@ GO
         public void Country_Aggregate_With_CapitalCity_Country_Only_Tests()
         {
             // Insert
-            var saveAggregate = new SaveCountryCapitalCityCommandAggregate(
+            var insertCountryAggregate = new InsertCountryWithCapitalCityCommandAggregate(
                 new CountryWithCapitalCityDto
                 {
                     CountryCode = "il",
@@ -247,11 +247,11 @@ GO
                     CapitalCity = null
                 });
 
-            saveAggregate.Save();
+            insertCountryAggregate.Save();
 
-            var countryEntity = saveAggregate.RootEntity;
+            var countryEntity = insertCountryAggregate.RootEntity;
 
-            Assert.AreEqual("ISRAEL", countryEntity.Data.Name);
+            Assert.AreEqual("ISRAEL", countryEntity.Name);
 
             Assert.AreEqual("il", countryEntity.Id);
 
@@ -265,15 +265,18 @@ GO
 
             Assert.AreEqual("il", countryEntity.Id);
 
-            Assert.AreEqual("ISRAEL", countryEntity.Data.Name);
+            Assert.AreEqual("ISRAEL", countryEntity.Name);
 
             // Update
+            var updateCountryAggregate = new UpdateCountryCommandAggregate(
+               new CountryWithCapitalCityDto
+               {
+                   CountryCode = "il",
+                   Name = "Israel",
+                   CapitalCity = null
+               });
 
-            countryEntity = saveAggregate.RootEntity;
-
-            countryEntity.Data.Name = "Israel";
-
-            saveAggregate.Save();
+            updateCountryAggregate.Save();
 
             // Read after update
 
@@ -283,7 +286,7 @@ GO
 
             Assert.AreEqual("il", countryEntity.Id);
 
-            Assert.AreEqual("Israel", countryEntity.Data.Name);
+            Assert.AreEqual("Israel", countryEntity.Name);
 
             // Delete
 
@@ -304,7 +307,7 @@ GO
         public void Country_Aggregate_With_CapitalCity_Tests()
         {
             // Insert
-            var saveAggregate = new SaveCountryCapitalCityCommandAggregate(new CountryWithCapitalCityDto
+            var insertCountryAggregate = new InsertCountryWithCapitalCityCommandAggregate(new CountryWithCapitalCityDto
             {
                 CountryCode = "us",
                 Name = "United States",
@@ -314,17 +317,17 @@ GO
                 }
             });
 
-            saveAggregate.Save();
+            insertCountryAggregate.Save();
 
-            var countryEntity = saveAggregate.RootEntity;
+            var countryEntity = insertCountryAggregate.RootEntity;
 
             Assert.AreEqual("us", countryEntity.Id);
 
-            var capitalCity = saveAggregate.CapitalCity;
+            var capitalCity = insertCountryAggregate.CapitalCity;
 
             Assert.AreEqual(1, capitalCity.Id);
 
-            Assert.AreEqual("Washington", capitalCity.Data.Name);
+            Assert.AreEqual("Washington", capitalCity.Name);
 
             Assert.AreEqual("us", capitalCity.CountryCode);
 
@@ -337,39 +340,13 @@ GO
 
             Assert.AreEqual("us", countryEntity.Id);
 
-            Assert.AreEqual("United States", countryEntity.Data.Name);
+            Assert.AreEqual("United States", countryEntity.Name);
 
             capitalCity = queryAggregate.CapitalCity;
 
             Assert.AreEqual(1, capitalCity.Id);
 
-            Assert.AreEqual("Washington", capitalCity.Data.Name);
-
-            Assert.AreEqual("us", capitalCity.CountryCode);
-
-            // Update
-
-            countryEntity = saveAggregate.RootEntity;
-
-            countryEntity.Data.Name = "United States of America";
-
-            capitalCity = saveAggregate.CapitalCity;
-
-            capitalCity.Data.Name = "Washington, DC.";
-
-            saveAggregate.Save();
-
-            // Read after update
-
-            queryAggregate.Get("us");
-
-            countryEntity = queryAggregate.RootEntity;
-
-            Assert.AreEqual("us", countryEntity.Id);
-
-            Assert.AreEqual("United States of America", countryEntity.Data.Name);
-
-            Assert.AreEqual("Washington, DC.", capitalCity.Data.Name);
+            Assert.AreEqual("Washington", capitalCity.Name);
 
             Assert.AreEqual("us", capitalCity.CountryCode);
 

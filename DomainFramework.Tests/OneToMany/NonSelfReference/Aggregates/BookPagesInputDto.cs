@@ -9,6 +9,7 @@ namespace DomainFramework.Tests
         public string Title { get; set; }
 
         public IEnumerable<PageInputDto> Pages { get; set; }
+        public int? Id { get; internal set; }
 
         public void Validate(ValidationResult result)
         {
@@ -19,6 +20,7 @@ namespace DomainFramework.Tests
     public class PageInputDto : IInputDataTransferObject
     {
         public int Index { get; set; }
+        public int? Id { get; internal set; }
 
         public void Validate(ValidationResult result)
         {

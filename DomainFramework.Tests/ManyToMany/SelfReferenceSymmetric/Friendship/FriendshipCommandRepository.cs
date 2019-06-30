@@ -19,7 +19,7 @@ namespace DomainFramework.Tests
                 )
                 .OnBeforeCommandExecuted(cmd =>
             {
-                var entities = TransferEntities();
+                var entities = Dependencies();
 
                 var personEntity = (PersonEntity)entities.ElementAt(0);
 
@@ -38,44 +38,5 @@ namespace DomainFramework.Tests
             });
         }
 
-        protected override Command CreateUpdateCommand(FriendshipEntity entity, IAuthenticatedUser user)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Command CreateDeleteCommand(FriendshipEntity entity, IAuthenticatedUser user)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override bool HandleDelete(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Task<bool> HandleDeleteAsync(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void HandleInsert(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Task HandleInsertAsync(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override bool HandleUpdate(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Task<bool> HandleUpdateAsync(Command command)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

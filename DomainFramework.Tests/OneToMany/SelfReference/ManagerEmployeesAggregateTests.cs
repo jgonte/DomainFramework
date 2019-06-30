@@ -189,58 +189,61 @@ GO
             context.RegisterCommandRepositoryFactory<PersonEntity3>(() => new PersonCommandRepository4());
 
             // Add two employees under Dafni
-            var manager1Entity = new PersonEntity3
+            var commandAggregate = new ManagerEmployeesCommandAggregate(context, new ManagerDto
             {
-                FirstName = "Dafni"
-            };
-
-            var commandAggregate = new ManagerEmployeesCommandAggregate(context, manager1Entity);
-
-            commandAggregate.AddEmployee(new PersonEntity3
-            {
-                FirstName = "Jorge"
-            });
-
-            commandAggregate.AddEmployee(new PersonEntity3
-            {
-                FirstName = "Nurit"
+                Name = "Dafni",
+                Employees = new EmployeeDto[]
+                {
+                    new EmployeeDto
+                    {
+                        FirstName = "Jorge"
+                    },
+                    new EmployeeDto
+                    {
+                        FirstName = "Nurit"
+                    }
+                }
             });
 
             await commandAggregate.SaveAsync();
+
+            var manager1Entity = commandAggregate.RootEntity;
 
             // Add two employees under Moshe
-            var manager2Entity = new PersonEntity3
+            commandAggregate = new ManagerEmployeesCommandAggregate(context, new ManagerDto
             {
-                FirstName = "Moshe"
-            };
-
-            commandAggregate = new ManagerEmployeesCommandAggregate(context, manager2Entity);
-
-            commandAggregate.AddEmployee(new PersonEntity3
-            {
-                FirstName = "Yoel"
-            });
-
-            commandAggregate.AddEmployee(new PersonEntity3
-            {
-                FirstName = "Vadim"
+                Name = "Moshe",
+                Employees = new EmployeeDto[]
+                {
+                    new EmployeeDto
+                    {
+                        FirstName = "Yoel"
+                    },
+                    new EmployeeDto
+                    {
+                        FirstName = "Vadim"
+                    }
+                }
             });
 
             await commandAggregate.SaveAsync();
+
+            var manager2Entity = commandAggregate.RootEntity;
 
             // Add two employees under Mark
-            var manager3Entity = new PersonEntity3
+            commandAggregate = new ManagerEmployeesCommandAggregate(context, new ManagerDto
             {
-                FirstName = "Mark"
-            };
-
-            commandAggregate = new ManagerEmployeesCommandAggregate(context, manager3Entity);
-
-            commandAggregate.AddEmployee(manager1Entity);
-
-            commandAggregate.AddEmployee(manager2Entity);
+                Name = "Mark",
+                Employees = new EmployeeDto[]
+                {
+                    new EmployeeDto(manager1Entity),
+                    new EmployeeDto(manager2Entity)
+                }
+            });
 
             await commandAggregate.SaveAsync();
+
+            var manager3Entity = commandAggregate.RootEntity;
 
             var rootManagerId = manager3Entity.Id;
 

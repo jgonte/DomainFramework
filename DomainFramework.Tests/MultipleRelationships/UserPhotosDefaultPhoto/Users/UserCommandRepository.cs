@@ -32,7 +32,7 @@ namespace DomainFramework.Tests
         {
             Expression<Func<UserEntity, object>>[] excludedProperties;
 
-            if (TransferEntities != null)
+            if (Dependencies != null)
             {
                 excludedProperties = new Expression<Func<UserEntity, object>>[]{
                     m => m.Id,
@@ -60,11 +60,11 @@ namespace DomainFramework.Tests
                 )
                 .OnBeforeCommandExecuted(cmd =>
                 {
-                    if (TransferEntities != null)
+                    if (Dependencies != null)
                     {
-                        var userEntity = (UserEntity)TransferEntities().ElementAt(0);
+                        var userEntity = (UserEntity)Dependencies().ElementAt(0);
 
-                        var defaultPhotoEntity = (PhotoEntity)TransferEntities().ElementAt(1);
+                        var defaultPhotoEntity = (PhotoEntity)Dependencies().ElementAt(1);
 
                         entity.Id = userEntity.Id;
 
@@ -109,19 +109,5 @@ namespace DomainFramework.Tests
             return result.AffectedRows > 0;
         }
 
-        protected override Task HandleInsertAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleUpdateAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleDeleteAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

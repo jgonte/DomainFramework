@@ -13,7 +13,7 @@ namespace DomainFramework.Tests
         {
             Expression<Func<PersonEntity3, object>>[] excludedProperties;
 
-            if (TransferEntities != null)
+            if (Dependencies != null)
             {
                 excludedProperties = new Expression<Func<PersonEntity3, object>>[]{
                     m => m.Id,
@@ -41,9 +41,9 @@ namespace DomainFramework.Tests
                 )
                 .OnBeforeCommandExecuted(cmd =>
                 {
-                    if (TransferEntities != null)
+                    if (Dependencies != null)
                     {
-                        var e = (PersonEntity3)TransferEntities().Single();
+                        var e = (PersonEntity3)Dependencies().Single();
 
                         entity.ManagerId = e.Id.Value;
 
@@ -60,7 +60,7 @@ namespace DomainFramework.Tests
         {
             Expression<Func<PersonEntity3, object>>[] excludedProperties;
 
-            if (TransferEntities != null)
+            if (Dependencies != null)
             {
                 excludedProperties = new Expression<Func<PersonEntity3, object>>[]{
                     m => m.Id,
@@ -102,9 +102,9 @@ namespace DomainFramework.Tests
 
             command.OnBeforeCommandExecuted(cmd =>
             {
-                if (TransferEntities != null)
+                if (Dependencies != null)
                 {
-                    var e = (PersonEntity3)TransferEntities().Single();
+                    var e = (PersonEntity3)Dependencies().Single();
 
                     entity.ManagerId = e.Id.Value;
 
@@ -115,41 +115,6 @@ namespace DomainFramework.Tests
             });
 
             return command;
-        }
-
-        protected override Command CreateDeleteCommand(PersonEntity3 entity, IAuthenticatedUser user)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override bool HandleDelete(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleDeleteAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override void HandleInsert(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task HandleInsertAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override bool HandleUpdate(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleUpdateAsync(Command command)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

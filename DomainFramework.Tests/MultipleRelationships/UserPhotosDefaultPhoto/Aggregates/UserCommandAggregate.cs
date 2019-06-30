@@ -1,36 +1,45 @@
 ﻿using DomainFramework.Core;
 using System.Collections.Generic;
-using Utilities;
 
 namespace DomainFramework.Tests
 {
     class UserCommandAggregate : CommandAggregate<UserEntity>
     {
-        private CollectionEntityLinkTransactedOperation<UserEntity, PhotoEntity> _userPhotosLinks { get; set; }
-
-        public IEnumerable<PhotoEntity> Photos => _userPhotosLinks.LinkedEntities;
-
-        public UserCommandAggregate(DataAccess.RepositoryContext context, UserEntity entity) : base(context, entity)
+        public UserCommandAggregate(IRepositoryContext context, UserInputDto userInputDto) : base(context)
         {
-            TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<UserEntity>(entity, CommandOperations.Save)
+            RootEntity = new UserEntity
+            {
+                Name = userInputDto.Name
+            };
+
+            Enqueue(
+                new SaveEntityCommandOperation<UserEntity>(RootEntity)
             );
 
-            _userPhotosLinks = new CollectionEntityLinkTransactedOperation<UserEntity, PhotoEntity>(entity);
+            foreach (var photoDto in userInputDto.Photos)
+            {
+                var photoEntity = new PhotoEntity
+                {
+                    Description = photoDto.Description
+                };
 
-            TransactedOperations.Enqueue(_userPhotosLinks);
-        }
+                var addPhoto = new AddLinkedEntityCommandOperation<UserEntity, PhotoEntity>(
+                    RootEntity,
+                    getLinkedEntity: () => photoEntity
+                );
 
-        public void AddPhoto(PhotoEntity photo)
-        {
-            _userPhotosLinks.AddLinkedEntity(photo);
-        }
+                Enqueue(addPhoto);
 
-        public void SetDefaultPhoto(PhotoEntity defaultPhoto)
-        {
-            TransactedOperations.Enqueue(
-                new SingleEntityLinkTransactedOperation<UserEntity, PhotoEntity>(RootEntity, defaultPhoto)
-            );
+                if (photoDto.IsDefault)
+                {
+                    var updateUserWithDefaultPhoto = new UpdateEntityCommandOperation<UserEntity>(
+                        RootEntity,
+                        new IEntity[] { RootEntity, photoEntity}
+                    );
+
+                    Enqueue(updateUserWithDefaultPhoto);
+                }
+            }
         }
     }
 }

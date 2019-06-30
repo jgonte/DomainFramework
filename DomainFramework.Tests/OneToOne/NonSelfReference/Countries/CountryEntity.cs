@@ -2,14 +2,8 @@
 
 namespace DomainFramework.Tests
 {
-    public class CountryEntity : ContainerEntity<string, CountryData>
+    public class CountryEntity : Entity<string>
     {
-        public CountryEntity()
-        {
-        }
-
-        internal CountryEntity(CountryData data, string id = null) : base(data, id)
-        {
-        }
+        public string Name { get; set; }
     }
 }

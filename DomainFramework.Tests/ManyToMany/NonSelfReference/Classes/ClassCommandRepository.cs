@@ -2,7 +2,6 @@
 using DomainFramework.Core;
 using System;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace DomainFramework.Tests
 {
@@ -35,41 +34,6 @@ namespace DomainFramework.Tests
                 .AutoGenerateParameters(
                     qbeObject: entity
                 );
-        }
-
-        protected override Command CreateDeleteCommand(ClassEntity entity, IAuthenticatedUser user)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void HandleInsert(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override bool HandleUpdate(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override bool HandleDelete(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Task HandleInsertAsync(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Task<bool> HandleUpdateAsync(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Task<bool> HandleDeleteAsync(Command command)
-        {
-            throw new NotImplementedException();
         }
     }
 }

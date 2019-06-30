@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Inheritance\OneLevel\Employees\Aggregates\Links\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Helpers\NetCoreHelpers.Solution\NetCoreHelpers\NetCoreHelpers.csproj" />
     <ProjectReference Include="..\..\DataAccess.Solution\DataAccess.Core\DataAccess.Core.csproj" />
     <ProjectReference Include="..\..\Utilities.Solution\Utilities\Utilities.csproj" />

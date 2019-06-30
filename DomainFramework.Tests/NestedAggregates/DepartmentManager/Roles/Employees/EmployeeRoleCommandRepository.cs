@@ -24,7 +24,7 @@ namespace DomainFramework.Tests
                 )
                 .OnBeforeCommandExecuted(cmd =>
                 {
-                    var entities = TransferEntities();
+                    var entities = Dependencies();
 
                     var departmentEntity = (DepartmentEntity)entities.ElementAt(0);
 
@@ -82,21 +82,6 @@ namespace DomainFramework.Tests
             var result = ((NonQueryCommand)command).Execute();
 
             return result.AffectedRows > 0;
-        }
-
-        protected override Task HandleInsertAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleUpdateAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleDeleteAsync(Command command)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

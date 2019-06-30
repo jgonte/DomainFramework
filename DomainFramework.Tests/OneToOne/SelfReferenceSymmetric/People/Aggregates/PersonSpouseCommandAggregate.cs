@@ -7,24 +7,37 @@ namespace DomainFramework.Tests.OneToOne.SelfReference
     {
         public PersonEntity2 Spouse { get; private set; }
 
-        public PersonSpouseCommandAggregate(DataAccess.RepositoryContext context, PersonSpouseDto personSpouse) : base(context, null)
+        public PersonSpouseCommandAggregate(DataAccess.RepositoryContext context, PersonSpouseDto personSpouse) : base(context)
         {
-            RootEntity = new PersonEntity2
-            {
-                FirstName = personSpouse.FirstName
-            };
-
-            TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<PersonEntity2>(RootEntity, CommandOperations.Save)
-            );
-
+            // Save the spouse first so we can link to it
             Spouse = new PersonEntity2
             {
                 FirstName = personSpouse.SpouseName
             };
 
-            TransactedOperations.Enqueue(
-                new SingleSymetricEntityLinkTransactedOperation<PersonEntity2>(RootEntity, Spouse)
+            Enqueue(
+                new SaveEntityCommandOperation<PersonEntity2>(Spouse)
+            );
+
+            // Save the root entity
+            RootEntity = new PersonEntity2
+            {
+                FirstName = personSpouse.FirstName
+            };
+
+            Enqueue(
+                new SaveEntityCommandOperation<PersonEntity2>(
+                    RootEntity,
+                    new IEntity[] { Spouse }
+                )
+            );
+
+            // Update the spouse to link to tue root entity
+            Enqueue(
+                new UpdateEntityCommandOperation<PersonEntity2>(
+                    Spouse,
+                    new IEntity[] { RootEntity }
+                )
             );
         }
     }

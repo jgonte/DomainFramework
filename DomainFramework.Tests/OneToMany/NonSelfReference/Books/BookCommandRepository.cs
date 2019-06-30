@@ -1,6 +1,5 @@
 ﻿using DataAccess;
 using DomainFramework.Core;
-using System.Threading.Tasks;
 
 namespace DomainFramework.Tests
 {
@@ -12,8 +11,8 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Book_Create")
-                .AutoGenerateParameters(
-                    qbeObject: entity.Data
+                .Parameters(
+                    p => p.Name("title").Value(entity.Title)
                 )
                 .Instance(entity)
                 .MapProperties(
@@ -28,10 +27,8 @@ namespace DomainFramework.Tests
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Book_Update")
                 .Parameters(
-                    p => p.Name("bookId").Value(entity.Id.Value)
-                )
-                .AutoGenerateParameters(
-                    qbeObject: entity.Data
+                    p => p.Name("bookId").Value(entity.Id.Value),
+                    p => p.Name("title").Value(entity.Title)
                 );
         }
 
@@ -65,19 +62,26 @@ namespace DomainFramework.Tests
             return result.AffectedRows > 0;
         }
 
-        protected override Task HandleInsertAsync(Command command)
+        protected override Command CreateDeleteCollectionCommand(BookEntity entity, IAuthenticatedUser user, string selector)
         {
-            throw new System.NotImplementedException();
+            switch (selector)
+            {
+                default: return Command
+                    .NonQuery()
+                    .Connection(ConnectionName)
+                    .StoredProcedure("p_Book_RemovePages")
+                    .Parameters(
+                        p => p.Name("bookId").Value(entity.Id)
+                    );
+            }
+            
         }
 
-        protected override Task<bool> HandleUpdateAsync(Command command)
+        protected override bool HandleDeleteCollection(Command command)
         {
-            throw new System.NotImplementedException();
-        }
+            var result = ((NonQueryCommand)command).Execute();
 
-        protected override Task<bool> HandleDeleteAsync(Command command)
-        {
-            throw new System.NotImplementedException();
+            return result.AffectedRows > 0;
         }
     }
 }

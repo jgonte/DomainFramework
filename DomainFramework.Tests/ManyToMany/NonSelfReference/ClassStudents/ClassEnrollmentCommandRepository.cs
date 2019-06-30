@@ -19,63 +19,56 @@ namespace DomainFramework.Tests
                 )
                 .OnBeforeCommandExecuted(cmd =>
             {
-                var entities = TransferEntities();
-
-                var classEntity = (ClassEntity)entities.ElementAt(0);
-
-                var studentEntity = (StudentEntity)entities.ElementAt(1);
-
-                entity.Id = new ClassEnrollmentEntityId
+                if (Dependencies == null)
                 {
-                    ClassId = classEntity.Id.Value,
-                    StudentId = studentEntity.Id.Value
-                };
+                    cmd.Parameters( // Map the extra parameters for the foreign key(s)
+                        p => p.Name("ClassId").Value(entity.Id.ClassId),
+                        p => p.Name("StudentId").Value(entity.Id.StudentId)
+                    );
+                }
+                else
+                {
+                    var entities = Dependencies();
 
-                cmd.Parameters( // Map the extra parameters for the foreign key(s)
-                    p => p.Name("ClassId").Value(classEntity.Id),
-                    p => p.Name("StudentId").Value(studentEntity.Id)
-                );
+                    var classEntity = (ClassEntity)entities.ElementAt(0);
+
+                    var studentEntity = (StudentEntity)entities.ElementAt(1);
+
+                    entity.Id = new ClassEnrollmentEntityId
+                    {
+                        ClassId = classEntity.Id.Value,
+                        StudentId = studentEntity.Id.Value
+                    };
+
+                    cmd.Parameters( // Map the extra parameters for the foreign key(s)
+                        p => p.Name("ClassId").Value(classEntity.Id),
+                        p => p.Name("StudentId").Value(studentEntity.Id)
+                    );
+                }
             });
-        }
-
-        protected override Command CreateUpdateCommand(ClassEnrollmentEntity entity, IAuthenticatedUser user)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Command CreateDeleteCommand(ClassEnrollmentEntity entity, IAuthenticatedUser user)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override bool HandleDelete(Command command)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Task<bool> HandleDeleteAsync(Command command)
-        {
-            throw new NotImplementedException();
         }
 
         protected override void HandleInsert(Command command)
         {
-            throw new NotImplementedException();
+            ((NonQueryCommand)command).Execute();
         }
 
-        protected override Task HandleInsertAsync(Command command)
+        protected override Command CreateDeleteCollectionCommand(ClassEnrollmentEntity entity, IAuthenticatedUser user, string selector)
         {
-            throw new NotImplementedException();
+            return Command
+                .NonQuery()
+                .Connection(ConnectionName)
+                .StoredProcedure("p_Class_RemoveStudents")
+                .Parameters(
+                    p => p.Name("classId").Value(entity.Id.ClassId)
+                );
         }
 
-        protected override bool HandleUpdate(Command command)
+        protected override bool HandleDeleteCollection(Command command)
         {
-            throw new NotImplementedException();
-        }
+            var result = ((NonQueryCommand)command).Execute();
 
-        protected override Task<bool> HandleUpdateAsync(Command command)
-        {
-            throw new NotImplementedException();
+            return result.AffectedRows > 0;
         }
     }
 }

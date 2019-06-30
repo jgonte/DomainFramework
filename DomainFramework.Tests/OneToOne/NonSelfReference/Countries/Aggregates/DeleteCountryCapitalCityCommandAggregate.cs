@@ -5,19 +5,18 @@ namespace DomainFramework.Tests
 {
     class DeleteCountryCapitalCityCommandAggregate : CommandAggregate<CountryEntity>
     {
-        public DeleteCountryCapitalCityCommandAggregate(string countryCode)
+        public DeleteCountryCapitalCityCommandAggregate(string countryCode) 
+            : base(new DataAccess.RepositoryContext("SqlServerTest.DomainFrameworkOneToOneTest.ConnectionString"))
         {
-            RepositoryContext = new DataAccess.RepositoryContext("SqlServerTest.DomainFrameworkOneToOneTest.ConnectionString");
-
-            RepositoryContext.RegisterCommandRepositoryFactory<CountryEntity>(() => new CountryCommandRepository());
+            RegisterCommandRepositoryFactory<CountryEntity>(() => new CountryCommandRepository());
 
             RootEntity = new CountryEntity
             {
                 Id = countryCode
             };
 
-            TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<CountryEntity>(RootEntity, CommandOperations.Delete)
+            Enqueue(
+                new DeleteEntityCommandOperation<CountryEntity>(RootEntity)
             );
         }
     }

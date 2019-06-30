@@ -1,33 +1,46 @@
 ﻿using DomainFramework.Core;
-using System;
-using System.Collections.Generic;
-using Utilities;
 
 namespace DomainFramework.Tests
 {
     class PersonFriendsCommandAggregate : CommandAggregate<PersonEntity>
     {
-        private CollectionBinaryEntityLinkTransactedOperation<PersonEntity, PersonEntity, FriendshipEntity> _friendsLink { get; set; }
-
-        public IEnumerable<PersonEntity> Friends => _friendsLink.LinkedEntities;
-
-        public PersonFriendsCommandAggregate(RepositoryContext context, PersonEntity entity) : base(context, entity)
+        public PersonFriendsCommandAggregate(RepositoryContext context, PersonWithFriendsDto personWithFriends) : base(context)
         {
-            TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<PersonEntity>(entity, CommandOperations.Save)
+            RootEntity = new PersonEntity
+            {
+                FirstName = personWithFriends.FirstName
+            };
+
+            Enqueue(
+                new SaveEntityCommandOperation<PersonEntity>(RootEntity)
             );
 
-            _friendsLink = new CollectionBinaryEntityLinkTransactedOperation<PersonEntity, PersonEntity, FriendshipEntity>(entity);
+            foreach (var friend in personWithFriends.Friends)
+            {
+                var friendEntity = new PersonEntity
+                {
+                    FirstName = friend.FirstName
+                };
 
-            TransactedOperations.Enqueue(_friendsLink);
-        }
+                var createFriend = new SaveEntityCommandOperation<PersonEntity>(friendEntity);
 
-        // Suppose the class and the student do not exist by the time we enroll it so we need to create the class and student records in the database
-        public void AddFriend(PersonEntity friend, DateTime acceptedDateTime)
-        {
-            _friendsLink.AddLinkedEntity(friend);
+                Enqueue(createFriend);
 
-            _friendsLink.AddBinaryEntity(new FriendshipEntity { AcceptedDateTime = acceptedDateTime });
+                var binaryEntity = new FriendshipEntity
+                {
+                    AcceptedDateTime = friend.AcceptedDateTime
+                };
+
+                var addBinaryEntity = new InsertEntityCommandOperation<FriendshipEntity>(
+                    binaryEntity,
+                    new IEntity [] { RootEntity, friendEntity}
+                );
+
+                Enqueue(addBinaryEntity);
+            }
+
+           // _friendsLink = new CollectionBinaryEntityLinkTransactedOperation<PersonEntity, PersonEntity, FriendshipEntity>(entity);
+
         }
     }
 }

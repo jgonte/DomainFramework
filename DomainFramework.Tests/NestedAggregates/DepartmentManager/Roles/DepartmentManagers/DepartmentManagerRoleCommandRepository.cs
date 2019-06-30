@@ -13,7 +13,7 @@ namespace DomainFramework.Tests
         {
             Expression<Func<DepartmentManagerRoleEntity, object>>[] excludedProperties;
 
-            if (TransferEntities != null)
+            if (Dependencies != null)
             {
                 excludedProperties = new Expression<Func<DepartmentManagerRoleEntity, object>>[]{
                     m => m.Id,
@@ -42,13 +42,13 @@ namespace DomainFramework.Tests
                 )
                 .OnBeforeCommandExecuted(cmd =>
             {
-                if (TransferEntities != null)
+                if (Dependencies != null)
                 {
-                    var employeeEntity = (EmployeeRoleEntity)TransferEntities().ElementAt(0);
+                    var employeeEntity = (EmployeeRoleEntity)Dependencies().ElementAt(0);
 
                     entity.EmployeeRoleId = employeeEntity.Id.Value;
 
-                    var departmentEntity = (DepartmentEntity)TransferEntities().ElementAt(1);
+                    var departmentEntity = (DepartmentEntity)Dependencies().ElementAt(1);
 
                     entity.ManagesDepartmentId = departmentEntity.Id.Value;
 
@@ -104,19 +104,5 @@ namespace DomainFramework.Tests
             return result.AffectedRows > 0;
         }
 
-        protected override Task HandleInsertAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleUpdateAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override Task<bool> HandleDeleteAsync(Command command)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

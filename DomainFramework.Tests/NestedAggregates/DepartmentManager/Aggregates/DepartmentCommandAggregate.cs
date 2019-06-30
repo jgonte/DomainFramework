@@ -5,42 +5,51 @@ namespace DomainFramework.Tests
 {
     class DepartmentCommandAggregate : CommandAggregate<DepartmentEntity>
     {
-        public DepartmentCommandAggregate(DataAccess.RepositoryContext context, DepartmentEntity entity) : base(context, entity)
+        public DepartmentCommandAggregate(DataAccess.RepositoryContext context, DepartmentDto department) : base(context)
         {
-            TransactedOperations.Enqueue(new EntityCommandTransactedOperation<DepartmentEntity>(entity, CommandOperations.Save));
-        }
-
-        public EmployeeRoleEntity AddEmployee(string firstName, int salary)
-        {
-            // Create the person
-            var personEntity = new PersonEntity
+            RootEntity = new DepartmentEntity
             {
-                FirstName = firstName
+                Name = department.Name
             };
 
-            TransactedOperations.Enqueue(
-                new EntityCommandTransactedOperation<PersonEntity>(personEntity, CommandOperations.Save)
-            );
+            Enqueue(new SaveEntityCommandOperation<DepartmentEntity>(RootEntity));
 
-            var employeeRoleEntity = new EmployeeRoleEntity
+            foreach (var employee in department.Employees)
             {
-                Salary = salary
-            };
+                // Create the employee
+                var personEntity = new PersonEntity
+                {
+                    FirstName = employee.FirstName
+                };
 
-            TransactedOperations.Enqueue(
-                new SaveBinaryEntityTransactedOperation<EmployeeRoleEntity, DepartmentEntity, PersonEntity>(employeeRoleEntity, RootEntity, personEntity)
-            );
+                Enqueue(
+                    new SaveEntityCommandOperation<PersonEntity>(personEntity)
+                );
 
-            return employeeRoleEntity;
-        }
+                // Set the salary and department id
+                var employeeRoleEntity = new EmployeeRoleEntity
+                {
+                    Salary = employee.Salary
+                };
 
-        public void SetManager(EmployeeRoleEntity employeeRoleEntity)
-        {
-            var departmentManagerRoleEntity = new DepartmentManagerRoleEntity();
+                Enqueue(
+                    new SaveEntityCommandOperation<EmployeeRoleEntity>(
+                        employeeRoleEntity,
+                        new IEntity[] { RootEntity, personEntity }
+                    )
+                );
 
-            TransactedOperations.Enqueue(
-                new SaveBinaryEntityTransactedOperation<DepartmentManagerRoleEntity, EmployeeRoleEntity, DepartmentEntity>(departmentManagerRoleEntity, employeeRoleEntity, RootEntity)
-            );
+                if (employee.IsManager)
+                {
+                    var departmentManagerRoleEntity = new DepartmentManagerRoleEntity();
+
+                    Enqueue(
+                        new SaveEntityCommandOperation<DepartmentManagerRoleEntity>(
+                            departmentManagerRoleEntity,
+                            new IEntity[] { employeeRoleEntity, RootEntity })
+                    );
+                }
+            }
         }
     }
 }
