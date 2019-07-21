@@ -6,9 +6,9 @@ namespace DomainFramework.Core
     public class UpdateEntityCommandOperation<TEntity> : CommandOperation<TEntity>
         where TEntity : IEntity
     {
-        private IEntity[] _dependencies;
+        private EntityDependency[] _dependencies;
 
-        public UpdateEntityCommandOperation(TEntity entity, params IEntity[] dependencies) : base(entity)
+        public UpdateEntityCommandOperation(TEntity entity, params EntityDependency[] dependencies) : base(entity)
         {
             _dependencies = dependencies;
         }

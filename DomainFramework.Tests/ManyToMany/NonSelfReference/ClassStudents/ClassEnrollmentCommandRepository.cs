@@ -19,7 +19,7 @@ namespace DomainFramework.Tests
                 )
                 .OnBeforeCommandExecuted(cmd =>
             {
-                if (Dependencies == null)
+                if (!Dependencies().Any())
                 {
                     cmd.Parameters( // Map the extra parameters for the foreign key(s)
                         p => p.Name("ClassId").Value(entity.Id.ClassId),
@@ -30,9 +30,9 @@ namespace DomainFramework.Tests
                 {
                     var entities = Dependencies();
 
-                    var classEntity = (ClassEntity)entities.ElementAt(0);
+                    var classEntity = (ClassEntity)entities.ElementAt(0).Entity;
 
-                    var studentEntity = (StudentEntity)entities.ElementAt(1);
+                    var studentEntity = (StudentEntity)entities.ElementAt(1).Entity;
 
                     entity.Id = new ClassEnrollmentEntityId
                     {

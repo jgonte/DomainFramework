@@ -13,7 +13,7 @@ namespace DomainFramework.Tests
         {
             Expression<Func<DepartmentManagerRoleEntity, object>>[] excludedProperties;
 
-            if (Dependencies != null)
+            if (Dependencies().Any())
             {
                 excludedProperties = new Expression<Func<DepartmentManagerRoleEntity, object>>[]{
                     m => m.Id,
@@ -41,23 +41,23 @@ namespace DomainFramework.Tests
                     pm => pm.Map<DepartmentManagerRoleEntity>(m => m.Id)//.Index(0),
                 )
                 .OnBeforeCommandExecuted(cmd =>
-            {
-                if (Dependencies != null)
                 {
-                    var employeeEntity = (EmployeeRoleEntity)Dependencies().ElementAt(0);
+                    if (Dependencies().Any())
+                    {
+                        var employeeEntity = (EmployeeRoleEntity)Dependencies().ElementAt(0).Entity;
 
-                    entity.EmployeeRoleId = employeeEntity.Id.Value;
+                        entity.EmployeeRoleId = employeeEntity.Id.Value;
 
-                    var departmentEntity = (DepartmentEntity)Dependencies().ElementAt(1);
+                        var departmentEntity = (DepartmentEntity)Dependencies().ElementAt(1).Entity;
 
-                    entity.ManagesDepartmentId = departmentEntity.Id.Value;
+                        entity.ManagesDepartmentId = departmentEntity.Id.Value;
 
-                    cmd.Parameters( // Map the extra parameters for the foreign key(s)
-                        p => p.Name("employeeRoleId").Value(entity.EmployeeRoleId),
-                        p => p.Name("managesDepartmentId").Value(entity.ManagesDepartmentId)
-                    );
-                }
-            });
+                        cmd.Parameters( // Map the extra parameters for the foreign key(s)
+                            p => p.Name("employeeRoleId").Value(entity.EmployeeRoleId),
+                            p => p.Name("managesDepartmentId").Value(entity.ManagesDepartmentId)
+                        );
+                    }
+                });
         }
 
         protected override Command CreateUpdateCommand(DepartmentManagerRoleEntity entity, IAuthenticatedUser user)

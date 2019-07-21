@@ -15,7 +15,14 @@ namespace DomainFramework.Core
         {
             var repository = (ILinkedValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TRepositoryKey));
 
-            repository.Dependencies = () => new IEntity[] { Entity };
+            repository.Dependencies = () => new EntityDependency[]
+            {
+                new EntityDependency
+                {
+                    Entity = Entity,
+                    Selector = null
+                }
+            };
 
             repository.DeleteCollection(user, unitOfWork);
         }
@@ -24,7 +31,14 @@ namespace DomainFramework.Core
         {
             var repository = (ILinkedValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TRepositoryKey));
 
-            repository.Dependencies = () => new IEntity[] { Entity };
+            repository.Dependencies = () => new EntityDependency[]
+            {
+                new EntityDependency
+                {
+                    Entity = Entity,
+                    Selector = null
+                }
+            };
 
             await repository.DeleteCollectionAsync(user, unitOfWork);
         }

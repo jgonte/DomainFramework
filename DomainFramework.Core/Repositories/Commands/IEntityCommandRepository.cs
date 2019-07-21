@@ -17,7 +17,7 @@ namespace DomainFramework.Core
         bool Delete(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
         // Pass the root entity to have access to its parameters if needed
-        bool DeleteCollection(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector = null);
+        bool DeleteCollection(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
 
         Task SaveAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
@@ -28,6 +28,6 @@ namespace DomainFramework.Core
         Task<bool> DeleteAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
         // Pass the root entity to have access to its parameters if needed
-        Task<bool> DeleteCollectionAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector = null);
+        Task<bool> DeleteCollectionAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
     }
 }

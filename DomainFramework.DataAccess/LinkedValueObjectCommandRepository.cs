@@ -12,7 +12,7 @@ namespace DomainFramework.DataAccess
         public string ConnectionName { get; set; }
 
         // This is needed because the id of the entity might not be available until the entity is inserted
-        public Func<IEnumerable<IEntity>> Dependencies { get; set; }
+        public Func<IEnumerable<EntityDependency>> Dependencies { get; set; }
  
         #region Add
 

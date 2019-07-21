@@ -13,7 +13,7 @@ namespace DomainFramework.Tests
         {
             Expression<Func<PersonEntity2, object>>[] excludedProperties;
 
-            if (Dependencies != null)
+            if (Dependencies().Any())
             {
                 excludedProperties = new Expression<Func<PersonEntity2, object>>[]{
                     m => m.Id,
@@ -42,9 +42,9 @@ namespace DomainFramework.Tests
 
             command.OnBeforeCommandExecuted(cmd =>
             {
-                if (Dependencies != null) // It is a self reference for Spouse
+                if (Dependencies().Any()) // It is a self reference for Spouse
                 {
-                    var e = (PersonEntity2)Dependencies().Single();
+                    var e = (PersonEntity2)Dependencies().Single().Entity;
 
                     entity.SpouseId = e.Id;
 
@@ -56,9 +56,9 @@ namespace DomainFramework.Tests
 
             command.OnAfterCommandExecuted(cmd =>  // Handle symmetric relationship
             {
-                if (Dependencies != null) // It is a self reference for Spouse
+                if (Dependencies().Any()) // It is a self reference for Spouse
                 {
-                    var e = (PersonEntity2)Dependencies().Single();
+                    var e = (PersonEntity2)Dependencies().Single().Entity;
 
                     e.SpouseId = entity.Id; // Update the parent entity with the id of the created child one
                 }

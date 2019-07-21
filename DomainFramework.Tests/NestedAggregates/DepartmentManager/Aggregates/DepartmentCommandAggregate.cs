@@ -35,8 +35,17 @@ namespace DomainFramework.Tests
                 Enqueue(
                     new SaveEntityCommandOperation<EmployeeRoleEntity>(
                         employeeRoleEntity,
-                        new IEntity[] { RootEntity, personEntity }
-                    )
+                        new EntityDependency[]
+                        {
+                            new EntityDependency
+                            {
+                                Entity = RootEntity
+                            },
+                            new EntityDependency
+                            {
+                                Entity = personEntity
+                            }
+                        })
                 );
 
                 if (employee.IsManager)
@@ -46,7 +55,17 @@ namespace DomainFramework.Tests
                     Enqueue(
                         new SaveEntityCommandOperation<DepartmentManagerRoleEntity>(
                             departmentManagerRoleEntity,
-                            new IEntity[] { employeeRoleEntity, RootEntity })
+                            new EntityDependency[]
+                            {
+                                new EntityDependency
+                                {
+                                    Entity = employeeRoleEntity
+                                },
+                                new EntityDependency
+                                {
+                                    Entity = RootEntity
+                                }
+                            })
                     );
                 }
             }

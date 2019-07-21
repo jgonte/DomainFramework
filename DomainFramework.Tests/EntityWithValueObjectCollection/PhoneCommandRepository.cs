@@ -18,7 +18,7 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
                 )
                 .OnBeforeCommandExecuted(cmd =>
                 {
-                    var entity = (PersonEntity4)Dependencies().Single();
+                    var entity = (PersonEntity4)Dependencies().Single().Entity;
 
                     cmd.Parameters( // Map the extra parameters for the foreign key(s)
                         p => p.Name("personId").Value(entity.Id)
@@ -34,7 +34,7 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
                 .StoredProcedure("p_Delete_Phones_For_Person")
                 .OnBeforeCommandExecuted(cmd =>
                 {
-                    var entity = (PersonEntity4)Dependencies().Single();
+                    var entity = (PersonEntity4)Dependencies().Single().Entity;
 
                     cmd.Parameters( // Map the extra parameters for the foreign key(s)
                         p => p.Name("personId").Value(entity.Id)

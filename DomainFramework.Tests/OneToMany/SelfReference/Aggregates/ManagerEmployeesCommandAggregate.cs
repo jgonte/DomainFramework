@@ -34,8 +34,13 @@ namespace DomainFramework.Tests
                     Enqueue(
                         new UpdateEntityCommandOperation<PersonEntity3>(
                             employeeEntity,
-                            dependencies: new IEntity[] { RootEntity }
-                        )
+                            dependencies: new EntityDependency[]
+                            {
+                                new EntityDependency
+                                {
+                                    Entity = RootEntity
+                                }
+                            })
                     );
                 }
                 else

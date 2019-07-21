@@ -25,7 +25,14 @@ namespace DomainFramework.Tests
                 Salary = salary
             };
 
-            var saveEmployee = new SaveEntityCommandOperation<EmployeeEntity>(Employee, new IEntity[] { Person });
+            var saveEmployee = new SaveEntityCommandOperation<EmployeeEntity>(Employee, 
+                new EntityDependency[] 
+                {
+                    new EntityDependency
+                    {
+                        Entity = Person
+                    }
+                });
 
             Enqueue(saveEmployee);
 
@@ -34,7 +41,14 @@ namespace DomainFramework.Tests
                 Bonus = bonus
             };
 
-            var saveExecutive = new SaveEntityCommandOperation<ExecutiveEntity>(RootEntity, new IEntity[] { Employee });
+            var saveExecutive = new SaveEntityCommandOperation<ExecutiveEntity>(RootEntity,
+                new EntityDependency[]
+                {
+                    new EntityDependency
+                    {
+                        Entity = Employee
+                    }
+                });
 
             Enqueue(saveExecutive);
         }

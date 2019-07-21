@@ -21,9 +21,9 @@ namespace DomainFramework.Tests
             {
                 var entities = Dependencies();
 
-                var personEntity = (PersonEntity)entities.ElementAt(0);
+                var personEntity = (PersonEntity)entities.ElementAt(0).Entity;
 
-                var friendEntity = (PersonEntity)entities.ElementAt(1);
+                var friendEntity = (PersonEntity)entities.ElementAt(1).Entity;
 
                 entity.Id = new FriendshipEntityId
                 {

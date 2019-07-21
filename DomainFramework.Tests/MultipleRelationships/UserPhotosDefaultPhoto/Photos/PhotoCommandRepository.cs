@@ -28,7 +28,7 @@ namespace DomainFramework.Tests
                 )
                 .OnBeforeCommandExecuted(cmd =>
             {
-                var e = (UserEntity)Dependencies().Single();
+                var e = (UserEntity)Dependencies().Single().Entity;
 
                 entity.UserId = e.Id.Value;
 

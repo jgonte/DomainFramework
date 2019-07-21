@@ -25,7 +25,7 @@ namespace DomainFramework.Tests
                 {
                     var entities = Dependencies();
 
-                    var employeeEntity = (EmployeeEntity)entities.Single();
+                    var employeeEntity = (EmployeeEntity)entities.Single().Entity;
 
                     entity.Id = employeeEntity.Id;
 

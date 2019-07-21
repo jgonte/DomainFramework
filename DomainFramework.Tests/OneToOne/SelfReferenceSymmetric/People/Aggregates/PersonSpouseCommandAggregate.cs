@@ -28,16 +28,26 @@ namespace DomainFramework.Tests.OneToOne.SelfReference
             Enqueue(
                 new SaveEntityCommandOperation<PersonEntity2>(
                     RootEntity,
-                    new IEntity[] { Spouse }
-                )
+                    new EntityDependency[]
+                    {
+                        new EntityDependency
+                        {
+                            Entity = Spouse
+                        }
+                    })
             );
 
             // Update the spouse to link to tue root entity
             Enqueue(
                 new UpdateEntityCommandOperation<PersonEntity2>(
                     Spouse,
-                    new IEntity[] { RootEntity }
-                )
+                    new EntityDependency[]
+                    {
+                        new EntityDependency
+                        {
+                            Entity = RootEntity
+                        }
+                    })
             );
         }
     }

@@ -21,7 +21,7 @@ namespace DomainFramework.Tests
                 )
                 .OnBeforeCommandExecuted(cmd =>
                 {
-                    var e = (CountryEntity)Dependencies().Single();
+                    var e = (CountryEntity)Dependencies().Single().Entity;
 
                     entity.CountryCode = e.Id;
 

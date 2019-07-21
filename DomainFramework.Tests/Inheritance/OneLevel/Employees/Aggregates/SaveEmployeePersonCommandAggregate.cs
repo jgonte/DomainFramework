@@ -22,7 +22,14 @@ namespace DomainFramework.Tests
                 Salary = salary
             };
 
-            var saveEmployee = new SaveEntityCommandOperation<EmployeeEntity>(RootEntity, new IEntity [] { Person });
+            var saveEmployee = new SaveEntityCommandOperation<EmployeeEntity>(RootEntity,
+                new EntityDependency[] 
+                {
+                    new EntityDependency
+                    {
+                        Entity =Person
+                    }
+                });
 
             Enqueue(saveEmployee);
         }

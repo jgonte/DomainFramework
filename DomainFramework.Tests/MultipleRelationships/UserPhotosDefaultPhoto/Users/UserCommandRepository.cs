@@ -32,7 +32,7 @@ namespace DomainFramework.Tests
         {
             Expression<Func<UserEntity, object>>[] excludedProperties;
 
-            if (Dependencies != null)
+            if (Dependencies().Any())
             {
                 excludedProperties = new Expression<Func<UserEntity, object>>[]{
                     m => m.Id,
@@ -60,11 +60,11 @@ namespace DomainFramework.Tests
                 )
                 .OnBeforeCommandExecuted(cmd =>
                 {
-                    if (Dependencies != null)
+                    if (Dependencies().Any())
                     {
-                        var userEntity = (UserEntity)Dependencies().ElementAt(0);
+                        var userEntity = (UserEntity)Dependencies().ElementAt(0).Entity;
 
-                        var defaultPhotoEntity = (PhotoEntity)Dependencies().ElementAt(1);
+                        var defaultPhotoEntity = (PhotoEntity)Dependencies().ElementAt(1).Entity;
 
                         entity.Id = userEntity.Id;
 

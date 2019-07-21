@@ -11,6 +11,6 @@ namespace DomainFramework.Core
         /// <summary>
         /// The entities whose ids are not available until they are inserted
         /// </summary>
-        Func<IEnumerable<IEntity>> Dependencies { get; set; }
+        Func<IEnumerable<EntityDependency>> Dependencies { get; set; }
     }
 }

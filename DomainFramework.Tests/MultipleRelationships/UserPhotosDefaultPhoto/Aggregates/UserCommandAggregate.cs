@@ -1,5 +1,4 @@
 ﻿using DomainFramework.Core;
-using System.Collections.Generic;
 
 namespace DomainFramework.Tests
 {
@@ -34,7 +33,17 @@ namespace DomainFramework.Tests
                 {
                     var updateUserWithDefaultPhoto = new UpdateEntityCommandOperation<UserEntity>(
                         RootEntity,
-                        new IEntity[] { RootEntity, photoEntity}
+                        new EntityDependency[] 
+                        {
+                            new EntityDependency
+                            {
+                                Entity = RootEntity
+                            },
+                            new EntityDependency
+                            {
+                                Entity = photoEntity
+                            }
+                        }
                     );
 
                     Enqueue(updateUserWithDefaultPhoto);

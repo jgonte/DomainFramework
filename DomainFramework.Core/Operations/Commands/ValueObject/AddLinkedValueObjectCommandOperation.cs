@@ -24,7 +24,14 @@ namespace DomainFramework.Core
             {
                 var repository = (ILinkedValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TRepositoryKey));
 
-                repository.Dependencies = () => new IEntity[] { Entity };
+                repository.Dependencies = () => new EntityDependency[]
+                {
+                    new EntityDependency
+                    {
+                        Entity = Entity,
+                        Selector = null
+                    }
+                };
 
                 repository.Add(linkedValueObject, user, unitOfWork);
             }
@@ -38,7 +45,14 @@ namespace DomainFramework.Core
             {
                 var repository = (ILinkedValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TRepositoryKey));
 
-                repository.Dependencies = () => new IEntity[] { Entity };
+                repository.Dependencies = () => new EntityDependency[]
+                {
+                    new EntityDependency
+                    {
+                        Entity = Entity,
+                        Selector = null
+                    }
+                };
 
                 await repository.AddAsync(linkedValueObject, user, unitOfWork);
             }

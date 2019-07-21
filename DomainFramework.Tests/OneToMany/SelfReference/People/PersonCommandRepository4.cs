@@ -13,7 +13,7 @@ namespace DomainFramework.Tests
         {
             Expression<Func<PersonEntity3, object>>[] excludedProperties;
 
-            if (Dependencies != null)
+            if (Dependencies().Any())
             {
                 excludedProperties = new Expression<Func<PersonEntity3, object>>[]{
                     m => m.Id,
@@ -41,9 +41,9 @@ namespace DomainFramework.Tests
                 )
                 .OnBeforeCommandExecuted(cmd =>
                 {
-                    if (Dependencies != null)
+                    if (Dependencies().Any())
                     {
-                        var e = (PersonEntity3)Dependencies().Single();
+                        var e = (PersonEntity3)Dependencies().Single().Entity;
 
                         entity.ManagerId = e.Id.Value;
 
@@ -60,7 +60,7 @@ namespace DomainFramework.Tests
         {
             Expression<Func<PersonEntity3, object>>[] excludedProperties;
 
-            if (Dependencies != null)
+            if (Dependencies().Any())
             {
                 excludedProperties = new Expression<Func<PersonEntity3, object>>[]{
                     m => m.Id,
@@ -102,9 +102,9 @@ namespace DomainFramework.Tests
 
             command.OnBeforeCommandExecuted(cmd =>
             {
-                if (Dependencies != null)
+                if (Dependencies().Any())
                 {
-                    var e = (PersonEntity3)Dependencies().Single();
+                    var e = (PersonEntity3)Dependencies().Single().Entity;
 
                     entity.ManagerId = e.Id.Value;
 

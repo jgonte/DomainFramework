@@ -6,9 +6,9 @@ namespace DomainFramework.Core
     public class SaveEntityCommandOperation<TEntity> : CommandOperation<TEntity>
         where TEntity : IEntity
     {
-        private IEntity[] _dependencies;
+        private EntityDependency[] _dependencies;
 
-        public SaveEntityCommandOperation(TEntity entity, params IEntity[] dependencies) : base(entity)
+        public SaveEntityCommandOperation(TEntity entity, params EntityDependency[] dependencies) : base(entity)
         {
             _dependencies = dependencies;
         }

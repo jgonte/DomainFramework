@@ -16,14 +16,14 @@ namespace DomainFramework.Core
         {
             var repository = (IEntityCommandRepository)repositoryContext.CreateCommandRepository(typeof(TEntity));
 
-            repository.DeleteCollection(Entity, user, unitOfWork);
+            repository.DeleteCollection(Entity, user, unitOfWork, Selector);
         }
 
         public override async Task ExecuteAsync(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
             var repository = (IEntityCommandRepository)repositoryContext.CreateCommandRepository(typeof(TEntity));
 
-            await repository.DeleteCollectionAsync(Entity, user, unitOfWork);
+            await repository.DeleteCollectionAsync(Entity, user, unitOfWork, Selector);
         }
     }
 }

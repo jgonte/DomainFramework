@@ -16,7 +16,7 @@ namespace DomainFramework.DataAccess
         public string ConnectionName { get; set; }
 
         // This is needed because the id of the entity might not be available until the entity is inserted
-        public Func<IEnumerable<IEntity>> Dependencies { get; set; }
+        public Func<IEnumerable<EntityDependency>> Dependencies { get; set; } = EntityDependency.EmptyEntityDependencies;
 
         public virtual void Save(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
@@ -235,7 +235,7 @@ namespace DomainFramework.DataAccess
 
         #region DeleteCollectionAsync
 
-        public async Task<bool> DeleteCollectionAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector = null)
+        public async Task<bool> DeleteCollectionAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
             var command = CreateDeleteCollectionCommand(entity, user, selector);
 

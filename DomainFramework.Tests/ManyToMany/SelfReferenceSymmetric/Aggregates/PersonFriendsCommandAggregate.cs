@@ -33,14 +33,21 @@ namespace DomainFramework.Tests
 
                 var addBinaryEntity = new InsertEntityCommandOperation<FriendshipEntity>(
                     binaryEntity,
-                    new IEntity [] { RootEntity, friendEntity}
+                    new EntityDependency[]
+                    {
+                        new EntityDependency
+                        {
+                            Entity = RootEntity
+                        },
+                        new EntityDependency
+                        {
+                            Entity = friendEntity
+                        }
+                    }
                 );
 
                 Enqueue(addBinaryEntity);
             }
-
-           // _friendsLink = new CollectionBinaryEntityLinkTransactedOperation<PersonEntity, PersonEntity, FriendshipEntity>(entity);
-
         }
     }
 }

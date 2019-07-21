@@ -46,10 +46,16 @@ namespace DomainFramework.Tests
 
                     var createEnrollmentOperation = new InsertEntityCommandOperation<ClassEnrollmentEntity>(
                         classEnrollmentEntity,
-                        new IEntity[] 
+                        new EntityDependency[]
                         {
-                            RootEntity,
-                            studentEntity
+                            new EntityDependency
+                            {
+                                Entity = RootEntity
+                            },
+                            new EntityDependency
+                            {
+                                Entity = studentEntity
+                            }
                         });
 
                     Enqueue(createEnrollmentOperation);

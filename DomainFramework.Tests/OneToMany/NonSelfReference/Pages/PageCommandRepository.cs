@@ -21,7 +21,7 @@ namespace DomainFramework.Tests
                 )
                 .OnBeforeCommandExecuted(cmd =>
                 {
-                    var e = (BookEntity)Dependencies().Single();
+                    var e = (BookEntity)Dependencies().Single().Entity;
 
                     entity.BookId = e.Id.Value;
 

@@ -9,9 +9,13 @@ namespace DomainFramework.Core
     {
         private Func<TLinkedEntity> _getLinkedEntity;
 
-        public AddLinkedEntityCommandOperation(TEntity entity, Func<TLinkedEntity> getLinkedEntity) : base(entity)
+        private string _selector;
+
+        public AddLinkedEntityCommandOperation(TEntity entity, Func<TLinkedEntity> getLinkedEntity, string selector = null) : base(entity)
         {
             _getLinkedEntity = getLinkedEntity;
+
+            _selector = selector;
         }
 
         public override void Execute(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
@@ -25,7 +29,14 @@ namespace DomainFramework.Core
 
             var repository = (IEntityCommandRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedEntity));
 
-            repository.Dependencies = () => new IEntity[] { Entity };
+            repository.Dependencies = () => new EntityDependency[] 
+            {
+                new EntityDependency
+                {
+                    Entity = Entity,
+                    Selector = _selector
+                }
+            };
 
             repository.Insert(linkedEntity, user, unitOfWork);
         }
@@ -41,7 +52,14 @@ namespace DomainFramework.Core
 
             var repository = (IEntityCommandRepository)repositoryContext.CreateCommandRepository(typeof(TLinkedEntity));
 
-            repository.Dependencies = () => new IEntity[] { Entity };
+            repository.Dependencies = () => new EntityDependency[]
+            {
+                new EntityDependency
+                {
+                    Entity = Entity,
+                    Selector = _selector
+                }
+            };
 
             await repository.InsertAsync(linkedEntity, user, unitOfWork);
         }
