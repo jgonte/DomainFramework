@@ -30,5 +30,8 @@ namespace DomainFramework.Tests
         {
             return new List<object>() { Value };
         }
+
+        public override bool IsEmpty() => Value == default(decimal);
+
     }
 }

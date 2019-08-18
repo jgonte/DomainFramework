@@ -20,9 +20,15 @@ namespace DomainFramework.Tests.PersonWithSpouseAndDependants
                 .Single()
                 .Connection(TestConnectionClass.GetConnectionName())
                 .StoredProcedure("[pPerson_Insert]")
+                .Parameters(
+                    p => p.Name("name").Value(entity.Name),
+                    p => p.Name("createdBy").Value(entity.CreatedBy)
+                )
                 .OnBeforeCommandExecuted(cmd =>
                 {
-                    var entityForSpouse = Dependencies().SingleOrDefault(d => d.Selector == "Spouse")?.Entity;
+                    var dependencies = Dependencies();
+
+                    var entityForSpouse = (Person)dependencies.SingleOrDefault(d => d.Selector == "Spouse")?.Entity;
 
                     if (entityForSpouse != null)
                     {
@@ -37,7 +43,7 @@ namespace DomainFramework.Tests.PersonWithSpouseAndDependants
                         );
                     }
 
-                    var entityForDependants = Dependencies().SingleOrDefault(d => d.Selector == "Dependants")?.Entity;
+                    var entityForDependants = (Person)dependencies.SingleOrDefault(d => d.Selector == "Dependants")?.Entity;
 
                     if (entityForDependants != null)
                     {
@@ -51,12 +57,7 @@ namespace DomainFramework.Tests.PersonWithSpouseAndDependants
                             p => p.Name("providerPersonId").Value(entity.ProviderPersonId)
                         );
                     }
-                
                 })
-                .Parameters(
-                    p => p.Name("name").Value(entity.Name),
-                    p => p.Name("createdBy").Value(entity.CreatedBy)
-                )
                 .Instance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
@@ -80,39 +81,17 @@ namespace DomainFramework.Tests.PersonWithSpouseAndDependants
                 entity.LastUpdatedBy = (int)user.Id;
             }
 
-            var command = Command
+            return Command
                 .NonQuery()
                 .Connection(TestConnectionClass.GetConnectionName())
                 .StoredProcedure("[pPerson_Update]")
                 .Parameters(
+                    p => p.Name("personId").Value(entity.Id),
                     p => p.Name("name").Value(entity.Name),
                     p => p.Name("lastUpdatedBy").Value(entity.LastUpdatedBy),
+                    p => p.Name("marriedPersonId").Value(entity.MarriedPersonId),
                     p => p.Name("providerPersonId").Value(entity.ProviderPersonId)
-                )
-                .OnBeforeCommandExecuted(cmd =>
-                {
-                    // After inserted populated parameters should be set here for update after insert
-                    cmd.Parameters(
-                        p => p.Name("personId").Value(entity.Id)
-                    );
-
-                    var entityForSpouse = Dependencies().SingleOrDefault(d => d.Selector == "Spouse")?.Entity;
-
-                    if (entityForSpouse != null)
-                    {
-                        cmd.Parameters(
-                            p => p.Name("marriedPersonId").Value(entityForSpouse.Id)
-                        );
-                    }
-                    else
-                    {
-                        cmd.Parameters(
-                            p => p.Name("marriedPersonId").Value(entity.MarriedPersonId)
-                        );
-                    }
-                });
-
-            return command;
+                );
         }
 
         protected override bool HandleUpdate(Command command)
@@ -158,23 +137,21 @@ namespace DomainFramework.Tests.PersonWithSpouseAndDependants
         {
             switch (selector)
             {
-                case "Spouse":
-                    return Command
-                         .NonQuery()
-                         .Connection(TestConnectionClass.GetConnectionName())
-                         .StoredProcedure("[pPerson_DeleteSpouse]")
-                         .Parameters(
-                             p => p.Name("marriedPersonId").Value(entity.Id)
-                         );
+                case "Spouse": return Command
+                    .NonQuery()
+                    .Connection(TestConnectionClass.GetConnectionName())
+                    .StoredProcedure("[pPerson_DeleteSpouse]")
+                    .Parameters(
+                        p => p.Name("marriedPersonId").Value(entity.Id)
+                    );
 
-                case "Dependants":
-                    return Command
-                         .NonQuery()
-                         .Connection(TestConnectionClass.GetConnectionName())
-                         .StoredProcedure("[pPerson_DeleteDependants]")
-                         .Parameters(
-                             p => p.Name("providerPersonId").Value(entity.Id)
-                         );
+                case "Dependants": return Command
+                    .NonQuery()
+                    .Connection(TestConnectionClass.GetConnectionName())
+                    .StoredProcedure("[pPerson_DeleteDependants]")
+                    .Parameters(
+                        p => p.Name("providerPersonId").Value(entity.Id)
+                    );
 
                 default: throw new InvalidOperationException();
             }

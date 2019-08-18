@@ -48,6 +48,8 @@ namespace DomainFramework.Core
             return hash;
         }
 
+        public abstract bool IsEmpty();
+
         protected abstract IEnumerable<object> GetFieldsToCheckForEquality();
 
     }

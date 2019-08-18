@@ -28,6 +28,8 @@ namespace DomainFramework.Tests
             PhoneType = type;
         }
 
+        public override bool IsEmpty() => PhoneType == default(Types) && Number == default(string);
+
         protected override IEnumerable<object> GetFieldsToCheckForEquality()
         {
             return new List<object>() { Number, PhoneType };
