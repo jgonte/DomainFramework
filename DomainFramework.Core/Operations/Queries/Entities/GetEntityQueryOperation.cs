@@ -2,7 +2,7 @@
 
 namespace DomainFramework.Core
 {
-    public class GetEntityLoadOperation<TEntity> : ILoadOperation
+    public class GetEntityQueryOperation<TEntity> : IQueryOperation
         where TEntity : IEntity
     {
         public TEntity Entity { get; private set; }

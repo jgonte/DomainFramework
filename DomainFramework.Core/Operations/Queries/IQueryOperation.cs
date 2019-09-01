@@ -2,7 +2,7 @@
 
 namespace DomainFramework.Core
 {
-    public interface ILoadOperation
+    public interface IQueryOperation
     {
         /// <summary>
         /// Executes the operation

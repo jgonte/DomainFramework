@@ -10,7 +10,7 @@ namespace DomainFramework.Core
 
         public TEntity RootEntity { get; set; }
 
-        public Queue<ILoadOperation> LoadOperations { get; set; } = new Queue<ILoadOperation>();
+        public Queue<IQueryOperation> LoadOperations { get; set; } = new Queue<IQueryOperation>();
 
         public QueryAggregate()
         {

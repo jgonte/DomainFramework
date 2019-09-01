@@ -6,13 +6,13 @@ namespace DomainFramework.Tests
 {
     class PersonFriendsQueryAggregate : GetByIdQueryAggregate<PersonEntity, int?, object>
     {
-        public GetCollectionLinkedEntityLoadOperation<PersonEntity> GetFriendsLoadOperation { get; }
+        public GetCollectionLinkedEntityQueryOperation<PersonEntity> GetFriendsLoadOperation { get; }
 
         public IEnumerable<PersonEntity> Friends => GetFriendsLoadOperation.LinkedEntities;
 
         public PersonFriendsQueryAggregate(RepositoryContext context) : base(context)
         {
-            GetFriendsLoadOperation = new GetCollectionLinkedEntityLoadOperation<PersonEntity>
+            GetFriendsLoadOperation = new GetCollectionLinkedEntityQueryOperation<PersonEntity>
             {
                 GetLinkedEntities = (repository, entity, user) =>
                     ((PersonQueryRepository3)repository).GetForPerson(RootEntity.Id, user).ToList(),

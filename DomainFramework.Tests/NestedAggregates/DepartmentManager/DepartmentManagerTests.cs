@@ -368,6 +368,7 @@ GO
                     }
                 }
             });
+
             // Save
             await departmentCommandAggregate.SaveAsync();
 

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public class GetCollectionLinkedEntityLoadOperation<TLinkedEntity> : ILoadOperation
+    public class GetCollectionLinkedEntityQueryOperation<TLinkedEntity> : IQueryOperation
         where TLinkedEntity : IEntity
     {
         public List<TLinkedEntity> LinkedEntities { get; private set; }

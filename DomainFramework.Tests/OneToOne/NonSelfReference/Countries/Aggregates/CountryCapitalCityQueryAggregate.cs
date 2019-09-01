@@ -4,7 +4,7 @@ namespace DomainFramework.Tests
 {
     class CountryCapitalCityQueryAggregate : GetByIdQueryAggregate<CountryEntity, string, object>
     {
-        public GetSingleLinkedEntityLoadOperation<CapitalCityEntity> GetCapitalCityLoadOperation { get; }
+        public GetSingleLinkedEntityQueryOperation<CapitalCityEntity> GetCapitalCityLoadOperation { get; }
 
         public CapitalCityEntity CapitalCity => GetCapitalCityLoadOperation.LinkedEntity;
 
@@ -16,7 +16,7 @@ namespace DomainFramework.Tests
 
             RepositoryContext.RegisterQueryRepository<CapitalCityEntity>(new CapitalCityQueryRepository());
 
-            GetCapitalCityLoadOperation = new GetSingleLinkedEntityLoadOperation<CapitalCityEntity>
+            GetCapitalCityLoadOperation = new GetSingleLinkedEntityQueryOperation<CapitalCityEntity>
             {
                 GetLinkedEntity = (repository, entity, user) =>
                     ((CapitalCityQueryRepository)repository).GetForCountry(RootEntity.Id, user),

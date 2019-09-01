@@ -4,13 +4,13 @@ namespace DomainFramework.Tests
 {
     class EmployeePersonQueryAggregate : GetByIdQueryAggregate<EmployeeEntity, int?, object>
     {
-        public GetEntityLoadOperation<PersonEntity> PersonLoadOperation { get; }
+        public GetEntityQueryOperation<PersonEntity> PersonLoadOperation { get; }
 
         public PersonEntity Person => PersonLoadOperation.Entity;
 
         public EmployeePersonQueryAggregate(RepositoryContext context) : base(context)
         {
-            PersonLoadOperation = new GetEntityLoadOperation<PersonEntity>();
+            PersonLoadOperation = new GetEntityQueryOperation<PersonEntity>();
 
             LoadOperations.Enqueue(
                 PersonLoadOperation

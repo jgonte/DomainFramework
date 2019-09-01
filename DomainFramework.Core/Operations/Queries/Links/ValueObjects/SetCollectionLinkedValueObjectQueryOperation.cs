@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public class SetCollectionLinkedValueObjectLoadOperation<TEntity, TRepositoryKey> : ILoadOperation
+    public class SetCollectionLinkedValueObjectQueryOperation<TEntity, TRepositoryKey> : IQueryOperation
         where TEntity : IEntity
     {
         public Action<IValueObjectQueryRepository, TEntity, IAuthenticatedUser> SetLinkedValueObjects { get; set; }

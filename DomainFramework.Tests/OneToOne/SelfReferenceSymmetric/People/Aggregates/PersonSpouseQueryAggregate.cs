@@ -4,13 +4,13 @@ namespace DomainFramework.Tests
 {
     class PersonSpouseQueryAggregate : GetByIdQueryAggregate<PersonEntity2, int?, object>
     {
-        public GetSingleLinkedEntityLoadOperation<PersonEntity2> GetSpouseLoadOperation { get; }
+        public GetSingleLinkedEntityQueryOperation<PersonEntity2> GetSpouseLoadOperation { get; }
 
         public PersonEntity2 Spouse => GetSpouseLoadOperation.LinkedEntity;
 
         public PersonSpouseQueryAggregate(DataAccess.RepositoryContext context) : base(context)
         {
-            GetSpouseLoadOperation = new GetSingleLinkedEntityLoadOperation<PersonEntity2>
+            GetSpouseLoadOperation = new GetSingleLinkedEntityQueryOperation<PersonEntity2>
             {
                 GetLinkedEntity = (repository, entity, user) =>
                     ((PersonQueryRepository2)repository).GetForPerson(RootEntity.Id, user: null),

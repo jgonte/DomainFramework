@@ -7,13 +7,13 @@ namespace DomainFramework.Tests
 {
     class ClassEnrollmentQueryAggregate : GetByIdQueryAggregate<ClassEntity, Guid?, object>
     {
-        public GetCollectionLinkedEntityLoadOperation<StudentEntity> GetStudentsLoadOperation { get; }
+        public GetCollectionLinkedEntityQueryOperation<StudentEntity> GetStudentsLoadOperation { get; }
 
         public IEnumerable<StudentEntity> Students => GetStudentsLoadOperation.LinkedEntities;
 
         public ClassEnrollmentQueryAggregate(RepositoryContext context) : base(context)
         {
-            GetStudentsLoadOperation = new GetCollectionLinkedEntityLoadOperation<StudentEntity>
+            GetStudentsLoadOperation = new GetCollectionLinkedEntityQueryOperation<StudentEntity>
             {
                 GetLinkedEntities = (repository, entity, user) =>
                     ((StudentQueryRepository)repository).GetForClass(RootEntity.Id, user).ToList(),

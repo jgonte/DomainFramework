@@ -14,7 +14,10 @@ namespace DomainFramework.Core
     {
         public string ConnectionName { get; set; }
 
-        public abstract TEntity GetById(TKey id, IAuthenticatedUser user);
+        public virtual TEntity GetById(TKey id, IAuthenticatedUser user)
+        {
+            throw new NotImplementedException();
+        }
 
         public IEntity GetById(object id, IAuthenticatedUser user)
         {

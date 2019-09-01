@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public class GetSingleLinkedEntityLoadOperation<TLinkedEntity> : ILoadOperation
+    public class GetSingleLinkedEntityQueryOperation<TLinkedEntity> : IQueryOperation
         where TLinkedEntity : IEntity
     {
         public TLinkedEntity LinkedEntity { get; private set; }

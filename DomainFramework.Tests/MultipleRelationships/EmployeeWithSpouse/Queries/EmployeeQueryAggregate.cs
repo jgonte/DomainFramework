@@ -10,7 +10,7 @@ namespace DomainFramework.Tests.EmployeeWithSpouse
     {
         private EmployeeQueryAggregate _employeeQueryAggregate;
 
-        public GetSingleLinkedEntityLoadOperation<Person> GetSpouseLoadOperation { get; }
+        public GetSingleLinkedEntityQueryOperation<Person> GetSpouseLoadOperation { get; }
 
         public Person Spouse => GetSpouseLoadOperation.LinkedEntity;
 
@@ -24,7 +24,7 @@ namespace DomainFramework.Tests.EmployeeWithSpouse
 
             RepositoryContext = context;
 
-            GetSpouseLoadOperation = new GetSingleLinkedEntityLoadOperation<Person>
+            GetSpouseLoadOperation = new GetSingleLinkedEntityQueryOperation<Person>
             {
                 GetLinkedEntity = (repository, entity, user) => ((PersonQueryRepository)repository).GetSpouseForPerson(RootEntity.Id, user),
                 GetLinkedEntityAsync = async (repository, entity, user) => await ((PersonQueryRepository)repository).GetSpouseForPersonAsync(RootEntity.Id, user)

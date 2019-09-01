@@ -6,7 +6,7 @@ namespace DomainFramework.Tests
 {
     class BookPagesQueryAggregate : GetByIdQueryAggregate<BookEntity, int?, BookPagesOutputDto>
     {
-        public GetCollectionLinkedEntityLoadOperation<PageEntity> GetPagesLoadOperation { get; }
+        public GetCollectionLinkedEntityQueryOperation<PageEntity> GetPagesLoadOperation { get; }
 
         public IEnumerable<PageEntity> Pages => GetPagesLoadOperation.LinkedEntities;
 
@@ -16,7 +16,7 @@ namespace DomainFramework.Tests
 
         public BookPagesQueryAggregate(RepositoryContext context) : base(context)
         {
-            GetPagesLoadOperation = new GetCollectionLinkedEntityLoadOperation<PageEntity>
+            GetPagesLoadOperation = new GetCollectionLinkedEntityQueryOperation<PageEntity>
             {
                 GetLinkedEntities = (repository, entity, user) =>
                     ((PageQueryRepository)repository).GetForBook(RootEntity.Id, user).ToList(),
