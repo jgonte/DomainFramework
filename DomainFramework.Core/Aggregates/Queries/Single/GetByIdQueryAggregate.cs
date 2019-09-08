@@ -2,8 +2,9 @@
 
 namespace DomainFramework.Core
 {
-    public abstract class GetByIdQueryAggregate<TEntity, TKey, TDto> : QueryAggregate<TEntity, TDto>
+    public abstract class GetByIdQueryAggregate<TEntity, TKey, TOutputDto> : QueryAggregate<TEntity, TOutputDto>
         where TEntity : Entity<TKey>
+        where TOutputDto : IOutputDataTransferObject, new()
     {
         public GetByIdQueryAggregate()
         {
@@ -13,7 +14,7 @@ namespace DomainFramework.Core
         {
         }
 
-        public TDto Get(TKey rootEntityId, IAuthenticatedUser user = null)
+        public TOutputDto Get(TKey rootEntityId, IAuthenticatedUser user = null)
         {
             var repository = (IEntityQueryRepository)RepositoryContext.GetQueryRepository(typeof(TEntity));
 
@@ -21,15 +22,17 @@ namespace DomainFramework.Core
 
             if (RootEntity == null) // Not found
             {
-                return default(TDto);
+                return default(TOutputDto);
             }
 
             LoadLinks(user);
 
-            return GetDataTransferObject();
+            PopulateDto(RootEntity);
+
+            return OutputDto;
         }
 
-        public async Task<TDto> GetAsync(TKey rootEntityId, IAuthenticatedUser user = null)
+        public async Task<TOutputDto> GetAsync(TKey rootEntityId, IAuthenticatedUser user = null)
         {
             var repository = (IEntityQueryRepository)RepositoryContext.GetQueryRepository(typeof(TEntity));
 
@@ -37,12 +40,14 @@ namespace DomainFramework.Core
 
             if (RootEntity == null) // Not found
             {
-                return default(TDto);
+                return default(TOutputDto);
             }
 
             await LoadLinksAsync(user);
 
-            return GetDataTransferObject();
+            PopulateDto(RootEntity);
+
+            return OutputDto;
         }
     }
 }

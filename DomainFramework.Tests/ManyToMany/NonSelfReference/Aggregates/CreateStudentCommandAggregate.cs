@@ -15,5 +15,10 @@ namespace DomainFramework.Tests
                 new InsertEntityCommandOperation<StudentEntity>(RootEntity)
             );
         }
+
+        public override void Initialize(IInputDataTransferObject inputDto)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

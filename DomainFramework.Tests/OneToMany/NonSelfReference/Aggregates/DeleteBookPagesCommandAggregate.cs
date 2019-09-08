@@ -15,5 +15,10 @@ namespace DomainFramework.Tests
                 new DeleteEntityCommandOperation<BookEntity>(RootEntity)
             );
         }
+
+        public override void Initialize(IInputDataTransferObject inputDto)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -15,5 +15,10 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
                 new DeleteEntityCommandOperation<PersonEntity4>(RootEntity)
             );
         }
+
+        public override void Initialize(IInputDataTransferObject inputDto)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

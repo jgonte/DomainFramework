@@ -5,30 +5,45 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public class CommandAggregate<TEntity>
+    public abstract class CommandAggregate<TEntity> : ICommandAggregate<TEntity>
         where TEntity : class, IEntity
     {
-        private IRepositoryContext _repositoryContext;
+        IRepositoryContext IAggregate.RepositoryContext { get; set; }
+
+        TEntity IAggregate<TEntity>.RootEntity { get; set; }
+
+        public TEntity RootEntity
+        {
+            get
+            {
+                return ((IAggregate<TEntity>)this).RootEntity;
+            }
+
+            protected set
+            {
+                ((IAggregate<TEntity>)this).RootEntity = value;
+            }
+        }
 
         /// <summary>
         /// The save operations that are performed inside a unit of work
         /// </summary>
         private Queue<ICommandOperation> _commandOperations { get; set; } = new Queue<ICommandOperation>();
 
-        public TEntity RootEntity { get; protected set; }
-
         public CommandAggregate()
         {
         }
 
+        public abstract void Initialize(IInputDataTransferObject inputDto);
+
         public CommandAggregate(IRepositoryContext repositoryContext)
         {
-            _repositoryContext = repositoryContext;
+            ((IAggregate)this).RepositoryContext = repositoryContext;
         }
 
         public void RegisterCommandRepositoryFactory<T>(Func<ICommandRepository> factory)
         {
-            _repositoryContext.RegisterCommandRepositoryFactory<T>(factory);
+            ((IAggregate)this).RepositoryContext.RegisterCommandRepositoryFactory<T>(factory);
         }
 
         public void Enqueue(ICommandOperation operation)
@@ -40,16 +55,18 @@ namespace DomainFramework.Core
         {
             var ownsUnitOfWork = false;
 
+            var repositoryContext = ((IAggregate)this).RepositoryContext;
+
             if (unitOfWork == null && _commandOperations.Count() > 1)
             {
-                unitOfWork = _repositoryContext.CreateUnitOfWork();
+                unitOfWork = repositoryContext.CreateUnitOfWork();
 
                 ownsUnitOfWork = true;
             }
 
             foreach (var operation in _commandOperations)
             {
-                operation.Execute(_repositoryContext, user, unitOfWork);
+                operation.Execute(repositoryContext, user, unitOfWork);
             }
 
             if (ownsUnitOfWork)
@@ -62,9 +79,11 @@ namespace DomainFramework.Core
         {
             var ownsUnitOfWork = false;
 
+            var repositoryContext = ((IAggregate)this).RepositoryContext;
+
             if (unitOfWork == null && _commandOperations.Count() > 1)
             {
-                unitOfWork = _repositoryContext.CreateUnitOfWork();
+                unitOfWork = repositoryContext.CreateUnitOfWork();
 
                 ownsUnitOfWork = true;
             }
@@ -74,7 +93,7 @@ namespace DomainFramework.Core
             foreach (var operation in _commandOperations)
             {
                 tasks.Enqueue(
-                    operation.ExecuteAsync(_repositoryContext, user, unitOfWork)
+                    operation.ExecuteAsync(repositoryContext, user, unitOfWork)
                 );
             }
 
@@ -85,6 +104,5 @@ namespace DomainFramework.Core
                 await unitOfWork.SaveAsync();
             }
         }
-
     }
 }

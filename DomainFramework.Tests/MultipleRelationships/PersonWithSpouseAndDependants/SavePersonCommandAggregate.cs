@@ -68,5 +68,9 @@ namespace DomainFramework.Tests.PersonWithSpouseAndDependants
             }
         }
 
+        public override void Initialize(IInputDataTransferObject inputDto)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

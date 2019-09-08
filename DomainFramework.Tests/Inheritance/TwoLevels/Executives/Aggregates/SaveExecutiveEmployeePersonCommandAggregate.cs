@@ -52,5 +52,10 @@ namespace DomainFramework.Tests
 
             Enqueue(saveExecutive);
         }
+
+        public override void Initialize(IInputDataTransferObject inputDto)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

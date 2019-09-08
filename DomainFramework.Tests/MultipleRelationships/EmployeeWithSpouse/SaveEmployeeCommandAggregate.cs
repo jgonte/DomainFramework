@@ -61,5 +61,9 @@ namespace DomainFramework.Tests.EmployeeWithSpouse
             }
         }
 
+        public override void Initialize(IInputDataTransferObject inputDto)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

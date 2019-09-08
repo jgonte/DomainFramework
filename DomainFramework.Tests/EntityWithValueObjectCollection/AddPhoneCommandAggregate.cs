@@ -15,5 +15,10 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
 
             Enqueue(addPhone);
         }
+
+        public override void Initialize(IInputDataTransferObject inputDto)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

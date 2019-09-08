@@ -4,9 +4,10 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public class GetQueryAggregateCollection<TAggregate, TEntity, TDto> : QueryAggregateCollection<TAggregate, TEntity, TDto>
-        where TAggregate : IQueryAggregate<TEntity, TDto>, new()
+    public class GetQueryAggregateCollection<TAggregate, TEntity, TOutputDto> : QueryAggregateCollection<TAggregate, TEntity, TOutputDto>
+        where TAggregate : IQueryAggregate<TEntity, TOutputDto>, new()
         where TEntity : IEntity
+        where TOutputDto : IOutputDataTransferObject, new()
     {
         public GetQueryAggregateCollection() : base(null)
         {
@@ -16,7 +17,7 @@ namespace DomainFramework.Core
         {
         }
 
-        public IEnumerable<TDto> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public IEnumerable<TOutputDto> Get(QueryParameters queryParameters, IAuthenticatedUser user)
         {
             Aggregates = new List<TAggregate>();
 
@@ -34,13 +35,15 @@ namespace DomainFramework.Core
 
                 aggregate.LoadLinks();
 
+                aggregate.PopulateDto(entity);
+
                 ((List<TAggregate>)Aggregates).Add(aggregate);
             }
 
-            return Aggregates.Select(a => a.GetDataTransferObject());
+            return Aggregates.Select(a => a.OutputDto);
         }
 
-        public async Task<IEnumerable<TDto>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async Task<IEnumerable<TOutputDto>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
         {
             Aggregates = new List<TAggregate>();
 
@@ -62,12 +65,14 @@ namespace DomainFramework.Core
                     aggregate.LoadLinksAsync()
                 );
 
+                aggregate.PopulateDto(entity);
+
                 ((List<TAggregate>)Aggregates).Add(aggregate);
             }
 
             await Task.WhenAll(tasks);
 
-            return Aggregates.Select(a => a.GetDataTransferObject());
+            return Aggregates.Select(a => a.OutputDto);
         }
     }
 }

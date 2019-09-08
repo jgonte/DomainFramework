@@ -2,7 +2,12 @@
 
 namespace DomainFramework.Tests
 {
-    class CountryCapitalCityQueryAggregate : GetByIdQueryAggregate<CountryEntity, string, object>
+    class CountryOutputDto : IOutputDataTransferObject
+    {
+
+    }
+
+    class CountryCapitalCityQueryAggregate : GetByIdQueryAggregate<CountryEntity, string, CountryOutputDto>
     {
         public GetSingleLinkedEntityQueryOperation<CapitalCityEntity> GetCapitalCityLoadOperation { get; }
 
@@ -25,14 +30,13 @@ namespace DomainFramework.Tests
                     await ((CapitalCityQueryRepository)repository).GetForCountryAsync(RootEntity.Id, user)
             };
 
-            LoadOperations.Enqueue(
+            QueryOperations.Enqueue(
                 GetCapitalCityLoadOperation
             );
         }
 
-        public override object GetDataTransferObject()
+        public override void PopulateDto(CountryEntity entity)
         {
-            return null;
         }
     }
 }

@@ -29,28 +29,24 @@ namespace DomainFramework.Tests
                 }
             };
 
-            LoadOperations.Enqueue(
+            QueryOperations.Enqueue(
                 GetPagesLoadOperation
             );
         }
 
-        public override BookPagesOutputDto GetDataTransferObject()
+        public override void PopulateDto(BookEntity entity)
         {
-            var dto = new BookPagesOutputDto();
+            OutputDto.Id = RootEntity.Id;
 
-            dto.Id = RootEntity.Id;
+            OutputDto.Title = RootEntity.Title;
 
-            dto.Title = RootEntity.Title;
-
-            dto.Pages = Pages.Select(page => new PageOutputDto
+            OutputDto.Pages = Pages.Select(page => new PageOutputDto
             {
                 Id = page.Id,
                 Index = page.Index,
                 BookId = page.BookId
             })
             .ToList();
-
-            return dto;
         }
     }
 }

@@ -2,7 +2,12 @@
 
 namespace DomainFramework.Tests
 {
-    class EmployeePersonQueryAggregate : GetByIdQueryAggregate<EmployeeEntity, int?, object>
+    class EmployeeOutputDto : IOutputDataTransferObject
+    {
+
+    }
+
+    class EmployeePersonQueryAggregate : GetByIdQueryAggregate<EmployeeEntity, int?, EmployeeOutputDto>
     {
         public GetEntityQueryOperation<PersonEntity> PersonLoadOperation { get; }
 
@@ -12,14 +17,13 @@ namespace DomainFramework.Tests
         {
             PersonLoadOperation = new GetEntityQueryOperation<PersonEntity>();
 
-            LoadOperations.Enqueue(
+            QueryOperations.Enqueue(
                 PersonLoadOperation
             );
         }
 
-        public override object GetDataTransferObject()
+        public override void PopulateDto(EmployeeEntity entity)
         {
-            return null;
         }
     }
 }

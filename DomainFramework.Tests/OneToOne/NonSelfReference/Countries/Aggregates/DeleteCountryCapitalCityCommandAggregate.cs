@@ -19,5 +19,10 @@ namespace DomainFramework.Tests
                 new DeleteEntityCommandOperation<CountryEntity>(RootEntity)
             );
         }
+
+        public override void Initialize(IInputDataTransferObject inputDto)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

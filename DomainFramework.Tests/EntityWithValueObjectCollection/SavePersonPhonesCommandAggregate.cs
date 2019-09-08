@@ -16,5 +16,10 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
 
             this.ReplaceValueObjectsOperation<PersonEntity4, Phone, PhoneCommandRepository.RepositoryKey>(phones);
         }
+
+        public override void Initialize(IInputDataTransferObject inputDto)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

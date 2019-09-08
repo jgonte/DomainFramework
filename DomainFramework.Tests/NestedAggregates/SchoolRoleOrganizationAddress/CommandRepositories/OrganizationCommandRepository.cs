@@ -23,9 +23,18 @@ namespace DomainFramework.Tests.SchoolRoleOrganizationAddress
                 .Parameters(
                     p => p.Name("name").Value(entity.Name),
                     p => p.Name("createdBy").Value(entity.CreatedBy),
-                    p => p.Name("phone_Number").Value(entity.Phone.Number),
-                    p => p.Name("addressId").Value(entity.AddressId)
+                    p => p.Name("phone_Number").Value(entity.Phone.Number)
                 )
+                .OnBeforeCommandExecuted(cmd =>
+                {
+                    var dependencies = Dependencies();
+
+                    var e = (Address)dependencies.Single().Entity;
+
+                    cmd.Parameters(
+                        p => p.Name("addressId").Value(e.Id)
+                    );
+                })
                 .Instance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
@@ -105,18 +114,13 @@ namespace DomainFramework.Tests.SchoolRoleOrganizationAddress
 
         protected override Command CreateDeleteCollectionCommand(Organization entity, IAuthenticatedUser user, string selector)
         {
-            switch (selector)
-            {
-                case "Role": return Command
-                    .NonQuery()
-                    .Connection(TestConnectionClass.GetConnectionName())
-                    .StoredProcedure("[pOrganization_DeleteRole]")
-                    .Parameters(
-                        p => p.Name("organizationId").Value(entity.Id)
-                    );
-
-                default: throw new InvalidOperationException();
-            }
+            return Command
+                .NonQuery()
+                .Connection(TestConnectionClass.GetConnectionName())
+                .StoredProcedure("[pOrganization_DeleteRole]")
+                .Parameters(
+                    p => p.Name("organizationId").Value(entity.Id)
+                );
         }
 
         protected override bool HandleDeleteCollection(Command command)

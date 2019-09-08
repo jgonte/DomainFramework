@@ -24,5 +24,10 @@ namespace DomainFramework.Tests
                 Enqueue(addPage);
             }
         }
+
+        public override void Initialize(IInputDataTransferObject inputDto)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -30,23 +30,17 @@ namespace DomainFramework.Tests.EmployeeWithSpouse
                 GetLinkedEntityAsync = async (repository, entity, user) => await ((PersonQueryRepository)repository).GetSpouseForPersonAsync(RootEntity.Id, user)
             };
 
-            LoadOperations.Enqueue(GetSpouseLoadOperation);
+            QueryOperations.Enqueue(GetSpouseLoadOperation);
         }
 
-        public override EmployeeOutputDto GetDataTransferObject()
+        public override void PopulateDto(Employee entity)
         {
-            var dto = new EmployeeOutputDto
-            {
-                Id = RootEntity.Id.Value,
-                HireDate = RootEntity.HireDate,
-                Name = RootEntity.Name,
-                MarriedToPersonId = RootEntity.MarriedToPersonId,
-                CellPhone = GetCellPhoneDto()
-            };
-
-            dto.Spouse = GetSpouseDto();
-
-            return dto;
+            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.HireDate = RootEntity.HireDate;
+            OutputDto.Name = RootEntity.Name;
+            OutputDto.MarriedToPersonId = RootEntity.MarriedToPersonId;
+            OutputDto.CellPhone = GetCellPhoneDto();
+            OutputDto.Spouse = GetSpouseDto();
         }
 
         public PhoneNumberOutputDto GetCellPhoneDto() =>

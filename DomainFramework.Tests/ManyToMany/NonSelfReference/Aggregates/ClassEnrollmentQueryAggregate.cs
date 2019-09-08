@@ -5,7 +5,12 @@ using System.Linq;
 
 namespace DomainFramework.Tests
 {
-    class ClassEnrollmentQueryAggregate : GetByIdQueryAggregate<ClassEntity, Guid?, object>
+    class ClassEnrollmentOutputDto : IOutputDataTransferObject
+    {
+
+    }
+
+    class ClassEnrollmentQueryAggregate : GetByIdQueryAggregate<ClassEntity, Guid?, ClassEnrollmentOutputDto>
     {
         public GetCollectionLinkedEntityQueryOperation<StudentEntity> GetStudentsLoadOperation { get; }
 
@@ -26,14 +31,13 @@ namespace DomainFramework.Tests
                 }
             };
 
-            LoadOperations.Enqueue(
+            QueryOperations.Enqueue(
                 GetStudentsLoadOperation
             );
         }
 
-        public override object GetDataTransferObject()
+        public override void PopulateDto(ClassEntity entity)
         {
-            return null;
         }
     }
 }

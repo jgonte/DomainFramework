@@ -23,5 +23,10 @@ namespace DomainFramework.Tests
                 new UpdateEntityCommandOperation<CountryEntity>(RootEntity)
             );
         }
+
+        public override void Initialize(IInputDataTransferObject inputDto)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

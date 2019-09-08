@@ -2,7 +2,7 @@
 
 namespace DomainFramework.Tests
 {
-    class PersonSpouseQueryAggregate : GetByIdQueryAggregate<PersonEntity2, int?, object>
+    class PersonSpouseQueryAggregate : GetByIdQueryAggregate<PersonEntity2, int?, PersonOutputDto>
     {
         public GetSingleLinkedEntityQueryOperation<PersonEntity2> GetSpouseLoadOperation { get; }
 
@@ -19,14 +19,13 @@ namespace DomainFramework.Tests
                     await ((PersonQueryRepository2)repository).GetForPersonAsync(RootEntity.Id, user: null)
             };
 
-            LoadOperations.Enqueue(
+            QueryOperations.Enqueue(
                 GetSpouseLoadOperation
             );
         }
 
-        public override object GetDataTransferObject()
+        public override void PopulateDto(PersonEntity2 entity)
         {
-            return null;
         }
     }
 }

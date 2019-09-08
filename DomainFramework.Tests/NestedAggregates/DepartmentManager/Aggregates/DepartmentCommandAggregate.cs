@@ -70,5 +70,10 @@ namespace DomainFramework.Tests
                 }
             }
         }
+
+        public override void Initialize(IInputDataTransferObject inputDto)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

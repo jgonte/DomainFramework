@@ -221,6 +221,21 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE .[pAddress_GetAddress_ForOrganization]
+    @organizationId INT
+AS
+BEGIN
+    SELECT
+        a.[AddressId] AS ""Id"",
+        a.[Street] AS ""Street""
+    FROM [SchoolRoleOrganizationAddress]..[Address] a
+    INNER JOIN [SchoolRoleOrganizationAddress]..[Organization] o
+        ON a.[AddressId] = o.[AddressId]
+    WHERE o.[OrganizationId] = @organizationId;
+
+END;
+GO
+
 CREATE PROCEDURE .[pAddress_GetById]
     @addressId INT
 AS
@@ -339,6 +354,23 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE .[pOrganization_GetOrganization_ForOrganizationRole]
+    @roleId INT
+AS
+BEGIN
+    SELECT
+        o.[OrganizationId] AS ""Id"",
+        o.[Name] AS ""Name"",
+        o.[Phone_Number] AS ""Phone.Number"",
+        o.[AddressId] AS ""AddressId""
+    FROM [SchoolRoleOrganizationAddress]..[Organization] o
+    INNER JOIN [SchoolRoleOrganizationAddress]..[OrganizationRole] r
+        ON o.[OrganizationId] = r.[OrganizationId]
+    WHERE r.[RoleId] = @roleId;
+
+END;
+GO
+
 CREATE PROCEDURE .[pOrganizationRole_DeleteRole]
     @organizationId INT
 AS
@@ -431,6 +463,134 @@ BEGIN
     FROM [SchoolRoleOrganizationAddress]..[OrganizationRole] o
     WHERE o.[OrganizationId] = @organizationId
     AND o.[RoleId] = @roleId;
+
+END;
+GO
+
+CREATE PROCEDURE .[pRole_DeleteOrganization]
+    @roleId INT
+AS
+BEGIN
+    DELETE FROM [SchoolRoleOrganizationAddress]..[OrganizationRole]
+    WHERE [RoleId] = @roleId;
+
+END;
+GO
+
+CREATE PROCEDURE .[pRole_Delete]
+    @roleId INT
+AS
+BEGIN
+    DELETE FROM [SchoolRoleOrganizationAddress]..[Role]
+    WHERE [RoleId] = @roleId;
+
+END;
+GO
+
+CREATE PROCEDURE .[pRole_Insert]
+    @createdBy INT
+AS
+BEGIN
+    DECLARE @roleOutputData TABLE
+    (
+        [RoleId] INT
+    );
+
+    INSERT INTO [SchoolRoleOrganizationAddress]..[Role]
+    (
+        [CreatedBy]
+    )
+    OUTPUT
+        INSERTED.[RoleId]
+        INTO @roleOutputData
+    VALUES
+    (
+        @createdBy
+    );
+
+    SELECT
+        [RoleId]
+    FROM @roleOutputData;
+
+END;
+GO
+
+CREATE PROCEDURE .[pRole_Update]
+    @roleId INT,
+    @lastUpdatedBy INT
+AS
+BEGIN
+    UPDATE [SchoolRoleOrganizationAddress]..[Role]
+    SET
+        [LastUpdatedBy] = @lastUpdatedBy,
+        [LastUpdatedWhen] = GETDATE()
+    WHERE [RoleId] = @roleId;
+
+END;
+GO
+
+CREATE PROCEDURE .[pRole_Get]
+AS
+BEGIN
+    SELECT
+        _q_.[Id] AS ""Id"",
+        _q_.[IsCharter] AS ""IsCharter"",
+        _q_.[_EntityType_] AS ""_EntityType_""
+    FROM 
+    (
+        SELECT
+            s.[SchoolId] AS ""Id"",
+            s.[IsCharter] AS ""IsCharter"",
+            1 AS ""_EntityType_""
+        FROM [SchoolRoleOrganizationAddress]..[School] s
+        INNER JOIN [SchoolRoleOrganizationAddress]..[Role] r
+            ON s.[SchoolId] = r.[RoleId]
+        UNION ALL
+        (
+            SELECT
+                r.[RoleId] AS ""Id"",
+                NULL AS ""IsCharter"",
+                2 AS ""_EntityType_""
+            FROM [SchoolRoleOrganizationAddress]..[Role] r
+            LEFT OUTER JOIN [SchoolRoleOrganizationAddress]..[School] s
+                ON s.[SchoolId] = r.[RoleId]
+            WHERE s.[SchoolId] IS NULL
+        )
+    ) _q_;
+
+END;
+GO
+
+CREATE PROCEDURE .[pRole_GetById]
+    @roleId INT
+AS
+BEGIN
+    SELECT
+        _q_.[Id] AS ""Id"",
+        _q_.[IsCharter] AS ""IsCharter"",
+        _q_.[_EntityType_] AS ""_EntityType_""
+    FROM 
+    (
+        SELECT
+            s.[SchoolId] AS ""Id"",
+            s.[IsCharter] AS ""IsCharter"",
+            1 AS ""_EntityType_""
+        FROM [SchoolRoleOrganizationAddress]..[School] s
+        INNER JOIN [SchoolRoleOrganizationAddress]..[Role] r
+            ON s.[SchoolId] = r.[RoleId]
+        UNION ALL
+        (
+            SELECT
+                r.[RoleId] AS ""Id"",
+                NULL AS ""IsCharter"",
+                2 AS ""_EntityType_""
+            FROM [SchoolRoleOrganizationAddress]..[Role] r
+            LEFT OUTER JOIN [SchoolRoleOrganizationAddress]..[School] s
+                ON s.[SchoolId] = r.[RoleId]
+            WHERE s.[SchoolId] IS NULL
+        )
+    ) _q_
+    WHERE _q_.[Id] = @roleId;
 
 END;
 GO
@@ -608,6 +768,25 @@ GO
             });
 
             commandAggregate.Save();
+
+            var schoolId = commandAggregate.RootEntity.Id;
+
+            var queryAggregate = new GetByIdSchoolQueryAggregate();
+
+            var school = queryAggregate.Get(schoolId);
+
+            Assert.IsTrue(school.IsCharter);
+
+            Assert.AreEqual(1, school.Organization.Id);
+
+            Assert.AreEqual("School1", school.Organization.Name);
+
+            Assert.AreEqual(1, school.Organization.Address.Id);
+
+            Assert.AreEqual("Street1", school.Organization.Address.Street);
+
+            Assert.AreEqual("3051112233", school.Organization.Phone.Number);
+
         }
     }
 }

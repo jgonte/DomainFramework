@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DomainFramework.Tests
 {
-    class ManagerEmployeesQueryAggregate : GetByIdQueryAggregate<PersonEntity3, int?, object>
+     class ManagerEmployeesQueryAggregate : GetByIdQueryAggregate<PersonEntity3, int?, PersonOutputDto>
     {
         public GetCollectionLinkedEntityQueryOperation<PersonEntity3> GetEmployeesLoadOperation { get; }
 
@@ -25,14 +25,13 @@ namespace DomainFramework.Tests
                 }
             };
 
-            LoadOperations.Enqueue(
+            QueryOperations.Enqueue(
                 GetEmployeesLoadOperation
             );
         }
 
-        public override object GetDataTransferObject()
+        public override void PopulateDto(PersonEntity3 entity)
         {
-            return null;
         }
     }
 }

@@ -3,14 +3,18 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public abstract class QueryAggregate<TEntity, TDto> : IQueryAggregate<TEntity, TDto>
+    public abstract class QueryAggregate<TEntity, TOutputDto> : IQueryAggregate<TEntity, TOutputDto>
         where TEntity : IEntity
+        where TOutputDto : IOutputDataTransferObject, new()
     {
         public IRepositoryContext RepositoryContext { get; set; }
 
         public TEntity RootEntity { get; set; }
 
-        public Queue<IQueryOperation> LoadOperations { get; set; } = new Queue<IQueryOperation>();
+        // It needs to be created here so the nested query aggregates (if any) can use it
+        public TOutputDto OutputDto { get; set; } = new TOutputDto();
+
+        public Queue<IQueryOperation> QueryOperations { get; set; } = new Queue<IQueryOperation>();
 
         public QueryAggregate()
         {
@@ -23,7 +27,7 @@ namespace DomainFramework.Core
 
         public void LoadLinks(IAuthenticatedUser user = null)
         {
-            foreach (var operation in LoadOperations)
+            foreach (var operation in QueryOperations)
             {
                 operation.Execute(RepositoryContext, RootEntity, user);
             }
@@ -33,7 +37,7 @@ namespace DomainFramework.Core
         {
             var tasks = new Queue<Task>();
 
-            foreach (var operation in LoadOperations)
+            foreach (var operation in QueryOperations)
             {
                 tasks.Enqueue(
                     operation.ExecuteAsync(RepositoryContext, RootEntity, user)
@@ -43,6 +47,6 @@ namespace DomainFramework.Core
             await Task.WhenAll(tasks);
         }
 
-        public abstract TDto GetDataTransferObject();
+        public abstract void PopulateDto(TEntity entity);
     }
 }

@@ -21,5 +21,10 @@ namespace DomainFramework.Tests
                 new InsertEntityCommandOperation<ClassEnrollmentEntity>(RootEntity)
             );
         }
+
+        public override void Initialize(IInputDataTransferObject inputDto)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
