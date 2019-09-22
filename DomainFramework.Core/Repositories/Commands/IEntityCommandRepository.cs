@@ -8,9 +8,9 @@ namespace DomainFramework.Core
     /// </summary>
     public interface IEntityCommandRepository : ICommandRepository
     {
-        void Save(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
+        void Save(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
 
-        void Insert(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
+        void Insert(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
 
         bool Update(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 
@@ -19,9 +19,9 @@ namespace DomainFramework.Core
         // Pass the root entity to have access to its parameters if needed
         bool DeleteCollection(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
 
-        Task SaveAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
+        Task SaveAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
 
-        Task InsertAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
+        Task InsertAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
 
         Task<bool> UpdateAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
 

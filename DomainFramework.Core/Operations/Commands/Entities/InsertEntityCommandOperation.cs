@@ -8,10 +8,14 @@ namespace DomainFramework.Core
     {
         private EntityDependency[] _dependencies;
 
-        public InsertEntityCommandOperation(TEntity entity, params EntityDependency[] dependencies) : base(entity)
+        private string _selector;
+
+        public InsertEntityCommandOperation(TEntity entity, EntityDependency[] dependencies = null, string selector = null) : base(entity)
         {
             _dependencies = dependencies;
-        }
+
+            _selector = selector;
+    }
 
         public override void Execute(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
@@ -22,7 +26,7 @@ namespace DomainFramework.Core
                 repository.Dependencies = () => _dependencies;
             }
 
-            repository.Insert(Entity, user, unitOfWork);
+            repository.Insert(Entity, user, unitOfWork, _selector);
         }
 
         public override async Task ExecuteAsync(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
@@ -34,7 +38,7 @@ namespace DomainFramework.Core
                 repository.Dependencies = () => _dependencies;
             }
 
-            await repository.InsertAsync(Entity, user, unitOfWork);
+            await repository.InsertAsync(Entity, user, unitOfWork, _selector);
         }
     }
 }

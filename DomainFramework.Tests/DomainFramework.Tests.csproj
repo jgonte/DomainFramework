@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Helpers\NetCoreHelpers.Solution\NetCoreHelpers\NetCoreHelpers.csproj" />
+    <ProjectReference Include="..\..\..\Helpers\SqlServer\SqlServerScriptRunner.Solution\SqlServerScriptRunner\SqlServerScriptRunner.csproj" />
     <ProjectReference Include="..\..\DataAccess.Solution\DataAccess.Core\DataAccess.Core.csproj" />
     <ProjectReference Include="..\..\Utilities.Solution\Utilities\Utilities.csproj" />
     <ProjectReference Include="..\DomainFramework.Core\DomainFramework.Core.csproj" />

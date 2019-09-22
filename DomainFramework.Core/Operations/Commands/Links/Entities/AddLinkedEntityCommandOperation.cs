@@ -38,7 +38,7 @@ namespace DomainFramework.Core
                 }
             };
 
-            repository.Insert(linkedEntity, user, unitOfWork);
+            repository.Insert(linkedEntity, user, unitOfWork, _selector);
         }
 
         public async override Task ExecuteAsync(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
@@ -61,7 +61,7 @@ namespace DomainFramework.Core
                 }
             };
 
-            await repository.InsertAsync(linkedEntity, user, unitOfWork);
+            await repository.InsertAsync(linkedEntity, user, unitOfWork, _selector);
         }
     }
 }

@@ -18,11 +18,11 @@ namespace DomainFramework.DataAccess
         // This is needed because the id of the entity might not be available until the entity is inserted
         public Func<IEnumerable<EntityDependency>> Dependencies { get; set; } = EntityDependency.EmptyEntityDependencies;
 
-        public virtual void Save(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        public virtual void Save(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector = null)
         {
             if (entity.Id == null)
             {
-                Insert(entity, user, unitOfWork);
+                Insert(entity, user, unitOfWork, selector);
             }
             else
             {
@@ -32,9 +32,9 @@ namespace DomainFramework.DataAccess
 
         #region Insert
 
-        public void Insert(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        public void Insert(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            var command = CreateInsertCommand(entity, user);
+            var command = CreateInsertCommand(entity, user, selector);
 
             if (unitOfWork != null)
             {
@@ -46,7 +46,7 @@ namespace DomainFramework.DataAccess
             }
         }
 
-        protected virtual Command CreateInsertCommand(TEntity entity, IAuthenticatedUser user)
+        protected virtual Command CreateInsertCommand(TEntity entity, IAuthenticatedUser user, string selector)
         {
             throw new NotImplementedException();
         }
@@ -148,11 +148,11 @@ namespace DomainFramework.DataAccess
 
         #endregion
 
-        public async Task SaveAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        public async Task SaveAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
             if (entity.Id == null)
             {
-                await InsertAsync(entity, user, unitOfWork);
+                await InsertAsync(entity, user, unitOfWork, selector);
             }
             else
             {
@@ -162,9 +162,9 @@ namespace DomainFramework.DataAccess
 
         #region InsertAsync
 
-        public async Task InsertAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        public async Task InsertAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            var command = CreateInsertCommand(entity, user);
+            var command = CreateInsertCommand(entity, user, selector);
 
             if (unitOfWork != null)
             {
@@ -260,14 +260,14 @@ namespace DomainFramework.DataAccess
 
         #region ICommandRepository members
 
-        void IEntityCommandRepository.Save(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        void IEntityCommandRepository.Save(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            Save((TEntity)entity, user, unitOfWork);
+            Save((TEntity)entity, user, unitOfWork, selector);
         }
 
-        void IEntityCommandRepository.Insert(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        void IEntityCommandRepository.Insert(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            Insert((TEntity)entity, user, unitOfWork);
+            Insert((TEntity)entity, user, unitOfWork, selector);
         }
 
         bool IEntityCommandRepository.Update(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
@@ -285,14 +285,14 @@ namespace DomainFramework.DataAccess
             return DeleteCollection((TEntity)entity, user, unitOfWork, selector);
         }
 
-        async Task IEntityCommandRepository.SaveAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        async Task IEntityCommandRepository.SaveAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            await SaveAsync((TEntity)entity, user, unitOfWork);
+            await SaveAsync((TEntity)entity, user, unitOfWork, selector);
         }
 
-        async Task IEntityCommandRepository.InsertAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        async Task IEntityCommandRepository.InsertAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            await InsertAsync((TEntity)entity, user, unitOfWork);
+            await InsertAsync((TEntity)entity, user, unitOfWork, selector);
         }
 
         async Task<bool> IEntityCommandRepository.UpdateAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
@@ -305,7 +305,7 @@ namespace DomainFramework.DataAccess
             return await DeleteAsync((TEntity)entity, user, unitOfWork);
         }
 
-        async Task<bool> IEntityCommandRepository.DeleteCollectionAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector = null)
+        async Task<bool> IEntityCommandRepository.DeleteCollectionAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
             return await DeleteCollectionAsync((TEntity)entity, user, unitOfWork, selector);
         }
