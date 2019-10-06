@@ -19,7 +19,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
                     p => p.Name("personId").Value(personId.Value)
                 )
                 .MapTypes(
-                    8,
+                    7,
                     tm => tm.Type(typeof(Employee)).Index(1),
                     tm => tm.Type(typeof(Person)).Index(2)
                 )
@@ -38,7 +38,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
                     p => p.Name("personId").Value(personId.Value)
                 )
                 .MapTypes(
-                    8,
+                    7,
                     tm => tm.Type(typeof(Employee)).Index(1),
                     tm => tm.Type(typeof(Person)).Index(2)
                 )
@@ -54,7 +54,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
                 .Connection(EmployeeWithDependantsConnectionClass.GetConnectionName())
                 .StoredProcedure("[EmployeeBoundedContext].[pPerson_Get]")
                 .MapTypes(
-                    8,
+                    7,
                     tm => tm.Type(typeof(Employee)).Index(1),
                     tm => tm.Type(typeof(Person)).Index(2)
                 )
@@ -70,7 +70,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
                 .Connection(EmployeeWithDependantsConnectionClass.GetConnectionName())
                 .StoredProcedure("[EmployeeBoundedContext].[pPerson_Get]")
                 .MapTypes(
-                    8,
+                    7,
                     tm => tm.Type(typeof(Employee)).Index(1),
                     tm => tm.Type(typeof(Person)).Index(2)
                 )

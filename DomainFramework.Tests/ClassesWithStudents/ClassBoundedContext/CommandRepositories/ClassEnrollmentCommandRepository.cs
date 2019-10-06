@@ -21,7 +21,6 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
                 .StoredProcedure("[ClassBoundedContext].[pClassEnrollment_Insert]")
                 .Parameters(
-                    p => p.Name("name").Value(entity.Name),
                     p => p.Name("startedDateTime").Value(entity.StartedDateTime),
                     p => p.Name("createdBy").Value(entity.CreatedBy)
                 )
@@ -101,7 +100,7 @@ namespace ClassesWithStudents.ClassBoundedContext
         {
             if (user != null)
             {
-                entity.LastUpdatedBy = (int)user.Id;
+                entity.UpdatedBy = (int)user.Id;
             }
 
             return Command
@@ -111,9 +110,8 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .Parameters(
                     p => p.Name("classId").Value(entity.Id.ClassId),
                     p => p.Name("studentId").Value(entity.Id.StudentId),
-                    p => p.Name("name").Value(entity.Name),
                     p => p.Name("startedDateTime").Value(entity.StartedDateTime),
-                    p => p.Name("lastUpdatedBy").Value(entity.LastUpdatedBy)
+                    p => p.Name("updatedBy").Value(entity.UpdatedBy)
                 );
         }
 
@@ -166,8 +164,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                     .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
                     .StoredProcedure("[ClassBoundedContext].[pClassEnrollment_DeleteStudents]")
                     .Parameters(
-                        p => p.Name("classId").Value(entity.Id.ClassId),
-                        p => p.Name("studentId").Value(entity.Id.StudentId)
+                        p => p.Name("classId").Value(entity.Id.ClassId)
                     );
 
                 case "Classes": return Command
@@ -175,7 +172,6 @@ namespace ClassesWithStudents.ClassBoundedContext
                     .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
                     .StoredProcedure("[ClassBoundedContext].[pClassEnrollment_DeleteClasses]")
                     .Parameters(
-                        p => p.Name("classId").Value(entity.Id.ClassId),
                         p => p.Name("studentId").Value(entity.Id.StudentId)
                     );
 

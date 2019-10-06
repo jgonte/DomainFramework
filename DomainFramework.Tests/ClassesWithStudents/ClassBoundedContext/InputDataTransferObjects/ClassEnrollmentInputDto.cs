@@ -11,8 +11,6 @@ namespace ClassesWithStudents.ClassBoundedContext
 
         public int StudentId { get; set; }
 
-        public string Name { get; set; }
-
         public DateTime StartedDateTime { get; set; }
 
         public void Validate(ValidationResult result)
@@ -20,10 +18,6 @@ namespace ClassesWithStudents.ClassBoundedContext
             ClassId.ValidateNotZero(result, nameof(ClassId));
 
             StudentId.ValidateNotZero(result, nameof(StudentId));
-
-            Name.ValidateNotEmpty(result, nameof(Name));
-
-            Name.ValidateMaxLength(result, nameof(Name), 25);
 
             StartedDateTime.ValidateNotEmpty(result, nameof(StartedDateTime));
         }

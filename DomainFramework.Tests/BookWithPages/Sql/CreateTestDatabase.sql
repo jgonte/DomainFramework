@@ -30,9 +30,9 @@ CREATE TABLE [BookWithPages].[BookBoundedContext].[Book]
     [DatePublished] DATETIME NOT NULL,
     [PublisherId] UNIQUEIDENTIFIER NOT NULL,
     [CreatedBy] INT NOT NULL,
-    [CreatedWhen] DATETIME NOT NULL DEFAULT GETDATE(),
-    [LastUpdatedBy] INT,
-    [LastUpdatedWhen] DATETIME
+    [CreatedDateTime] DATETIME NOT NULL DEFAULT GETDATE(),
+    [UpdatedBy] INT,
+    [UpdatedDateTime] DATETIME
     CONSTRAINT Book_PK PRIMARY KEY ([BookId])
 );
 GO
@@ -42,9 +42,9 @@ CREATE TABLE [BookWithPages].[BookBoundedContext].[Page]
     [PageId] INT NOT NULL IDENTITY,
     [Index] INT NOT NULL,
     [CreatedBy] INT NOT NULL,
-    [CreatedWhen] DATETIME NOT NULL DEFAULT GETDATE(),
-    [LastUpdatedBy] INT,
-    [LastUpdatedWhen] DATETIME,
+    [CreatedDateTime] DATETIME NOT NULL DEFAULT GETDATE(),
+    [UpdatedBy] INT,
+    [UpdatedDateTime] DATETIME,
     [BookId] INT NOT NULL
     CONSTRAINT Page_PK PRIMARY KEY ([PageId])
 );
@@ -130,7 +130,7 @@ CREATE PROCEDURE [BookBoundedContext].[pBook_Update]
     @category INT,
     @datePublished DATETIME,
     @publisherId UNIQUEIDENTIFIER,
-    @lastUpdatedBy INT
+    @updatedBy INT
 AS
 BEGIN
     UPDATE [BookWithPages].[BookBoundedContext].[Book]
@@ -139,8 +139,8 @@ BEGIN
         [Category] = @category,
         [DatePublished] = @datePublished,
         [PublisherId] = @publisherId,
-        [LastUpdatedBy] = @lastUpdatedBy,
-        [LastUpdatedWhen] = GETDATE()
+        [UpdatedBy] = @updatedBy,
+        [UpdatedDateTime] = GETDATE()
     WHERE [BookId] = @bookId;
 
 END;
@@ -239,16 +239,16 @@ GO
 CREATE PROCEDURE [BookBoundedContext].[pPage_Update]
     @pageId INT,
     @index INT,
-    @lastUpdatedBy INT,
+    @updatedBy INT,
     @bookId INT
 AS
 BEGIN
     UPDATE [BookWithPages].[BookBoundedContext].[Page]
     SET
         [Index] = @index,
-        [LastUpdatedBy] = @lastUpdatedBy,
+        [UpdatedBy] = @updatedBy,
         [BookId] = @bookId,
-        [LastUpdatedWhen] = GETDATE()
+        [UpdatedDateTime] = GETDATE()
     WHERE [PageId] = @pageId;
 
 END;

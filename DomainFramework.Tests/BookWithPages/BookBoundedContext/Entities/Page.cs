@@ -10,11 +10,11 @@ namespace BookWithPages.BookBoundedContext
 
         public int CreatedBy { get; set; }
 
-        public DateTime CreatedWhen { get; set; }
+        public DateTime CreatedDateTime { get; set; }
 
-        public int? LastUpdatedBy { get; set; }
+        public int? UpdatedBy { get; set; }
 
-        public DateTime? LastUpdatedWhen { get; set; }
+        public DateTime? UpdatedDateTime { get; set; }
 
         public int BookId { get; set; }
 

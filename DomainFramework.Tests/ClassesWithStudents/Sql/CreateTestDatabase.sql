@@ -27,9 +27,9 @@ CREATE TABLE [ClassesWithStudents].[ClassBoundedContext].[Class]
     [ClassId] INT NOT NULL IDENTITY,
     [Name] VARCHAR(100) NOT NULL,
     [CreatedBy] INT NOT NULL,
-    [CreatedWhen] DATETIME NOT NULL DEFAULT GETDATE(),
-    [LastUpdatedBy] INT,
-    [LastUpdatedWhen] DATETIME
+    [CreatedDateTime] DATETIME NOT NULL DEFAULT GETDATE(),
+    [UpdatedBy] INT,
+    [UpdatedDateTime] DATETIME
     CONSTRAINT Class_PK PRIMARY KEY ([ClassId])
 );
 GO
@@ -39,9 +39,9 @@ CREATE TABLE [ClassesWithStudents].[ClassBoundedContext].[Student]
     [StudentId] INT NOT NULL IDENTITY,
     [FirstName] VARCHAR(50) NOT NULL,
     [CreatedBy] INT NOT NULL,
-    [CreatedWhen] DATETIME NOT NULL DEFAULT GETDATE(),
-    [LastUpdatedBy] INT,
-    [LastUpdatedWhen] DATETIME
+    [CreatedDateTime] DATETIME NOT NULL DEFAULT GETDATE(),
+    [UpdatedBy] INT,
+    [UpdatedDateTime] DATETIME
     CONSTRAINT Student_PK PRIMARY KEY ([StudentId])
 );
 GO
@@ -50,12 +50,11 @@ CREATE TABLE [ClassesWithStudents].[ClassBoundedContext].[ClassEnrollment]
 (
     [ClassId] INT NOT NULL,
     [StudentId] INT NOT NULL,
-    [Name] VARCHAR(25) NOT NULL,
     [StartedDateTime] DATETIME NOT NULL,
     [CreatedBy] INT NOT NULL,
-    [CreatedWhen] DATETIME NOT NULL DEFAULT GETDATE(),
-    [LastUpdatedBy] INT,
-    [LastUpdatedWhen] DATETIME
+    [CreatedDateTime] DATETIME NOT NULL DEFAULT GETDATE(),
+    [UpdatedBy] INT,
+    [UpdatedDateTime] DATETIME
     CONSTRAINT ClassEnrollment_PK PRIMARY KEY ([ClassId], [StudentId])
 );
 GO
@@ -114,14 +113,14 @@ GO
 CREATE PROCEDURE [ClassBoundedContext].[pClass_Update]
     @classId INT,
     @name VARCHAR(100),
-    @lastUpdatedBy INT
+    @updatedBy INT
 AS
 BEGIN
     UPDATE [ClassesWithStudents].[ClassBoundedContext].[Class]
     SET
         [Name] = @name,
-        [LastUpdatedBy] = @lastUpdatedBy,
-        [LastUpdatedWhen] = GETDATE()
+        [UpdatedBy] = @updatedBy,
+        [UpdatedDateTime] = GETDATE()
     WHERE [ClassId] = @classId;
 
 END;
@@ -186,7 +185,6 @@ GO
 CREATE PROCEDURE [ClassBoundedContext].[pClassEnrollment_Insert]
     @classId INT,
     @studentId INT,
-    @name VARCHAR(25),
     @startedDateTime DATETIME,
     @createdBy INT
 AS
@@ -195,7 +193,6 @@ BEGIN
     (
         [ClassId],
         [StudentId],
-        [Name],
         [StartedDateTime],
         [CreatedBy]
     )
@@ -203,7 +200,6 @@ BEGIN
     (
         @classId,
         @studentId,
-        @name,
         @startedDateTime,
         @createdBy
     );
@@ -214,17 +210,15 @@ GO
 CREATE PROCEDURE [ClassBoundedContext].[pClassEnrollment_Update]
     @classId INT,
     @studentId INT,
-    @name VARCHAR(25),
     @startedDateTime DATETIME,
-    @lastUpdatedBy INT
+    @updatedBy INT
 AS
 BEGIN
     UPDATE [ClassesWithStudents].[ClassBoundedContext].[ClassEnrollment]
     SET
-        [Name] = @name,
         [StartedDateTime] = @startedDateTime,
-        [LastUpdatedBy] = @lastUpdatedBy,
-        [LastUpdatedWhen] = GETDATE()
+        [UpdatedBy] = @updatedBy,
+        [UpdatedDateTime] = GETDATE()
     WHERE [ClassId] = @classId
     AND [StudentId] = @studentId;
 
@@ -237,7 +231,6 @@ BEGIN
     SELECT
         c.[ClassId] AS "Id.ClassId",
         c.[StudentId] AS "Id.StudentId",
-        c.[Name] AS "Name",
         c.[StartedDateTime] AS "StartedDateTime"
     FROM [ClassesWithStudents].[ClassBoundedContext].[ClassEnrollment] c;
 
@@ -252,7 +245,6 @@ BEGIN
     SELECT
         c.[ClassId] AS "Id.ClassId",
         c.[StudentId] AS "Id.StudentId",
-        c.[Name] AS "Name",
         c.[StartedDateTime] AS "StartedDateTime"
     FROM [ClassesWithStudents].[ClassBoundedContext].[ClassEnrollment] c
     WHERE c.[ClassId] = @classId
@@ -315,14 +307,14 @@ GO
 CREATE PROCEDURE [ClassBoundedContext].[pStudent_Update]
     @studentId INT,
     @firstName VARCHAR(50),
-    @lastUpdatedBy INT
+    @updatedBy INT
 AS
 BEGIN
     UPDATE [ClassesWithStudents].[ClassBoundedContext].[Student]
     SET
         [FirstName] = @firstName,
-        [LastUpdatedBy] = @lastUpdatedBy,
-        [LastUpdatedWhen] = GETDATE()
+        [UpdatedBy] = @updatedBy,
+        [UpdatedDateTime] = GETDATE()
     WHERE [StudentId] = @studentId;
 
 END;

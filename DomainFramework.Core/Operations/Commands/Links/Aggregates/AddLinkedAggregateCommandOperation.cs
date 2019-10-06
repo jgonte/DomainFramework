@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
@@ -12,11 +9,11 @@ namespace DomainFramework.Core
     {
         public TLinkedAggregate CommandAggregate { get; private set; }
 
-        public AddLinkedAggregateCommandOperation(TEntity entity, TInputDto inputDto) : base(entity)
+        public AddLinkedAggregateCommandOperation(TEntity entity, TInputDto inputDto, EntityDependency[] dependencies = null) : base(entity)
         {
             CommandAggregate = new TLinkedAggregate();
 
-            CommandAggregate.Initialize(inputDto);
+            CommandAggregate.Initialize(inputDto, dependencies);
         }
 
         public override void Execute(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)

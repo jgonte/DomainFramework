@@ -46,7 +46,7 @@ namespace ClassesWithStudents.ClassBoundedContext
         {
             if (user != null)
             {
-                entity.LastUpdatedBy = (int)user.Id;
+                entity.UpdatedBy = (int)user.Id;
             }
 
             return Command
@@ -56,7 +56,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .Parameters(
                     p => p.Name("classId").Value(entity.Id),
                     p => p.Name("name").Value(entity.Name),
-                    p => p.Name("lastUpdatedBy").Value(entity.LastUpdatedBy)
+                    p => p.Name("updatedBy").Value(entity.UpdatedBy)
                 );
         }
 

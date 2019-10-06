@@ -11,17 +11,17 @@ namespace ClassesWithStudents.ClassBoundedContext
         {
         }
 
-        public CreateClassCommandAggregate(ClassInputDto @class) : base(new DomainFramework.DataAccess.RepositoryContext(ClassesWithStudentsConnectionClass.GetConnectionName()))
+        public CreateClassCommandAggregate(ClassInputDto @class, EntityDependency[] dependencies = null) : base(new DomainFramework.DataAccess.RepositoryContext(ClassesWithStudentsConnectionClass.GetConnectionName()))
         {
-            Initialize(@class);
+            Initialize(@class, dependencies);
         }
 
-        public override void Initialize(IInputDataTransferObject @class)
+        public override void Initialize(IInputDataTransferObject @class, EntityDependency[] dependencies)
         {
-            Initialize((ClassInputDto)@class);
+            Initialize((ClassInputDto)@class, dependencies);
         }
 
-        private void Initialize(ClassInputDto @class)
+        private void Initialize(ClassInputDto @class, EntityDependency[] dependencies)
         {
             RegisterCommandRepositoryFactory<Class>(() => new ClassCommandRepository());
 

@@ -8,7 +8,7 @@ namespace DomainFramework.Core
         /// Initializes the aggregate for the given input DTO
         /// </summary>
         /// <param name="inputDto"></param>
-        void Initialize(IInputDataTransferObject inputDto);
+        void Initialize(IInputDataTransferObject inputDto, EntityDependency[] dependencies);
 
         void Save(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null);
 

@@ -52,7 +52,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
                     p => p.Name("employeeId").Value(entity.Id),
                     p => p.Name("hireDate").Value(entity.HireDate),
                     p => p.Name("name").Value(entity.Name),
-                    p => p.Name("lastUpdatedBy").Value(entity.LastUpdatedBy),
+                    p => p.Name("updatedBy").Value(entity.UpdatedBy),
                     p => p.Name("cellPhone_AreaCode").Value(entity.CellPhone.AreaCode),
                     p => p.Name("cellPhone_Exchange").Value(entity.CellPhone.Exchange),
                     p => p.Name("cellPhone_Number").Value(entity.CellPhone.Number),

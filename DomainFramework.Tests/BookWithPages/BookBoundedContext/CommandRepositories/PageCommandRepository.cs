@@ -56,7 +56,7 @@ namespace BookWithPages.BookBoundedContext
         {
             if (user != null)
             {
-                entity.LastUpdatedBy = (int)user.Id;
+                entity.UpdatedBy = (int)user.Id;
             }
 
             return Command
@@ -66,7 +66,7 @@ namespace BookWithPages.BookBoundedContext
                 .Parameters(
                     p => p.Name("pageId").Value(entity.Id),
                     p => p.Name("index").Value(entity.Index),
-                    p => p.Name("lastUpdatedBy").Value(entity.LastUpdatedBy),
+                    p => p.Name("updatedBy").Value(entity.UpdatedBy),
                     p => p.Name("bookId").Value(entity.BookId)
                 );
         }

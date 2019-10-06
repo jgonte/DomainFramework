@@ -11,17 +11,17 @@ namespace BookWithPages.BookBoundedContext
         {
         }
 
-        public AddBookPagesCommandAggregate(BookAddPagesInputDto book) : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
+        public AddBookPagesCommandAggregate(BookAddPagesInputDto book, EntityDependency[] dependencies = null) : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
         {
-            Initialize(book);
+            Initialize(book, dependencies);
         }
 
-        public override void Initialize(IInputDataTransferObject book)
+        public override void Initialize(IInputDataTransferObject book, EntityDependency[] dependencies)
         {
-            Initialize((BookAddPagesInputDto)book);
+            Initialize((BookAddPagesInputDto)book, dependencies);
         }
 
-        private void Initialize(BookAddPagesInputDto book)
+        private void Initialize(BookAddPagesInputDto book, EntityDependency[] dependencies)
         {
             RegisterCommandRepositoryFactory<Page>(() => new PageCommandRepository());
 
@@ -32,12 +32,11 @@ namespace BookWithPages.BookBoundedContext
 
             if (book.Pages?.Any() == true)
             {
-                foreach (var dto in book.Pages)
+                foreach (var page in book.Pages)
                 {
                     Enqueue(new AddLinkedEntityCommandOperation<Book, Page>(RootEntity, () => new Page
                     {
-                        Index = dto.Index,
-                        BookId = dto.BookId
+                        Index = page.Index
                     }, "Pages"));
                 }
             }

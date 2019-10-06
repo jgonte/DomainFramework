@@ -11,17 +11,17 @@ namespace ClassesWithStudents.ClassBoundedContext
         {
         }
 
-        public CreateClassEnrollmentCommandAggregate(ClassEnrollmentInputDto enrollment) : base(new DomainFramework.DataAccess.RepositoryContext(ClassesWithStudentsConnectionClass.GetConnectionName()))
+        public CreateClassEnrollmentCommandAggregate(ClassEnrollmentInputDto enrollment, EntityDependency[] dependencies = null) : base(new DomainFramework.DataAccess.RepositoryContext(ClassesWithStudentsConnectionClass.GetConnectionName()))
         {
-            Initialize(enrollment);
+            Initialize(enrollment, dependencies);
         }
 
-        public override void Initialize(IInputDataTransferObject enrollment)
+        public override void Initialize(IInputDataTransferObject enrollment, EntityDependency[] dependencies)
         {
-            Initialize((ClassEnrollmentInputDto)enrollment);
+            Initialize((ClassEnrollmentInputDto)enrollment, dependencies);
         }
 
-        private void Initialize(ClassEnrollmentInputDto enrollment)
+        private void Initialize(ClassEnrollmentInputDto enrollment, EntityDependency[] dependencies)
         {
             RegisterCommandRepositoryFactory<ClassEnrollment>(() => new ClassEnrollmentCommandRepository());
 
@@ -32,7 +32,6 @@ namespace ClassesWithStudents.ClassBoundedContext
                     ClassId = enrollment.ClassId,
                     StudentId = enrollment.StudentId
                 },
-                Name = enrollment.Name,
                 StartedDateTime = enrollment.StartedDateTime
             };
 

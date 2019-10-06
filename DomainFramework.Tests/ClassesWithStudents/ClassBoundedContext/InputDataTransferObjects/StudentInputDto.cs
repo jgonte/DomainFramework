@@ -9,11 +9,15 @@ namespace ClassesWithStudents.ClassBoundedContext
     {
         public string FirstName { get; set; }
 
+        public DateTime StartedDateTime { get; set; }
+
         public void Validate(ValidationResult result)
         {
             FirstName.ValidateNotEmpty(result, nameof(FirstName));
 
             FirstName.ValidateMaxLength(result, nameof(FirstName), 50);
+
+            StartedDateTime.ValidateNotEmpty(result, nameof(StartedDateTime));
         }
 
     }

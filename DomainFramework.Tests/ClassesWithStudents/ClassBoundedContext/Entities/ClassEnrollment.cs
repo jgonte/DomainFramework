@@ -14,17 +14,15 @@ namespace ClassesWithStudents.ClassBoundedContext
 
     public class ClassEnrollment : Entity<ClassEnrollmentId>
     {
-        public string Name { get; set; }
-
         public DateTime StartedDateTime { get; set; }
 
         public int CreatedBy { get; set; }
 
-        public DateTime CreatedWhen { get; set; }
+        public DateTime CreatedDateTime { get; set; }
 
-        public int? LastUpdatedBy { get; set; }
+        public int? UpdatedBy { get; set; }
 
-        public DateTime? LastUpdatedWhen { get; set; }
+        public DateTime? UpdatedDateTime { get; set; }
 
     }
 }

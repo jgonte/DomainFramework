@@ -16,7 +16,7 @@ namespace DomainFramework.Tests.EntityWithValueObjectCollection
             Enqueue(addPhone);
         }
 
-        public override void Initialize(IInputDataTransferObject inputDto)
+        public override void Initialize(IInputDataTransferObject inputDto, EntityDependency[] dependencies)
         {
             throw new System.NotImplementedException();
         }

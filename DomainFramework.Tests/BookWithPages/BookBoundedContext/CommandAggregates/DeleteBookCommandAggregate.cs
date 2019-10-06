@@ -11,17 +11,17 @@ namespace BookWithPages.BookBoundedContext
         {
         }
 
-        public DeleteBookCommandAggregate(DeleteBookInputDto book) : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
+        public DeleteBookCommandAggregate(DeleteBookInputDto book, EntityDependency[] dependencies = null) : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
         {
-            Initialize(book);
+            Initialize(book, dependencies);
         }
 
-        public override void Initialize(IInputDataTransferObject book)
+        public override void Initialize(IInputDataTransferObject book, EntityDependency[] dependencies)
         {
-            Initialize((DeleteBookInputDto)book);
+            Initialize((DeleteBookInputDto)book, dependencies);
         }
 
-        private void Initialize(DeleteBookInputDto book)
+        private void Initialize(DeleteBookInputDto book, EntityDependency[] dependencies)
         {
             RegisterCommandRepositoryFactory<Book>(() => new BookCommandRepository());
 

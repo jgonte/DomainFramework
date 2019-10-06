@@ -11,17 +11,17 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
         {
         }
 
-        public SaveEmployeeCommandAggregate(SaveEmployeeInputDto employee) : base(new DomainFramework.DataAccess.RepositoryContext(EmployeeWithDependantsConnectionClass.GetConnectionName()))
+        public SaveEmployeeCommandAggregate(SaveEmployeeInputDto employee, EntityDependency[] dependencies = null) : base(new DomainFramework.DataAccess.RepositoryContext(EmployeeWithDependantsConnectionClass.GetConnectionName()))
         {
-            Initialize(employee);
+            Initialize(employee, dependencies);
         }
 
-        public override void Initialize(IInputDataTransferObject employee)
+        public override void Initialize(IInputDataTransferObject employee, EntityDependency[] dependencies)
         {
-            Initialize((SaveEmployeeInputDto)employee);
+            Initialize((SaveEmployeeInputDto)employee, dependencies);
         }
 
-        private void Initialize(SaveEmployeeInputDto employee)
+        private void Initialize(SaveEmployeeInputDto employee, EntityDependency[] dependencies)
         {
             RegisterCommandRepositoryFactory<Employee>(() => new EmployeeCommandRepository());
 
@@ -47,17 +47,16 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
 
             if (employee.Dependants?.Any() == true)
             {
-                foreach (var dto in employee.Dependants)
+                foreach (var person in employee.Dependants)
                 {
                     Enqueue(new AddLinkedEntityCommandOperation<Employee, Person>(RootEntity, () => new Person
                     {
-                        Name = dto.Name,
-                        ProviderEmployeeId = dto.ProviderEmployeeId,
+                        Name = person.Name,
                         CellPhone = new PhoneNumber
                         {
-                            AreaCode = dto.CellPhone.AreaCode,
-                            Exchange = dto.CellPhone.Exchange,
-                            Number = dto.CellPhone.Number
+                            AreaCode = person.CellPhone.AreaCode,
+                            Exchange = person.CellPhone.Exchange,
+                            Number = person.CellPhone.Number
                         }
                     }, "Dependants"));
                 }

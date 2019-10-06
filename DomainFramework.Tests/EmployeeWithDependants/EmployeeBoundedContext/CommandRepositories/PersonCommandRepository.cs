@@ -59,7 +59,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
         {
             if (user != null)
             {
-                entity.LastUpdatedBy = (int)user.Id;
+                entity.UpdatedBy = (int)user.Id;
             }
 
             return Command
@@ -69,7 +69,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
                 .Parameters(
                     p => p.Name("personId").Value(entity.Id),
                     p => p.Name("name").Value(entity.Name),
-                    p => p.Name("lastUpdatedBy").Value(entity.LastUpdatedBy),
+                    p => p.Name("updatedBy").Value(entity.UpdatedBy),
                     p => p.Name("cellPhone_AreaCode").Value(entity.CellPhone.AreaCode),
                     p => p.Name("cellPhone_Exchange").Value(entity.CellPhone.Exchange),
                     p => p.Name("cellPhone_Number").Value(entity.CellPhone.Number),

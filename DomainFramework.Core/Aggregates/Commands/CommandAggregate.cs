@@ -34,7 +34,7 @@ namespace DomainFramework.Core
         {
         }
 
-        public abstract void Initialize(IInputDataTransferObject inputDto);
+        public abstract void Initialize(IInputDataTransferObject inputDto, EntityDependency[] dependencies);
 
         public CommandAggregate(IRepositoryContext repositoryContext)
         {

@@ -4,7 +4,7 @@ using SqlServerScriptRunner;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace ClassesWithStudents.ClassBoundedContext
 {
@@ -47,77 +47,156 @@ namespace ClassesWithStudents.ClassBoundedContext
         //
         #endregion
 
-        //[TestMethod]
-        //public void Class_With_Students_Tests()
-        //{
-        //    // Suppose the class and the student do not exist by the time we enroll it so we need to create the class and student records in the database
-        //    var commandAggregate = new CreateClassEnrollmentCommandAggregate(
-        //        new ClassEnrollmentInputDto
-        //        {
-        //            Name = "Programming",
-        //            StudentsToEnroll = new List<StudentToEnrollDto>
-        //            {
-        //                new StudentToEnrollDto
-        //                {
-        //                    FirstName = "Sarah",
-        //                    StartedDateTime = new DateTime(2017, 3, 12, 9, 16, 37)
-        //                },
-        //                new StudentToEnrollDto
-        //                {
-        //                    FirstName = "Yana",
-        //                    StartedDateTime = new DateTime(2017, 4, 12, 10, 26, 47)
-        //                },
-        //                new StudentToEnrollDto
-        //                {
-        //                    FirstName = "Mark",
-        //                    StartedDateTime = new DateTime(2017, 5, 14, 11, 24, 57)
-        //                }
-        //            }
-        //        });
+        [TestMethod]
+        public void Class_With_Students_Tests()
+        {
+            // Create a class
+            var createClassCommandAggregate = new CreateClassCommandAggregate(new ClassInputDto
+            {
+                Name = "Programming"
+            });
 
-        //    commandAggregate.Save();
+            createClassCommandAggregate.Save();
 
-        //    var classEntity = commandAggregate.RootEntity;
+            var classId = createClassCommandAggregate.RootEntity.Id;
 
-        //    // Read
-        //    context.RegisterQueryRepository<ClassEntity>(new ClassQueryRepository());
+            var studentIds = new List<int?>();
 
-        //    context.RegisterQueryRepository<StudentEntity>(new StudentQueryRepository());
+            // Create some students
+            var createStudentCommandAggregate = new CreateStudentCommandAggregate(new StudentInputDto
+            {
+                FirstName = "Sarah"
+            });
 
-        //    var id = classEntity.Id; // Keep the generated id
+            createStudentCommandAggregate.Save();
 
-        //    classEntity = new ClassEntity(); // New entity
+            studentIds.Add(createStudentCommandAggregate.RootEntity.Id);
 
-        //    var queryAggregate = new ClassEnrollmentQueryAggregate(context);
+            createStudentCommandAggregate = new CreateStudentCommandAggregate(new StudentInputDto
+            {
+                FirstName = "Mark"
+            });
 
-        //    queryAggregate.Get(id, null);
+            createStudentCommandAggregate.Save();
 
-        //    classEntity = queryAggregate.RootEntity;
+            studentIds.Add(createStudentCommandAggregate.RootEntity.Id);
 
-        //    Assert.AreEqual(id, classEntity.Id);
+            createStudentCommandAggregate = new CreateStudentCommandAggregate(new StudentInputDto
+            {
+                FirstName = "Yana"
+            });
 
-        //    Assert.AreEqual("Programming", classEntity.Name);
+            createStudentCommandAggregate.Save();
 
-        //    Assert.AreEqual(3, queryAggregate.Students.Count());
+            studentIds.Add(createStudentCommandAggregate.RootEntity.Id);
 
-        //    var student = queryAggregate.Students.ElementAt(0);
+            var enrollmentDates = new List<DateTime>
+            {
+                new DateTime(2017, 3, 11, 9, 16, 37),
+                new DateTime(2018, 4, 12, 10, 26, 47),
+                new DateTime(2019, 5, 13, 11, 36, 57)
+            };
 
-        //    Assert.IsNotNull(student.Id);
+            // Enroll those students in that class
+            var i = 0;
 
-        //    Assert.AreEqual("Sarah", student.FirstName);
+            foreach (var studentId in studentIds)
+            {
+                var createEnrollmentCommandAggregate = new CreateClassEnrollmentCommandAggregate(new ClassEnrollmentInputDto
+                {
+                    ClassId = classId.Value,
+                    StudentId = studentId.Value,
+                    StartedDateTime = enrollmentDates.ElementAt(i++)
+                });
 
-        //    student = queryAggregate.Students.ElementAt(1);
+                createEnrollmentCommandAggregate.Save();
 
-        //    Assert.IsNotNull(student.Id);
+            }
 
-        //    Assert.AreEqual("Yana", student.FirstName);
+            // Retrieve the class with the students
+            var getClassByIdQueryAggregate = new GetClassByIdQueryAggregate();
 
-        //    student = queryAggregate.Students.ElementAt(2);
+            var classDto = getClassByIdQueryAggregate.Get(classId);
 
-        //    Assert.IsNotNull(student.Id);
+            Assert.AreEqual(classId, classDto.Id);
 
-        //    Assert.AreEqual("Mark", student.FirstName);
-        //}
+            Assert.AreEqual("Programming", classDto.Name);
+
+            Assert.AreEqual(3, classDto.Students.Count());
+
+            var student = classDto.Students.ElementAt(0);
+
+            Assert.IsNotNull(student.Id);
+
+            Assert.AreEqual("Sarah", student.FirstName);
+
+            student = classDto.Students.ElementAt(1);
+
+            Assert.IsNotNull(student.Id);
+
+            Assert.AreEqual("Mark", student.FirstName);
+
+            student = classDto.Students.ElementAt(2);
+
+            Assert.IsNotNull(student.Id);
+
+            Assert.AreEqual("Yana", student.FirstName);
+
+            // Replace the students
+            var replaceEnrollmentCommandAggregate = new ReplaceClassStudentsCommandAggregate(new ReplaceClassStudentsInputDto
+            {
+                ClassId = classId.Value,
+                Students = new List<StudentInputDto>
+                {
+                    new StudentInputDto
+                    {
+                        FirstName = "Jorge",
+                        StartedDateTime = new DateTime(2010, 3, 11, 9, 16, 37)
+                    },
+                    new StudentInputDto
+                    {
+                        FirstName = "Moshe",
+                        StartedDateTime = new DateTime(2011, 3, 11, 9, 16, 37)
+                    },
+                    new StudentInputDto
+                    {
+                        FirstName = "Daphni",
+                        StartedDateTime = new DateTime(2012, 3, 11, 9, 16, 37)
+                    }
+                }
+
+            });
+
+            replaceEnrollmentCommandAggregate.Save();
+
+            getClassByIdQueryAggregate = new GetClassByIdQueryAggregate();
+
+            classDto = getClassByIdQueryAggregate.Get(classId);
+
+            Assert.AreEqual(classId, classDto.Id);
+
+            Assert.AreEqual("Programming", classDto.Name);
+
+            Assert.AreEqual(3, classDto.Students.Count());
+
+            student = classDto.Students.ElementAt(0);
+
+            Assert.IsNotNull(student.Id);
+
+            Assert.AreEqual("Jorge", student.FirstName);
+
+            student = classDto.Students.ElementAt(1);
+
+            Assert.IsNotNull(student.Id);
+
+            Assert.AreEqual("Moshe", student.FirstName);
+
+            student = classDto.Students.ElementAt(2);
+
+            Assert.IsNotNull(student.Id);
+
+            Assert.AreEqual("Daphni", student.FirstName);
+        }
 
         //[TestMethod]
         //public async Task Class_With_Students_Async_Tests()
@@ -157,7 +236,7 @@ namespace ClassesWithStudents.ClassBoundedContext
 
         //    await commandAggregate.SaveAsync();
 
-        //    var classEntity = commandAggregate.RootEntity;
+        //    var classDto = commandAggregate.RootEntity;
 
         //    Assert.AreEqual(3, commandAggregate.StudentsToEnroll.Count());
 
@@ -169,35 +248,35 @@ namespace ClassesWithStudents.ClassBoundedContext
 
         //    context.RegisterQueryRepository<StudentEntity>(new StudentQueryRepository());
 
-        //    var id = classEntity.Id; // Keep the generated id
+        //    var id = classDto.Id; // Keep the generated id
 
-        //    classEntity = new ClassEntity(); // New entity
+        //    classDto = new ClassEntity(); // New entity
 
-        //    var queryAggregate = new ClassEnrollmentQueryAggregate(context);
+        //    var classDto = new ClassEnrollmentQueryAggregate(context);
 
-        //    await queryAggregate.GetAsync(id, null);
+        //    await classDto.GetAsync(id, null);
 
-        //    classEntity = queryAggregate.RootEntity;
+        //    classDto = classDto.RootEntity;
 
-        //    Assert.AreEqual(id, classEntity.Id);
+        //    Assert.AreEqual(id, classDto.Id);
 
-        //    Assert.AreEqual("Programming", classEntity.Name);
+        //    Assert.AreEqual("Programming", classDto.Name);
 
-        //    Assert.AreEqual(3, queryAggregate.Students.Count());
+        //    Assert.AreEqual(3, classDto.Students.Count());
 
-        //    var student = queryAggregate.Students.ElementAt(0);
+        //    var student = classDto.Students.ElementAt(0);
 
         //    Assert.IsNotNull(student.Id);
 
         //    Assert.AreEqual("Sarah", student.FirstName);
 
-        //    student = queryAggregate.Students.ElementAt(1);
+        //    student = classDto.Students.ElementAt(1);
 
         //    Assert.IsNotNull(student.Id);
 
         //    Assert.AreEqual("Yana", student.FirstName);
 
-        //    student = queryAggregate.Students.ElementAt(2);
+        //    student = classDto.Students.ElementAt(2);
 
         //    Assert.IsNotNull(student.Id);
 
@@ -213,39 +292,39 @@ namespace ClassesWithStudents.ClassBoundedContext
 
         //    student = createStudentAggregate.RootEntity;
 
-        //    var addStudentAggregate = new AddStudentCommandAggregate(context, classEntity.Id.Value, student.Id.Value);
+        //    var addStudentAggregate = new AddStudentCommandAggregate(context, classDto.Id.Value, student.Id.Value);
 
         //    addStudentAggregate.Save();
 
-        //    await queryAggregate.GetAsync(id, null);
+        //    await classDto.GetAsync(id, null);
 
-        //    classEntity = queryAggregate.RootEntity;
+        //    classDto = classDto.RootEntity;
 
-        //    Assert.AreEqual(id, classEntity.Id);
+        //    Assert.AreEqual(id, classDto.Id);
 
-        //    Assert.AreEqual("Programming", classEntity.Name);
+        //    Assert.AreEqual("Programming", classDto.Name);
 
-        //    Assert.AreEqual(4, queryAggregate.Students.Count());
+        //    Assert.AreEqual(4, classDto.Students.Count());
 
-        //    student = queryAggregate.Students.ElementAt(0);
+        //    student = classDto.Students.ElementAt(0);
 
         //    Assert.IsNotNull(student.Id);
 
         //    Assert.AreEqual("Sarah", student.FirstName);
 
-        //    student = queryAggregate.Students.ElementAt(1);
+        //    student = classDto.Students.ElementAt(1);
 
         //    Assert.IsNotNull(student.Id);
 
         //    Assert.AreEqual("Yana", student.FirstName);
 
-        //    student = queryAggregate.Students.ElementAt(2);
+        //    student = classDto.Students.ElementAt(2);
 
         //    Assert.IsNotNull(student.Id);
 
         //    Assert.AreEqual("Mark", student.FirstName);
 
-        //    student = queryAggregate.Students.ElementAt(3);
+        //    student = classDto.Students.ElementAt(3);
 
         //    Assert.IsNotNull(student.Id);
 
@@ -272,29 +351,29 @@ namespace ClassesWithStudents.ClassBoundedContext
 
         //    studentsId[1] = createStudentAggregate.RootEntity.Id.Value;
 
-        //    var replaceStudentsAggregate = new ReplaceStudentsAggregate(context, classEntity.Id.Value, studentsId);
+        //    var replaceStudentsAggregate = new ReplaceStudentsAggregate(context, classDto.Id.Value, studentsId);
 
         //    replaceStudentsAggregate.Save();
 
         //    // Verify the students were replaced
 
-        //    await queryAggregate.GetAsync(id, null);
+        //    await classDto.GetAsync(id, null);
 
-        //    classEntity = queryAggregate.RootEntity;
+        //    classDto = classDto.RootEntity;
 
-        //    Assert.AreEqual(id, classEntity.Id);
+        //    Assert.AreEqual(id, classDto.Id);
 
-        //    Assert.AreEqual("Programming", classEntity.Name);
+        //    Assert.AreEqual("Programming", classDto.Name);
 
-        //    Assert.AreEqual(2, queryAggregate.Students.Count());
+        //    Assert.AreEqual(2, classDto.Students.Count());
 
-        //    student = queryAggregate.Students.ElementAt(0);
+        //    student = classDto.Students.ElementAt(0);
 
         //    Assert.IsNotNull(student.Id);
 
         //    Assert.AreEqual("Vassili", student.FirstName);
 
-        //    student = queryAggregate.Students.ElementAt(1);
+        //    student = classDto.Students.ElementAt(1);
 
         //    Assert.IsNotNull(student.Id);
 

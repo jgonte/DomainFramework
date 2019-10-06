@@ -11,17 +11,17 @@ namespace ClassesWithStudents.ClassBoundedContext
         {
         }
 
-        public ReplaceClassStudentsCommandAggregate(ReplaceClassStudentsInputDto enrollment) : base(new DomainFramework.DataAccess.RepositoryContext(ClassesWithStudentsConnectionClass.GetConnectionName()))
+        public ReplaceClassStudentsCommandAggregate(ReplaceClassStudentsInputDto enrollment, EntityDependency[] dependencies = null) : base(new DomainFramework.DataAccess.RepositoryContext(ClassesWithStudentsConnectionClass.GetConnectionName()))
         {
-            Initialize(enrollment);
+            Initialize(enrollment, dependencies);
         }
 
-        public override void Initialize(IInputDataTransferObject enrollment)
+        public override void Initialize(IInputDataTransferObject enrollment, EntityDependency[] dependencies)
         {
-            Initialize((ReplaceClassStudentsInputDto)enrollment);
+            Initialize((ReplaceClassStudentsInputDto)enrollment, dependencies);
         }
 
-        private void Initialize(ReplaceClassStudentsInputDto enrollment)
+        private void Initialize(ReplaceClassStudentsInputDto enrollment, EntityDependency[] dependencies)
         {
             RegisterCommandRepositoryFactory<ClassEnrollment>(() => new ClassEnrollmentCommandRepository());
 
@@ -40,12 +40,31 @@ namespace ClassesWithStudents.ClassBoundedContext
 
             if (enrollment.Students?.Any() == true)
             {
-                foreach (var dto in enrollment.Students)
+                foreach (var student in enrollment.Students)
                 {
-                    Enqueue(new AddLinkedEntityCommandOperation<ClassEnrollment, Student>(RootEntity, () => new Student
+                    var studentEntity = new Student
                     {
-                        FirstName = dto.FirstName
-                    }, "Students"));
+                        FirstName = student.FirstName
+                    };
+
+                    Enqueue(new InsertEntityCommandOperation<Student>(studentEntity));
+
+                    var classEnrollmentEntity = new ClassEnrollment
+                    {
+                        Id = new ClassEnrollmentId
+                        {
+                            ClassId = enrollment.ClassId
+                        },
+                        StartedDateTime = student.StartedDateTime
+                    };
+
+                    Enqueue(new InsertEntityCommandOperation<ClassEnrollment>(classEnrollmentEntity, new EntityDependency[]
+                    {
+                        new EntityDependency
+                        {
+                            Entity = studentEntity
+                        }
+                    }, selector: "Classes"));
                 }
             }
         }

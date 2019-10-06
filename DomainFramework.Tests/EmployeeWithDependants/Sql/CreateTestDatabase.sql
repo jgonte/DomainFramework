@@ -35,9 +35,9 @@ CREATE TABLE [EmployeeWithDependants].[EmployeeBoundedContext].[Person]
     [PersonId] INT NOT NULL IDENTITY,
     [Name] VARCHAR(50) NOT NULL,
     [CreatedBy] INT NOT NULL,
-    [CreatedWhen] DATETIME NOT NULL DEFAULT GETDATE(),
-    [LastUpdatedBy] INT,
-    [LastUpdatedWhen] DATETIME,
+    [CreatedDateTime] DATETIME NOT NULL DEFAULT GETDATE(),
+    [UpdatedBy] INT,
+    [UpdatedDateTime] DATETIME,
     [CellPhone_AreaCode] VARCHAR(3) NOT NULL,
     [CellPhone_Exchange] VARCHAR(3) NOT NULL,
     [CellPhone_Number] VARCHAR(4) NOT NULL,
@@ -159,7 +159,7 @@ CREATE PROCEDURE [EmployeeBoundedContext].[pEmployee_Update]
     @employeeId INT,
     @hireDate DATETIME,
     @name VARCHAR(50),
-    @lastUpdatedBy INT,
+    @updatedBy INT,
     @cellPhone_AreaCode VARCHAR(3),
     @cellPhone_Exchange VARCHAR(3),
     @cellPhone_Number VARCHAR(4),
@@ -169,12 +169,12 @@ BEGIN
     UPDATE [EmployeeWithDependants].[EmployeeBoundedContext].[Person]
     SET
         [Name] = @name,
-        [LastUpdatedBy] = @lastUpdatedBy,
+        [UpdatedBy] = @updatedBy,
         [CellPhone_AreaCode] = @cellPhone_AreaCode,
         [CellPhone_Exchange] = @cellPhone_Exchange,
         [CellPhone_Number] = @cellPhone_Number,
         [ProviderEmployeeId] = @providerEmployeeId,
-        [LastUpdatedWhen] = GETDATE()
+        [UpdatedDateTime] = GETDATE()
     WHERE [PersonId] = @employeeId;
 
     UPDATE [EmployeeWithDependants].[EmployeeBoundedContext].[Employee]
@@ -279,7 +279,7 @@ GO
 CREATE PROCEDURE [EmployeeBoundedContext].[pPerson_Update]
     @personId INT,
     @name VARCHAR(50),
-    @lastUpdatedBy INT,
+    @updatedBy INT,
     @cellPhone_AreaCode VARCHAR(3),
     @cellPhone_Exchange VARCHAR(3),
     @cellPhone_Number VARCHAR(4),
@@ -289,12 +289,12 @@ BEGIN
     UPDATE [EmployeeWithDependants].[EmployeeBoundedContext].[Person]
     SET
         [Name] = @name,
-        [LastUpdatedBy] = @lastUpdatedBy,
+        [UpdatedBy] = @updatedBy,
         [CellPhone_AreaCode] = @cellPhone_AreaCode,
         [CellPhone_Exchange] = @cellPhone_Exchange,
         [CellPhone_Number] = @cellPhone_Number,
         [ProviderEmployeeId] = @providerEmployeeId,
-        [LastUpdatedWhen] = GETDATE()
+        [UpdatedDateTime] = GETDATE()
     WHERE [PersonId] = @personId;
 
 END;

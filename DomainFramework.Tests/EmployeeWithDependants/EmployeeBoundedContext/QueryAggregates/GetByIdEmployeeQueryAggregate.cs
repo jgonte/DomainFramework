@@ -107,12 +107,12 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
             return null;
         }
 
-        public PhoneNumberOutputDto GetCellPhoneDto() => 
+        public PhoneNumberOutputDto GetCellPhoneDto(Person person) => 
             new PhoneNumberOutputDto
             {
-                AreaCode = RootEntity.CellPhone.AreaCode,
-                Exchange = RootEntity.CellPhone.Exchange,
-                Number = RootEntity.CellPhone.Number
+                AreaCode = person.CellPhone.AreaCode,
+                Exchange = person.CellPhone.Exchange,
+                Number = person.CellPhone.Number
             };
 
         public override void PopulateDto(Employee entity)
@@ -125,7 +125,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
 
             OutputDto.ProviderEmployeeId = entity.ProviderEmployeeId;
 
-            OutputDto.CellPhone = GetCellPhoneDto();
+            OutputDto.CellPhone = GetCellPhoneDto(entity);
 
             OutputDto.Dependants = GetDependantsDtos();
         }
