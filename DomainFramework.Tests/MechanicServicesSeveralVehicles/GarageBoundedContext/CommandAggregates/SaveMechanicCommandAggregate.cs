@@ -11,17 +11,17 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
         {
         }
 
-        public SaveMechanicCommandAggregate(SaveMechanicInputDto mechanic) : base(new DomainFramework.DataAccess.RepositoryContext(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName()))
+        public SaveMechanicCommandAggregate(SaveMechanicInputDto mechanic, EntityDependency[] dependencies = null) : base(new DomainFramework.DataAccess.RepositoryContext(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName()))
         {
-            Initialize(mechanic);
+            Initialize(mechanic, dependencies);
         }
 
         public override void Initialize(IInputDataTransferObject mechanic, EntityDependency[] dependencies)
         {
-            Initialize((SaveMechanicInputDto)mechanic);
+            Initialize((SaveMechanicInputDto)mechanic, dependencies);
         }
 
-        private void Initialize(SaveMechanicInputDto mechanic)
+        private void Initialize(SaveMechanicInputDto mechanic, EntityDependency[] dependencies)
         {
             RegisterCommandRepositoryFactory<Mechanic>(() => new MechanicCommandRepository());
 
@@ -41,29 +41,14 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
             {
                 foreach (var vehicle in mechanic.Vehicles)
                 {
-                    if (vehicle is CarInputDto)
+                    Enqueue(new AddLinkedEntityCommandOperation<Mechanic, Vehicle>(RootEntity, () => new Vehicle
                     {
-                        Enqueue(
-                            new AddLinkedAggregateCommandOperation<Mechanic, SaveCarCommandAggregate, CarInputDto>(
-                                RootEntity, 
-                                (CarInputDto)vehicle, 
-                                new EntityDependency[] 
-                                {
-                                    new EntityDependency
-                                    {
-                                        Entity = RootEntity
-                                    }
-                                })
-                        );
-                    }
-                    //Enqueue(new AddLinkedEntityCommandOperation<Mechanic, Vehicle>(RootEntity, () => new Vehicle
-                    //{
-                    //    Model = vehicle.Model,
-                    //    Cylinders = vehicle.Cylinders.Select(dto => new Cylinder
-                    //    {
-                    //        Diameter = dto.Diameter
-                    //    }).ToList()
-                    //}, "Vehicles"));
+                        Model = vehicle.Model,
+                        Cylinders = vehicle.Cylinders.Select(dto => new Cylinder
+                        {
+                            Diameter = dto.Diameter
+                        }).ToList()
+                    }, "Vehicles"));
                 }
             }
         }

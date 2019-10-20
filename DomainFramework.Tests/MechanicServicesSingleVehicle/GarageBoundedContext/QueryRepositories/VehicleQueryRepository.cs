@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -121,12 +122,13 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             return result.Data;
         }
 
-        public override IEnumerable<Vehicle> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public override IEnumerable<Vehicle> Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = Query<Vehicle>
                 .Collection()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pVehicle_Get]")
+                .QueryParameters(queryParameters)
                 .MapTypes(
                     5,
                     tm => tm.Type(typeof(Truck)).Index(1),
@@ -167,12 +169,13 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             return result.Data;
         }
 
-        public async override Task<IEnumerable<Vehicle>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<IEnumerable<Vehicle>> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = await Query<Vehicle>
                 .Collection()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pVehicle_Get]")
+                .QueryParameters(queryParameters)
                 .MapTypes(
                     5,
                     tm => tm.Type(typeof(Truck)).Index(1),

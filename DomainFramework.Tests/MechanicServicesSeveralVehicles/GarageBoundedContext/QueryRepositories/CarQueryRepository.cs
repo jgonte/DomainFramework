@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,12 +70,13 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
             return result.Data;
         }
 
-        public override IEnumerable<Car> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public override IEnumerable<Car> Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = Query<Car>
                 .Collection()
                 .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pCar_Get]")
+                .QueryParameters(queryParameters)
                 .OnAfterCommandExecuted(cmd =>
                 {
                     var query = (CollectionQuery<Car>)cmd;
@@ -91,12 +93,13 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
             return result.Data;
         }
 
-        public async override Task<IEnumerable<Car>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<IEnumerable<Car>> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = await Query<Car>
                 .Collection()
                 .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pCar_Get]")
+                .QueryParameters(queryParameters)
                 .OnAfterCommandExecutedAsync(async cmd =>
                 {
                     var query = (CollectionQuery<Car>)cmd;

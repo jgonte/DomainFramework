@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,12 +48,13 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.Data;
         }
 
-        public override IEnumerable<Role> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public override IEnumerable<Role> Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = Query<Role>
                 .Collection()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
                 .StoredProcedure("[SchoolBoundedContext].[pRole_Get]")
+                .QueryParameters(queryParameters)
                 .MapTypes(
                     2,
                     tm => tm.Type(typeof(School)).Index(1),
@@ -63,12 +65,13 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.Data;
         }
 
-        public async override Task<IEnumerable<Role>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<IEnumerable<Role>> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = await Query<Role>
                 .Collection()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
                 .StoredProcedure("[SchoolBoundedContext].[pRole_Get]")
+                .QueryParameters(queryParameters)
                 .MapTypes(
                     2,
                     tm => tm.Type(typeof(School)).Index(1),

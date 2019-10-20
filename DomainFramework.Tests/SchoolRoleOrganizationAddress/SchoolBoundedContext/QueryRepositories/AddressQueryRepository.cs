@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,23 +38,25 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.Data;
         }
 
-        public override IEnumerable<Address> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public override IEnumerable<Address> Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = Query<Address>
                 .Collection()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
                 .StoredProcedure("[SchoolBoundedContext].[pAddress_Get]")
+                .QueryParameters(queryParameters)
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<IEnumerable<Address>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<IEnumerable<Address>> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = await Query<Address>
                 .Collection()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
                 .StoredProcedure("[SchoolBoundedContext].[pAddress_Get]")
+                .QueryParameters(queryParameters)
                 .ExecuteAsync();
 
             return result.Data;

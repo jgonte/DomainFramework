@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,12 +48,13 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             return result.Data;
         }
 
-        public override IEnumerable<Person> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public override IEnumerable<Person> Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = Query<Person>
                 .Collection()
                 .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
                 .StoredProcedure("[EmployeeBoundedContext].[pPerson_Get]")
+                .QueryParameters(queryParameters)
                 .MapTypes(
                     7,
                     tm => tm.Type(typeof(Employee)).Index(1),
@@ -63,12 +65,13 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             return result.Data;
         }
 
-        public async override Task<IEnumerable<Person>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<IEnumerable<Person>> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = await Query<Person>
                 .Collection()
                 .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
                 .StoredProcedure("[EmployeeBoundedContext].[pPerson_Get]")
+                .QueryParameters(queryParameters)
                 .MapTypes(
                     7,
                     tm => tm.Type(typeof(Employee)).Index(1),

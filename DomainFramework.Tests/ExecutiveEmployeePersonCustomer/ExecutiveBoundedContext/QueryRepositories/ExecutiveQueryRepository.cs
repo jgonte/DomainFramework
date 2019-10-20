@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,23 +38,25 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             return result.Data;
         }
 
-        public override IEnumerable<Executive> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public override IEnumerable<Executive> Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = Query<Executive>
                 .Collection()
                 .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
                 .StoredProcedure("[ExecutiveBoundedContext].[pExecutive_Get]")
+                .QueryParameters(queryParameters)
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<IEnumerable<Executive>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<IEnumerable<Executive>> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = await Query<Executive>
                 .Collection()
                 .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
                 .StoredProcedure("[ExecutiveBoundedContext].[pExecutive_Get]")
+                .QueryParameters(queryParameters)
                 .ExecuteAsync();
 
             return result.Data;

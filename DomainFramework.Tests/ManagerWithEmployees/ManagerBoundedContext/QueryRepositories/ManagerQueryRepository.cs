@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,23 +38,25 @@ namespace ManagerWithEmployees.ManagerBoundedContext
             return result.Data;
         }
 
-        public override IEnumerable<Manager> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public override IEnumerable<Manager> Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = Query<Manager>
                 .Collection()
                 .Connection(ManagerWithEmployeesConnectionClass.GetConnectionName())
                 .StoredProcedure("[ManagerBoundedContext].[pManager_Get]")
+                .QueryParameters(queryParameters)
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<IEnumerable<Manager>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<IEnumerable<Manager>> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = await Query<Manager>
                 .Collection()
                 .Connection(ManagerWithEmployeesConnectionClass.GetConnectionName())
                 .StoredProcedure("[ManagerBoundedContext].[pManager_Get]")
+                .QueryParameters(queryParameters)
                 .ExecuteAsync();
 
             return result.Data;

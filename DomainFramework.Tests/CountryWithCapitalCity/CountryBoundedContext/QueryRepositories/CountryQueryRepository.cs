@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,23 +38,25 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             return result.Data;
         }
 
-        public override IEnumerable<Country> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public override IEnumerable<Country> Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = Query<Country>
                 .Collection()
                 .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
                 .StoredProcedure("[CountryBoundedContext].[pCountry_Get]")
+                .QueryParameters(queryParameters)
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<IEnumerable<Country>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<IEnumerable<Country>> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = await Query<Country>
                 .Collection()
                 .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
                 .StoredProcedure("[CountryBoundedContext].[pCountry_Get]")
+                .QueryParameters(queryParameters)
                 .ExecuteAsync();
 
             return result.Data;

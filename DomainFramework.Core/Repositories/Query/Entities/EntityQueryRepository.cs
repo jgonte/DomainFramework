@@ -34,22 +34,22 @@ namespace DomainFramework.Core
             return await GetByIdAsync((TKey)id, user);
         }
 
-        public virtual IEnumerable<TEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
+        public virtual IEnumerable<TEntity> Get(CollectionQueryParameters parameters, IAuthenticatedUser user)
         {
             throw new NotImplementedException();
         }
 
-        IEnumerable<IEntity> IEntityQueryRepository.Get(QueryParameters parameters, IAuthenticatedUser user)
+        IEnumerable<IEntity> IEntityQueryRepository.Get(CollectionQueryParameters parameters, IAuthenticatedUser user)
         {
             return Get(parameters, user);
         }
 
-        public virtual Task<IEnumerable<TEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user)
+        public virtual Task<IEnumerable<TEntity>> GetAsync(CollectionQueryParameters parameters, IAuthenticatedUser user)
         {
             throw new NotImplementedException();
         }
 
-        async Task<IEnumerable<IEntity>> IEntityQueryRepository.GetAsync(QueryParameters parameters, IAuthenticatedUser user)
+        async Task<IEnumerable<IEntity>> IEntityQueryRepository.GetAsync(CollectionQueryParameters parameters, IAuthenticatedUser user)
         {
             return await GetAsync(parameters, user);
         }

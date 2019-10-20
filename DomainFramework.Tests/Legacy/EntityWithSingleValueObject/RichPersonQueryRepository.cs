@@ -7,12 +7,12 @@ namespace DomainFramework.Tests.EntityWithValueObjects
 {
     class RichPersonQueryRepository : EntityQueryRepository<RichPersonEntity, int?>
     {
-        public override IEnumerable<RichPersonEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
+        public override IEnumerable<RichPersonEntity> Get(CollectionQueryParameters parameters, IAuthenticatedUser user)
         {
             throw new System.NotImplementedException();
         }
 
-        public override Task<IEnumerable<RichPersonEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user)
+        public override Task<IEnumerable<RichPersonEntity>> GetAsync(CollectionQueryParameters parameters, IAuthenticatedUser user)
         {
             throw new System.NotImplementedException();
         }

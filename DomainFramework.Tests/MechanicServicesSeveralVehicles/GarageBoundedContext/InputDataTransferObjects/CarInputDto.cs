@@ -12,9 +12,15 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
         public int Passengers { get; set; }
 
+        public string Model { get; set; }
+
+        public int MechanicId { get; set; }
+
         public List<DoorInputDto> Doors { get; set; } = new List<DoorInputDto>();
 
-        public override void Validate(ValidationResult result)
+        public List<CylinderInputDto> Cylinders { get; set; } = new List<CylinderInputDto>();
+
+        public void Validate(ValidationResult result)
         {
             Passengers.ValidateNotZero(result, nameof(Passengers));
 

@@ -17,7 +17,7 @@ namespace DomainFramework.Core
         {
         }
 
-        public IEnumerable<TOutputDto> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public IEnumerable<TOutputDto> Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             Aggregates = new List<TAggregate>();
 
@@ -43,7 +43,7 @@ namespace DomainFramework.Core
             return Aggregates.Select(a => a.OutputDto);
         }
 
-        public async Task<IEnumerable<TOutputDto>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async Task<IEnumerable<TOutputDto>> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             Aggregates = new List<TAggregate>();
 

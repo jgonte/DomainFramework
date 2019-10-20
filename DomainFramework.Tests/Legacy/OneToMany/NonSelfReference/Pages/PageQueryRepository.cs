@@ -7,12 +7,12 @@ namespace DomainFramework.Tests
 {
     public class PageQueryRepository : EntityQueryRepository<PageEntity, int?>
     {
-        public override IEnumerable<PageEntity> Get(QueryParameters parameters, IAuthenticatedUser user)
+        public override IEnumerable<PageEntity> Get(CollectionQueryParameters parameters, IAuthenticatedUser user)
         {
             throw new System.NotImplementedException();
         }
 
-        public override Task<IEnumerable<PageEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user)
+        public override Task<IEnumerable<PageEntity>> GetAsync(CollectionQueryParameters parameters, IAuthenticatedUser user)
         {
             throw new System.NotImplementedException();
         }

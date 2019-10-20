@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,12 +48,13 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             return result.Data;
         }
 
-        public override IEnumerable<Employee> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public override IEnumerable<Employee> Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = Query<Employee>
                 .Collection()
                 .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
                 .StoredProcedure("[ExecutiveBoundedContext].[pEmployee_Get]")
+                .QueryParameters(queryParameters)
                 .MapTypes(
                     5,
                     tm => tm.Type(typeof(Executive)).Index(1),
@@ -63,12 +65,13 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             return result.Data;
         }
 
-        public async override Task<IEnumerable<Employee>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<IEnumerable<Employee>> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = await Query<Employee>
                 .Collection()
                 .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
                 .StoredProcedure("[ExecutiveBoundedContext].[pEmployee_Get]")
+                .QueryParameters(queryParameters)
                 .MapTypes(
                     5,
                     tm => tm.Type(typeof(Executive)).Index(1),

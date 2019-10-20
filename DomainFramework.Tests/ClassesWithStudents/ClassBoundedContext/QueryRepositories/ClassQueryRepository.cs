@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,23 +38,25 @@ namespace ClassesWithStudents.ClassBoundedContext
             return result.Data;
         }
 
-        public override IEnumerable<Class> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public override IEnumerable<Class> Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = Query<Class>
                 .Collection()
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
                 .StoredProcedure("[ClassBoundedContext].[pClass_Get]")
+                .QueryParameters(queryParameters)
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<IEnumerable<Class>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<IEnumerable<Class>> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = await Query<Class>
                 .Collection()
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
                 .StoredProcedure("[ClassBoundedContext].[pClass_Get]")
+                .QueryParameters(queryParameters)
                 .ExecuteAsync();
 
             return result.Data;
