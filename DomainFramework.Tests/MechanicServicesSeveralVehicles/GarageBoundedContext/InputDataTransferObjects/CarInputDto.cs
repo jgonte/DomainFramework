@@ -6,7 +6,7 @@ using Utilities.Validation;
 
 namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 {
-    public class CarInputDto : IInputDataTransferObject
+    public class CarInputDto : VehicleInputDto
     {
         public int? Id { get; set; }
 
