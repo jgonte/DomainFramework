@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,26 +38,34 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             return result.Data;
         }
 
-        public override IEnumerable<CapitalCity> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<CapitalCity>) Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = Query<CapitalCity>
                 .Collection()
                 .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
                 .StoredProcedure("[CountryBoundedContext].[pCapitalCity_Get]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
                 .Execute();
 
-            return result.Data;
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
-        public async override Task<IEnumerable<CapitalCity>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<(int, IEnumerable<CapitalCity>)> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = await Query<CapitalCity>
                 .Collection()
                 .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
                 .StoredProcedure("[CountryBoundedContext].[pCapitalCity_Get]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
                 .ExecuteAsync();
 
-            return result.Data;
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
         public CapitalCity GetCapitalCityForCountry(string countryCode, IAuthenticatedUser user)

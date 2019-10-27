@@ -12,8 +12,8 @@ namespace DomainFramework.Core
 
         Task<IEntity> GetByIdAsync(object id, IAuthenticatedUser user);
 
-        IEnumerable<IEntity> Get(QueryParameters parameters, IAuthenticatedUser user);
+        (int, IEnumerable<IEntity>) Get(CollectionQueryParameters parameters, IAuthenticatedUser user);
 
-        Task<IEnumerable<IEntity>> GetAsync(QueryParameters parameters, IAuthenticatedUser user);
+        Task<(int, IEnumerable<IEntity>)> GetAsync(CollectionQueryParameters parameters, IAuthenticatedUser user);
     }
 }

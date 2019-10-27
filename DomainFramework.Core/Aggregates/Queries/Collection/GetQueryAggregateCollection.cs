@@ -17,39 +17,39 @@ namespace DomainFramework.Core
         {
         }
 
-        public IEnumerable<TOutputDto> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public (int, IEnumerable<TOutputDto>) Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             Aggregates = new List<TAggregate>();
 
             var repository = RepositoryContext.GetQueryRepository(typeof(TEntity));
 
-            var entities = ((IEntityQueryRepository)repository).Get(queryParameters, user).Cast<TEntity>();
+            var (count, entities) = ((IEntityQueryRepository)repository).Get(queryParameters, user);
 
             foreach (var entity in entities)
             {
                 var aggregate = new TAggregate
                 {
                     RepositoryContext = RepositoryContext,
-                    RootEntity = entity
+                    RootEntity = (TEntity)entity
                 };
 
                 aggregate.LoadLinks();
 
-                aggregate.PopulateDto(entity);
+                aggregate.PopulateDto((TEntity)entity);
 
                 ((List<TAggregate>)Aggregates).Add(aggregate);
             }
 
-            return Aggregates.Select(a => a.OutputDto);
+            return (count, Aggregates.Select(a => a.OutputDto));
         }
 
-        public async Task<IEnumerable<TOutputDto>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async Task<(int, IEnumerable<TOutputDto>)> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             Aggregates = new List<TAggregate>();
 
             var repository = RepositoryContext.GetQueryRepository(typeof(TEntity));
 
-            var entities = ((IEntityQueryRepository)repository).Get(queryParameters, user).Cast<TEntity>();
+            var (count, entities) = ((IEntityQueryRepository)repository).Get(queryParameters, user);
 
             var tasks = new Queue<Task>();
 
@@ -58,21 +58,21 @@ namespace DomainFramework.Core
                 var aggregate = new TAggregate
                 {
                     RepositoryContext = RepositoryContext,
-                    RootEntity = entity
+                    RootEntity = (TEntity)entity
                 };
 
                 tasks.Enqueue(
                     aggregate.LoadLinksAsync()
                 );
 
-                aggregate.PopulateDto(entity);
+                aggregate.PopulateDto((TEntity)entity);
 
                 ((List<TAggregate>)Aggregates).Add(aggregate);
             }
 
             await Task.WhenAll(tasks);
 
-            return Aggregates.Select(a => a.OutputDto);
+            return (count, Aggregates.Select(a => a.OutputDto));
         }
     }
 }

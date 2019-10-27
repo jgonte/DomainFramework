@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,26 +38,34 @@ namespace BookWithPages.BookBoundedContext
             return result.Data;
         }
 
-        public override IEnumerable<Page> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<Page>) Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = Query<Page>
                 .Collection()
                 .Connection(BookWithPagesConnectionClass.GetConnectionName())
                 .StoredProcedure("[BookBoundedContext].[pPage_Get]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
                 .Execute();
 
-            return result.Data;
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
-        public async override Task<IEnumerable<Page>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<(int, IEnumerable<Page>)> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = await Query<Page>
                 .Collection()
                 .Connection(BookWithPagesConnectionClass.GetConnectionName())
                 .StoredProcedure("[BookBoundedContext].[pPage_Get]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
                 .ExecuteAsync();
 
-            return result.Data;
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
         public IEnumerable<Page> GetPagesForBook(int? bookId, IAuthenticatedUser user)

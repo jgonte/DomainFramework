@@ -18,18 +18,9 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 .Parameters(
                     p => p.Name("passengers").Value(entity.Passengers),
                     p => p.Name("model").Value(entity.Model),
-                    p => p.Name("createdBy").Value(entity.CreatedBy)
+                    p => p.Name("createdBy").Value(entity.CreatedBy),
+                    p => p.Name("mechanicId").Value(entity.MechanicId)
                 )
-                .OnBeforeCommandExecuted(cmd =>
-                {
-                    var dependencies = Dependencies();
-
-                    var entity_ = (Mechanic)dependencies.Single().Entity;
-
-                    cmd.Parameters(
-                        p => p.Name("mechanicId").Value(entity_.Id)
-                    );
-                })
                 .Instance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
@@ -58,7 +49,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                     p => p.Name("carId").Value(entity.Id),
                     p => p.Name("passengers").Value(entity.Passengers),
                     p => p.Name("model").Value(entity.Model),
-                    p => p.Name("lastUpdatedBy").Value(entity.LastUpdatedBy),
+                    p => p.Name("updatedBy").Value(entity.UpdatedBy),
                     p => p.Name("mechanicId").Value(entity.MechanicId)
                 );
         }
