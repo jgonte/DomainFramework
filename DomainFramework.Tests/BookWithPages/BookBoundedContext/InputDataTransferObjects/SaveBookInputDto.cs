@@ -17,6 +17,8 @@ namespace BookWithPages.BookBoundedContext
 
         public Guid PublisherId { get; set; }
 
+        public bool IsHardCopy { get; set; }
+
         public List<SavePageInputDto> Pages { get; set; } = new List<SavePageInputDto>();
 
         public void Validate(ValidationResult result)

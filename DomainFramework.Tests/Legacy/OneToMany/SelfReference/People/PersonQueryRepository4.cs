@@ -7,7 +7,7 @@ namespace DomainFramework.Tests
 {
     class PersonQueryRepository4 : Core.EntityQueryRepository<PersonEntity3, int?>
     {
-        public override IEnumerable<PersonEntity3> Get(QueryParameters parameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<PersonEntity3>) Get(CollectionQueryParameters parameters, IAuthenticatedUser user)
         {
             var result = Query<PersonEntity3>
                 .Collection()
@@ -15,10 +15,10 @@ namespace DomainFramework.Tests
                 .StoredProcedure("p_Person_GetAll")
                 .Execute();
 
-            return result.Data;
+            return (result.Data.Count, result.Data);
         }
 
-        public override async Task<IEnumerable<PersonEntity3>> GetAsync(QueryParameters parameters, IAuthenticatedUser user)
+        public override async Task<(int, IEnumerable<PersonEntity3>)> GetAsync(CollectionQueryParameters parameters, IAuthenticatedUser user)
         {
             var result = await Query<PersonEntity3>
                 .Collection()
@@ -26,7 +26,7 @@ namespace DomainFramework.Tests
                 .StoredProcedure("p_Person_GetAll")
                 .ExecuteAsync();
 
-            return result.Data;
+            return (result.Data.Count, result.Data);
         }
 
         public async Task<IEnumerable<PersonEntity3>> GetForManagerAsync(int? id, IAuthenticatedUser user)

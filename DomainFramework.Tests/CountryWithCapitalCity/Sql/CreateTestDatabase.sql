@@ -125,13 +125,25 @@ END;
 GO
 
 CREATE PROCEDURE [CountryBoundedContext].[pCapitalCity_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        c.[CapitalCityId] AS "Id",
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'c.[CapitalCityId] AS "Id",
         c.[Name] AS "Name",
-        c.[CountryCode] AS "CountryCode"
-    FROM [CountryWithCapitalCity].[CountryBoundedContext].[CapitalCity] c;
+        c.[CountryCode] AS "CountryCode"',
+        @tableName = N'CapitalCity c',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -250,13 +262,25 @@ END;
 GO
 
 CREATE PROCEDURE [CountryBoundedContext].[pCountry_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        c.[CountryCode] AS "Id",
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'c.[CountryCode] AS "Id",
         c.[Name] AS "Name",
-        c.[IsActive] AS "IsActive"
-    FROM [CountryWithCapitalCity].[CountryBoundedContext].[Country] c;
+        c.[IsActive] AS "IsActive"',
+        @tableName = N'Country c',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -275,3 +299,97 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE [pExecuteDynamicQuery]
+	@$select NVARCHAR(MAX) = NULL,
+	@$filter NVARCHAR(MAX) = NULL,
+	@$orderby NVARCHAR(MAX) = NULL,
+	@$skip NVARCHAR(10) = NULL,
+	@$top NVARCHAR(10) = NULL,
+	@selectList NVARCHAR(MAX),
+	@tableName NVARCHAR(64),
+	@count INT OUTPUT
+AS
+BEGIN
+
+	DECLARE @sqlCommand NVARCHAR(MAX);
+	DECLARE @paramDefinition NVARCHAR(100);
+
+	SET @paramDefinition = N'@cnt INT OUTPUT'
+
+	SET @sqlCommand = 
+'
+	SELECT
+		 @cnt = COUNT(1)
+	FROM [' + @tableName + ']
+';
+
+	IF @$filter IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	WHERE ' + @$filter;
+	END
+
+	SET @sqlCommand = @sqlCommand + 
+'
+	SELECT
+	';
+
+	IF @$select = '*'
+	BEGIN
+		SET @sqlCommand = @sqlCommand + @selectList;
+	END
+	ELSE
+	BEGIN
+		SET @sqlCommand = @sqlCommand + @$select;
+	END
+
+	SET @sqlCommand = @sqlCommand +
+'
+	FROM [' + @tableName + '] s
+';
+
+	IF @$filter IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	WHERE ' + @$filter;
+	END
+
+	IF @$orderby IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	ORDER BY ' + @$orderby;
+	END
+	ELSE
+	BEGIN
+
+	-- At least a dummy order by is required is $skip and $top are provided
+		IF @$skip IS NOT NULL OR @$top IS NOT NULL
+		BEGIN  
+			SET @sqlCommand = @sqlCommand + 
+' 
+	ORDER BY 1 ASC';
+		END
+	END
+
+	IF @$skip IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	OFFSET ' + @$skip + ' ROWS';
+	END
+
+	IF @$top IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	FETCH NEXT ' + @$top + ' ROWS ONLY';
+	END
+
+	EXECUTE sp_executesql @sqlCommand, @paramDefinition, @cnt = @count OUTPUT
+
+END;
+
+GO

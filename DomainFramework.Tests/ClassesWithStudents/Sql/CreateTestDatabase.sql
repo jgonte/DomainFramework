@@ -127,12 +127,24 @@ END;
 GO
 
 CREATE PROCEDURE [ClassBoundedContext].[pClass_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        c.[ClassId] AS "Id",
-        c.[Name] AS "Name"
-    FROM [ClassesWithStudents].[ClassBoundedContext].[Class] c;
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'c.[ClassId] AS "Id",
+        c.[Name] AS "Name"',
+        @tableName = N'Class c',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -226,13 +238,25 @@ END;
 GO
 
 CREATE PROCEDURE [ClassBoundedContext].[pClassEnrollment_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        c.[ClassId] AS "Id.ClassId",
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'c.[ClassId] AS "Id.ClassId",
         c.[StudentId] AS "Id.StudentId",
-        c.[StartedDateTime] AS "StartedDateTime"
-    FROM [ClassesWithStudents].[ClassBoundedContext].[ClassEnrollment] c;
+        c.[StartedDateTime] AS "StartedDateTime"',
+        @tableName = N'ClassEnrollment c',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -321,12 +345,24 @@ END;
 GO
 
 CREATE PROCEDURE [ClassBoundedContext].[pStudent_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        s.[StudentId] AS "Id",
-        s.[FirstName] AS "FirstName"
-    FROM [ClassesWithStudents].[ClassBoundedContext].[Student] s;
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N's.[StudentId] AS "Id",
+        s.[FirstName] AS "FirstName"',
+        @tableName = N'Student s',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -359,3 +395,97 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE [pExecuteDynamicQuery]
+	@$select NVARCHAR(MAX) = NULL,
+	@$filter NVARCHAR(MAX) = NULL,
+	@$orderby NVARCHAR(MAX) = NULL,
+	@$skip NVARCHAR(10) = NULL,
+	@$top NVARCHAR(10) = NULL,
+	@selectList NVARCHAR(MAX),
+	@tableName NVARCHAR(64),
+	@count INT OUTPUT
+AS
+BEGIN
+
+	DECLARE @sqlCommand NVARCHAR(MAX);
+	DECLARE @paramDefinition NVARCHAR(100);
+
+	SET @paramDefinition = N'@cnt INT OUTPUT'
+
+	SET @sqlCommand = 
+'
+	SELECT
+		 @cnt = COUNT(1)
+	FROM [' + @tableName + ']
+';
+
+	IF @$filter IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	WHERE ' + @$filter;
+	END
+
+	SET @sqlCommand = @sqlCommand + 
+'
+	SELECT
+	';
+
+	IF @$select = '*'
+	BEGIN
+		SET @sqlCommand = @sqlCommand + @selectList;
+	END
+	ELSE
+	BEGIN
+		SET @sqlCommand = @sqlCommand + @$select;
+	END
+
+	SET @sqlCommand = @sqlCommand +
+'
+	FROM [' + @tableName + '] s
+';
+
+	IF @$filter IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	WHERE ' + @$filter;
+	END
+
+	IF @$orderby IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	ORDER BY ' + @$orderby;
+	END
+	ELSE
+	BEGIN
+
+	-- At least a dummy order by is required is $skip and $top are provided
+		IF @$skip IS NOT NULL OR @$top IS NOT NULL
+		BEGIN  
+			SET @sqlCommand = @sqlCommand + 
+' 
+	ORDER BY 1 ASC';
+		END
+	END
+
+	IF @$skip IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	OFFSET ' + @$skip + ' ROWS';
+	END
+
+	IF @$top IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	FETCH NEXT ' + @$top + ' ROWS ONLY';
+	END
+
+	EXECUTE sp_executesql @sqlCommand, @paramDefinition, @cnt = @count OUTPUT
+
+END;
+
+GO

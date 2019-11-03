@@ -186,19 +186,29 @@ END;
 GO
 
 CREATE PROCEDURE [EmployeeBoundedContext].[pEmployee_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        e.[EmployeeId] AS "Id",
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'e.[EmployeeId] AS "Id",
         p.[Name] AS "Name",
         p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
         p.[CellPhone_Exchange] AS "CellPhone.Exchange",
         p.[CellPhone_Number] AS "CellPhone.Number",
         p.[ProviderEmployeeId] AS "ProviderEmployeeId",
-        e.[HireDate] AS "HireDate"
-    FROM [EmployeeWithDependants].[EmployeeBoundedContext].[Employee] e
-    INNER JOIN [EmployeeWithDependants].[EmployeeBoundedContext].[Person] p
-        ON e.[EmployeeId] = p.[PersonId];
+        e.[HireDate] AS "HireDate"',
+        @tableName = N'Employee e',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -301,48 +311,30 @@ END;
 GO
 
 CREATE PROCEDURE [EmployeeBoundedContext].[pPerson_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        _q_.[Id] AS "Id",
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'_q_.[Id] AS "Id",
         _q_.[Name] AS "Name",
         _q_.[CellPhone.AreaCode] AS "CellPhone.AreaCode",
         _q_.[CellPhone.Exchange] AS "CellPhone.Exchange",
         _q_.[CellPhone.Number] AS "CellPhone.Number",
         _q_.[ProviderEmployeeId] AS "ProviderEmployeeId",
         _q_.[HireDate] AS "HireDate",
-        _q_.[_EntityType_] AS "_EntityType_"
-    FROM 
-    (
-        SELECT
-            e.[EmployeeId] AS "Id",
-            p.[Name] AS "Name",
-            p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
-            p.[CellPhone_Exchange] AS "CellPhone.Exchange",
-            p.[CellPhone_Number] AS "CellPhone.Number",
-            p.[ProviderEmployeeId] AS "ProviderEmployeeId",
-            e.[HireDate] AS "HireDate",
-            1 AS "_EntityType_"
-        FROM [EmployeeWithDependants].[EmployeeBoundedContext].[Employee] e
-        INNER JOIN [EmployeeWithDependants].[EmployeeBoundedContext].[Person] p
-            ON e.[EmployeeId] = p.[PersonId]
-        UNION ALL
-        (
-            SELECT
-                p.[PersonId] AS "Id",
-                p.[Name] AS "Name",
-                p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
-                p.[CellPhone_Exchange] AS "CellPhone.Exchange",
-                p.[CellPhone_Number] AS "CellPhone.Number",
-                p.[ProviderEmployeeId] AS "ProviderEmployeeId",
-                NULL AS "HireDate",
-                2 AS "_EntityType_"
-            FROM [EmployeeWithDependants].[EmployeeBoundedContext].[Person] p
-            LEFT OUTER JOIN [EmployeeWithDependants].[EmployeeBoundedContext].[Employee] e
-                ON e.[EmployeeId] = p.[PersonId]
-            WHERE e.[EmployeeId] IS NULL
-        )
-    ) _q_;
+        _q_.[_EntityType_] AS "_EntityType_"',
+        @tableName = N'Person _q_',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -445,3 +437,97 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE [pExecuteDynamicQuery]
+	@$select NVARCHAR(MAX) = NULL,
+	@$filter NVARCHAR(MAX) = NULL,
+	@$orderby NVARCHAR(MAX) = NULL,
+	@$skip NVARCHAR(10) = NULL,
+	@$top NVARCHAR(10) = NULL,
+	@selectList NVARCHAR(MAX),
+	@tableName NVARCHAR(64),
+	@count INT OUTPUT
+AS
+BEGIN
+
+	DECLARE @sqlCommand NVARCHAR(MAX);
+	DECLARE @paramDefinition NVARCHAR(100);
+
+	SET @paramDefinition = N'@cnt INT OUTPUT'
+
+	SET @sqlCommand = 
+'
+	SELECT
+		 @cnt = COUNT(1)
+	FROM [' + @tableName + ']
+';
+
+	IF @$filter IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	WHERE ' + @$filter;
+	END
+
+	SET @sqlCommand = @sqlCommand + 
+'
+	SELECT
+	';
+
+	IF @$select = '*'
+	BEGIN
+		SET @sqlCommand = @sqlCommand + @selectList;
+	END
+	ELSE
+	BEGIN
+		SET @sqlCommand = @sqlCommand + @$select;
+	END
+
+	SET @sqlCommand = @sqlCommand +
+'
+	FROM [' + @tableName + '] s
+';
+
+	IF @$filter IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	WHERE ' + @$filter;
+	END
+
+	IF @$orderby IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	ORDER BY ' + @$orderby;
+	END
+	ELSE
+	BEGIN
+
+	-- At least a dummy order by is required is $skip and $top are provided
+		IF @$skip IS NOT NULL OR @$top IS NOT NULL
+		BEGIN  
+			SET @sqlCommand = @sqlCommand + 
+' 
+	ORDER BY 1 ASC';
+		END
+	END
+
+	IF @$skip IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	OFFSET ' + @$skip + ' ROWS';
+	END
+
+	IF @$top IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	FETCH NEXT ' + @$top + ' ROWS ONLY';
+	END
+
+	EXECUTE sp_executesql @sqlCommand, @paramDefinition, @cnt = @count OUTPUT
+
+END;
+
+GO

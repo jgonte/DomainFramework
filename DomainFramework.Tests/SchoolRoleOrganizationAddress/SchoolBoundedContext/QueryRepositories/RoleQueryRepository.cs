@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,12 +48,14 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.Data;
         }
 
-        public override IEnumerable<Role> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<Role>) Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = Query<Role>
                 .Collection()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
                 .StoredProcedure("[SchoolBoundedContext].[pRole_Get]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
                 .MapTypes(
                     2,
                     tm => tm.Type(typeof(School)).Index(1),
@@ -60,15 +63,19 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
-        public async override Task<IEnumerable<Role>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<(int, IEnumerable<Role>)> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = await Query<Role>
                 .Collection()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
                 .StoredProcedure("[SchoolBoundedContext].[pRole_Get]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
                 .MapTypes(
                     2,
                     tm => tm.Type(typeof(School)).Index(1),
@@ -76,7 +83,9 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

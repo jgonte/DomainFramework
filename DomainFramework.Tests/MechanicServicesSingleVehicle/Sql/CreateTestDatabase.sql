@@ -265,16 +265,26 @@ END;
 GO
 
 CREATE PROCEDURE [GarageBoundedContext].[pCar_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        c.[CarId] AS "Id",
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'c.[CarId] AS "Id",
         v.[Model] AS "Model",
         v.[MechanicId] AS "MechanicId",
-        c.[Passengers] AS "Passengers"
-    FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car] c
-    INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
-        ON c.[CarId] = v.[VehicleId];
+        c.[Passengers] AS "Passengers"',
+        @tableName = N'Car c',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -364,12 +374,24 @@ END;
 GO
 
 CREATE PROCEDURE [GarageBoundedContext].[pMechanic_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        m.[MechanicId] AS "Id",
-        m.[Name] AS "Name"
-    FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Mechanic] m;
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'm.[MechanicId] AS "Id",
+        m.[Name] AS "Name"',
+        @tableName = N'Mechanic m',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -499,16 +521,26 @@ END;
 GO
 
 CREATE PROCEDURE [GarageBoundedContext].[pTruck_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        t.[TruckId] AS "Id",
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N't.[TruckId] AS "Id",
         v.[Model] AS "Model",
         v.[MechanicId] AS "MechanicId",
-        t.[Weight] AS "Weight"
-    FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck] t
-    INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
-        ON t.[TruckId] = v.[VehicleId];
+        t.[Weight] AS "Weight"',
+        @tableName = N'Truck t',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -603,58 +635,28 @@ END;
 GO
 
 CREATE PROCEDURE [GarageBoundedContext].[pVehicle_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        _q_.[Id] AS "Id",
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'_q_.[Id] AS "Id",
         _q_.[Model] AS "Model",
         _q_.[MechanicId] AS "MechanicId",
         _q_.[Weight] AS "Weight",
         _q_.[Passengers] AS "Passengers",
-        _q_.[_EntityType_] AS "_EntityType_"
-    FROM 
-    (
-        SELECT
-            t.[TruckId] AS "Id",
-            v.[Model] AS "Model",
-            v.[MechanicId] AS "MechanicId",
-            t.[Weight] AS "Weight",
-            NULL AS "Passengers",
-            1 AS "_EntityType_"
-        FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck] t
-        INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
-            ON t.[TruckId] = v.[VehicleId]
-        UNION ALL
-        (
-            SELECT
-                c.[CarId] AS "Id",
-                v.[Model] AS "Model",
-                v.[MechanicId] AS "MechanicId",
-                NULL AS "Weight",
-                c.[Passengers] AS "Passengers",
-                2 AS "_EntityType_"
-            FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car] c
-            INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
-                ON c.[CarId] = v.[VehicleId]
-        )
-        UNION ALL
-        (
-            SELECT
-                v.[VehicleId] AS "Id",
-                v.[Model] AS "Model",
-                v.[MechanicId] AS "MechanicId",
-                NULL AS "Weight",
-                NULL AS "Passengers",
-                3 AS "_EntityType_"
-            FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
-            LEFT OUTER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck] t
-                ON t.[TruckId] = v.[VehicleId]
-            LEFT OUTER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car] c
-                ON c.[CarId] = v.[VehicleId]
-            WHERE t.[TruckId] IS NULL
-            AND c.[CarId] IS NULL
-        )
-    ) _q_;
+        _q_.[_EntityType_] AS "_EntityType_"',
+        @tableName = N'Vehicle _q_',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -903,3 +905,97 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE [pExecuteDynamicQuery]
+	@$select NVARCHAR(MAX) = NULL,
+	@$filter NVARCHAR(MAX) = NULL,
+	@$orderby NVARCHAR(MAX) = NULL,
+	@$skip NVARCHAR(10) = NULL,
+	@$top NVARCHAR(10) = NULL,
+	@selectList NVARCHAR(MAX),
+	@tableName NVARCHAR(64),
+	@count INT OUTPUT
+AS
+BEGIN
+
+	DECLARE @sqlCommand NVARCHAR(MAX);
+	DECLARE @paramDefinition NVARCHAR(100);
+
+	SET @paramDefinition = N'@cnt INT OUTPUT'
+
+	SET @sqlCommand = 
+'
+	SELECT
+		 @cnt = COUNT(1)
+	FROM [' + @tableName + ']
+';
+
+	IF @$filter IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	WHERE ' + @$filter;
+	END
+
+	SET @sqlCommand = @sqlCommand + 
+'
+	SELECT
+	';
+
+	IF @$select = '*'
+	BEGIN
+		SET @sqlCommand = @sqlCommand + @selectList;
+	END
+	ELSE
+	BEGIN
+		SET @sqlCommand = @sqlCommand + @$select;
+	END
+
+	SET @sqlCommand = @sqlCommand +
+'
+	FROM [' + @tableName + '] s
+';
+
+	IF @$filter IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	WHERE ' + @$filter;
+	END
+
+	IF @$orderby IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	ORDER BY ' + @$orderby;
+	END
+	ELSE
+	BEGIN
+
+	-- At least a dummy order by is required is $skip and $top are provided
+		IF @$skip IS NOT NULL OR @$top IS NOT NULL
+		BEGIN  
+			SET @sqlCommand = @sqlCommand + 
+' 
+	ORDER BY 1 ASC';
+		END
+	END
+
+	IF @$skip IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	OFFSET ' + @$skip + ' ROWS';
+	END
+
+	IF @$top IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	FETCH NEXT ' + @$top + ' ROWS ONLY';
+	END
+
+	EXECUTE sp_executesql @sqlCommand, @paramDefinition, @cnt = @count OUTPUT
+
+END;
+
+GO

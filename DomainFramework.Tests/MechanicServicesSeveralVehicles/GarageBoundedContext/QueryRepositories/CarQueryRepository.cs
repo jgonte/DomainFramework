@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,12 +70,14 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
             return result.Data;
         }
 
-        public override IEnumerable<Car> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<Car>) Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = Query<Car>
                 .Collection()
                 .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pCar_Get]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
                 .OnAfterCommandExecuted(cmd =>
                 {
                     var query = (CollectionQuery<Car>)cmd;
@@ -88,15 +91,19 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 })
                 .Execute();
 
-            return result.Data;
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
-        public async override Task<IEnumerable<Car>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<(int, IEnumerable<Car>)> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = await Query<Car>
                 .Collection()
                 .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pCar_Get]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
                 .OnAfterCommandExecutedAsync(async cmd =>
                 {
                     var query = (CollectionQuery<Car>)cmd;
@@ -112,7 +119,9 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 })
                 .ExecuteAsync();
 
-            return result.Data;
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

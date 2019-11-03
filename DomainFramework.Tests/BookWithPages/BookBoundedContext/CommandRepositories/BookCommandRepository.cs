@@ -25,6 +25,7 @@ namespace BookWithPages.BookBoundedContext
                     p => p.Name("category").Value(entity.Category),
                     p => p.Name("datePublished").Value(entity.DatePublished),
                     p => p.Name("publisherId").Value(entity.PublisherId),
+                    p => p.Name("isHardCopy").Value(entity.IsHardCopy),
                     p => p.Name("createdBy").Value(entity.CreatedBy)
                 )
                 .Instance(entity)
@@ -62,6 +63,7 @@ namespace BookWithPages.BookBoundedContext
                     p => p.Name("category").Value(entity.Category),
                     p => p.Name("datePublished").Value(entity.DatePublished),
                     p => p.Name("publisherId").Value(entity.PublisherId),
+                    p => p.Name("isHardCopy").Value(entity.IsHardCopy),
                     p => p.Name("updatedBy").Value(entity.UpdatedBy)
                 );
         }

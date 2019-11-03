@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,26 +38,34 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             return result.Data;
         }
 
-        public override IEnumerable<Executive> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<Executive>) Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = Query<Executive>
                 .Collection()
                 .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
                 .StoredProcedure("[ExecutiveBoundedContext].[pExecutive_Get]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
                 .Execute();
 
-            return result.Data;
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
-        public async override Task<IEnumerable<Executive>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<(int, IEnumerable<Executive>)> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = await Query<Executive>
                 .Collection()
                 .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
                 .StoredProcedure("[ExecutiveBoundedContext].[pExecutive_Get]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
                 .ExecuteAsync();
 
-            return result.Data;
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

@@ -14,6 +14,8 @@ namespace BookWithPages.BookBoundedContext
 
         public Guid PublisherId { get; set; }
 
+        public bool IsHardCopy { get; set; }
+
         public int BookId { get; set; }
 
         public List<PageOutputDto> Pages { get; set; } = new List<PageOutputDto>();

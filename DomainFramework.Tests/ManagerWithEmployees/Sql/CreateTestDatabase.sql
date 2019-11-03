@@ -134,39 +134,27 @@ END;
 GO
 
 CREATE PROCEDURE [ManagerBoundedContext].[pEmployee_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        _q_.[Id] AS "Id",
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'_q_.[Id] AS "Id",
         _q_.[Name] AS "Name",
         _q_.[SupervisorId] AS "SupervisorId",
         _q_.[Department] AS "Department",
-        _q_.[_EntityType_] AS "_EntityType_"
-    FROM 
-    (
-        SELECT
-            m.[ManagerId] AS "Id",
-            e.[Name] AS "Name",
-            e.[SupervisorId] AS "SupervisorId",
-            m.[Department] AS "Department",
-            1 AS "_EntityType_"
-        FROM [ManagerWithEmployees].[ManagerBoundedContext].[Manager] m
-        INNER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
-            ON m.[ManagerId] = e.[EmployeeId]
-        UNION ALL
-        (
-            SELECT
-                e.[EmployeeId] AS "Id",
-                e.[Name] AS "Name",
-                e.[SupervisorId] AS "SupervisorId",
-                NULL AS "Department",
-                2 AS "_EntityType_"
-            FROM [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
-            LEFT OUTER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Manager] m
-                ON m.[ManagerId] = e.[EmployeeId]
-            WHERE m.[ManagerId] IS NULL
-        )
-    ) _q_;
+        _q_.[_EntityType_] AS "_EntityType_"',
+        @tableName = N'Employee _q_',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -348,16 +336,26 @@ END;
 GO
 
 CREATE PROCEDURE [ManagerBoundedContext].[pManager_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        m.[ManagerId] AS "Id",
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'm.[ManagerId] AS "Id",
         e.[Name] AS "Name",
         e.[SupervisorId] AS "SupervisorId",
-        m.[Department] AS "Department"
-    FROM [ManagerWithEmployees].[ManagerBoundedContext].[Manager] m
-    INNER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
-        ON m.[ManagerId] = e.[EmployeeId];
+        m.[Department] AS "Department"',
+        @tableName = N'Manager m',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -379,3 +377,97 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE [pExecuteDynamicQuery]
+	@$select NVARCHAR(MAX) = NULL,
+	@$filter NVARCHAR(MAX) = NULL,
+	@$orderby NVARCHAR(MAX) = NULL,
+	@$skip NVARCHAR(10) = NULL,
+	@$top NVARCHAR(10) = NULL,
+	@selectList NVARCHAR(MAX),
+	@tableName NVARCHAR(64),
+	@count INT OUTPUT
+AS
+BEGIN
+
+	DECLARE @sqlCommand NVARCHAR(MAX);
+	DECLARE @paramDefinition NVARCHAR(100);
+
+	SET @paramDefinition = N'@cnt INT OUTPUT'
+
+	SET @sqlCommand = 
+'
+	SELECT
+		 @cnt = COUNT(1)
+	FROM [' + @tableName + ']
+';
+
+	IF @$filter IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	WHERE ' + @$filter;
+	END
+
+	SET @sqlCommand = @sqlCommand + 
+'
+	SELECT
+	';
+
+	IF @$select = '*'
+	BEGIN
+		SET @sqlCommand = @sqlCommand + @selectList;
+	END
+	ELSE
+	BEGIN
+		SET @sqlCommand = @sqlCommand + @$select;
+	END
+
+	SET @sqlCommand = @sqlCommand +
+'
+	FROM [' + @tableName + '] s
+';
+
+	IF @$filter IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	WHERE ' + @$filter;
+	END
+
+	IF @$orderby IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	ORDER BY ' + @$orderby;
+	END
+	ELSE
+	BEGIN
+
+	-- At least a dummy order by is required is $skip and $top are provided
+		IF @$skip IS NOT NULL OR @$top IS NOT NULL
+		BEGIN  
+			SET @sqlCommand = @sqlCommand + 
+' 
+	ORDER BY 1 ASC';
+		END
+	END
+
+	IF @$skip IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	OFFSET ' + @$skip + ' ROWS';
+	END
+
+	IF @$top IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	FETCH NEXT ' + @$top + ' ROWS ONLY';
+	END
+
+	EXECUTE sp_executesql @sqlCommand, @paramDefinition, @cnt = @count OUTPUT
+
+END;
+
+GO

@@ -189,12 +189,24 @@ END;
 GO
 
 CREATE PROCEDURE [SchoolBoundedContext].[pAddress_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        a.[AddressId] AS "Id",
-        a.[Street] AS "Street"
-    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Address] a;
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'a.[AddressId] AS "Id",
+        a.[Street] AS "Street"',
+        @tableName = N'Address a',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -305,14 +317,26 @@ END;
 GO
 
 CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        o.[OrganizationId] AS "Id",
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'o.[OrganizationId] AS "Id",
         o.[Name] AS "Name",
         o.[Phone_Number] AS "Phone.Number",
-        o.[AddressId] AS "AddressId"
-    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization] o;
+        o.[AddressId] AS "AddressId"',
+        @tableName = N'Organization o',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -420,12 +444,24 @@ END;
 GO
 
 CREATE PROCEDURE [SchoolBoundedContext].[pOrganizationRole_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        o.[OrganizationId] AS "Id.OrganizationId",
-        o.[RoleId] AS "Id.RoleId"
-    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[OrganizationRole] o;
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'o.[OrganizationId] AS "Id.OrganizationId",
+        o.[RoleId] AS "Id.RoleId"',
+        @tableName = N'OrganizationRole o',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -508,33 +544,25 @@ END;
 GO
 
 CREATE PROCEDURE [SchoolBoundedContext].[pRole_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        _q_.[Id] AS "Id",
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'_q_.[Id] AS "Id",
         _q_.[IsCharter] AS "IsCharter",
-        _q_.[_EntityType_] AS "_EntityType_"
-    FROM 
-    (
-        SELECT
-            s.[SchoolId] AS "Id",
-            s.[IsCharter] AS "IsCharter",
-            1 AS "_EntityType_"
-        FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[School] s
-        INNER JOIN [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Role] r
-            ON s.[SchoolId] = r.[RoleId]
-        UNION ALL
-        (
-            SELECT
-                r.[RoleId] AS "Id",
-                NULL AS "IsCharter",
-                2 AS "_EntityType_"
-            FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Role] r
-            LEFT OUTER JOIN [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[School] s
-                ON s.[SchoolId] = r.[RoleId]
-            WHERE s.[SchoolId] IS NULL
-        )
-    ) _q_;
+        _q_.[_EntityType_] AS "_EntityType_"',
+        @tableName = N'Role _q_',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -674,14 +702,24 @@ END;
 GO
 
 CREATE PROCEDURE [SchoolBoundedContext].[pSchool_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        s.[SchoolId] AS "Id",
-        s.[IsCharter] AS "IsCharter"
-    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[School] s
-    INNER JOIN [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Role] r
-        ON s.[SchoolId] = r.[RoleId];
+EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N's.[SchoolId] AS "Id",
+        s.[IsCharter] AS "IsCharter"',
+        @tableName = N'School s',
+        @count = @count OUTPUT
 
 END;
 GO
@@ -701,3 +739,97 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE [pExecuteDynamicQuery]
+	@$select NVARCHAR(MAX) = NULL,
+	@$filter NVARCHAR(MAX) = NULL,
+	@$orderby NVARCHAR(MAX) = NULL,
+	@$skip NVARCHAR(10) = NULL,
+	@$top NVARCHAR(10) = NULL,
+	@selectList NVARCHAR(MAX),
+	@tableName NVARCHAR(64),
+	@count INT OUTPUT
+AS
+BEGIN
+
+	DECLARE @sqlCommand NVARCHAR(MAX);
+	DECLARE @paramDefinition NVARCHAR(100);
+
+	SET @paramDefinition = N'@cnt INT OUTPUT'
+
+	SET @sqlCommand = 
+'
+	SELECT
+		 @cnt = COUNT(1)
+	FROM [' + @tableName + ']
+';
+
+	IF @$filter IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	WHERE ' + @$filter;
+	END
+
+	SET @sqlCommand = @sqlCommand + 
+'
+	SELECT
+	';
+
+	IF @$select = '*'
+	BEGIN
+		SET @sqlCommand = @sqlCommand + @selectList;
+	END
+	ELSE
+	BEGIN
+		SET @sqlCommand = @sqlCommand + @$select;
+	END
+
+	SET @sqlCommand = @sqlCommand +
+'
+	FROM [' + @tableName + '] s
+';
+
+	IF @$filter IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	WHERE ' + @$filter;
+	END
+
+	IF @$orderby IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	ORDER BY ' + @$orderby;
+	END
+	ELSE
+	BEGIN
+
+	-- At least a dummy order by is required is $skip and $top are provided
+		IF @$skip IS NOT NULL OR @$top IS NOT NULL
+		BEGIN  
+			SET @sqlCommand = @sqlCommand + 
+' 
+	ORDER BY 1 ASC';
+		END
+	END
+
+	IF @$skip IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	OFFSET ' + @$skip + ' ROWS';
+	END
+
+	IF @$top IS NOT NULL
+	BEGIN 
+		SET @sqlCommand = @sqlCommand + 
+' 
+	FETCH NEXT ' + @$top + ' ROWS ONLY';
+	END
+
+	EXECUTE sp_executesql @sqlCommand, @paramDefinition, @cnt = @count OUTPUT
+
+END;
+
+GO

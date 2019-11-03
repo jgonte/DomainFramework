@@ -96,6 +96,8 @@ namespace BookWithPages.BookBoundedContext
 
             OutputDto.PublisherId = entity.PublisherId;
 
+            OutputDto.IsHardCopy = entity.IsHardCopy;
+
             OutputDto.Pages = GetPagesDtos();
         }
 

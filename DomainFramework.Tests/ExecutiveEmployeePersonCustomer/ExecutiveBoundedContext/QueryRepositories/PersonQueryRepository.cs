@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,12 +52,14 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             return result.Data;
         }
 
-        public override IEnumerable<Person> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<Person>) Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = Query<Person>
                 .Collection()
                 .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
                 .StoredProcedure("[ExecutiveBoundedContext].[pPerson_Get]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
                 .MapTypes(
                     6,
                     tm => tm.Type(typeof(Employee)).Index(1),
@@ -66,15 +69,19 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
-        public async override Task<IEnumerable<Person>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<(int, IEnumerable<Person>)> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = await Query<Person>
                 .Collection()
                 .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
                 .StoredProcedure("[ExecutiveBoundedContext].[pPerson_Get]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
                 .MapTypes(
                     6,
                     tm => tm.Type(typeof(Employee)).Index(1),
@@ -84,7 +91,9 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

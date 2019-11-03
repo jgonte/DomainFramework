@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,26 +38,34 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             return result.Data;
         }
 
-        public override IEnumerable<Employee> Get(QueryParameters queryParameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<Employee>) Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = Query<Employee>
                 .Collection()
                 .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
                 .StoredProcedure("[EmployeeBoundedContext].[pEmployee_Get]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
                 .Execute();
 
-            return result.Data;
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
-        public async override Task<IEnumerable<Employee>> GetAsync(QueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<(int, IEnumerable<Employee>)> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
         {
             var result = await Query<Employee>
                 .Collection()
                 .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
                 .StoredProcedure("[EmployeeBoundedContext].[pEmployee_Get]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
                 .ExecuteAsync();
 
-            return result.Data;
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

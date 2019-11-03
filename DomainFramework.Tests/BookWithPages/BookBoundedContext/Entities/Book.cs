@@ -31,6 +31,11 @@ namespace BookWithPages.BookBoundedContext
         /// </summary>
         public Guid PublisherId { get; set; }
 
+        /// <summary>
+        /// Whether the books is printed on paper instead of electronic
+        /// </summary>
+        public bool IsHardCopy { get; set; }
+
         public int CreatedBy { get; set; }
 
         public DateTime CreatedDateTime { get; set; }

@@ -33,7 +33,8 @@ namespace BookWithPages.BookBoundedContext
                 Title = book.Title,
                 Category = book.Category,
                 DatePublished = book.DatePublished,
-                PublisherId = book.PublisherId
+                PublisherId = book.PublisherId,
+                IsHardCopy = book.IsHardCopy
             };
 
             Enqueue(new SaveEntityCommandOperation<Book>(RootEntity));
