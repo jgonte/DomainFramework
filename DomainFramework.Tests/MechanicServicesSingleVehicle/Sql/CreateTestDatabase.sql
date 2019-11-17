@@ -279,11 +279,13 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'c.[CarId] AS "Id",
-        v.[Model] AS "Model",
-        v.[MechanicId] AS "MechanicId",
-        c.[Passengers] AS "Passengers"',
-        @tableName = N'Car c',
+        @selectList = N'    c.[CarId] AS "Id",
+    v.[Model] AS "Model",
+    v.[MechanicId] AS "MechanicId",
+    c.[Passengers] AS "Passengers"',
+        @from = N'[MechanicServicesSingleVehicle].[GarageBoundedContext].[Car] c
+INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
+    ON c.[CarId] = v.[VehicleId]',
         @count = @count OUTPUT
 
 END;
@@ -388,9 +390,9 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'm.[MechanicId] AS "Id",
-        m.[Name] AS "Name"',
-        @tableName = N'Mechanic m',
+        @selectList = N'    m.[MechanicId] AS "Id",
+    m.[Name] AS "Name"',
+        @from = N'[MechanicServicesSingleVehicle].[GarageBoundedContext].[Mechanic] m',
         @count = @count OUTPUT
 
 END;
@@ -535,11 +537,13 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N't.[TruckId] AS "Id",
-        v.[Model] AS "Model",
-        v.[MechanicId] AS "MechanicId",
-        t.[Weight] AS "Weight"',
-        @tableName = N'Truck t',
+        @selectList = N'    t.[TruckId] AS "Id",
+    v.[Model] AS "Model",
+    v.[MechanicId] AS "MechanicId",
+    t.[Weight] AS "Weight"',
+        @from = N'[MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck] t
+INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
+    ON t.[TruckId] = v.[VehicleId]',
         @count = @count OUTPUT
 
 END;
@@ -649,13 +653,55 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'_q_.[Id] AS "Id",
-        _q_.[Model] AS "Model",
-        _q_.[MechanicId] AS "MechanicId",
-        _q_.[Weight] AS "Weight",
-        _q_.[Passengers] AS "Passengers",
-        _q_.[_EntityType_] AS "_EntityType_"',
-        @tableName = N'Vehicle _q_',
+        @selectList = N'    _q_.[Id] AS "Id",
+    _q_.[Model] AS "Model",
+    _q_.[MechanicId] AS "MechanicId",
+    _q_.[Weight] AS "Weight",
+    _q_.[Passengers] AS "Passengers",
+    _q_.[_EntityType_] AS "_EntityType_"',
+        @from = N'
+(
+    SELECT
+        t.[TruckId] AS "Id",
+        v.[Model] AS "Model",
+        v.[MechanicId] AS "MechanicId",
+        t.[Weight] AS "Weight",
+        NULL AS "Passengers",
+        1 AS "_EntityType_"
+    FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck] t
+    INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
+        ON t.[TruckId] = v.[VehicleId]
+    UNION ALL
+    (
+        SELECT
+            c.[CarId] AS "Id",
+            v.[Model] AS "Model",
+            v.[MechanicId] AS "MechanicId",
+            NULL AS "Weight",
+            c.[Passengers] AS "Passengers",
+            2 AS "_EntityType_"
+        FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car] c
+        INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
+            ON c.[CarId] = v.[VehicleId]
+    )
+    UNION ALL
+    (
+        SELECT
+            v.[VehicleId] AS "Id",
+            v.[Model] AS "Model",
+            v.[MechanicId] AS "MechanicId",
+            NULL AS "Weight",
+            NULL AS "Passengers",
+            3 AS "_EntityType_"
+        FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
+        LEFT OUTER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck] t
+            ON t.[TruckId] = v.[VehicleId]
+        LEFT OUTER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car] c
+            ON c.[CarId] = v.[VehicleId]
+        WHERE t.[TruckId] IS NULL
+        AND c.[CarId] IS NULL
+    )
+) _q_',
         @count = @count OUTPUT
 
 END;
@@ -912,7 +958,7 @@ CREATE PROCEDURE [pExecuteDynamicQuery]
 	@$skip NVARCHAR(10) = NULL,
 	@$top NVARCHAR(10) = NULL,
 	@selectList NVARCHAR(MAX),
-	@tableName NVARCHAR(64),
+	@from NVARCHAR(MAX),
 	@count INT OUTPUT
 AS
 BEGIN
@@ -926,7 +972,7 @@ BEGIN
 '
 	SELECT
 		 @cnt = COUNT(1)
-	FROM [' + @tableName + ']
+	FROM ' + @from + '
 ';
 
 	IF @$filter IS NOT NULL
@@ -941,7 +987,7 @@ BEGIN
 	SELECT
 	';
 
-	IF @$select = '*'
+	IF ISNULL(@$select, '*') = '*'
 	BEGIN
 		SET @sqlCommand = @sqlCommand + @selectList;
 	END
@@ -952,7 +998,7 @@ BEGIN
 
 	SET @sqlCommand = @sqlCommand +
 '
-	FROM [' + @tableName + '] s
+	FROM ' + @from + '
 ';
 
 	IF @$filter IS NOT NULL
@@ -999,3 +1045,4 @@ BEGIN
 END;
 
 GO
+

@@ -27,7 +27,7 @@ namespace BookWithPages.BookBoundedContext
         public DateTime DatePublished { get; set; }
 
         /// <summary>
-        /// The id of the book
+        /// The id of the publisher of the book
         /// </summary>
         public Guid PublisherId { get; set; }
 

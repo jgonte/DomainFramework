@@ -27,7 +27,7 @@ CREATE TABLE [BookWithPages].[BookBoundedContext].[Book]
     [BookId] INT NOT NULL IDENTITY,
     [Title] VARCHAR(150) NOT NULL,
     [Category] INT NOT NULL,
-    [DatePublished] DATETIME NOT NULL,
+    [DatePublished] DATE NOT NULL,
     [PublisherId] UNIQUEIDENTIFIER NOT NULL,
     [IsHardCopy] BIT NOT NULL,
     [CreatedBy] INT NOT NULL,
@@ -88,7 +88,7 @@ GO
 CREATE PROCEDURE [BookBoundedContext].[pBook_Insert]
     @title VARCHAR(150),
     @category INT,
-    @datePublished DATETIME,
+    @datePublished DATE,
     @publisherId UNIQUEIDENTIFIER,
     @isHardCopy BIT,
     @createdBy INT
@@ -132,7 +132,7 @@ CREATE PROCEDURE [BookBoundedContext].[pBook_Update]
     @bookId INT,
     @title VARCHAR(150),
     @category INT,
-    @datePublished DATETIME,
+    @datePublished DATE,
     @publisherId UNIQUEIDENTIFIER,
     @isHardCopy BIT,
     @updatedBy INT
@@ -167,13 +167,13 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'b.[BookId] AS "Id",
-        b.[Title] AS "Title",
-        b.[Category] AS "Category",
-        b.[DatePublished] AS "DatePublished",
-        b.[PublisherId] AS "PublisherId",
-        b.[IsHardCopy] AS "IsHardCopy"',
-        @tableName = N'Book b',
+        @selectList = N'    b.[BookId] AS "Id",
+    b.[Title] AS "Title",
+    b.[Category] AS "Category",
+    b.[DatePublished] AS "DatePublished",
+    b.[PublisherId] AS "PublisherId",
+    b.[IsHardCopy] AS "IsHardCopy"',
+        @from = N'[BookWithPages].[BookBoundedContext].[Book] b',
         @count = @count OUTPUT
 
 END;
@@ -290,10 +290,10 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'p.[PageId] AS "Id",
-        p.[Index] AS "Index",
-        p.[BookId] AS "BookId"',
-        @tableName = N'Page p',
+        @selectList = N'    p.[PageId] AS "Id",
+    p.[Index] AS "Index",
+    p.[BookId] AS "BookId"',
+        @from = N'[BookWithPages].[BookBoundedContext].[Page] p',
         @count = @count OUTPUT
 
 END;
@@ -334,7 +334,7 @@ CREATE PROCEDURE [pExecuteDynamicQuery]
 	@$skip NVARCHAR(10) = NULL,
 	@$top NVARCHAR(10) = NULL,
 	@selectList NVARCHAR(MAX),
-	@tableName NVARCHAR(64),
+	@from NVARCHAR(MAX),
 	@count INT OUTPUT
 AS
 BEGIN
@@ -348,7 +348,7 @@ BEGIN
 '
 	SELECT
 		 @cnt = COUNT(1)
-	FROM [' + @tableName + ']
+	FROM ' + @from + '
 ';
 
 	IF @$filter IS NOT NULL
@@ -363,7 +363,7 @@ BEGIN
 	SELECT
 	';
 
-	IF @$select = '*'
+	IF ISNULL(@$select, '*') = '*'
 	BEGIN
 		SET @sqlCommand = @sqlCommand + @selectList;
 	END
@@ -374,7 +374,7 @@ BEGIN
 
 	SET @sqlCommand = @sqlCommand +
 '
-	FROM [' + @tableName + '] s
+	FROM ' + @from + '
 ';
 
 	IF @$filter IS NOT NULL
@@ -421,3 +421,61 @@ BEGIN
 END;
 
 GO
+
+INSERT INTO [BookWithPages].[BookBoundedContext].[Book]
+(
+    [Title],
+    [Category],
+    [DatePublished],
+    [PublisherId],
+    [IsHardCopy],
+    [CreatedBy]
+)
+VALUES
+(
+    'Book 1',
+    1,
+    '10/12/1999 12:00:00 AM',
+    'fafac13f-f571-4596-a3ad-1ca1776f21a9',
+    1,
+    1
+);
+
+INSERT INTO [BookWithPages].[BookBoundedContext].[Book]
+(
+    [Title],
+    [Category],
+    [DatePublished],
+    [PublisherId],
+    [IsHardCopy],
+    [CreatedBy]
+)
+VALUES
+(
+    'Book 2',
+    0,
+    '6/23/2010 12:00:00 AM',
+    '97c04d97-9527-4730-ab07-364e59dc7272',
+    0,
+    1
+);
+
+INSERT INTO [BookWithPages].[BookBoundedContext].[Book]
+(
+    [Title],
+    [Category],
+    [DatePublished],
+    [PublisherId],
+    [IsHardCopy],
+    [CreatedBy]
+)
+VALUES
+(
+    'Book 3',
+    2,
+    '9/3/2018 12:00:00 AM',
+    '38ee7a02-9b9d-4ad0-949e-cbe89268c570',
+    1,
+    1
+);
+

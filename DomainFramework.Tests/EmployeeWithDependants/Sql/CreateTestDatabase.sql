@@ -200,14 +200,16 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'e.[EmployeeId] AS "Id",
-        p.[Name] AS "Name",
-        p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
-        p.[CellPhone_Exchange] AS "CellPhone.Exchange",
-        p.[CellPhone_Number] AS "CellPhone.Number",
-        p.[ProviderEmployeeId] AS "ProviderEmployeeId",
-        e.[HireDate] AS "HireDate"',
-        @tableName = N'Employee e',
+        @selectList = N'    e.[EmployeeId] AS "Id",
+    p.[Name] AS "Name",
+    p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
+    p.[CellPhone_Exchange] AS "CellPhone.Exchange",
+    p.[CellPhone_Number] AS "CellPhone.Number",
+    p.[ProviderEmployeeId] AS "ProviderEmployeeId",
+    e.[HireDate] AS "HireDate"',
+        @from = N'[EmployeeWithDependants].[EmployeeBoundedContext].[Employee] e
+INNER JOIN [EmployeeWithDependants].[EmployeeBoundedContext].[Person] p
+    ON e.[EmployeeId] = p.[PersonId]',
         @count = @count OUTPUT
 
 END;
@@ -325,15 +327,45 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'_q_.[Id] AS "Id",
-        _q_.[Name] AS "Name",
-        _q_.[CellPhone.AreaCode] AS "CellPhone.AreaCode",
-        _q_.[CellPhone.Exchange] AS "CellPhone.Exchange",
-        _q_.[CellPhone.Number] AS "CellPhone.Number",
-        _q_.[ProviderEmployeeId] AS "ProviderEmployeeId",
-        _q_.[HireDate] AS "HireDate",
-        _q_.[_EntityType_] AS "_EntityType_"',
-        @tableName = N'Person _q_',
+        @selectList = N'    _q_.[Id] AS "Id",
+    _q_.[Name] AS "Name",
+    _q_.[CellPhone.AreaCode] AS "CellPhone.AreaCode",
+    _q_.[CellPhone.Exchange] AS "CellPhone.Exchange",
+    _q_.[CellPhone.Number] AS "CellPhone.Number",
+    _q_.[ProviderEmployeeId] AS "ProviderEmployeeId",
+    _q_.[HireDate] AS "HireDate",
+    _q_.[_EntityType_] AS "_EntityType_"',
+        @from = N'
+(
+    SELECT
+        e.[EmployeeId] AS "Id",
+        p.[Name] AS "Name",
+        p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
+        p.[CellPhone_Exchange] AS "CellPhone.Exchange",
+        p.[CellPhone_Number] AS "CellPhone.Number",
+        p.[ProviderEmployeeId] AS "ProviderEmployeeId",
+        e.[HireDate] AS "HireDate",
+        1 AS "_EntityType_"
+    FROM [EmployeeWithDependants].[EmployeeBoundedContext].[Employee] e
+    INNER JOIN [EmployeeWithDependants].[EmployeeBoundedContext].[Person] p
+        ON e.[EmployeeId] = p.[PersonId]
+    UNION ALL
+    (
+        SELECT
+            p.[PersonId] AS "Id",
+            p.[Name] AS "Name",
+            p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
+            p.[CellPhone_Exchange] AS "CellPhone.Exchange",
+            p.[CellPhone_Number] AS "CellPhone.Number",
+            p.[ProviderEmployeeId] AS "ProviderEmployeeId",
+            NULL AS "HireDate",
+            2 AS "_EntityType_"
+        FROM [EmployeeWithDependants].[EmployeeBoundedContext].[Person] p
+        LEFT OUTER JOIN [EmployeeWithDependants].[EmployeeBoundedContext].[Employee] e
+            ON e.[EmployeeId] = p.[PersonId]
+        WHERE e.[EmployeeId] IS NULL
+    )
+) _q_',
         @count = @count OUTPUT
 
 END;
@@ -444,7 +476,7 @@ CREATE PROCEDURE [pExecuteDynamicQuery]
 	@$skip NVARCHAR(10) = NULL,
 	@$top NVARCHAR(10) = NULL,
 	@selectList NVARCHAR(MAX),
-	@tableName NVARCHAR(64),
+	@from NVARCHAR(MAX),
 	@count INT OUTPUT
 AS
 BEGIN
@@ -458,7 +490,7 @@ BEGIN
 '
 	SELECT
 		 @cnt = COUNT(1)
-	FROM [' + @tableName + ']
+	FROM ' + @from + '
 ';
 
 	IF @$filter IS NOT NULL
@@ -473,7 +505,7 @@ BEGIN
 	SELECT
 	';
 
-	IF @$select = '*'
+	IF ISNULL(@$select, '*') = '*'
 	BEGIN
 		SET @sqlCommand = @sqlCommand + @selectList;
 	END
@@ -484,7 +516,7 @@ BEGIN
 
 	SET @sqlCommand = @sqlCommand +
 '
-	FROM [' + @tableName + '] s
+	FROM ' + @from + '
 ';
 
 	IF @$filter IS NOT NULL
@@ -531,3 +563,4 @@ BEGIN
 END;
 
 GO
+

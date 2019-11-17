@@ -148,12 +148,36 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'_q_.[Id] AS "Id",
-        _q_.[Name] AS "Name",
-        _q_.[SupervisorId] AS "SupervisorId",
-        _q_.[Department] AS "Department",
-        _q_.[_EntityType_] AS "_EntityType_"',
-        @tableName = N'Employee _q_',
+        @selectList = N'    _q_.[Id] AS "Id",
+    _q_.[Name] AS "Name",
+    _q_.[SupervisorId] AS "SupervisorId",
+    _q_.[Department] AS "Department",
+    _q_.[_EntityType_] AS "_EntityType_"',
+        @from = N'
+(
+    SELECT
+        m.[ManagerId] AS "Id",
+        e.[Name] AS "Name",
+        e.[SupervisorId] AS "SupervisorId",
+        m.[Department] AS "Department",
+        1 AS "_EntityType_"
+    FROM [ManagerWithEmployees].[ManagerBoundedContext].[Manager] m
+    INNER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
+        ON m.[ManagerId] = e.[EmployeeId]
+    UNION ALL
+    (
+        SELECT
+            e.[EmployeeId] AS "Id",
+            e.[Name] AS "Name",
+            e.[SupervisorId] AS "SupervisorId",
+            NULL AS "Department",
+            2 AS "_EntityType_"
+        FROM [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
+        LEFT OUTER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Manager] m
+            ON m.[ManagerId] = e.[EmployeeId]
+        WHERE m.[ManagerId] IS NULL
+    )
+) _q_',
         @count = @count OUTPUT
 
 END;
@@ -350,11 +374,13 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'm.[ManagerId] AS "Id",
-        e.[Name] AS "Name",
-        e.[SupervisorId] AS "SupervisorId",
-        m.[Department] AS "Department"',
-        @tableName = N'Manager m',
+        @selectList = N'    m.[ManagerId] AS "Id",
+    e.[Name] AS "Name",
+    e.[SupervisorId] AS "SupervisorId",
+    m.[Department] AS "Department"',
+        @from = N'[ManagerWithEmployees].[ManagerBoundedContext].[Manager] m
+INNER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
+    ON m.[ManagerId] = e.[EmployeeId]',
         @count = @count OUTPUT
 
 END;
@@ -384,7 +410,7 @@ CREATE PROCEDURE [pExecuteDynamicQuery]
 	@$skip NVARCHAR(10) = NULL,
 	@$top NVARCHAR(10) = NULL,
 	@selectList NVARCHAR(MAX),
-	@tableName NVARCHAR(64),
+	@from NVARCHAR(MAX),
 	@count INT OUTPUT
 AS
 BEGIN
@@ -398,7 +424,7 @@ BEGIN
 '
 	SELECT
 		 @cnt = COUNT(1)
-	FROM [' + @tableName + ']
+	FROM ' + @from + '
 ';
 
 	IF @$filter IS NOT NULL
@@ -413,7 +439,7 @@ BEGIN
 	SELECT
 	';
 
-	IF @$select = '*'
+	IF ISNULL(@$select, '*') = '*'
 	BEGIN
 		SET @sqlCommand = @sqlCommand + @selectList;
 	END
@@ -424,7 +450,7 @@ BEGIN
 
 	SET @sqlCommand = @sqlCommand +
 '
-	FROM [' + @tableName + '] s
+	FROM ' + @from + '
 ';
 
 	IF @$filter IS NOT NULL
@@ -471,3 +497,4 @@ BEGIN
 END;
 
 GO
+

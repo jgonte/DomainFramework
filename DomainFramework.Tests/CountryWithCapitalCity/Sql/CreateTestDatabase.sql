@@ -139,10 +139,10 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'c.[CapitalCityId] AS "Id",
-        c.[Name] AS "Name",
-        c.[CountryCode] AS "CountryCode"',
-        @tableName = N'CapitalCity c',
+        @selectList = N'    c.[CapitalCityId] AS "Id",
+    c.[Name] AS "Name",
+    c.[CountryCode] AS "CountryCode"',
+        @from = N'[CountryWithCapitalCity].[CountryBoundedContext].[CapitalCity] c',
         @count = @count OUTPUT
 
 END;
@@ -276,10 +276,10 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'c.[CountryCode] AS "Id",
-        c.[Name] AS "Name",
-        c.[IsActive] AS "IsActive"',
-        @tableName = N'Country c',
+        @selectList = N'    c.[CountryCode] AS "Id",
+    c.[Name] AS "Name",
+    c.[IsActive] AS "IsActive"',
+        @from = N'[CountryWithCapitalCity].[CountryBoundedContext].[Country] c',
         @count = @count OUTPUT
 
 END;
@@ -306,7 +306,7 @@ CREATE PROCEDURE [pExecuteDynamicQuery]
 	@$skip NVARCHAR(10) = NULL,
 	@$top NVARCHAR(10) = NULL,
 	@selectList NVARCHAR(MAX),
-	@tableName NVARCHAR(64),
+	@from NVARCHAR(MAX),
 	@count INT OUTPUT
 AS
 BEGIN
@@ -320,7 +320,7 @@ BEGIN
 '
 	SELECT
 		 @cnt = COUNT(1)
-	FROM [' + @tableName + ']
+	FROM ' + @from + '
 ';
 
 	IF @$filter IS NOT NULL
@@ -335,7 +335,7 @@ BEGIN
 	SELECT
 	';
 
-	IF @$select = '*'
+	IF ISNULL(@$select, '*') = '*'
 	BEGIN
 		SET @sqlCommand = @sqlCommand + @selectList;
 	END
@@ -346,7 +346,7 @@ BEGIN
 
 	SET @sqlCommand = @sqlCommand +
 '
-	FROM [' + @tableName + '] s
+	FROM ' + @from + '
 ';
 
 	IF @$filter IS NOT NULL
@@ -393,3 +393,4 @@ BEGIN
 END;
 
 GO
+

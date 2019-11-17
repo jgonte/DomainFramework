@@ -197,10 +197,12 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'c.[CustomerId] AS "Id",
-        p.[Name] AS "Name",
-        c.[Rating] AS "Rating"',
-        @tableName = N'Customer c',
+        @selectList = N'    c.[CustomerId] AS "Id",
+    p.[Name] AS "Name",
+    c.[Rating] AS "Rating"',
+        @from = N'[ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Customer] c
+INNER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person] p
+    ON c.[CustomerId] = p.[PersonId]',
         @count = @count OUTPUT
 
 END;
@@ -318,13 +320,43 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'_q_.[Id] AS "Id",
-        _q_.[Name] AS "Name",
-        _q_.[HireDate] AS "HireDate",
-        _q_.[Bonus] AS "Bonus",
-        _q_.[Asset.Number] AS "Asset.Number",
-        _q_.[_EntityType_] AS "_EntityType_"',
-        @tableName = N'Employee _q_',
+        @selectList = N'    _q_.[Id] AS "Id",
+    _q_.[Name] AS "Name",
+    _q_.[HireDate] AS "HireDate",
+    _q_.[Bonus] AS "Bonus",
+    _q_.[Asset.Number] AS "Asset.Number",
+    _q_.[_EntityType_] AS "_EntityType_"',
+        @from = N'
+(
+    SELECT
+        e1.[ExecutiveId] AS "Id",
+        p.[Name] AS "Name",
+        e.[HireDate] AS "HireDate",
+        e1.[Bonus] AS "Bonus",
+        e1.[Asset_Number] AS "Asset.Number",
+        1 AS "_EntityType_"
+    FROM [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Executive] e1
+    INNER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Employee] e
+        ON e1.[ExecutiveId] = e.[EmployeeId]
+    INNER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person] p
+        ON e.[EmployeeId] = p.[PersonId]
+    UNION ALL
+    (
+        SELECT
+            e.[EmployeeId] AS "Id",
+            p.[Name] AS "Name",
+            e.[HireDate] AS "HireDate",
+            NULL AS "Bonus",
+            NULL AS "Asset.Number",
+            2 AS "_EntityType_"
+        FROM [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Employee] e
+        INNER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person] p
+            ON e.[EmployeeId] = p.[PersonId]
+        LEFT OUTER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Executive] e1
+            ON e1.[ExecutiveId] = e.[EmployeeId]
+        WHERE e1.[ExecutiveId] IS NULL
+    )
+) _q_',
         @count = @count OUTPUT
 
 END;
@@ -496,12 +528,16 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'e.[ExecutiveId] AS "Id",
-        e1.[HireDate] AS "HireDate",
-        p.[Name] AS "Name",
-        e.[Bonus] AS "Bonus",
-        e.[Asset_Number] AS "Asset.Number"',
-        @tableName = N'Executive e',
+        @selectList = N'    e.[ExecutiveId] AS "Id",
+    e1.[HireDate] AS "HireDate",
+    p.[Name] AS "Name",
+    e.[Bonus] AS "Bonus",
+    e.[Asset_Number] AS "Asset.Number"',
+        @from = N'[ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Executive] e
+INNER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Employee] e1
+    ON e.[ExecutiveId] = e1.[EmployeeId]
+INNER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person] p
+    ON e1.[EmployeeId] = p.[PersonId]',
         @count = @count OUTPUT
 
 END;
@@ -599,14 +635,81 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'_q_.[Id] AS "Id",
-        _q_.[Name] AS "Name",
-        _q_.[HireDate] AS "HireDate",
-        _q_.[Bonus] AS "Bonus",
-        _q_.[Asset.Number] AS "Asset.Number",
-        _q_.[Rating] AS "Rating",
-        _q_.[_EntityType_] AS "_EntityType_"',
-        @tableName = N'Person _q_',
+        @selectList = N'    _q_.[Id] AS "Id",
+    _q_.[Name] AS "Name",
+    _q_.[HireDate] AS "HireDate",
+    _q_.[Bonus] AS "Bonus",
+    _q_.[Asset.Number] AS "Asset.Number",
+    _q_.[Rating] AS "Rating",
+    _q_.[_EntityType_] AS "_EntityType_"',
+        @from = N'
+(
+    SELECT
+        e.[EmployeeId] AS "Id",
+        p.[Name] AS "Name",
+        e.[HireDate] AS "HireDate",
+        NULL AS "Bonus",
+        NULL AS "Asset.Number",
+        NULL AS "Rating",
+        1 AS "_EntityType_"
+    FROM [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Employee] e
+    INNER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person] p
+        ON e.[EmployeeId] = p.[PersonId]
+    LEFT OUTER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Executive] e1
+        ON e1.[ExecutiveId] = e.[EmployeeId]
+    WHERE e1.[ExecutiveId] IS NULL
+    UNION ALL
+    (
+        SELECT
+            e1.[ExecutiveId] AS "Id",
+            p.[Name] AS "Name",
+            e.[HireDate] AS "HireDate",
+            e1.[Bonus] AS "Bonus",
+            e1.[Asset_Number] AS "Asset.Number",
+            NULL AS "Rating",
+            2 AS "_EntityType_"
+        FROM [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Executive] e1
+        INNER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Employee] e
+            ON e1.[ExecutiveId] = e.[EmployeeId]
+        INNER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person] p
+            ON e.[EmployeeId] = p.[PersonId]
+    )
+    UNION ALL
+    (
+        SELECT
+            c.[CustomerId] AS "Id",
+            p.[Name] AS "Name",
+            NULL AS "HireDate",
+            NULL AS "Bonus",
+            NULL AS "Asset.Number",
+            c.[Rating] AS "Rating",
+            3 AS "_EntityType_"
+        FROM [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Customer] c
+        INNER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person] p
+            ON c.[CustomerId] = p.[PersonId]
+    )
+    UNION ALL
+    (
+        SELECT
+            p.[PersonId] AS "Id",
+            p.[Name] AS "Name",
+            NULL AS "HireDate",
+            NULL AS "Bonus",
+            NULL AS "Asset.Number",
+            NULL AS "Rating",
+            4 AS "_EntityType_"
+        FROM [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person] p
+        LEFT OUTER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Employee] e
+            ON e.[EmployeeId] = p.[PersonId]
+        LEFT OUTER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Executive] e1
+            ON e1.[ExecutiveId] = e.[EmployeeId]
+        LEFT OUTER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Customer] c
+            ON c.[CustomerId] = p.[PersonId]
+        WHERE e.[EmployeeId] IS NULL
+        AND e1.[ExecutiveId] IS NULL
+        AND c.[CustomerId] IS NULL
+    )
+) _q_',
         @count = @count OUTPUT
 
 END;
@@ -704,7 +807,7 @@ CREATE PROCEDURE [pExecuteDynamicQuery]
 	@$skip NVARCHAR(10) = NULL,
 	@$top NVARCHAR(10) = NULL,
 	@selectList NVARCHAR(MAX),
-	@tableName NVARCHAR(64),
+	@from NVARCHAR(MAX),
 	@count INT OUTPUT
 AS
 BEGIN
@@ -718,7 +821,7 @@ BEGIN
 '
 	SELECT
 		 @cnt = COUNT(1)
-	FROM [' + @tableName + ']
+	FROM ' + @from + '
 ';
 
 	IF @$filter IS NOT NULL
@@ -733,7 +836,7 @@ BEGIN
 	SELECT
 	';
 
-	IF @$select = '*'
+	IF ISNULL(@$select, '*') = '*'
 	BEGIN
 		SET @sqlCommand = @sqlCommand + @selectList;
 	END
@@ -744,7 +847,7 @@ BEGIN
 
 	SET @sqlCommand = @sqlCommand +
 '
-	FROM [' + @tableName + '] s
+	FROM ' + @from + '
 ';
 
 	IF @$filter IS NOT NULL
@@ -791,3 +894,4 @@ BEGIN
 END;
 
 GO
+
