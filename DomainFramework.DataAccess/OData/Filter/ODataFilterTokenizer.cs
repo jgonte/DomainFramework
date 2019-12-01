@@ -26,6 +26,11 @@ namespace DomainFramework.DataAccess
             "has"
         };
 
+        private static readonly string[] _multiValueOperators = new string[]
+        {
+            "in"
+        };
+
         public ODataFilterTokenizer(char[] buffer) : base(buffer)
         {
         }
@@ -212,6 +217,10 @@ namespace DomainFramework.DataAccess
             else if (_comparisonOperators.Contains(value.ToLowerInvariant()))
             {
                 return (ODataFilterTokenizerTokenTypes.ComparisonOperator, value.ToLowerInvariant());
+            }
+            else if (_multiValueOperators.Contains(value.ToLowerInvariant()))
+            {
+                return (ODataFilterTokenizerTokenTypes.MultiValueOperator, value.ToLowerInvariant());
             }
             else if (FollowsWithOpeningParenthesis())
             {

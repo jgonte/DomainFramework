@@ -57,7 +57,7 @@ namespace DomainFramework.Tests
         }
 
         [TestMethod]
-        public void ODataFilterBuilder_Field_Filter_Contains_String_Literal_Test()
+        public void ODataFilterBuilder_Function_Call_Contains_String_Literal_Test()
         {
             ODataFilterBuilder builder = new ODataFilterBuilder();
 
@@ -73,7 +73,7 @@ namespace DomainFramework.Tests
         }
 
         [TestMethod]
-        public void ODataFilterBuilder_Field_Filter_Contains_Numeric_Value_Test()
+        public void ODataFilterBuilder_Function_Call_Contains_Numeric_Value_Test()
         {
             ODataFilterBuilder builder = new ODataFilterBuilder();
 
@@ -89,7 +89,7 @@ namespace DomainFramework.Tests
         }
 
         [TestMethod]
-        public void ODataFilterBuilder_Field_Filter_Contains_Boolean_Value_Test()
+        public void ODataFilterBuilder_Function_Call_Contains_Boolean_Value_Test()
         {
             ODataFilterBuilder builder = new ODataFilterBuilder();
 
@@ -105,7 +105,7 @@ namespace DomainFramework.Tests
         }
 
         [TestMethod]
-        public void ODataFilterBuilder_Field_Filter_Contains_Numeric_Value_And_Equals_String_Literal_Test()
+        public void ODataFilterBuilder_Filter_Contains_Numeric_Value_And_Equals_String_Literal_Test()
         {
             ODataFilterBuilder builder = new ODataFilterBuilder();
 
@@ -133,7 +133,7 @@ namespace DomainFramework.Tests
         }
 
         [TestMethod]
-        public void ODataFilterBuilder_Field_Filter_Contains_Numeric_Value_And_Equals_String_Literal_And_Field3_Equals_True_Test()
+        public void ODataFilterBuilder_Filter_Contains_Numeric_Value_And_Equals_String_Literal_And_Field3_Equals_True_Test()
         {
             ODataFilterBuilder builder = new ODataFilterBuilder();
 
@@ -173,7 +173,7 @@ namespace DomainFramework.Tests
         }
 
         [TestMethod]
-        public void ODataFilterBuilder_Field_Filter_Contains_Numeric_Value_And_Equals_String_Literal_Or_Field3_Equals_True_Test()
+        public void ODataFilterBuilder_Filter_Contains_Numeric_Value_And_Equals_String_Literal_Or_Field3_Equals_True_Test()
         {
             ODataFilterBuilder builder = new ODataFilterBuilder();
 
@@ -217,7 +217,7 @@ namespace DomainFramework.Tests
         }
 
         [TestMethod]
-        public void ODataFilterBuilder_Field_Filter_Contains_Numeric_Value_Or_Equals_String_Literal_And_Field3_Equals_True_Test()
+        public void ODataFilterBuilder_Filter_Contains_Numeric_Value_Or_Equals_String_Literal_And_Field3_Equals_True_Test()
         {
             ODataFilterBuilder builder = new ODataFilterBuilder();
 
@@ -269,7 +269,7 @@ namespace DomainFramework.Tests
         }
 
         [TestMethod]
-        public void ODataFilterBuilder_Field_Filter_Contains_String_Literal_And_Contains_String_Literal_Test()
+        public void ODataFilterBuilder_Filter_Contains_String_Literal_And_Contains_String_Literal_Test()
         {
             ODataFilterBuilder builder = new ODataFilterBuilder();
 
@@ -309,5 +309,48 @@ namespace DomainFramework.Tests
 
         }
 
+        [TestMethod]
+        public void ODataFilterBuilder_Filter_In_Test()
+        {
+            ODataFilterBuilder builder = new ODataFilterBuilder();
+
+            var filter = builder.Build("Field1 iN  ( 100,   2000  )");
+
+            var filterNode = (MultiValueOperatorFilterNode)filter.Single();
+
+            Assert.AreEqual("Field1", filterNode.FieldName);
+
+            Assert.AreEqual(FilterNode.In, filterNode.Name);
+
+            Assert.AreEqual(2, filterNode.FieldValues.Count());
+
+            Assert.AreEqual(100, filterNode.FieldValues.ElementAt(0));
+
+            Assert.AreEqual(2000, filterNode.FieldValues.ElementAt(1));
+        }
+
+        [TestMethod]
+        public void ODataFilterBuilder_Not_Field_Filter_In_Test()
+        {
+            ODataFilterBuilder builder = new ODataFilterBuilder();
+
+            var filter = builder.Build(" nOt Field1 iN  ( 100,   2000  )");
+
+            var notFilterNode = filter.ElementAt(0);
+
+            Assert.AreEqual(FilterNode.Not, notFilterNode);
+
+            var multiValueOperatorFilterNode = (MultiValueOperatorFilterNode)filter.ElementAt(1);
+
+            Assert.AreEqual("Field1", multiValueOperatorFilterNode.FieldName);
+
+            Assert.AreEqual(FilterNode.In, multiValueOperatorFilterNode.Name);
+
+            Assert.AreEqual(2, multiValueOperatorFilterNode.FieldValues.Count());
+
+            Assert.AreEqual(100, multiValueOperatorFilterNode.FieldValues.ElementAt(0));
+
+            Assert.AreEqual(2000, multiValueOperatorFilterNode.FieldValues.ElementAt(1));
+        }
     }
 }

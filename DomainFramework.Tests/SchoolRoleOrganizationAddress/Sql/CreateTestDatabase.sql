@@ -203,9 +203,9 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'a.[AddressId] AS "Id",
-        a.[Street] AS "Street"',
-        @tableName = N'Address a',
+        @selectList = N'    a.[AddressId] AS "Id",
+    a.[Street] AS "Street"',
+        @from = N'[SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Address] a',
         @count = @count OUTPUT
 
 END;
@@ -331,11 +331,11 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'o.[OrganizationId] AS "Id",
-        o.[Name] AS "Name",
-        o.[Phone_Number] AS "Phone.Number",
-        o.[AddressId] AS "AddressId"',
-        @tableName = N'Organization o',
+        @selectList = N'    o.[OrganizationId] AS "Id",
+    o.[Name] AS "Name",
+    o.[Phone_Number] AS "Phone.Number",
+    o.[AddressId] AS "AddressId"',
+        @from = N'[SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization] o',
         @count = @count OUTPUT
 
 END;
@@ -458,9 +458,9 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'o.[OrganizationId] AS "Id.OrganizationId",
-        o.[RoleId] AS "Id.RoleId"',
-        @tableName = N'OrganizationRole o',
+        @selectList = N'    o.[OrganizationId] AS "Id.OrganizationId",
+    o.[RoleId] AS "Id.RoleId"',
+        @from = N'[SchoolRoleOrganizationAddress].[SchoolBoundedContext].[OrganizationRole] o',
         @count = @count OUTPUT
 
 END;
@@ -558,10 +558,30 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'_q_.[Id] AS "Id",
-        _q_.[IsCharter] AS "IsCharter",
-        _q_.[_EntityType_] AS "_EntityType_"',
-        @tableName = N'Role _q_',
+        @selectList = N'    _q_.[Id] AS "Id",
+    _q_.[IsCharter] AS "IsCharter",
+    _q_.[_EntityType_] AS "_EntityType_"',
+        @from = N'
+(
+    SELECT
+        s.[SchoolId] AS "Id",
+        s.[IsCharter] AS "IsCharter",
+        1 AS "_EntityType_"
+    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[School] s
+    INNER JOIN [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Role] r
+        ON s.[SchoolId] = r.[RoleId]
+    UNION ALL
+    (
+        SELECT
+            r.[RoleId] AS "Id",
+            NULL AS "IsCharter",
+            2 AS "_EntityType_"
+        FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Role] r
+        LEFT OUTER JOIN [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[School] s
+            ON s.[SchoolId] = r.[RoleId]
+        WHERE s.[SchoolId] IS NULL
+    )
+) _q_',
         @count = @count OUTPUT
 
 END;
@@ -716,9 +736,11 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N's.[SchoolId] AS "Id",
-        s.[IsCharter] AS "IsCharter"',
-        @tableName = N'School s',
+        @selectList = N'    s.[SchoolId] AS "Id",
+    s.[IsCharter] AS "IsCharter"',
+        @from = N'[SchoolRoleOrganizationAddress].[SchoolBoundedContext].[School] s
+INNER JOIN [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Role] r
+    ON s.[SchoolId] = r.[RoleId]',
         @count = @count OUTPUT
 
 END;
@@ -746,7 +768,7 @@ CREATE PROCEDURE [pExecuteDynamicQuery]
 	@$skip NVARCHAR(10) = NULL,
 	@$top NVARCHAR(10) = NULL,
 	@selectList NVARCHAR(MAX),
-	@tableName NVARCHAR(64),
+	@from NVARCHAR(MAX),
 	@count INT OUTPUT
 AS
 BEGIN
@@ -760,7 +782,7 @@ BEGIN
 '
 	SELECT
 		 @cnt = COUNT(1)
-	FROM [' + @tableName + ']
+	FROM ' + @from + '
 ';
 
 	IF @$filter IS NOT NULL
@@ -775,7 +797,7 @@ BEGIN
 	SELECT
 	';
 
-	IF @$select = '*'
+	IF ISNULL(@$select, '*') = '*'
 	BEGIN
 		SET @sqlCommand = @sqlCommand + @selectList;
 	END
@@ -786,7 +808,7 @@ BEGIN
 
 	SET @sqlCommand = @sqlCommand +
 '
-	FROM [' + @tableName + '] s
+	FROM ' + @from + '
 ';
 
 	IF @$filter IS NOT NULL
@@ -833,3 +855,4 @@ BEGIN
 END;
 
 GO
+

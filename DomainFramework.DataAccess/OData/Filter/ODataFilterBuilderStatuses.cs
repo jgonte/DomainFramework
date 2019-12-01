@@ -5,6 +5,8 @@
         Initial,
         BuildingFieldFilter,
         BuildingFunctionCall,
-        BuildingFunctionCallParameters
+        BuildingFunctionCallParameters,
+        BuildingMultiValueOperator,
+        BuildingMultiValueOperatorValues
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DataAccess;
 using DomainFramework.Core;
+using System.Linq;
 
 namespace DomainFramework.DataAccess
 {
@@ -19,7 +20,14 @@ namespace DomainFramework.DataAccess
 
             if (queryParameters.Select != null)
             {
-                query.Parameters(p => p.Name("$select").Value(string.Join(", ", queryParameters.Select)));
+                if (queryParameters.Select.Any())
+                {
+                    query.Parameters(p => p.Name("$select").Value(string.Join(", ", queryParameters.Select)));
+                }
+                else
+                {
+                    query.Parameters(p => p.Name("$select").Value("*"));
+                }
             }
 
             if (queryParameters.Filter != null)

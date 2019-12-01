@@ -4,6 +4,10 @@
     {
         public static readonly string Like = "LIKE";
 
+        public static readonly string In = "IN";
+
+        public static readonly string NotIn = "NOT IN";
+
         public string Name { get; protected set; }
 
         public FilterNode()

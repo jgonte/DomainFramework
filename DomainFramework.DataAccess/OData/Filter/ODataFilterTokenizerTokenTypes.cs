@@ -10,6 +10,7 @@
         FunctionName,
         LogicalOperator,
         ComparisonOperator,
+        MultiValueOperator,
         FieldName,
         Comma
     }

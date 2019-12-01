@@ -302,6 +302,46 @@ namespace DomainFramework.Tests
         }
 
         [TestMethod]
+        public void ODataFilterTokenizer_In_Operator_Test()
+        {
+            ODataFilterTokenizer tokenizer = new ODataFilterTokenizer("iN(".ToCharArray());
+
+            var (type, value) = tokenizer.GetToken();
+
+            Assert.AreEqual(ODataFilterTokenizerTokenTypes.MultiValueOperator, type);
+
+            Assert.AreEqual("in", value);
+
+            (type, value) = tokenizer.GetToken();
+
+            Assert.AreEqual(ODataFilterTokenizerTokenTypes.OpeningParenthesis, type);
+
+            Assert.AreEqual("(", value);
+
+            Assert.IsTrue(tokenizer.End());
+        }
+
+        [TestMethod]
+        public void ODataFilterTokenizer_In_Operator_With_Trailing_Spaces_Test()
+        {
+            ODataFilterTokenizer tokenizer = new ODataFilterTokenizer("    In     (".ToCharArray());
+
+            var (type, value) = tokenizer.GetToken();
+
+            Assert.AreEqual(ODataFilterTokenizerTokenTypes.MultiValueOperator, type);
+
+            Assert.AreEqual("in", value);
+
+            (type, value) = tokenizer.GetToken();
+
+            Assert.AreEqual(ODataFilterTokenizerTokenTypes.OpeningParenthesis, type);
+
+            Assert.AreEqual("(", value);
+
+            Assert.IsTrue(tokenizer.End());
+        }
+
+        [TestMethod]
         public void ODataFilterTokenizer_Logical_Operator_Test()
         {
             ODataFilterTokenizer tokenizer = new ODataFilterTokenizer("aNd".ToCharArray());

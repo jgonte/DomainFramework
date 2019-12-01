@@ -141,9 +141,9 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'c.[ClassId] AS "Id",
-        c.[Name] AS "Name"',
-        @tableName = N'Class c',
+        @selectList = N'    c.[ClassId] AS "Id",
+    c.[Name] AS "Name"',
+        @from = N'[ClassesWithStudents].[ClassBoundedContext].[Class] c',
         @count = @count OUTPUT
 
 END;
@@ -252,10 +252,10 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N'c.[ClassId] AS "Id.ClassId",
-        c.[StudentId] AS "Id.StudentId",
-        c.[StartedDateTime] AS "StartedDateTime"',
-        @tableName = N'ClassEnrollment c',
+        @selectList = N'    c.[ClassId] AS "Id.ClassId",
+    c.[StudentId] AS "Id.StudentId",
+    c.[StartedDateTime] AS "StartedDateTime"',
+        @from = N'[ClassesWithStudents].[ClassBoundedContext].[ClassEnrollment] c',
         @count = @count OUTPUT
 
 END;
@@ -359,9 +359,9 @@ EXEC [dbo].[pExecuteDynamicQuery]
         @$orderby = @$orderby,
         @$skip = @$skip,
         @$top = @$top,
-        @selectList = N's.[StudentId] AS "Id",
-        s.[FirstName] AS "FirstName"',
-        @tableName = N'Student s',
+        @selectList = N'    s.[StudentId] AS "Id",
+    s.[FirstName] AS "FirstName"',
+        @from = N'[ClassesWithStudents].[ClassBoundedContext].[Student] s',
         @count = @count OUTPUT
 
 END;
@@ -402,7 +402,7 @@ CREATE PROCEDURE [pExecuteDynamicQuery]
 	@$skip NVARCHAR(10) = NULL,
 	@$top NVARCHAR(10) = NULL,
 	@selectList NVARCHAR(MAX),
-	@tableName NVARCHAR(64),
+	@from NVARCHAR(MAX),
 	@count INT OUTPUT
 AS
 BEGIN
@@ -416,7 +416,7 @@ BEGIN
 '
 	SELECT
 		 @cnt = COUNT(1)
-	FROM [' + @tableName + ']
+	FROM ' + @from + '
 ';
 
 	IF @$filter IS NOT NULL
@@ -431,7 +431,7 @@ BEGIN
 	SELECT
 	';
 
-	IF @$select = '*'
+	IF ISNULL(@$select, '*') = '*'
 	BEGIN
 		SET @sqlCommand = @sqlCommand + @selectList;
 	END
@@ -442,7 +442,7 @@ BEGIN
 
 	SET @sqlCommand = @sqlCommand +
 '
-	FROM [' + @tableName + '] s
+	FROM ' + @from + '
 ';
 
 	IF @$filter IS NOT NULL
@@ -489,3 +489,4 @@ BEGIN
 END;
 
 GO
+

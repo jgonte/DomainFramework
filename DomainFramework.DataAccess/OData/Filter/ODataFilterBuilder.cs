@@ -55,6 +55,10 @@ namespace DomainFramework.DataAccess
                             {
                                 _status = ODataFilterBuilderStatuses.BuildingFunctionCallParameters;
                             }
+                            else if (_status == ODataFilterBuilderStatuses.BuildingMultiValueOperator)
+                            {
+                                _status = ODataFilterBuilderStatuses.BuildingMultiValueOperatorValues;
+                            }
                             else
                             {
                                 throw new NotImplementedException();
@@ -69,6 +73,12 @@ namespace DomainFramework.DataAccess
                                 _filter.Enqueue(FilterNode.EndGrouping);
                             }
                             else if (_status == ODataFilterBuilderStatuses.BuildingFunctionCallParameters)
+                            {
+                                _filter.Enqueue(_filterNode);
+
+                                _status = ODataFilterBuilderStatuses.Initial;
+                            }
+                            else if (_status == ODataFilterBuilderStatuses.BuildingMultiValueOperatorValues)
                             {
                                 _filter.Enqueue(_filterNode);
 
@@ -167,6 +177,32 @@ namespace DomainFramework.DataAccess
                             }
                         }
                         break;
+                    case ODataFilterTokenizerTokenTypes.MultiValueOperator:
+                        {
+                            if (_status == ODataFilterBuilderStatuses.BuildingFieldFilter)
+                            {
+
+                                _status = ODataFilterBuilderStatuses.BuildingMultiValueOperator;
+
+                                switch (token)
+                                {
+                                    case "in":
+                                        {
+                                            _filterNode = new InOperatorFilterNode
+                                            {
+                                                FieldName = _fieldName
+                                            };
+                                        }
+                                        break;
+                                    default: throw new NotImplementedException();
+                                }
+                            }
+                            else
+                            {
+                                throw new NotImplementedException();
+                            }
+                        }
+                        break;
                     case ODataFilterTokenizerTokenTypes.StringLiteral:
                         {
                             SetFieldValue(token);
@@ -228,6 +264,17 @@ namespace DomainFramework.DataAccess
                 if (_filterNode is ISingleValue)
                 {
                     ((ISingleValue)_filterNode).FieldValue = value;
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+            else if (_status == ODataFilterBuilderStatuses.BuildingMultiValueOperatorValues)
+            {
+                if (_filterNode is IMultiValue)
+                {
+                    ((IMultiValue)_filterNode).FieldValues.Add(value);
                 }
                 else
                 {
