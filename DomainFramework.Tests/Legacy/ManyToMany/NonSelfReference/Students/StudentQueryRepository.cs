@@ -8,17 +8,17 @@ namespace DomainFramework.Tests
 {
     class StudentQueryRepository : Core.EntityQueryRepository<StudentEntity, Guid?>
     {
-        public override (int, IEnumerable<StudentEntity>) Get(CollectionQueryParameters parameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<StudentEntity>) Get(CollectionQueryParameters parameters)
         {
             throw new NotImplementedException();
         }
 
-        public override Task<(int, IEnumerable<StudentEntity>)> GetAsync(CollectionQueryParameters parameters, IAuthenticatedUser user)
+        public override Task<(int, IEnumerable<StudentEntity>)> GetAsync(CollectionQueryParameters parameters)
         {
             throw new NotImplementedException();
         }
 
-        public override StudentEntity GetById(Guid? id, IAuthenticatedUser user)
+        public override StudentEntity GetById(Guid? id)
         {
             var result = Query<StudentEntity>
                 .Single()
@@ -34,7 +34,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public override async Task<StudentEntity> GetByIdAsync(Guid? id, IAuthenticatedUser user)
+        public override async Task<StudentEntity> GetByIdAsync(Guid? id)
         {
             var result = await Query<StudentEntity>
                 .Single()
@@ -50,7 +50,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public IEnumerable<StudentEntity> GetForClass(Guid? id, IAuthenticatedUser user)
+        public IEnumerable<StudentEntity> GetForClass(Guid? id)
         {
             var result = Query<StudentEntity>
                 .Collection()
@@ -64,7 +64,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public async Task<IEnumerable<StudentEntity>> GetForClassAsync(Guid? id, IAuthenticatedUser user)
+        public async Task<IEnumerable<StudentEntity>> GetForClassAsync(Guid? id)
         {
             var result = await Query<StudentEntity>
                 .Collection()

@@ -39,17 +39,6 @@ namespace ClassesWithStudents.ClassBoundedContext
                     {
                         switch (selector)
                         {
-                            case "Students":
-                                {
-                                    var @class = (Class)dependencies.ElementAt(0).Entity;
-
-                                    cmd.Parameters(
-                                        p => p.Name("classId").Value(@class.Id),
-                                        p => p.Name("studentId").Value(entity.Id.StudentId)
-                                    );
-                                }
-                                break;
-
                             case "Classes":
                                 {
                                     var student = (Student)dependencies.ElementAt(0).Entity;
@@ -57,6 +46,17 @@ namespace ClassesWithStudents.ClassBoundedContext
                                     cmd.Parameters(
                                         p => p.Name("classId").Value(entity.Id.ClassId),
                                         p => p.Name("studentId").Value(student.Id)
+                                    );
+                                }
+                                break;
+
+                            case "Students":
+                                {
+                                    var @class = (Class)dependencies.ElementAt(0).Entity;
+
+                                    cmd.Parameters(
+                                        p => p.Name("classId").Value(@class.Id),
+                                        p => p.Name("studentId").Value(entity.Id.StudentId)
                                     );
                                 }
                                 break;

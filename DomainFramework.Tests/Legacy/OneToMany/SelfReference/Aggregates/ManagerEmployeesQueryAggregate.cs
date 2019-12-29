@@ -19,7 +19,7 @@ namespace DomainFramework.Tests
 
                 GetLinkedEntitiesAsync = async (repository, entity, user) =>
                 {
-                    var entities = await ((PersonQueryRepository4)repository).GetForManagerAsync(RootEntity.Id, user: null);
+                    var entities = await ((PersonQueryRepository4)repository).GetForManagerAsync(RootEntity.Id);
 
                     return entities.ToList();
                 }

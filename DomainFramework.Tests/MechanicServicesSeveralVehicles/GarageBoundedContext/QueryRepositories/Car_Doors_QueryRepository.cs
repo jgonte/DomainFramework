@@ -1,5 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
+using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,22 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 {
     public class Car_Doors_QueryRepository : ValueObjectQueryRepository<int?, Door>
     {
-        public override IEnumerable<Door> Get(int? carId, IAuthenticatedUser user)
+        public override (int, IEnumerable<Door>) Get(int? carId, CollectionQueryParameters queryParameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async override Task<(int, IEnumerable<Door>)> GetAsync(int? carId, CollectionQueryParameters queryParameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IEnumerable<Door> GetAll(int? carId)
         {
             var result = Query<Door>
                 .Collection()
                 .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
-                .StoredProcedure("[GarageBoundedContext].[pGet_Doors_For_Car]")
+                .StoredProcedure("[GarageBoundedContext].[pGetAll_Doors_For_Car]")
                 .Parameters(
                     p => p.Name("carId").Value(carId.Value)
                 )
@@ -23,12 +34,12 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
             return result.Data;
         }
 
-        public async override Task<IEnumerable<Door>> GetAsync(int? carId, IAuthenticatedUser user)
+        public async override Task<IEnumerable<Door>> GetAllAsync(int? carId)
         {
             var result = await Query<Door>
                 .Collection()
                 .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
-                .StoredProcedure("[GarageBoundedContext].[pGet_Doors_For_Car]")
+                .StoredProcedure("[GarageBoundedContext].[pGetAll_Doors_For_Car]")
                 .Parameters(
                     p => p.Name("carId").Value(carId.Value)
                 )

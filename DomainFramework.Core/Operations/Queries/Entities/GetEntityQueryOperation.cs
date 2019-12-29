@@ -11,14 +11,14 @@ namespace DomainFramework.Core
         {
             var repository = (IEntityQueryRepository)repositoryContext.GetQueryRepository(typeof(TEntity));
 
-            Entity = (TEntity)repository.GetById(entity.Id, user);
+            Entity = (TEntity)repository.GetById(entity.Id);
         }
 
         public async Task ExecuteAsync(IRepositoryContext repositoryContext, IEntity entity, IAuthenticatedUser user)
         {
             var repository = (IEntityQueryRepository)repositoryContext.GetQueryRepository(typeof(TEntity));
 
-            Entity = (TEntity)await repository.GetByIdAsync(entity.Id, user);
+            Entity = (TEntity)await repository.GetByIdAsync(entity.Id);
         }
     }
 }

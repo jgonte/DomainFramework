@@ -194,7 +194,7 @@ CREATE PROCEDURE [EmployeeBoundedContext].[pEmployee_Get]
     @count INT OUTPUT
 AS
 BEGIN
-EXEC [dbo].[pExecuteDynamicQuery]
+    EXEC [dbo].[pExecuteDynamicQuery]
         @$select = @$select,
         @$filter = @$filter,
         @$orderby = @$orderby,
@@ -211,6 +211,24 @@ EXEC [dbo].[pExecuteDynamicQuery]
 INNER JOIN [EmployeeWithDependants].[EmployeeBoundedContext].[Person] p
     ON e.[EmployeeId] = p.[PersonId]',
         @count = @count OUTPUT
+
+END;
+GO
+
+CREATE PROCEDURE [EmployeeBoundedContext].[pEmployee_GetAll]
+AS
+BEGIN
+    SELECT
+        e.[EmployeeId] AS "Id",
+        p.[Name] AS "Name",
+        p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
+        p.[CellPhone_Exchange] AS "CellPhone.Exchange",
+        p.[CellPhone_Number] AS "CellPhone.Number",
+        p.[ProviderEmployeeId] AS "ProviderEmployeeId",
+        e.[HireDate] AS "HireDate"
+    FROM [EmployeeWithDependants].[EmployeeBoundedContext].[Employee] e
+    INNER JOIN [EmployeeWithDependants].[EmployeeBoundedContext].[Person] p
+        ON e.[EmployeeId] = p.[PersonId];
 
 END;
 GO
@@ -321,7 +339,7 @@ CREATE PROCEDURE [EmployeeBoundedContext].[pPerson_Get]
     @count INT OUTPUT
 AS
 BEGIN
-EXEC [dbo].[pExecuteDynamicQuery]
+    EXEC [dbo].[pExecuteDynamicQuery]
         @$select = @$select,
         @$filter = @$filter,
         @$orderby = @$orderby,
@@ -371,6 +389,53 @@ EXEC [dbo].[pExecuteDynamicQuery]
 END;
 GO
 
+CREATE PROCEDURE [EmployeeBoundedContext].[pPerson_GetAll]
+AS
+BEGIN
+    SELECT
+        _q_.[Id] AS "Id",
+        _q_.[Name] AS "Name",
+        _q_.[CellPhone.AreaCode] AS "CellPhone.AreaCode",
+        _q_.[CellPhone.Exchange] AS "CellPhone.Exchange",
+        _q_.[CellPhone.Number] AS "CellPhone.Number",
+        _q_.[ProviderEmployeeId] AS "ProviderEmployeeId",
+        _q_.[HireDate] AS "HireDate",
+        _q_.[_EntityType_] AS "_EntityType_"
+    FROM 
+    (
+        SELECT
+            e.[EmployeeId] AS "Id",
+            p.[Name] AS "Name",
+            p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
+            p.[CellPhone_Exchange] AS "CellPhone.Exchange",
+            p.[CellPhone_Number] AS "CellPhone.Number",
+            p.[ProviderEmployeeId] AS "ProviderEmployeeId",
+            e.[HireDate] AS "HireDate",
+            1 AS "_EntityType_"
+        FROM [EmployeeWithDependants].[EmployeeBoundedContext].[Employee] e
+        INNER JOIN [EmployeeWithDependants].[EmployeeBoundedContext].[Person] p
+            ON e.[EmployeeId] = p.[PersonId]
+        UNION ALL
+        (
+            SELECT
+                p.[PersonId] AS "Id",
+                p.[Name] AS "Name",
+                p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
+                p.[CellPhone_Exchange] AS "CellPhone.Exchange",
+                p.[CellPhone_Number] AS "CellPhone.Number",
+                p.[ProviderEmployeeId] AS "ProviderEmployeeId",
+                NULL AS "HireDate",
+                2 AS "_EntityType_"
+            FROM [EmployeeWithDependants].[EmployeeBoundedContext].[Person] p
+            LEFT OUTER JOIN [EmployeeWithDependants].[EmployeeBoundedContext].[Employee] e
+                ON e.[EmployeeId] = p.[PersonId]
+            WHERE e.[EmployeeId] IS NULL
+        )
+    ) _q_;
+
+END;
+GO
+
 CREATE PROCEDURE [EmployeeBoundedContext].[pPerson_GetById]
     @personId INT
 AS
@@ -416,55 +481,6 @@ BEGIN
         )
     ) _q_
     WHERE _q_.[Id] = @personId;
-
-END;
-GO
-
-CREATE PROCEDURE [EmployeeBoundedContext].[pPerson_GetDependants_ForEmployee]
-    @providerEmployeeId INT
-AS
-BEGIN
-    SELECT
-        _q_.[Id] AS "Id",
-        _q_.[Name] AS "Name",
-        _q_.[CellPhone.AreaCode] AS "CellPhone.AreaCode",
-        _q_.[CellPhone.Exchange] AS "CellPhone.Exchange",
-        _q_.[CellPhone.Number] AS "CellPhone.Number",
-        _q_.[ProviderEmployeeId] AS "ProviderEmployeeId",
-        _q_.[HireDate] AS "HireDate",
-        _q_.[_EntityType_] AS "_EntityType_"
-    FROM 
-    (
-        SELECT
-            e.[EmployeeId] AS "Id",
-            p.[Name] AS "Name",
-            p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
-            p.[CellPhone_Exchange] AS "CellPhone.Exchange",
-            p.[CellPhone_Number] AS "CellPhone.Number",
-            p.[ProviderEmployeeId] AS "ProviderEmployeeId",
-            e.[HireDate] AS "HireDate",
-            1 AS "_EntityType_"
-        FROM [EmployeeWithDependants].[EmployeeBoundedContext].[Employee] e
-        INNER JOIN [EmployeeWithDependants].[EmployeeBoundedContext].[Person] p
-            ON e.[EmployeeId] = p.[PersonId]
-        UNION ALL
-        (
-            SELECT
-                p.[PersonId] AS "Id",
-                p.[Name] AS "Name",
-                p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
-                p.[CellPhone_Exchange] AS "CellPhone.Exchange",
-                p.[CellPhone_Number] AS "CellPhone.Number",
-                p.[ProviderEmployeeId] AS "ProviderEmployeeId",
-                NULL AS "HireDate",
-                2 AS "_EntityType_"
-            FROM [EmployeeWithDependants].[EmployeeBoundedContext].[Person] p
-            LEFT OUTER JOIN [EmployeeWithDependants].[EmployeeBoundedContext].[Employee] e
-                ON e.[EmployeeId] = p.[PersonId]
-            WHERE e.[EmployeeId] IS NULL
-        )
-    ) _q_
-    WHERE _q_.[ProviderEmployeeId] = @providerEmployeeId;
 
 END;
 GO

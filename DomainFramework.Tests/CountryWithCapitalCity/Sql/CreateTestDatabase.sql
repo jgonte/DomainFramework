@@ -133,7 +133,7 @@ CREATE PROCEDURE [CountryBoundedContext].[pCapitalCity_Get]
     @count INT OUTPUT
 AS
 BEGIN
-EXEC [dbo].[pExecuteDynamicQuery]
+    EXEC [dbo].[pExecuteDynamicQuery]
         @$select = @$select,
         @$filter = @$filter,
         @$orderby = @$orderby,
@@ -144,6 +144,18 @@ EXEC [dbo].[pExecuteDynamicQuery]
     c.[CountryCode] AS "CountryCode"',
         @from = N'[CountryWithCapitalCity].[CountryBoundedContext].[CapitalCity] c',
         @count = @count OUTPUT
+
+END;
+GO
+
+CREATE PROCEDURE [CountryBoundedContext].[pCapitalCity_GetAll]
+AS
+BEGIN
+    SELECT
+        c.[CapitalCityId] AS "Id",
+        c.[Name] AS "Name",
+        c.[CountryCode] AS "CountryCode"
+    FROM [CountryWithCapitalCity].[CountryBoundedContext].[CapitalCity] c;
 
 END;
 GO
@@ -162,7 +174,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [CountryBoundedContext].[pCapitalCity_GetCapitalCity_ForCountry]
+CREATE PROCEDURE [CountryBoundedContext].[pGet_CapitalCity_For_Country]
     @countryCode CHAR(2)
 AS
 BEGIN
@@ -270,7 +282,7 @@ CREATE PROCEDURE [CountryBoundedContext].[pCountry_Get]
     @count INT OUTPUT
 AS
 BEGIN
-EXEC [dbo].[pExecuteDynamicQuery]
+    EXEC [dbo].[pExecuteDynamicQuery]
         @$select = @$select,
         @$filter = @$filter,
         @$orderby = @$orderby,
@@ -285,6 +297,18 @@ EXEC [dbo].[pExecuteDynamicQuery]
 END;
 GO
 
+CREATE PROCEDURE [CountryBoundedContext].[pCountry_GetAll]
+AS
+BEGIN
+    SELECT
+        c.[CountryCode] AS "Id",
+        c.[Name] AS "Name",
+        c.[IsActive] AS "IsActive"
+    FROM [CountryWithCapitalCity].[CountryBoundedContext].[Country] c;
+
+END;
+GO
+
 CREATE PROCEDURE [CountryBoundedContext].[pCountry_GetById]
     @countryCode CHAR(2)
 AS
@@ -295,6 +319,22 @@ BEGIN
         c.[IsActive] AS "IsActive"
     FROM [CountryWithCapitalCity].[CountryBoundedContext].[Country] c
     WHERE c.[CountryCode] = @countryCode;
+
+END;
+GO
+
+CREATE PROCEDURE [CountryBoundedContext].[pGet_Country_For_CapitalCity]
+    @capitalCityId INT
+AS
+BEGIN
+    SELECT
+        c.[CountryCode] AS "Id",
+        c.[Name] AS "Name",
+        c.[IsActive] AS "IsActive"
+    FROM [CountryWithCapitalCity].[CountryBoundedContext].[Country] c
+    INNER JOIN [CountryWithCapitalCity].[CountryBoundedContext].[CapitalCity] c1
+        ON c.[CountryCode] = c1.[CountryCode]
+    WHERE c1.[CapitalCityId] = @capitalCityId;
 
 END;
 GO

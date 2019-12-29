@@ -18,7 +18,7 @@ namespace DomainFramework.Core
         {
             var repository = (IEntityQueryRepository)RepositoryContext.GetQueryRepository(typeof(TEntity));
 
-            RootEntity = (TEntity)repository.GetById(rootEntityId, user);
+            RootEntity = (TEntity)repository.GetById(rootEntityId);
 
             if (RootEntity == null) // Not found
             {
@@ -36,7 +36,7 @@ namespace DomainFramework.Core
         {
             var repository = (IEntityQueryRepository)RepositoryContext.GetQueryRepository(typeof(TEntity));
 
-            RootEntity = (TEntity)await repository.GetByIdAsync(rootEntityId, user);
+            RootEntity = (TEntity)await repository.GetByIdAsync(rootEntityId);
 
             if (RootEntity == null) // Not found
             {

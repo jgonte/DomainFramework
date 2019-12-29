@@ -18,7 +18,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
         }
 
         public PhoneNumberOutputDto GetCellPhoneDto(Person person) => 
-            new PhoneNumberOutputDto
+            (person.CellPhone.IsEmpty()) ? null : new PhoneNumberOutputDto
             {
                 AreaCode = person.CellPhone.AreaCode,
                 Exchange = person.CellPhone.Exchange,

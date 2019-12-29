@@ -125,7 +125,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             return Command
                 .NonQuery()
                 .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
-                .StoredProcedure("[EmployeeBoundedContext].[pPerson_DeleteSpouse]")
+                .StoredProcedure("[EmployeeBoundedContext].[pEmployee_DeleteSpouse]")
                 .Parameters(
                     p => p.Name("marriedToPersonId").Value(entity.Id)
                 );

@@ -24,10 +24,10 @@ namespace DomainFramework.Tests
             GetCapitalCityLoadOperation = new GetSingleLinkedEntityQueryOperation<CapitalCityEntity>
             {
                 GetLinkedEntity = (repository, entity, user) =>
-                    ((CapitalCityQueryRepository)repository).GetForCountry(RootEntity.Id, user),
+                    ((CapitalCityQueryRepository)repository).GetForCountry(RootEntity.Id),
 
                 GetLinkedEntityAsync = async (repository, entity, user) =>
-                    await ((CapitalCityQueryRepository)repository).GetForCountryAsync(RootEntity.Id, user)
+                    await ((CapitalCityQueryRepository)repository).GetForCountryAsync(RootEntity.Id)
             };
 
             QueryOperations.Enqueue(

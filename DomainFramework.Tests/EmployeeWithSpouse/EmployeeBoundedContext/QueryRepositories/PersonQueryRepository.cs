@@ -10,45 +10,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
 {
     public class PersonQueryRepository : EntityQueryRepository<Person, int?>
     {
-        public override Person GetById(int? personId, IAuthenticatedUser user)
-        {
-            var result = Query<Person>
-                .Single()
-                .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
-                .StoredProcedure("[EmployeeBoundedContext].[pPerson_GetById]")
-                .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
-                )
-                .MapTypes(
-                    7,
-                    tm => tm.Type(typeof(Employee)).Index(1),
-                    tm => tm.Type(typeof(Person)).Index(2)
-                )
-                .Execute();
-
-            return result.Data;
-        }
-
-        public async override Task<Person> GetByIdAsync(int? personId, IAuthenticatedUser user)
-        {
-            var result = await Query<Person>
-                .Single()
-                .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
-                .StoredProcedure("[EmployeeBoundedContext].[pPerson_GetById]")
-                .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
-                )
-                .MapTypes(
-                    7,
-                    tm => tm.Type(typeof(Employee)).Index(1),
-                    tm => tm.Type(typeof(Person)).Index(2)
-                )
-                .ExecuteAsync();
-
-            return result.Data;
-        }
-
-        public override (int, IEnumerable<Person>) Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<Person>) Get(CollectionQueryParameters queryParameters)
         {
             var result = Query<Person>
                 .Collection()
@@ -68,7 +30,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async override Task<(int, IEnumerable<Person>)> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<(int, IEnumerable<Person>)> GetAsync(CollectionQueryParameters queryParameters)
         {
             var result = await Query<Person>
                 .Collection()
@@ -88,14 +50,46 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public Person GetSpouseForPerson(int? marriedToPersonId, IAuthenticatedUser user)
+        public IEnumerable<Person> GetAll()
+        {
+            var result = Query<Person>
+                .Collection()
+                .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
+                .StoredProcedure("[EmployeeBoundedContext].[pPerson_GetAll]")
+                .MapTypes(
+                    7,
+                    tm => tm.Type(typeof(Employee)).Index(1),
+                    tm => tm.Type(typeof(Person)).Index(2)
+                )
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<IEnumerable<Person>> GetAllAsync()
+        {
+            var result = await Query<Person>
+                .Collection()
+                .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
+                .StoredProcedure("[EmployeeBoundedContext].[pPerson_GetAll]")
+                .MapTypes(
+                    7,
+                    tm => tm.Type(typeof(Employee)).Index(1),
+                    tm => tm.Type(typeof(Person)).Index(2)
+                )
+                .ExecuteAsync();
+
+            return result.Data;
+        }
+
+        public override Person GetById(int? personId)
         {
             var result = Query<Person>
                 .Single()
                 .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
-                .StoredProcedure("[EmployeeBoundedContext].[pPerson_GetSpouse_ForPerson]")
+                .StoredProcedure("[EmployeeBoundedContext].[pPerson_GetById]")
                 .Parameters(
-                    p => p.Name("marriedToPersonId").Value(marriedToPersonId.Value)
+                    p => p.Name("personId").Value(personId.Value)
                 )
                 .MapTypes(
                     7,
@@ -107,14 +101,14 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             return result.Data;
         }
 
-        public async Task<Person> GetSpouseForPersonAsync(int? marriedToPersonId, IAuthenticatedUser user)
+        public async override Task<Person> GetByIdAsync(int? personId)
         {
             var result = await Query<Person>
                 .Single()
                 .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
-                .StoredProcedure("[EmployeeBoundedContext].[pPerson_GetSpouse_ForPerson]")
+                .StoredProcedure("[EmployeeBoundedContext].[pPerson_GetById]")
                 .Parameters(
-                    p => p.Name("marriedToPersonId").Value(marriedToPersonId.Value)
+                    p => p.Name("personId").Value(personId.Value)
                 )
                 .MapTypes(
                     7,

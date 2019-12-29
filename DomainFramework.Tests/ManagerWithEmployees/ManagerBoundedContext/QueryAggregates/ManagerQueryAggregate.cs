@@ -26,10 +26,10 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
             GetEmployeesQueryOperation = new GetCollectionLinkedEntityQueryOperation<Employee>
             {
-                GetLinkedEntities = (repository, entity, user) => ((EmployeeQueryRepository)repository).GetEmployeesForManager(RootEntity.Id, user).ToList(),
+                GetLinkedEntities = (repository, entity, user) => ((EmployeeQueryRepository)repository).GetAllEmployeesForManager(RootEntity.Id).ToList(),
                 GetLinkedEntitiesAsync = async (repository, entity, user) =>
                 {
-                    var entities = await ((EmployeeQueryRepository)repository).GetEmployeesForManagerAsync(RootEntity.Id, user);
+                    var entities = await ((EmployeeQueryRepository)repository).GetAllEmployeesForManagerAsync(RootEntity.Id);
 
                     return entities.ToList();
                 }

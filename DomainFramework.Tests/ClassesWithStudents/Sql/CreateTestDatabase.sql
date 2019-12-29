@@ -135,7 +135,7 @@ CREATE PROCEDURE [ClassBoundedContext].[pClass_Get]
     @count INT OUTPUT
 AS
 BEGIN
-EXEC [dbo].[pExecuteDynamicQuery]
+    EXEC [dbo].[pExecuteDynamicQuery]
         @$select = @$select,
         @$filter = @$filter,
         @$orderby = @$orderby,
@@ -145,6 +145,32 @@ EXEC [dbo].[pExecuteDynamicQuery]
     c.[Name] AS "Name"',
         @from = N'[ClassesWithStudents].[ClassBoundedContext].[Class] c',
         @count = @count OUTPUT
+
+END;
+GO
+
+CREATE PROCEDURE [ClassBoundedContext].[pClass_GetAll]
+AS
+BEGIN
+    SELECT
+        c.[ClassId] AS "Id",
+        c.[Name] AS "Name"
+    FROM [ClassesWithStudents].[ClassBoundedContext].[Class] c;
+
+END;
+GO
+
+CREATE PROCEDURE [ClassBoundedContext].[pGetAll_Classes_For_Student]
+    @studentId INT
+AS
+BEGIN
+    SELECT
+        c.[ClassId] AS "Id",
+        c.[Name] AS "Name"
+    FROM [ClassesWithStudents].[ClassBoundedContext].[Class] c
+    INNER JOIN [ClassesWithStudents].[ClassBoundedContext].[ClassEnrollment] c1
+        ON c.[ClassId] = c1.[ClassId]
+    WHERE c1.[StudentId] = @studentId;
 
 END;
 GO
@@ -237,46 +263,6 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [ClassBoundedContext].[pClassEnrollment_Get]
-    @$select NVARCHAR(MAX) = NULL,
-    @$filter NVARCHAR(MAX) = NULL,
-    @$orderby NVARCHAR(MAX) = NULL,
-    @$skip NVARCHAR(10) = NULL,
-    @$top NVARCHAR(10) = NULL,
-    @count INT OUTPUT
-AS
-BEGIN
-EXEC [dbo].[pExecuteDynamicQuery]
-        @$select = @$select,
-        @$filter = @$filter,
-        @$orderby = @$orderby,
-        @$skip = @$skip,
-        @$top = @$top,
-        @selectList = N'    c.[ClassId] AS "Id.ClassId",
-    c.[StudentId] AS "Id.StudentId",
-    c.[StartedDateTime] AS "StartedDateTime"',
-        @from = N'[ClassesWithStudents].[ClassBoundedContext].[ClassEnrollment] c',
-        @count = @count OUTPUT
-
-END;
-GO
-
-CREATE PROCEDURE [ClassBoundedContext].[pClassEnrollment_GetById]
-    @classId INT,
-    @studentId INT
-AS
-BEGIN
-    SELECT
-        c.[ClassId] AS "Id.ClassId",
-        c.[StudentId] AS "Id.StudentId",
-        c.[StartedDateTime] AS "StartedDateTime"
-    FROM [ClassesWithStudents].[ClassBoundedContext].[ClassEnrollment] c
-    WHERE c.[ClassId] = @classId
-    AND c.[StudentId] = @studentId;
-
-END;
-GO
-
 CREATE PROCEDURE [ClassBoundedContext].[pStudent_DeleteClasses]
     @studentId INT
 AS
@@ -353,7 +339,7 @@ CREATE PROCEDURE [ClassBoundedContext].[pStudent_Get]
     @count INT OUTPUT
 AS
 BEGIN
-EXEC [dbo].[pExecuteDynamicQuery]
+    EXEC [dbo].[pExecuteDynamicQuery]
         @$select = @$select,
         @$filter = @$filter,
         @$orderby = @$orderby,
@@ -363,6 +349,32 @@ EXEC [dbo].[pExecuteDynamicQuery]
     s.[FirstName] AS "FirstName"',
         @from = N'[ClassesWithStudents].[ClassBoundedContext].[Student] s',
         @count = @count OUTPUT
+
+END;
+GO
+
+CREATE PROCEDURE [ClassBoundedContext].[pStudent_GetAll]
+AS
+BEGIN
+    SELECT
+        s.[StudentId] AS "Id",
+        s.[FirstName] AS "FirstName"
+    FROM [ClassesWithStudents].[ClassBoundedContext].[Student] s;
+
+END;
+GO
+
+CREATE PROCEDURE [ClassBoundedContext].[pGetAll_Students_For_Class]
+    @classId INT
+AS
+BEGIN
+    SELECT
+        s.[StudentId] AS "Id",
+        s.[FirstName] AS "FirstName"
+    FROM [ClassesWithStudents].[ClassBoundedContext].[Student] s
+    INNER JOIN [ClassesWithStudents].[ClassBoundedContext].[ClassEnrollment] c
+        ON s.[StudentId] = c.[StudentId]
+    WHERE c.[ClassId] = @classId;
 
 END;
 GO
@@ -380,17 +392,36 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [ClassBoundedContext].[pStudent_GetStudents_ForClassEnrollment]
-    @classId INT
+CREATE PROCEDURE [ClassBoundedContext].[pGet_Students_For_Class]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        s.[StudentId] AS "Id",
-        s.[FirstName] AS "FirstName"
-    FROM [ClassesWithStudents].[ClassBoundedContext].[Student] s
-    INNER JOIN [ClassesWithStudents].[ClassBoundedContext].[ClassEnrollment] c
-        ON s.[StudentId] = c.[StudentId]
-    WHERE c.[ClassId] = @classId;
+    IF @$filter IS NULL
+    BEGIN
+        SET @$filter = N'c.[ClassId] = @classId';
+    END
+    ELSE
+    BEGIN
+        SET @$filter = N'c.[ClassId] = @classId AND ' + @$filter;
+    END;
+
+    EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'    s.[StudentId] AS "Id",
+    s.[FirstName] AS "FirstName"',
+        @from = N'[ClassesWithStudents].[ClassBoundedContext].[Student] s
+INNER JOIN [ClassesWithStudents].[ClassBoundedContext].[ClassEnrollment] c
+    ON s.[StudentId] = c.[StudentId]',
+        @count = @count OUTPUT
 
 END;
 GO

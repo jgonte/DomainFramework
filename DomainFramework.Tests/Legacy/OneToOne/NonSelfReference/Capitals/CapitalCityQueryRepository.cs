@@ -7,17 +7,17 @@ namespace DomainFramework.Tests
 {
     class CapitalCityQueryRepository : Core.EntityQueryRepository<CapitalCityEntity, int?>
     {
-        public override (int, IEnumerable<CapitalCityEntity>) Get(CollectionQueryParameters parameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<CapitalCityEntity>) Get(CollectionQueryParameters parameters)
         {
             throw new System.NotImplementedException();
         }
 
-        public override Task<(int, IEnumerable<CapitalCityEntity>)> GetAsync(CollectionQueryParameters parameters, IAuthenticatedUser user)
+        public override Task<(int, IEnumerable<CapitalCityEntity>)> GetAsync(CollectionQueryParameters parameters)
         {
             throw new System.NotImplementedException();
         }
 
-        public override CapitalCityEntity GetById(int? id, IAuthenticatedUser user)
+        public override CapitalCityEntity GetById(int? id)
         {
             var result = Query<CapitalCityEntity>
                 .Single()
@@ -39,7 +39,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public override async Task<CapitalCityEntity> GetByIdAsync(int? id, IAuthenticatedUser user)
+        public override async Task<CapitalCityEntity> GetByIdAsync(int? id)
         {
             var result = await Query<CapitalCityEntity>
                 .Single()
@@ -61,7 +61,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public CapitalCityEntity GetForCountry(string countryCode, IAuthenticatedUser user)
+        public CapitalCityEntity GetForCountry(string countryCode)
         {
             var result = Query<CapitalCityEntity>
                 .Single()
@@ -83,7 +83,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public async Task<CapitalCityEntity> GetForCountryAsync(string countryCode, IAuthenticatedUser user)
+        public async Task<CapitalCityEntity> GetForCountryAsync(string countryCode)
         {
             var result = await Query<CapitalCityEntity>
                 .Single()

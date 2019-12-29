@@ -10,45 +10,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
 {
     public class EmployeeQueryRepository : EntityQueryRepository<Employee, int?>
     {
-        public override Employee GetById(int? employeeId, IAuthenticatedUser user)
-        {
-            var result = Query<Employee>
-                .Single()
-                .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
-                .StoredProcedure("[ExecutiveBoundedContext].[pEmployee_GetById]")
-                .Parameters(
-                    p => p.Name("employeeId").Value(employeeId.Value)
-                )
-                .MapTypes(
-                    5,
-                    tm => tm.Type(typeof(Executive)).Index(1),
-                    tm => tm.Type(typeof(Employee)).Index(2)
-                )
-                .Execute();
-
-            return result.Data;
-        }
-
-        public async override Task<Employee> GetByIdAsync(int? employeeId, IAuthenticatedUser user)
-        {
-            var result = await Query<Employee>
-                .Single()
-                .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
-                .StoredProcedure("[ExecutiveBoundedContext].[pEmployee_GetById]")
-                .Parameters(
-                    p => p.Name("employeeId").Value(employeeId.Value)
-                )
-                .MapTypes(
-                    5,
-                    tm => tm.Type(typeof(Executive)).Index(1),
-                    tm => tm.Type(typeof(Employee)).Index(2)
-                )
-                .ExecuteAsync();
-
-            return result.Data;
-        }
-
-        public override (int, IEnumerable<Employee>) Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<Employee>) Get(CollectionQueryParameters queryParameters)
         {
             var result = Query<Employee>
                 .Collection()
@@ -68,7 +30,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async override Task<(int, IEnumerable<Employee>)> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<(int, IEnumerable<Employee>)> GetAsync(CollectionQueryParameters queryParameters)
         {
             var result = await Query<Employee>
                 .Collection()
@@ -86,6 +48,76 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             var count = (string)result.GetParameter("count").Value;
 
             return (int.Parse(count), result.Data);
+        }
+
+        public IEnumerable<Employee> GetAll()
+        {
+            var result = Query<Employee>
+                .Collection()
+                .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
+                .StoredProcedure("[ExecutiveBoundedContext].[pEmployee_GetAll]")
+                .MapTypes(
+                    5,
+                    tm => tm.Type(typeof(Executive)).Index(1),
+                    tm => tm.Type(typeof(Employee)).Index(2)
+                )
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<IEnumerable<Employee>> GetAllAsync()
+        {
+            var result = await Query<Employee>
+                .Collection()
+                .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
+                .StoredProcedure("[ExecutiveBoundedContext].[pEmployee_GetAll]")
+                .MapTypes(
+                    5,
+                    tm => tm.Type(typeof(Executive)).Index(1),
+                    tm => tm.Type(typeof(Employee)).Index(2)
+                )
+                .ExecuteAsync();
+
+            return result.Data;
+        }
+
+        public override Employee GetById(int? employeeId)
+        {
+            var result = Query<Employee>
+                .Single()
+                .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
+                .StoredProcedure("[ExecutiveBoundedContext].[pEmployee_GetById]")
+                .Parameters(
+                    p => p.Name("employeeId").Value(employeeId.Value)
+                )
+                .MapTypes(
+                    5,
+                    tm => tm.Type(typeof(Executive)).Index(1),
+                    tm => tm.Type(typeof(Employee)).Index(2)
+                )
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async override Task<Employee> GetByIdAsync(int? employeeId)
+        {
+            var result = await Query<Employee>
+                .Single()
+                .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
+                .StoredProcedure("[ExecutiveBoundedContext].[pEmployee_GetById]")
+                .Parameters(
+                    p => p.Name("employeeId").Value(employeeId.Value)
+                )
+                .MapTypes(
+                    5,
+                    tm => tm.Type(typeof(Executive)).Index(1),
+                    tm => tm.Type(typeof(Employee)).Index(2)
+                )
+                .ExecuteAsync();
+
+            return result.Data;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

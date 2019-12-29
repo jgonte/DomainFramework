@@ -273,7 +273,7 @@ CREATE PROCEDURE [GarageBoundedContext].[pCar_Get]
     @count INT OUTPUT
 AS
 BEGIN
-EXEC [dbo].[pExecuteDynamicQuery]
+    EXEC [dbo].[pExecuteDynamicQuery]
         @$select = @$select,
         @$filter = @$filter,
         @$orderby = @$orderby,
@@ -287,6 +287,21 @@ EXEC [dbo].[pExecuteDynamicQuery]
 INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
     ON c.[CarId] = v.[VehicleId]',
         @count = @count OUTPUT
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pCar_GetAll]
+AS
+BEGIN
+    SELECT
+        c.[CarId] AS "Id",
+        v.[Model] AS "Model",
+        v.[MechanicId] AS "MechanicId",
+        c.[Passengers] AS "Passengers"
+    FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car] c
+    INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
+        ON c.[CarId] = v.[VehicleId];
 
 END;
 GO
@@ -384,7 +399,7 @@ CREATE PROCEDURE [GarageBoundedContext].[pMechanic_Get]
     @count INT OUTPUT
 AS
 BEGIN
-EXEC [dbo].[pExecuteDynamicQuery]
+    EXEC [dbo].[pExecuteDynamicQuery]
         @$select = @$select,
         @$filter = @$filter,
         @$orderby = @$orderby,
@@ -398,6 +413,17 @@ EXEC [dbo].[pExecuteDynamicQuery]
 END;
 GO
 
+CREATE PROCEDURE [GarageBoundedContext].[pMechanic_GetAll]
+AS
+BEGIN
+    SELECT
+        m.[MechanicId] AS "Id",
+        m.[Name] AS "Name"
+    FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Mechanic] m;
+
+END;
+GO
+
 CREATE PROCEDURE [GarageBoundedContext].[pMechanic_GetById]
     @mechanicId INT
 AS
@@ -407,21 +433,6 @@ BEGIN
         m.[Name] AS "Name"
     FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Mechanic] m
     WHERE m.[MechanicId] = @mechanicId;
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pMechanic_GetMechanic_ForVehicle]
-    @vehicleId INT
-AS
-BEGIN
-    SELECT
-        m.[MechanicId] AS "Id",
-        m.[Name] AS "Name"
-    FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Mechanic] m
-    INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
-        ON m.[MechanicId] = v.[MechanicId]
-    WHERE v.[VehicleId] = @vehicleId;
 
 END;
 GO
@@ -531,7 +542,7 @@ CREATE PROCEDURE [GarageBoundedContext].[pTruck_Get]
     @count INT OUTPUT
 AS
 BEGIN
-EXEC [dbo].[pExecuteDynamicQuery]
+    EXEC [dbo].[pExecuteDynamicQuery]
         @$select = @$select,
         @$filter = @$filter,
         @$orderby = @$orderby,
@@ -545,6 +556,21 @@ EXEC [dbo].[pExecuteDynamicQuery]
 INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
     ON t.[TruckId] = v.[VehicleId]',
         @count = @count OUTPUT
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pTruck_GetAll]
+AS
+BEGIN
+    SELECT
+        t.[TruckId] AS "Id",
+        v.[Model] AS "Model",
+        v.[MechanicId] AS "MechanicId",
+        t.[Weight] AS "Weight"
+    FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck] t
+    INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
+        ON t.[TruckId] = v.[VehicleId];
 
 END;
 GO
@@ -647,7 +673,7 @@ CREATE PROCEDURE [GarageBoundedContext].[pVehicle_Get]
     @count INT OUTPUT
 AS
 BEGIN
-EXEC [dbo].[pExecuteDynamicQuery]
+    EXEC [dbo].[pExecuteDynamicQuery]
         @$select = @$select,
         @$filter = @$filter,
         @$orderby = @$orderby,
@@ -703,6 +729,63 @@ EXEC [dbo].[pExecuteDynamicQuery]
     )
 ) _q_',
         @count = @count OUTPUT
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pVehicle_GetAll]
+AS
+BEGIN
+    SELECT
+        _q_.[Id] AS "Id",
+        _q_.[Model] AS "Model",
+        _q_.[MechanicId] AS "MechanicId",
+        _q_.[Weight] AS "Weight",
+        _q_.[Passengers] AS "Passengers",
+        _q_.[_EntityType_] AS "_EntityType_"
+    FROM 
+    (
+        SELECT
+            t.[TruckId] AS "Id",
+            v.[Model] AS "Model",
+            v.[MechanicId] AS "MechanicId",
+            t.[Weight] AS "Weight",
+            NULL AS "Passengers",
+            1 AS "_EntityType_"
+        FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck] t
+        INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
+            ON t.[TruckId] = v.[VehicleId]
+        UNION ALL
+        (
+            SELECT
+                c.[CarId] AS "Id",
+                v.[Model] AS "Model",
+                v.[MechanicId] AS "MechanicId",
+                NULL AS "Weight",
+                c.[Passengers] AS "Passengers",
+                2 AS "_EntityType_"
+            FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car] c
+            INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
+                ON c.[CarId] = v.[VehicleId]
+        )
+        UNION ALL
+        (
+            SELECT
+                v.[VehicleId] AS "Id",
+                v.[Model] AS "Model",
+                v.[MechanicId] AS "MechanicId",
+                NULL AS "Weight",
+                NULL AS "Passengers",
+                3 AS "_EntityType_"
+            FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
+            LEFT OUTER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck] t
+                ON t.[TruckId] = v.[VehicleId]
+            LEFT OUTER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car] c
+                ON c.[CarId] = v.[VehicleId]
+            WHERE t.[TruckId] IS NULL
+            AND c.[CarId] IS NULL
+        )
+    ) _q_;
 
 END;
 GO
@@ -766,65 +849,6 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [GarageBoundedContext].[pVehicle_GetVehicle_ForMechanic]
-    @mechanicId INT
-AS
-BEGIN
-    SELECT
-        _q_.[Id] AS "Id",
-        _q_.[Model] AS "Model",
-        _q_.[MechanicId] AS "MechanicId",
-        _q_.[Weight] AS "Weight",
-        _q_.[Passengers] AS "Passengers",
-        _q_.[_EntityType_] AS "_EntityType_"
-    FROM 
-    (
-        SELECT
-            t.[TruckId] AS "Id",
-            v.[Model] AS "Model",
-            v.[MechanicId] AS "MechanicId",
-            t.[Weight] AS "Weight",
-            NULL AS "Passengers",
-            1 AS "_EntityType_"
-        FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck] t
-        INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
-            ON t.[TruckId] = v.[VehicleId]
-        UNION ALL
-        (
-            SELECT
-                c.[CarId] AS "Id",
-                v.[Model] AS "Model",
-                v.[MechanicId] AS "MechanicId",
-                NULL AS "Weight",
-                c.[Passengers] AS "Passengers",
-                2 AS "_EntityType_"
-            FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car] c
-            INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
-                ON c.[CarId] = v.[VehicleId]
-        )
-        UNION ALL
-        (
-            SELECT
-                v.[VehicleId] AS "Id",
-                v.[Model] AS "Model",
-                v.[MechanicId] AS "MechanicId",
-                NULL AS "Weight",
-                NULL AS "Passengers",
-                3 AS "_EntityType_"
-            FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
-            LEFT OUTER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck] t
-                ON t.[TruckId] = v.[VehicleId]
-            LEFT OUTER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car] c
-                ON c.[CarId] = v.[VehicleId]
-            WHERE t.[TruckId] IS NULL
-            AND c.[CarId] IS NULL
-        )
-    ) _q_
-    WHERE _q_.[MechanicId] = @mechanicId;
-
-END;
-GO
-
 CREATE PROCEDURE [GarageBoundedContext].[pDelete_Cylinders_For_Vehicle]
     @vehicleId INT
 AS
@@ -854,7 +878,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [GarageBoundedContext].[pGet_Cylinders_For_Vehicle]
+CREATE PROCEDURE [GarageBoundedContext].[pGetAll_Cylinders_For_Vehicle]
     @vehicleId INT
 AS
 BEGIN
@@ -938,7 +962,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [GarageBoundedContext].[pGet_Doors_For_Car]
+CREATE PROCEDURE [GarageBoundedContext].[pGetAll_Doors_For_Car]
     @carId INT
 AS
 BEGIN

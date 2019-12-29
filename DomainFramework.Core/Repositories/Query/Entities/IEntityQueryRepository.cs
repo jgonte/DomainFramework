@@ -8,12 +8,12 @@ namespace DomainFramework.Core
     /// </summary>
     public interface IEntityQueryRepository : IQueryRepository
     {
-        IEntity GetById(object id, IAuthenticatedUser user);
+        IEntity GetById(object id);
 
-        Task<IEntity> GetByIdAsync(object id, IAuthenticatedUser user);
+        Task<IEntity> GetByIdAsync(object id);
 
-        (int, IEnumerable<IEntity>) Get(CollectionQueryParameters parameters, IAuthenticatedUser user);
+        (int, IEnumerable<IEntity>) Get(CollectionQueryParameters parameters);
 
-        Task<(int, IEnumerable<IEntity>)> GetAsync(CollectionQueryParameters parameters, IAuthenticatedUser user);
+        Task<(int, IEnumerable<IEntity>)> GetAsync(CollectionQueryParameters parameters);
     }
 }

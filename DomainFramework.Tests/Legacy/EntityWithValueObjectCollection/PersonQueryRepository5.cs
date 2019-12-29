@@ -7,17 +7,17 @@ namespace DomainFramework.Tests
 {
     class PersonQueryRepository5 : EntityQueryRepository<PersonEntity4, int?>
     {
-        public override (int, IEnumerable<PersonEntity4>) Get(CollectionQueryParameters parameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<PersonEntity4>) Get(CollectionQueryParameters parameters)
         {
             throw new System.NotImplementedException();
         }
 
-        public override Task<(int, IEnumerable<PersonEntity4>)> GetAsync(CollectionQueryParameters parameters, IAuthenticatedUser user)
+        public override Task<(int, IEnumerable<PersonEntity4>)> GetAsync(CollectionQueryParameters parameters)
         {
             throw new System.NotImplementedException();
         }
 
-        public override PersonEntity4 GetById(int? id, IAuthenticatedUser user)
+        public override PersonEntity4 GetById(int? id)
         {
             var result = Query<PersonEntity4>
                 .Single()
@@ -31,7 +31,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public override async Task<PersonEntity4> GetByIdAsync(int? id, IAuthenticatedUser user)
+        public override async Task<PersonEntity4> GetByIdAsync(int? id)
         {
             var result = await Query<PersonEntity4>
                 .Single()

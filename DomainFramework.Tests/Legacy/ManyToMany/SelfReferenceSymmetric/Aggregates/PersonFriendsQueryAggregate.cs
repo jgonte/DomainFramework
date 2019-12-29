@@ -20,11 +20,11 @@ namespace DomainFramework.Tests
             GetFriendsLoadOperation = new GetCollectionLinkedEntityQueryOperation<PersonEntity>
             {
                 GetLinkedEntities = (repository, entity, user) =>
-                    ((PersonQueryRepository3)repository).GetForPerson(RootEntity.Id, user).ToList(),
+                    ((PersonQueryRepository3)repository).GetForPerson(RootEntity.Id).ToList(),
 
                 GetLinkedEntitiesAsync = async (repository, entity, user) =>
                 {
-                    var entities = await ((PersonQueryRepository3)repository).GetForPersonAsync(RootEntity.Id, user: null);
+                    var entities = await ((PersonQueryRepository3)repository).GetForPersonAsync(RootEntity.Id);
 
                     return entities.ToList();
                 }

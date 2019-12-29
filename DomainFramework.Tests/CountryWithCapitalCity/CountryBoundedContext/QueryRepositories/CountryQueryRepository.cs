@@ -10,35 +10,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 {
     public class CountryQueryRepository : EntityQueryRepository<Country, string>
     {
-        public override Country GetById(string countryCode, IAuthenticatedUser user)
-        {
-            var result = Query<Country>
-                .Single()
-                .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
-                .StoredProcedure("[CountryBoundedContext].[pCountry_GetById]")
-                .Parameters(
-                    p => p.Name("countryCode").Value(countryCode)
-                )
-                .Execute();
-
-            return result.Data;
-        }
-
-        public async override Task<Country> GetByIdAsync(string countryCode, IAuthenticatedUser user)
-        {
-            var result = await Query<Country>
-                .Single()
-                .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
-                .StoredProcedure("[CountryBoundedContext].[pCountry_GetById]")
-                .Parameters(
-                    p => p.Name("countryCode").Value(countryCode)
-                )
-                .ExecuteAsync();
-
-            return result.Data;
-        }
-
-        public override (int, IEnumerable<Country>) Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<Country>) Get(CollectionQueryParameters queryParameters)
         {
             var result = Query<Country>
                 .Collection()
@@ -53,7 +25,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async override Task<(int, IEnumerable<Country>)> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<(int, IEnumerable<Country>)> GetAsync(CollectionQueryParameters queryParameters)
         {
             var result = await Query<Country>
                 .Collection()
@@ -66,6 +38,84 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             var count = (string)result.GetParameter("count").Value;
 
             return (int.Parse(count), result.Data);
+        }
+
+        public IEnumerable<Country> GetAll()
+        {
+            var result = Query<Country>
+                .Collection()
+                .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
+                .StoredProcedure("[CountryBoundedContext].[pCountry_GetAll]")
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<IEnumerable<Country>> GetAllAsync()
+        {
+            var result = await Query<Country>
+                .Collection()
+                .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
+                .StoredProcedure("[CountryBoundedContext].[pCountry_GetAll]")
+                .ExecuteAsync();
+
+            return result.Data;
+        }
+
+        public override Country GetById(string countryCode)
+        {
+            var result = Query<Country>
+                .Single()
+                .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
+                .StoredProcedure("[CountryBoundedContext].[pCountry_GetById]")
+                .Parameters(
+                    p => p.Name("countryCode").Value(countryCode)
+                )
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async override Task<Country> GetByIdAsync(string countryCode)
+        {
+            var result = await Query<Country>
+                .Single()
+                .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
+                .StoredProcedure("[CountryBoundedContext].[pCountry_GetById]")
+                .Parameters(
+                    p => p.Name("countryCode").Value(countryCode)
+                )
+                .ExecuteAsync();
+
+            return result.Data;
+        }
+
+        public Country GetCountryForCapitalCity(int? capitalCityId)
+        {
+            var result = Query<Country>
+                .Single()
+                .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
+                .StoredProcedure("[CountryBoundedContext].[pGet_Country_For_CapitalCity]")
+                .Parameters(
+                    p => p.Name("capitalCityId").Value(capitalCityId.Value)
+                )
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<Country> GetCountryForCapitalCityAsync(int? capitalCityId)
+        {
+            var result = await Query<Country>
+                .Single()
+                .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
+                .StoredProcedure("[CountryBoundedContext].[pGet_Country_For_CapitalCity]")
+                .Parameters(
+                    p => p.Name("capitalCityId").Value(capitalCityId.Value)
+                )
+                .ExecuteAsync();
+
+            return result.Data;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

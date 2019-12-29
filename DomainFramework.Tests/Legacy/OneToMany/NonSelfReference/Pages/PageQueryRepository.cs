@@ -7,17 +7,17 @@ namespace DomainFramework.Tests
 {
     public class PageQueryRepository : EntityQueryRepository<PageEntity, int?>
     {
-        public override (int, IEnumerable<PageEntity>) Get(CollectionQueryParameters parameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<PageEntity>) Get(CollectionQueryParameters parameters)
         {
             throw new System.NotImplementedException();
         }
 
-        public override Task<(int, IEnumerable<PageEntity>)> GetAsync(CollectionQueryParameters parameters, IAuthenticatedUser user)
+        public override Task<(int, IEnumerable<PageEntity>)> GetAsync(CollectionQueryParameters parameters)
         {
             throw new System.NotImplementedException();
         }
 
-        public override PageEntity GetById(int? id, IAuthenticatedUser user)
+        public override PageEntity GetById(int? id)
         {
             var result = Query<PageEntity>
                 .Single()
@@ -39,7 +39,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public override async Task<PageEntity> GetByIdAsync(int? id, IAuthenticatedUser user)
+        public override async Task<PageEntity> GetByIdAsync(int? id)
         {
             var result = await Query<PageEntity>
                 .Single()
@@ -61,7 +61,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public IEnumerable<PageEntity> GetForBook(int? id, IAuthenticatedUser user)
+        public IEnumerable<PageEntity> GetForBook(int? id)
         {
             var result = Query<PageEntity>
                 .Collection()
@@ -83,7 +83,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public async Task<IEnumerable<PageEntity>> GetForBookAsync(int? id, IAuthenticatedUser user)
+        public async Task<IEnumerable<PageEntity>> GetForBookAsync(int? id)
         {
             var result = await Query<PageEntity>
                 .Collection()

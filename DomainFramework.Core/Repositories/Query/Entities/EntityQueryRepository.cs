@@ -14,44 +14,44 @@ namespace DomainFramework.Core
     {
         public string ConnectionName { get; set; }
 
-        public virtual TEntity GetById(TKey id, IAuthenticatedUser user)
+        public virtual TEntity GetById(TKey id)
         {
             throw new NotImplementedException();
         }
 
-        public IEntity GetById(object id, IAuthenticatedUser user)
+        public IEntity GetById(object id)
         {
-            return GetById((TKey)id, user);
+            return GetById((TKey)id);
         }
 
-        public virtual Task<TEntity> GetByIdAsync(TKey id, IAuthenticatedUser user)
+        public virtual Task<TEntity> GetByIdAsync(TKey id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IEntity> GetByIdAsync(object id, IAuthenticatedUser user)
+        public async Task<IEntity> GetByIdAsync(object id)
         {
-            return await GetByIdAsync((TKey)id, user);
+            return await GetByIdAsync((TKey)id);
         }
 
-        public virtual (int, IEnumerable<TEntity>) Get(CollectionQueryParameters parameters, IAuthenticatedUser user)
+        public virtual (int, IEnumerable<TEntity>) Get(CollectionQueryParameters parameters)
         {
             throw new NotImplementedException();
         }
 
-        (int, IEnumerable<IEntity>) IEntityQueryRepository.Get(CollectionQueryParameters parameters, IAuthenticatedUser user)
+        (int, IEnumerable<IEntity>) IEntityQueryRepository.Get(CollectionQueryParameters parameters)
         {
-            return Get(parameters, user);
+            return Get(parameters);
         }
 
-        public virtual Task<(int, IEnumerable<TEntity>)> GetAsync(CollectionQueryParameters parameters, IAuthenticatedUser user)
+        public virtual Task<(int, IEnumerable<TEntity>)> GetAsync(CollectionQueryParameters parameters)
         {
             throw new NotImplementedException();
         }
 
-        async Task<(int, IEnumerable<IEntity>)> IEntityQueryRepository.GetAsync(CollectionQueryParameters parameters, IAuthenticatedUser user)
+        async Task<(int, IEnumerable<IEntity>)> IEntityQueryRepository.GetAsync(CollectionQueryParameters parameters)
         {
-            return await GetAsync(parameters, user);
+            return await GetAsync(parameters);
         }
     }
 }

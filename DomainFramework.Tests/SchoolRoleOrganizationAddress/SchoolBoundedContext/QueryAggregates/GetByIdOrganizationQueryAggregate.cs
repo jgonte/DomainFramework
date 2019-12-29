@@ -8,10 +8,6 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
     public class GetByIdOrganizationQueryAggregate : GetByIdQueryAggregate<Organization, int?, OrganizationOutputDto>
     {
-        public GetSingleLinkedEntityQueryOperation<Address> GetAddressQueryOperation { get; }
-
-        public Address Address => GetAddressQueryOperation.LinkedEntity;
-
         public GetByIdOrganizationQueryAggregate()
         {
             var context = new DomainFramework.DataAccess.RepositoryContext(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName());
@@ -21,30 +17,6 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             AddressQueryRepository.Register(context);
 
             RepositoryContext = context;
-
-            GetAddressQueryOperation = new GetSingleLinkedEntityQueryOperation<Address>
-            {
-                GetLinkedEntity = (repository, entity, user) => ((AddressQueryRepository)repository).GetAddressForOrganization(RootEntity.Id, user),
-                GetLinkedEntityAsync = async (repository, entity, user) => await ((AddressQueryRepository)repository).GetAddressForOrganizationAsync(RootEntity.Id, user)
-            };
-
-            QueryOperations.Enqueue(GetAddressQueryOperation);
-        }
-
-        public AddressOutputDto GetAddressDto()
-        {
-            if (Address != null)
-            {
-                var dto = new AddressOutputDto
-                {
-                    Id = Address.Id.Value,
-                    Street = Address.Street
-                };
-
-                return dto;
-            }
-
-            return null;
         }
 
         public PhoneOutputDto GetPhoneDto(Organization organization) => 
@@ -63,7 +35,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
             OutputDto.Phone = GetPhoneDto(entity);
 
-            OutputDto.Address = GetAddressDto();
+            //OutputDto.Address = GetAddressDto();
         }
 
     }

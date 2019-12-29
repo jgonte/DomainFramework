@@ -35,10 +35,10 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
                 Bonus = executive.Bonus,
                 HireDate = executive.HireDate,
                 Name = executive.Name,
-                Asset = new Asset
+                Asset = (executive.Asset != null) ? new Asset
                 {
                     Number = executive.Asset.Number
-                }
+                } : null
             };
 
             Enqueue(new SaveEntityCommandOperation<Executive>(RootEntity));

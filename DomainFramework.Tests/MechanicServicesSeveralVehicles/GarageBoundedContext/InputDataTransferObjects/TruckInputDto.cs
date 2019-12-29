@@ -30,10 +30,6 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
             MechanicId.ValidateNotZero(result, nameof(MechanicId));
 
-            var inspectionsCount = (uint)Inspections.Where(item => item != null).Count();
-
-            inspectionsCount.ValidateCountIsBetween(result, 2, 12, nameof(Inspections));
-
             foreach (var inspection in Inspections)
             {
                 inspection.Validate(result);

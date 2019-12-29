@@ -33,10 +33,10 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 Weight = truck.Weight,
                 Model = truck.Model,
                 MechanicId = truck.MechanicId,
-                Inspections = truck.Inspections.Select(dto => new Inspection
+                Inspections = (truck.Inspections != null) ? truck.Inspections.Select(dto => new Inspection
                 {
                     Date = dto.Date
-                }).ToList(),
+                }).ToList() : null,
                 Cylinders = truck.Cylinders.Select(dto => new Cylinder
                 {
                     Diameter = dto.Diameter

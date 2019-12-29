@@ -33,12 +33,12 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
                 HireDate = employee.HireDate,
                 Name = employee.Name,
                 ProviderEmployeeId = employee.ProviderEmployeeId,
-                CellPhone = new PhoneNumber
+                CellPhone = (employee.CellPhone != null) ? new PhoneNumber
                 {
                     AreaCode = employee.CellPhone.AreaCode,
                     Exchange = employee.CellPhone.Exchange,
                     Number = employee.CellPhone.Number
-                }
+                } : null
             };
 
             Enqueue(new SaveEntityCommandOperation<Employee>(RootEntity));
@@ -52,12 +52,12 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
                     Enqueue(new AddLinkedEntityCommandOperation<Employee, Person>(RootEntity, () => new Person
                     {
                         Name = person.Name,
-                        CellPhone = new PhoneNumber
+                        CellPhone = (person.CellPhone != null) ? new PhoneNumber
                         {
                             AreaCode = person.CellPhone.AreaCode,
                             Exchange = person.CellPhone.Exchange,
                             Number = person.CellPhone.Number
-                        }
+                        } : null
                     }, "Dependants"));
                 }
             }

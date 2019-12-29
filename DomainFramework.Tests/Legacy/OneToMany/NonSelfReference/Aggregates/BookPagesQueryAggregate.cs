@@ -19,11 +19,11 @@ namespace DomainFramework.Tests
             GetPagesLoadOperation = new GetCollectionLinkedEntityQueryOperation<PageEntity>
             {
                 GetLinkedEntities = (repository, entity, user) =>
-                    ((PageQueryRepository)repository).GetForBook(RootEntity.Id, user).ToList(),
+                    ((PageQueryRepository)repository).GetForBook(RootEntity.Id).ToList(),
 
                 GetLinkedEntitiesAsync = async (repository, entity, user) =>
                 {
-                    var entities = await ((PageQueryRepository)repository).GetForBookAsync(RootEntity.Id, user: null);
+                    var entities = await ((PageQueryRepository)repository).GetForBookAsync(RootEntity.Id);
 
                     return entities.ToList();
                 }

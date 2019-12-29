@@ -10,35 +10,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
 {
     public class CustomerQueryRepository : EntityQueryRepository<Customer, int?>
     {
-        public override Customer GetById(int? customerId, IAuthenticatedUser user)
-        {
-            var result = Query<Customer>
-                .Single()
-                .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
-                .StoredProcedure("[ExecutiveBoundedContext].[pCustomer_GetById]")
-                .Parameters(
-                    p => p.Name("customerId").Value(customerId.Value)
-                )
-                .Execute();
-
-            return result.Data;
-        }
-
-        public async override Task<Customer> GetByIdAsync(int? customerId, IAuthenticatedUser user)
-        {
-            var result = await Query<Customer>
-                .Single()
-                .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
-                .StoredProcedure("[ExecutiveBoundedContext].[pCustomer_GetById]")
-                .Parameters(
-                    p => p.Name("customerId").Value(customerId.Value)
-                )
-                .ExecuteAsync();
-
-            return result.Data;
-        }
-
-        public override (int, IEnumerable<Customer>) Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<Customer>) Get(CollectionQueryParameters queryParameters)
         {
             var result = Query<Customer>
                 .Collection()
@@ -53,7 +25,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async override Task<(int, IEnumerable<Customer>)> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<(int, IEnumerable<Customer>)> GetAsync(CollectionQueryParameters queryParameters)
         {
             var result = await Query<Customer>
                 .Collection()
@@ -66,6 +38,56 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             var count = (string)result.GetParameter("count").Value;
 
             return (int.Parse(count), result.Data);
+        }
+
+        public IEnumerable<Customer> GetAll()
+        {
+            var result = Query<Customer>
+                .Collection()
+                .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
+                .StoredProcedure("[ExecutiveBoundedContext].[pCustomer_GetAll]")
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<IEnumerable<Customer>> GetAllAsync()
+        {
+            var result = await Query<Customer>
+                .Collection()
+                .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
+                .StoredProcedure("[ExecutiveBoundedContext].[pCustomer_GetAll]")
+                .ExecuteAsync();
+
+            return result.Data;
+        }
+
+        public override Customer GetById(int? customerId)
+        {
+            var result = Query<Customer>
+                .Single()
+                .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
+                .StoredProcedure("[ExecutiveBoundedContext].[pCustomer_GetById]")
+                .Parameters(
+                    p => p.Name("customerId").Value(customerId.Value)
+                )
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async override Task<Customer> GetByIdAsync(int? customerId)
+        {
+            var result = await Query<Customer>
+                .Single()
+                .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
+                .StoredProcedure("[ExecutiveBoundedContext].[pCustomer_GetById]")
+                .Parameters(
+                    p => p.Name("customerId").Value(customerId.Value)
+                )
+                .ExecuteAsync();
+
+            return result.Data;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

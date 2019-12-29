@@ -7,7 +7,7 @@ namespace DomainFramework.Tests
 {
     class Person_PhonesQueryRepository : ValueObjectQueryRepository<int?, Phone>
     {
-        public override IEnumerable<Phone> Get(int? ownerId, IAuthenticatedUser user)
+        public override IEnumerable<Phone> GetAll(int? ownerId)
         {
             var result = Query<Phone>
                 .Collection()
@@ -21,7 +21,17 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public override Task<IEnumerable<Phone>> GetAsync(int? ownerId, IAuthenticatedUser user)
+        public override Task<IEnumerable<Phone>> GetAllAsync(int? ownerId)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override (int, IEnumerable<Phone>) Get(int? ownerId, CollectionQueryParameters queryParameters)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override Task<(int, IEnumerable<Phone>)> GetAsync(int? ownerId, CollectionQueryParameters queryParameters)
         {
             throw new System.NotImplementedException();
         }

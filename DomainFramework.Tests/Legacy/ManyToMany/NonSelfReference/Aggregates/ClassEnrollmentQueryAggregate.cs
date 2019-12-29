@@ -21,11 +21,11 @@ namespace DomainFramework.Tests
             GetStudentsLoadOperation = new GetCollectionLinkedEntityQueryOperation<StudentEntity>
             {
                 GetLinkedEntities = (repository, entity, user) =>
-                    ((StudentQueryRepository)repository).GetForClass(RootEntity.Id, user).ToList(),
+                    ((StudentQueryRepository)repository).GetForClass(RootEntity.Id).ToList(),
 
                 GetLinkedEntitiesAsync = async (repository, entity, user) =>
                 {
-                    var entities = await ((StudentQueryRepository)repository).GetForClassAsync(RootEntity.Id, user: null);
+                    var entities = await ((StudentQueryRepository)repository).GetForClassAsync(RootEntity.Id);
 
                     return entities.ToList();
                 }

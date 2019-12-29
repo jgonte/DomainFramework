@@ -161,7 +161,7 @@ CREATE PROCEDURE [BookBoundedContext].[pBook_Get]
     @count INT OUTPUT
 AS
 BEGIN
-EXEC [dbo].[pExecuteDynamicQuery]
+    EXEC [dbo].[pExecuteDynamicQuery]
         @$select = @$select,
         @$filter = @$filter,
         @$orderby = @$orderby,
@@ -179,6 +179,21 @@ EXEC [dbo].[pExecuteDynamicQuery]
 END;
 GO
 
+CREATE PROCEDURE [BookBoundedContext].[pBook_GetAll]
+AS
+BEGIN
+    SELECT
+        b.[BookId] AS "Id",
+        b.[Title] AS "Title",
+        b.[Category] AS "Category",
+        b.[DatePublished] AS "DatePublished",
+        b.[PublisherId] AS "PublisherId",
+        b.[IsHardCopy] AS "IsHardCopy"
+    FROM [BookWithPages].[BookBoundedContext].[Book] b;
+
+END;
+GO
+
 CREATE PROCEDURE [BookBoundedContext].[pBook_GetByTitle]
     @title VARCHAR(150)
 AS
@@ -192,6 +207,25 @@ BEGIN
         b.[IsHardCopy] AS "IsHardCopy"
     FROM [BookWithPages].[BookBoundedContext].[Book] b
     WHERE b.[Title] = @title;
+
+END;
+GO
+
+CREATE PROCEDURE [BookBoundedContext].[pGet_Book_For_Page]
+    @pageId INT
+AS
+BEGIN
+    SELECT
+        b.[BookId] AS "Id",
+        b.[Title] AS "Title",
+        b.[Category] AS "Category",
+        b.[DatePublished] AS "DatePublished",
+        b.[PublisherId] AS "PublisherId",
+        b.[IsHardCopy] AS "IsHardCopy"
+    FROM [BookWithPages].[BookBoundedContext].[Book] b
+    INNER JOIN [BookWithPages].[BookBoundedContext].[Page] p
+        ON b.[BookId] = p.[BookId]
+    WHERE p.[PageId] = @pageId;
 
 END;
 GO
@@ -284,7 +318,7 @@ CREATE PROCEDURE [BookBoundedContext].[pPage_Get]
     @count INT OUTPUT
 AS
 BEGIN
-EXEC [dbo].[pExecuteDynamicQuery]
+    EXEC [dbo].[pExecuteDynamicQuery]
         @$select = @$select,
         @$filter = @$filter,
         @$orderby = @$orderby,
@@ -299,6 +333,32 @@ EXEC [dbo].[pExecuteDynamicQuery]
 END;
 GO
 
+CREATE PROCEDURE [BookBoundedContext].[pPage_GetAll]
+AS
+BEGIN
+    SELECT
+        p.[PageId] AS "Id",
+        p.[Index] AS "Index",
+        p.[BookId] AS "BookId"
+    FROM [BookWithPages].[BookBoundedContext].[Page] p;
+
+END;
+GO
+
+CREATE PROCEDURE [BookBoundedContext].[pGetAll_Pages_For_Book]
+    @bookId INT
+AS
+BEGIN
+    SELECT
+        p.[PageId] AS "Id",
+        p.[Index] AS "Index",
+        p.[BookId] AS "BookId"
+    FROM [BookWithPages].[BookBoundedContext].[Page] p
+    WHERE p.[BookId] = @bookId;
+
+END;
+GO
+
 CREATE PROCEDURE [BookBoundedContext].[pPage_GetById]
     @pageId INT
 AS
@@ -309,20 +369,6 @@ BEGIN
         p.[BookId] AS "BookId"
     FROM [BookWithPages].[BookBoundedContext].[Page] p
     WHERE p.[PageId] = @pageId;
-
-END;
-GO
-
-CREATE PROCEDURE [BookBoundedContext].[pPage_GetPages_ForBook]
-    @bookId INT
-AS
-BEGIN
-    SELECT
-        p.[PageId] AS "Id",
-        p.[Index] AS "Index",
-        p.[BookId] AS "BookId"
-    FROM [BookWithPages].[BookBoundedContext].[Page] p
-    WHERE p.[BookId] = @bookId;
 
 END;
 GO

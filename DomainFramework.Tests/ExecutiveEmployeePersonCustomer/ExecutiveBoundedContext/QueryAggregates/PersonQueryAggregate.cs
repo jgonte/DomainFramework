@@ -18,7 +18,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
         }
 
         public AssetOutputDto GetAssetDto(Executive executive) => 
-            new AssetOutputDto
+            (executive.Asset.IsEmpty()) ? null : new AssetOutputDto
             {
                 Number = executive.Asset.Number
             };

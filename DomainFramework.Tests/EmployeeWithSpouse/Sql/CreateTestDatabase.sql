@@ -38,9 +38,9 @@ CREATE TABLE [EmployeeWithSpouse].[EmployeeBoundedContext].[Person]
     [CreatedDateTime] DATETIME NOT NULL DEFAULT GETDATE(),
     [UpdatedBy] INT,
     [UpdatedDateTime] DATETIME,
-    [CellPhone_AreaCode] VARCHAR(3),
-    [CellPhone_Exchange] VARCHAR(3),
-    [CellPhone_Number] VARCHAR(4),
+    [CellPhone_AreaCode] VARCHAR(3) NOT NULL,
+    [CellPhone_Exchange] VARCHAR(3) NOT NULL,
+    [CellPhone_Number] VARCHAR(4) NOT NULL,
     [MarriedToPersonId] INT
     CONSTRAINT Person_PK PRIMARY KEY ([PersonId])
 );
@@ -74,7 +74,7 @@ CREATE INDEX [Person_Spouse_FK_IX]
     );
 GO
 
-CREATE PROCEDURE [EmployeeBoundedContext].[pPerson_DeleteSpouse]
+CREATE PROCEDURE [EmployeeBoundedContext].[pEmployee_DeleteSpouse]
     @marriedToPersonId INT
 AS
 BEGIN
@@ -194,7 +194,7 @@ CREATE PROCEDURE [EmployeeBoundedContext].[pEmployee_Get]
     @count INT OUTPUT
 AS
 BEGIN
-EXEC [dbo].[pExecuteDynamicQuery]
+    EXEC [dbo].[pExecuteDynamicQuery]
         @$select = @$select,
         @$filter = @$filter,
         @$orderby = @$orderby,
@@ -215,6 +215,24 @@ INNER JOIN [EmployeeWithSpouse].[EmployeeBoundedContext].[Person] p
 END;
 GO
 
+CREATE PROCEDURE [EmployeeBoundedContext].[pEmployee_GetAll]
+AS
+BEGIN
+    SELECT
+        e.[EmployeeId] AS "Id",
+        p.[Name] AS "Name",
+        p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
+        p.[CellPhone_Exchange] AS "CellPhone.Exchange",
+        p.[CellPhone_Number] AS "CellPhone.Number",
+        p.[MarriedToPersonId] AS "MarriedToPersonId",
+        e.[HireDate] AS "HireDate"
+    FROM [EmployeeWithSpouse].[EmployeeBoundedContext].[Employee] e
+    INNER JOIN [EmployeeWithSpouse].[EmployeeBoundedContext].[Person] p
+        ON e.[EmployeeId] = p.[PersonId];
+
+END;
+GO
+
 CREATE PROCEDURE [EmployeeBoundedContext].[pEmployee_GetById]
     @employeeId INT
 AS
@@ -231,6 +249,16 @@ BEGIN
     INNER JOIN [EmployeeWithSpouse].[EmployeeBoundedContext].[Person] p
         ON e.[EmployeeId] = p.[PersonId]
     WHERE e.[EmployeeId] = @employeeId;
+
+END;
+GO
+
+CREATE PROCEDURE [EmployeeBoundedContext].[pPerson_DeleteSpouse]
+    @marriedToPersonId INT
+AS
+BEGIN
+    DELETE FROM [EmployeeWithSpouse].[EmployeeBoundedContext].[Person]
+    WHERE [MarriedToPersonId] = @marriedToPersonId;
 
 END;
 GO
@@ -321,7 +349,7 @@ CREATE PROCEDURE [EmployeeBoundedContext].[pPerson_Get]
     @count INT OUTPUT
 AS
 BEGIN
-EXEC [dbo].[pExecuteDynamicQuery]
+    EXEC [dbo].[pExecuteDynamicQuery]
         @$select = @$select,
         @$filter = @$filter,
         @$orderby = @$orderby,
@@ -371,6 +399,53 @@ EXEC [dbo].[pExecuteDynamicQuery]
 END;
 GO
 
+CREATE PROCEDURE [EmployeeBoundedContext].[pPerson_GetAll]
+AS
+BEGIN
+    SELECT
+        _q_.[Id] AS "Id",
+        _q_.[Name] AS "Name",
+        _q_.[CellPhone.AreaCode] AS "CellPhone.AreaCode",
+        _q_.[CellPhone.Exchange] AS "CellPhone.Exchange",
+        _q_.[CellPhone.Number] AS "CellPhone.Number",
+        _q_.[MarriedToPersonId] AS "MarriedToPersonId",
+        _q_.[HireDate] AS "HireDate",
+        _q_.[_EntityType_] AS "_EntityType_"
+    FROM 
+    (
+        SELECT
+            e.[EmployeeId] AS "Id",
+            p.[Name] AS "Name",
+            p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
+            p.[CellPhone_Exchange] AS "CellPhone.Exchange",
+            p.[CellPhone_Number] AS "CellPhone.Number",
+            p.[MarriedToPersonId] AS "MarriedToPersonId",
+            e.[HireDate] AS "HireDate",
+            1 AS "_EntityType_"
+        FROM [EmployeeWithSpouse].[EmployeeBoundedContext].[Employee] e
+        INNER JOIN [EmployeeWithSpouse].[EmployeeBoundedContext].[Person] p
+            ON e.[EmployeeId] = p.[PersonId]
+        UNION ALL
+        (
+            SELECT
+                p.[PersonId] AS "Id",
+                p.[Name] AS "Name",
+                p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
+                p.[CellPhone_Exchange] AS "CellPhone.Exchange",
+                p.[CellPhone_Number] AS "CellPhone.Number",
+                p.[MarriedToPersonId] AS "MarriedToPersonId",
+                NULL AS "HireDate",
+                2 AS "_EntityType_"
+            FROM [EmployeeWithSpouse].[EmployeeBoundedContext].[Person] p
+            LEFT OUTER JOIN [EmployeeWithSpouse].[EmployeeBoundedContext].[Employee] e
+                ON e.[EmployeeId] = p.[PersonId]
+            WHERE e.[EmployeeId] IS NULL
+        )
+    ) _q_;
+
+END;
+GO
+
 CREATE PROCEDURE [EmployeeBoundedContext].[pPerson_GetById]
     @personId INT
 AS
@@ -416,55 +491,6 @@ BEGIN
         )
     ) _q_
     WHERE _q_.[Id] = @personId;
-
-END;
-GO
-
-CREATE PROCEDURE [EmployeeBoundedContext].[pPerson_GetSpouse_ForPerson]
-    @marriedToPersonId INT
-AS
-BEGIN
-    SELECT
-        _q_.[Id] AS "Id",
-        _q_.[Name] AS "Name",
-        _q_.[CellPhone.AreaCode] AS "CellPhone.AreaCode",
-        _q_.[CellPhone.Exchange] AS "CellPhone.Exchange",
-        _q_.[CellPhone.Number] AS "CellPhone.Number",
-        _q_.[MarriedToPersonId] AS "MarriedToPersonId",
-        _q_.[HireDate] AS "HireDate",
-        _q_.[_EntityType_] AS "_EntityType_"
-    FROM 
-    (
-        SELECT
-            e.[EmployeeId] AS "Id",
-            p.[Name] AS "Name",
-            p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
-            p.[CellPhone_Exchange] AS "CellPhone.Exchange",
-            p.[CellPhone_Number] AS "CellPhone.Number",
-            p.[MarriedToPersonId] AS "MarriedToPersonId",
-            e.[HireDate] AS "HireDate",
-            1 AS "_EntityType_"
-        FROM [EmployeeWithSpouse].[EmployeeBoundedContext].[Employee] e
-        INNER JOIN [EmployeeWithSpouse].[EmployeeBoundedContext].[Person] p
-            ON e.[EmployeeId] = p.[PersonId]
-        UNION ALL
-        (
-            SELECT
-                p.[PersonId] AS "Id",
-                p.[Name] AS "Name",
-                p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
-                p.[CellPhone_Exchange] AS "CellPhone.Exchange",
-                p.[CellPhone_Number] AS "CellPhone.Number",
-                p.[MarriedToPersonId] AS "MarriedToPersonId",
-                NULL AS "HireDate",
-                2 AS "_EntityType_"
-            FROM [EmployeeWithSpouse].[EmployeeBoundedContext].[Person] p
-            LEFT OUTER JOIN [EmployeeWithSpouse].[EmployeeBoundedContext].[Employee] e
-                ON e.[EmployeeId] = p.[PersonId]
-            WHERE e.[EmployeeId] IS NULL
-        )
-    ) _q_
-    WHERE _q_.[MarriedToPersonId] = @marriedToPersonId;
 
 END;
 GO

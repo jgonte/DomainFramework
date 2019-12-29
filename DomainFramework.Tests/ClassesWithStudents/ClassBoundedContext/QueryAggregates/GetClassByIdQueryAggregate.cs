@@ -24,10 +24,10 @@ namespace ClassesWithStudents.ClassBoundedContext
 
             GetStudentsQueryOperation = new GetCollectionLinkedEntityQueryOperation<Student>
             {
-                GetLinkedEntities = (repository, entity, user) => ((StudentQueryRepository)repository).GetStudentsForClassEnrollment(RootEntity.Id, user).ToList(),
+                GetLinkedEntities = (repository, entity, user) => ((StudentQueryRepository)repository).GetAllStudentsForClass(RootEntity.Id).ToList(),
                 GetLinkedEntitiesAsync = async (repository, entity, user) =>
                 {
-                    var entities = await ((StudentQueryRepository)repository).GetStudentsForClassEnrollmentAsync(RootEntity.Id, user);
+                    var entities = await ((StudentQueryRepository)repository).GetAllStudentsForClassAsync(RootEntity.Id);
 
                     return entities.ToList();
                 }

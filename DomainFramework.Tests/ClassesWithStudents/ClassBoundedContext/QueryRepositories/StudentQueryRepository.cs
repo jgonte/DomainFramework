@@ -10,35 +10,7 @@ namespace ClassesWithStudents.ClassBoundedContext
 {
     public class StudentQueryRepository : EntityQueryRepository<Student, int?>
     {
-        public override Student GetById(int? studentId, IAuthenticatedUser user)
-        {
-            var result = Query<Student>
-                .Single()
-                .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
-                .StoredProcedure("[ClassBoundedContext].[pStudent_GetById]")
-                .Parameters(
-                    p => p.Name("studentId").Value(studentId.Value)
-                )
-                .Execute();
-
-            return result.Data;
-        }
-
-        public async override Task<Student> GetByIdAsync(int? studentId, IAuthenticatedUser user)
-        {
-            var result = await Query<Student>
-                .Single()
-                .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
-                .StoredProcedure("[ClassBoundedContext].[pStudent_GetById]")
-                .Parameters(
-                    p => p.Name("studentId").Value(studentId.Value)
-                )
-                .ExecuteAsync();
-
-            return result.Data;
-        }
-
-        public override (int, IEnumerable<Student>) Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<Student>) Get(CollectionQueryParameters queryParameters)
         {
             var result = Query<Student>
                 .Collection()
@@ -53,7 +25,7 @@ namespace ClassesWithStudents.ClassBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async override Task<(int, IEnumerable<Student>)> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<(int, IEnumerable<Student>)> GetAsync(CollectionQueryParameters queryParameters)
         {
             var result = await Query<Student>
                 .Collection()
@@ -68,12 +40,98 @@ namespace ClassesWithStudents.ClassBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public IEnumerable<Student> GetStudentsForClassEnrollment(int? classId, IAuthenticatedUser user)
+        public IEnumerable<Student> GetAll()
         {
             var result = Query<Student>
                 .Collection()
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
-                .StoredProcedure("[ClassBoundedContext].[pStudent_GetStudents_ForClassEnrollment]")
+                .StoredProcedure("[ClassBoundedContext].[pStudent_GetAll]")
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<IEnumerable<Student>> GetAllAsync()
+        {
+            var result = await Query<Student>
+                .Collection()
+                .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
+                .StoredProcedure("[ClassBoundedContext].[pStudent_GetAll]")
+                .ExecuteAsync();
+
+            return result.Data;
+        }
+
+        public override Student GetById(int? studentId)
+        {
+            var result = Query<Student>
+                .Single()
+                .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
+                .StoredProcedure("[ClassBoundedContext].[pStudent_GetById]")
+                .Parameters(
+                    p => p.Name("studentId").Value(studentId.Value)
+                )
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async override Task<Student> GetByIdAsync(int? studentId)
+        {
+            var result = await Query<Student>
+                .Single()
+                .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
+                .StoredProcedure("[ClassBoundedContext].[pStudent_GetById]")
+                .Parameters(
+                    p => p.Name("studentId").Value(studentId.Value)
+                )
+                .ExecuteAsync();
+
+            return result.Data;
+        }
+
+        public (int, IEnumerable<Student>) GetStudentsForClass(int? classId, CollectionQueryParameters queryParameters)
+        {
+            var result = Query<Student>
+                .Collection()
+                .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
+                .StoredProcedure("[ClassBoundedContext].[pGet_Students_For_Class]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(
+                    p => p.Name("classId").Value(classId.Value)
+                )
+                .Execute();
+
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
+        }
+
+        public async Task<(int, IEnumerable<Student>)> GetStudentsForClassAsync(int? classId, CollectionQueryParameters queryParameters)
+        {
+            var result = await Query<Student>
+                .Collection()
+                .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
+                .StoredProcedure("[ClassBoundedContext].[pGet_Students_For_Class]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(
+                    p => p.Name("classId").Value(classId.Value)
+                )
+                .ExecuteAsync();
+
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
+        }
+
+        public IEnumerable<Student> GetAllStudentsForClass(int? classId)
+        {
+            var result = Query<Student>
+                .Collection()
+                .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
+                .StoredProcedure("[ClassBoundedContext].[pGetAll_Students_For_Class]")
                 .Parameters(
                     p => p.Name("classId").Value(classId.Value)
                 )
@@ -82,12 +140,12 @@ namespace ClassesWithStudents.ClassBoundedContext
             return result.Data;
         }
 
-        public async Task<IEnumerable<Student>> GetStudentsForClassEnrollmentAsync(int? classId, IAuthenticatedUser user)
+        public async Task<IEnumerable<Student>> GetAllStudentsForClassAsync(int? classId)
         {
             var result = await Query<Student>
                 .Collection()
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
-                .StoredProcedure("[ClassBoundedContext].[pStudent_GetStudents_ForClassEnrollment]")
+                .StoredProcedure("[ClassBoundedContext].[pGetAll_Students_For_Class]")
                 .Parameters(
                     p => p.Name("classId").Value(classId.Value)
                 )

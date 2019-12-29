@@ -7,7 +7,7 @@ namespace DomainFramework.Tests
 {
     class PersonQueryRepository4 : Core.EntityQueryRepository<PersonEntity3, int?>
     {
-        public override (int, IEnumerable<PersonEntity3>) Get(CollectionQueryParameters parameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<PersonEntity3>) Get(CollectionQueryParameters parameters)
         {
             var result = Query<PersonEntity3>
                 .Collection()
@@ -18,7 +18,7 @@ namespace DomainFramework.Tests
             return (result.Data.Count, result.Data);
         }
 
-        public override async Task<(int, IEnumerable<PersonEntity3>)> GetAsync(CollectionQueryParameters parameters, IAuthenticatedUser user)
+        public override async Task<(int, IEnumerable<PersonEntity3>)> GetAsync(CollectionQueryParameters parameters)
         {
             var result = await Query<PersonEntity3>
                 .Collection()
@@ -29,7 +29,7 @@ namespace DomainFramework.Tests
             return (result.Data.Count, result.Data);
         }
 
-        public async Task<IEnumerable<PersonEntity3>> GetForManagerAsync(int? id, IAuthenticatedUser user)
+        public async Task<IEnumerable<PersonEntity3>> GetForManagerAsync(int? id)
         {
             var result = await Query<PersonEntity3>
                 .Collection()
@@ -43,7 +43,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public override PersonEntity3 GetById(int? id, IAuthenticatedUser user)
+        public override PersonEntity3 GetById(int? id)
         {
             var result = Query<PersonEntity3>
                 .Single()
@@ -57,7 +57,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public override async Task<PersonEntity3> GetByIdAsync(int? id, IAuthenticatedUser user)
+        public override async Task<PersonEntity3> GetByIdAsync(int? id)
         {
             var result = await Query<PersonEntity3>
                 .Single()

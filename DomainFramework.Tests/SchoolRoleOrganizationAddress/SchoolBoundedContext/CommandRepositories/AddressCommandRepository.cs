@@ -91,18 +91,18 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
         {
             switch (selector)
             {
-                case "Role": return Command
-                    .NonQuery()
-                    .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                    .StoredProcedure("[SchoolBoundedContext].[pAddress_DeleteRole]")
-                    .Parameters(
-                        p => p.Name("addressId").Value(entity.Id)
-                    );
-
                 case "Organization": return Command
                     .NonQuery()
                     .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
                     .StoredProcedure("[SchoolBoundedContext].[pAddress_DeleteOrganization]")
+                    .Parameters(
+                        p => p.Name("addressId").Value(entity.Id)
+                    );
+
+                case "Role": return Command
+                    .NonQuery()
+                    .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
+                    .StoredProcedure("[SchoolBoundedContext].[pAddress_DeleteRole]")
                     .Parameters(
                         p => p.Name("addressId").Value(entity.Id)
                     );

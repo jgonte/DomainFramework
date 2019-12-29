@@ -114,13 +114,26 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
         protected override Command CreateDeleteCollectionCommand(Organization entity, IAuthenticatedUser user, string selector)
         {
-            return Command
-                .NonQuery()
-                .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                .StoredProcedure("[SchoolBoundedContext].[pOrganization_DeleteRole]")
-                .Parameters(
-                    p => p.Name("organizationId").Value(entity.Id)
-                );
+            switch (selector)
+            {
+                case "Address": return Command
+                    .NonQuery()
+                    .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
+                    .StoredProcedure("[SchoolBoundedContext].[pOrganization_DeleteAddress]")
+                    .Parameters(
+                        p => p.Name("addressId").Value(entity.Id)
+                    );
+
+                case "Role": return Command
+                    .NonQuery()
+                    .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
+                    .StoredProcedure("[SchoolBoundedContext].[pOrganization_DeleteRole]")
+                    .Parameters(
+                        p => p.Name("organizationId").Value(entity.Id)
+                    );
+
+                default: throw new InvalidOperationException();
+            }
         }
 
         protected override bool HandleDeleteCollection(Command command)

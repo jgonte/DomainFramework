@@ -19,8 +19,6 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
 
             Name.ValidateMaxLength(result, nameof(Name), 50);
 
-            CellPhone.ValidateNotNull(result, nameof(CellPhone));
-
             CellPhone?.Validate(result);
         }
 

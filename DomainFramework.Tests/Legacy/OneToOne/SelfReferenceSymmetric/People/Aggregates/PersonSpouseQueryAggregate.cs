@@ -13,10 +13,10 @@ namespace DomainFramework.Tests
             GetSpouseLoadOperation = new GetSingleLinkedEntityQueryOperation<PersonEntity2>
             {
                 GetLinkedEntity = (repository, entity, user) =>
-                    ((PersonQueryRepository2)repository).GetForPerson(RootEntity.Id, user: null),
+                    ((PersonQueryRepository2)repository).GetForPerson(RootEntity.Id),
 
                 GetLinkedEntityAsync = async (repository, entity, user) =>
-                    await ((PersonQueryRepository2)repository).GetForPersonAsync(RootEntity.Id, user: null)
+                    await ((PersonQueryRepository2)repository).GetForPersonAsync(RootEntity.Id)
             };
 
             QueryOperations.Enqueue(

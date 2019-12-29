@@ -142,7 +142,7 @@ CREATE PROCEDURE [ManagerBoundedContext].[pEmployee_Get]
     @count INT OUTPUT
 AS
 BEGIN
-EXEC [dbo].[pExecuteDynamicQuery]
+    EXEC [dbo].[pExecuteDynamicQuery]
         @$select = @$select,
         @$filter = @$filter,
         @$orderby = @$orderby,
@@ -183,6 +183,58 @@ EXEC [dbo].[pExecuteDynamicQuery]
 END;
 GO
 
+CREATE PROCEDURE [ManagerBoundedContext].[pEmployee_GetAll]
+AS
+BEGIN
+    SELECT
+        _q_.[Id] AS "Id",
+        _q_.[Name] AS "Name",
+        _q_.[SupervisorId] AS "SupervisorId",
+        _q_.[Department] AS "Department",
+        _q_.[_EntityType_] AS "_EntityType_"
+    FROM 
+    (
+        SELECT
+            m.[ManagerId] AS "Id",
+            e.[Name] AS "Name",
+            e.[SupervisorId] AS "SupervisorId",
+            m.[Department] AS "Department",
+            1 AS "_EntityType_"
+        FROM [ManagerWithEmployees].[ManagerBoundedContext].[Manager] m
+        INNER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
+            ON m.[ManagerId] = e.[EmployeeId]
+        UNION ALL
+        (
+            SELECT
+                e.[EmployeeId] AS "Id",
+                e.[Name] AS "Name",
+                e.[SupervisorId] AS "SupervisorId",
+                NULL AS "Department",
+                2 AS "_EntityType_"
+            FROM [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
+            LEFT OUTER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Manager] m
+                ON m.[ManagerId] = e.[EmployeeId]
+            WHERE m.[ManagerId] IS NULL
+        )
+    ) _q_;
+
+END;
+GO
+
+CREATE PROCEDURE [ManagerBoundedContext].[pGetAll_Employees_For_Manager]
+    @managerId INT
+AS
+BEGIN
+    SELECT
+        e.[EmployeeId] AS "Id",
+        e.[Name] AS "Name",
+        e.[SupervisorId] AS "SupervisorId"
+    FROM [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
+    WHERE e.[SupervisorId] = @managerId;
+
+END;
+GO
+
 CREATE PROCEDURE [ManagerBoundedContext].[pEmployee_GetById]
     @employeeId INT
 AS
@@ -219,46 +271,6 @@ BEGIN
         )
     ) _q_
     WHERE _q_.[Id] = @employeeId;
-
-END;
-GO
-
-CREATE PROCEDURE [ManagerBoundedContext].[pEmployee_GetEmployees_ForManager]
-    @supervisorId INT
-AS
-BEGIN
-    SELECT
-        _q_.[Id] AS "Id",
-        _q_.[Name] AS "Name",
-        _q_.[SupervisorId] AS "SupervisorId",
-        _q_.[Department] AS "Department",
-        _q_.[_EntityType_] AS "_EntityType_"
-    FROM 
-    (
-        SELECT
-            m.[ManagerId] AS "Id",
-            e.[Name] AS "Name",
-            e.[SupervisorId] AS "SupervisorId",
-            m.[Department] AS "Department",
-            1 AS "_EntityType_"
-        FROM [ManagerWithEmployees].[ManagerBoundedContext].[Manager] m
-        INNER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
-            ON m.[ManagerId] = e.[EmployeeId]
-        UNION ALL
-        (
-            SELECT
-                e.[EmployeeId] AS "Id",
-                e.[Name] AS "Name",
-                e.[SupervisorId] AS "SupervisorId",
-                NULL AS "Department",
-                2 AS "_EntityType_"
-            FROM [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
-            LEFT OUTER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Manager] m
-                ON m.[ManagerId] = e.[EmployeeId]
-            WHERE m.[ManagerId] IS NULL
-        )
-    ) _q_
-    WHERE _q_.[SupervisorId] = @supervisorId;
 
 END;
 GO
@@ -368,7 +380,7 @@ CREATE PROCEDURE [ManagerBoundedContext].[pManager_Get]
     @count INT OUTPUT
 AS
 BEGIN
-EXEC [dbo].[pExecuteDynamicQuery]
+    EXEC [dbo].[pExecuteDynamicQuery]
         @$select = @$select,
         @$filter = @$filter,
         @$orderby = @$orderby,
@@ -382,6 +394,21 @@ EXEC [dbo].[pExecuteDynamicQuery]
 INNER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
     ON m.[ManagerId] = e.[EmployeeId]',
         @count = @count OUTPUT
+
+END;
+GO
+
+CREATE PROCEDURE [ManagerBoundedContext].[pManager_GetAll]
+AS
+BEGIN
+    SELECT
+        m.[ManagerId] AS "Id",
+        e.[Name] AS "Name",
+        e.[SupervisorId] AS "SupervisorId",
+        m.[Department] AS "Department"
+    FROM [ManagerWithEmployees].[ManagerBoundedContext].[Manager] m
+    INNER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
+        ON m.[ManagerId] = e.[EmployeeId];
 
 END;
 GO

@@ -24,10 +24,10 @@ namespace BookWithPages.BookBoundedContext
 
             GetPagesQueryOperation = new GetCollectionLinkedEntityQueryOperation<Page>
             {
-                GetLinkedEntities = (repository, entity, user) => ((PageQueryRepository)repository).GetPagesForBook(RootEntity.Id, user).ToList(),
+                GetLinkedEntities = (repository, entity, user) => ((PageQueryRepository)repository).GetAllPagesForBook(RootEntity.Id).ToList(),
                 GetLinkedEntitiesAsync = async (repository, entity, user) =>
                 {
-                    var entities = await ((PageQueryRepository)repository).GetPagesForBookAsync(RootEntity.Id, user);
+                    var entities = await ((PageQueryRepository)repository).GetAllPagesForBookAsync(RootEntity.Id);
 
                     return entities.ToList();
                 }

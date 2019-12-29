@@ -10,35 +10,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
     public class OrganizationQueryRepository : EntityQueryRepository<Organization, int?>
     {
-        public override Organization GetById(int? organizationId, IAuthenticatedUser user)
-        {
-            var result = Query<Organization>
-                .Single()
-                .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                .StoredProcedure("[SchoolBoundedContext].[pOrganization_GetById]")
-                .Parameters(
-                    p => p.Name("organizationId").Value(organizationId.Value)
-                )
-                .Execute();
-
-            return result.Data;
-        }
-
-        public async override Task<Organization> GetByIdAsync(int? organizationId, IAuthenticatedUser user)
-        {
-            var result = await Query<Organization>
-                .Single()
-                .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                .StoredProcedure("[SchoolBoundedContext].[pOrganization_GetById]")
-                .Parameters(
-                    p => p.Name("organizationId").Value(organizationId.Value)
-                )
-                .ExecuteAsync();
-
-            return result.Data;
-        }
-
-        public override (int, IEnumerable<Organization>) Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<Organization>) Get(CollectionQueryParameters queryParameters)
         {
             var result = Query<Organization>
                 .Collection()
@@ -53,7 +25,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async override Task<(int, IEnumerable<Organization>)> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<(int, IEnumerable<Organization>)> GetAsync(CollectionQueryParameters queryParameters)
         {
             var result = await Query<Organization>
                 .Collection()
@@ -68,28 +40,50 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public Organization GetOrganizationForOrganizationRole(int? roleId, IAuthenticatedUser user)
+        public IEnumerable<Organization> GetAll()
+        {
+            var result = Query<Organization>
+                .Collection()
+                .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
+                .StoredProcedure("[SchoolBoundedContext].[pOrganization_GetAll]")
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<IEnumerable<Organization>> GetAllAsync()
+        {
+            var result = await Query<Organization>
+                .Collection()
+                .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
+                .StoredProcedure("[SchoolBoundedContext].[pOrganization_GetAll]")
+                .ExecuteAsync();
+
+            return result.Data;
+        }
+
+        public override Organization GetById(int? organizationId)
         {
             var result = Query<Organization>
                 .Single()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                .StoredProcedure("[SchoolBoundedContext].[pOrganization_GetOrganization_ForOrganizationRole]")
+                .StoredProcedure("[SchoolBoundedContext].[pOrganization_GetById]")
                 .Parameters(
-                    p => p.Name("roleId").Value(roleId.Value)
+                    p => p.Name("organizationId").Value(organizationId.Value)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<Organization> GetOrganizationForOrganizationRoleAsync(int? roleId, IAuthenticatedUser user)
+        public async override Task<Organization> GetByIdAsync(int? organizationId)
         {
             var result = await Query<Organization>
                 .Single()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                .StoredProcedure("[SchoolBoundedContext].[pOrganization_GetOrganization_ForOrganizationRole]")
+                .StoredProcedure("[SchoolBoundedContext].[pOrganization_GetById]")
                 .Parameters(
-                    p => p.Name("roleId").Value(roleId.Value)
+                    p => p.Name("organizationId").Value(organizationId.Value)
                 )
                 .ExecuteAsync();
 

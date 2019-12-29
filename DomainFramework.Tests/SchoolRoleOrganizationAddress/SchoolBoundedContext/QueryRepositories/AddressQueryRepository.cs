@@ -10,35 +10,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
     public class AddressQueryRepository : EntityQueryRepository<Address, int?>
     {
-        public override Address GetById(int? addressId, IAuthenticatedUser user)
-        {
-            var result = Query<Address>
-                .Single()
-                .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                .StoredProcedure("[SchoolBoundedContext].[pAddress_GetById]")
-                .Parameters(
-                    p => p.Name("addressId").Value(addressId.Value)
-                )
-                .Execute();
-
-            return result.Data;
-        }
-
-        public async override Task<Address> GetByIdAsync(int? addressId, IAuthenticatedUser user)
-        {
-            var result = await Query<Address>
-                .Single()
-                .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                .StoredProcedure("[SchoolBoundedContext].[pAddress_GetById]")
-                .Parameters(
-                    p => p.Name("addressId").Value(addressId.Value)
-                )
-                .ExecuteAsync();
-
-            return result.Data;
-        }
-
-        public override (int, IEnumerable<Address>) Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
+        public override (int, IEnumerable<Address>) Get(CollectionQueryParameters queryParameters)
         {
             var result = Query<Address>
                 .Collection()
@@ -53,7 +25,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async override Task<(int, IEnumerable<Address>)> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
+        public async override Task<(int, IEnumerable<Address>)> GetAsync(CollectionQueryParameters queryParameters)
         {
             var result = await Query<Address>
                 .Collection()
@@ -68,28 +40,50 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public Address GetAddressForOrganization(int? organizationId, IAuthenticatedUser user)
+        public IEnumerable<Address> GetAll()
+        {
+            var result = Query<Address>
+                .Collection()
+                .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
+                .StoredProcedure("[SchoolBoundedContext].[pAddress_GetAll]")
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<IEnumerable<Address>> GetAllAsync()
+        {
+            var result = await Query<Address>
+                .Collection()
+                .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
+                .StoredProcedure("[SchoolBoundedContext].[pAddress_GetAll]")
+                .ExecuteAsync();
+
+            return result.Data;
+        }
+
+        public override Address GetById(int? addressId)
         {
             var result = Query<Address>
                 .Single()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                .StoredProcedure("[SchoolBoundedContext].[pAddress_GetAddress_ForOrganization]")
+                .StoredProcedure("[SchoolBoundedContext].[pAddress_GetById]")
                 .Parameters(
-                    p => p.Name("organizationId").Value(organizationId.Value)
+                    p => p.Name("addressId").Value(addressId.Value)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<Address> GetAddressForOrganizationAsync(int? organizationId, IAuthenticatedUser user)
+        public async override Task<Address> GetByIdAsync(int? addressId)
         {
             var result = await Query<Address>
                 .Single()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                .StoredProcedure("[SchoolBoundedContext].[pAddress_GetAddress_ForOrganization]")
+                .StoredProcedure("[SchoolBoundedContext].[pAddress_GetById]")
                 .Parameters(
-                    p => p.Name("organizationId").Value(organizationId.Value)
+                    p => p.Name("addressId").Value(addressId.Value)
                 )
                 .ExecuteAsync();
 

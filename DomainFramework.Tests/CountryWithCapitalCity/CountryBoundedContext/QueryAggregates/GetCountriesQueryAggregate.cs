@@ -24,8 +24,8 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 
             GetCapitalCityQueryOperation = new GetSingleLinkedEntityQueryOperation<CapitalCity>
             {
-                GetLinkedEntity = (repository, entity, user) => ((CapitalCityQueryRepository)repository).GetCapitalCityForCountry(RootEntity.Id, user),
-                GetLinkedEntityAsync = async (repository, entity, user) => await ((CapitalCityQueryRepository)repository).GetCapitalCityForCountryAsync(RootEntity.Id, user)
+                GetLinkedEntity = (repository, entity, user) => ((CapitalCityQueryRepository)repository).GetCapitalCityForCountry(RootEntity.Id),
+                GetLinkedEntityAsync = async (repository, entity, user) => await ((CapitalCityQueryRepository)repository).GetCapitalCityForCountryAsync(RootEntity.Id)
             };
 
             QueryOperations.Enqueue(GetCapitalCityQueryOperation);

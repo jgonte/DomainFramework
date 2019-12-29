@@ -17,7 +17,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
                 .StoredProcedure("[ExecutiveBoundedContext].[pExecutive_Insert]")
                 .Parameters(
                     p => p.Name("bonus").Value(entity.Bonus),
-                    p => p.Name("asset_Number").Value(entity.Asset.Number),
+                    p => p.Name("asset_Number").Value(entity.Asset?.Number),
                     p => p.Name("hireDate").Value(entity.HireDate),
                     p => p.Name("name").Value(entity.Name),
                     p => p.Name("createdBy").Value(entity.CreatedBy)
@@ -49,7 +49,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
                 .Parameters(
                     p => p.Name("executiveId").Value(entity.Id),
                     p => p.Name("bonus").Value(entity.Bonus),
-                    p => p.Name("asset_Number").Value(entity.Asset.Number),
+                    p => p.Name("asset_Number").Value(entity.Asset?.Number),
                     p => p.Name("hireDate").Value(entity.HireDate),
                     p => p.Name("name").Value(entity.Name),
                     p => p.Name("updatedBy").Value(entity.UpdatedBy)

@@ -38,17 +38,6 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                     {
                         switch (selector)
                         {
-                            case "Role":
-                                {
-                                    var organization = (Organization)dependencies.ElementAt(0).Entity;
-
-                                    cmd.Parameters(
-                                        p => p.Name("organizationId").Value(organization.Id),
-                                        p => p.Name("roleId").Value(entity.Id.RoleId)
-                                    );
-                                }
-                                break;
-
                             case "Organization":
                                 {
                                     var role = (Role)dependencies.ElementAt(0).Entity;
@@ -56,6 +45,17 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                                     cmd.Parameters(
                                         p => p.Name("organizationId").Value(entity.Id.OrganizationId),
                                         p => p.Name("roleId").Value(role.Id)
+                                    );
+                                }
+                                break;
+
+                            case "Role":
+                                {
+                                    var organization = (Organization)dependencies.ElementAt(0).Entity;
+
+                                    cmd.Parameters(
+                                        p => p.Name("organizationId").Value(organization.Id),
+                                        p => p.Name("roleId").Value(entity.Id.RoleId)
                                     );
                                 }
                                 break;
@@ -157,20 +157,20 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
         {
             switch (selector)
             {
-                case "Role": return Command
-                    .NonQuery()
-                    .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                    .StoredProcedure("[SchoolBoundedContext].[pOrganizationRole_DeleteRole]")
-                    .Parameters(
-                        p => p.Name("organizationId").Value(entity.Id.OrganizationId)
-                    );
-
                 case "Organization": return Command
                     .NonQuery()
                     .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
                     .StoredProcedure("[SchoolBoundedContext].[pOrganizationRole_DeleteOrganization]")
                     .Parameters(
                         p => p.Name("roleId").Value(entity.Id.RoleId)
+                    );
+
+                case "Role": return Command
+                    .NonQuery()
+                    .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
+                    .StoredProcedure("[SchoolBoundedContext].[pOrganizationRole_DeleteRole]")
+                    .Parameters(
+                        p => p.Name("organizationId").Value(entity.Id.OrganizationId)
                     );
 
                 default: throw new InvalidOperationException();

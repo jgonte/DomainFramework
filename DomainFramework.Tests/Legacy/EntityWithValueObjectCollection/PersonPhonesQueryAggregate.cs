@@ -16,7 +16,7 @@ namespace DomainFramework.Tests
             SetPhonesLoadOperation = new SetCollectionLinkedValueObjectQueryOperation<PersonEntity4, Person_PhonesQueryRepository.RepositoryKey>
             {
                 SetLinkedValueObjects = (repository, entity, user) =>
-                    entity.Phones = ((Person_PhonesQueryRepository)repository).Get(RootEntity.Id, user).ToList(),
+                    entity.Phones = ((Person_PhonesQueryRepository)repository).GetAll(RootEntity.Id).ToList(),
 
                 //SetLinkedValueObjectsAsync = async (repository, entity, user) =>
                 //{

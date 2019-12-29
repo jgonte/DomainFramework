@@ -6,7 +6,7 @@ namespace DomainFramework.Tests
 {
     class CountryQueryRepository : EntityQueryRepository<CountryEntity, string>
     {
-        public override CountryEntity GetById(string id, IAuthenticatedUser user)
+        public override CountryEntity GetById(string id)
         {
             var result = Query<CountryEntity>
                 .Single()
@@ -26,7 +26,7 @@ namespace DomainFramework.Tests
             return result.Data;
         }
 
-        public override async Task<CountryEntity> GetByIdAsync(string id, IAuthenticatedUser user)
+        public override async Task<CountryEntity> GetByIdAsync(string id)
         {
             var result = await Query<CountryEntity>
                 .Single()

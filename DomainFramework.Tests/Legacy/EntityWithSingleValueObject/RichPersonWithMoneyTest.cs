@@ -179,7 +179,7 @@ GO
                 ConnectionName = connectionName
             };
 
-            richPersonEntity = queryRepository.GetById(id, user: null);
+            richPersonEntity = queryRepository.GetById(id);
 
             Assert.AreEqual(id, richPersonEntity.Id);
 
@@ -195,7 +195,7 @@ GO
             commandRepository.Save(richPersonEntity, user: null, unitOfWork: null);
 
             // Read changes
-            richPersonEntity = queryRepository.GetById(id, user: null);
+            richPersonEntity = queryRepository.GetById(id);
 
             Assert.AreEqual(id, richPersonEntity.Id);
 

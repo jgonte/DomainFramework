@@ -25,8 +25,6 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
 
             Name.ValidateMaxLength(result, nameof(Name), 50);
 
-            Asset.ValidateNotNull(result, nameof(Asset));
-
             Asset?.Validate(result);
         }
 
