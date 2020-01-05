@@ -49,7 +49,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
         #endregion
 
         [TestMethod]
-        public void Tests()
+        public void EmployeeWithDependants_Tests()
         {
             // Configure the user
             var commandAggregate = new SaveEmployeeCommandAggregate(new SaveEmployeeInputDto
@@ -126,7 +126,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
         }
 
         [TestMethod]
-        public async Task TestsAsync()
+        public async Task EmployeeWithDependants_Async_Tests()
         {
             // Configure the user
             var commandAggregate = new SaveEmployeeCommandAggregate(new SaveEmployeeInputDto

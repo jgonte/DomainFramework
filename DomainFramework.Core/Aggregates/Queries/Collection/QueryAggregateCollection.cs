@@ -1,13 +1,11 @@
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public abstract class QueryAggregateCollection<TAggregate, TEntity, TOutputDto> : IQueryAggregateCollection<TAggregate, TEntity>
-        where TAggregate : IQueryAggregate<TEntity, TOutputDto>, new()
+    public abstract class QueryAggregateCollection<TEntity, TOutputDto, TAggregate> : IQueryAggregateCollection<TEntity, TAggregate>
         where TEntity : IEntity
         where TOutputDto : IOutputDataTransferObject, new()
+        where TAggregate : IQueryAggregate<TEntity, TOutputDto>, new()       
     {
         public IRepositoryContext RepositoryContext { get; set; }
 

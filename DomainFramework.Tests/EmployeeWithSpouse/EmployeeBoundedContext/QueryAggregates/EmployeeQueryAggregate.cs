@@ -38,8 +38,6 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             OutputDto.MarriedToPersonId = entity.MarriedToPersonId;
 
             OutputDto.CellPhone = GetCellPhoneDto(entity);
-
-            //OutputDto.Spouse = GetSpouseDto();
         }
 
     }

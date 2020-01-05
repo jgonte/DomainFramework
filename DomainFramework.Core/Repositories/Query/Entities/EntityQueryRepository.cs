@@ -14,6 +14,8 @@ namespace DomainFramework.Core
     {
         public string ConnectionName { get; set; }
 
+        #region GetById
+
         public virtual TEntity GetById(TKey id)
         {
             throw new NotImplementedException();
@@ -33,6 +35,10 @@ namespace DomainFramework.Core
         {
             return await GetByIdAsync((TKey)id);
         }
+        
+        #endregion
+
+        #region Get
 
         public virtual (int, IEnumerable<TEntity>) Get(CollectionQueryParameters parameters)
         {
@@ -53,5 +59,31 @@ namespace DomainFramework.Core
         {
             return await GetAsync(parameters);
         }
+
+        #endregion
+
+        #region GetAll
+
+        public virtual IEnumerable<TEntity> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerable<IEntity> IEntityQueryRepository.GetAll()
+        {
+            return GetAll();
+        }
+
+        public virtual Task<IEnumerable<TEntity>> GetAllAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        async Task<IEnumerable<IEntity>> IEntityQueryRepository.GetAllAsync()
+        {
+            return await GetAllAsync();
+        }
+
+        #endregion
     }
 }

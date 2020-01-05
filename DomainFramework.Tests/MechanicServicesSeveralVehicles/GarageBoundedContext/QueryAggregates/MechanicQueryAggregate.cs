@@ -24,8 +24,6 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
             OutputDto.Id = entity.Id.Value;
 
             OutputDto.Name = entity.Name;
-
-            //OutputDto.Vehicles = GetVehiclesDtos();
         }
 
     }

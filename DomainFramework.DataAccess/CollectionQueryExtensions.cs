@@ -8,6 +8,11 @@ namespace DomainFramework.DataAccess
     {
         public static CollectionQuery<T> QueryParameters<T>(this CollectionQuery<T> query, CollectionQueryParameters queryParameters)
         {
+            if (queryParameters == null)
+            {
+                return query;
+            }
+
             if (queryParameters.Skip != null)
             {
                 query.Parameters(p => p.Name("$skip").Value(queryParameters.Skip.Value));

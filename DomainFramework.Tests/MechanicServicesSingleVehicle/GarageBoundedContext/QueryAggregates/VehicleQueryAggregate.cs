@@ -58,8 +58,6 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             OutputDto.MechanicId = entity.MechanicId;
 
             OutputDto.Cylinders = GetCylindersDtos(entity);
-
-            //OutputDto.Mechanic = GetMechanicDto();
         }
 
     }

@@ -59,8 +59,6 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
 
                 OutputDto = personDto;
             }
-
-            //OutputDto.Spouse = GetSpouseDto();
         }
 
     }

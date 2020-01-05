@@ -4,6 +4,7 @@ using SqlServerScriptRunner;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CountryWithCapitalCity.CountryBoundedContext
@@ -48,63 +49,63 @@ namespace CountryWithCapitalCity.CountryBoundedContext
         //
         #endregion
 
-        [TestMethod]
-        public void Save_Country_Only_Tests()
-        {
-            // Insert
-            var createCommandAggregate = new CreateCountryCommandAggregate(new CreateCountryInputDto
-            {
-                Id = "us",
-                Name = "United States"
-            });
+        //[TestMethod]
+        //public void Save_Country_Only_Tests()
+        //{
+        //    // Insert
+        //    var createCommandAggregate = new CreateCountryCommandAggregate(new CreateCountryInputDto
+        //    {
+        //        Id = "us",
+        //        Name = "United States"
+        //    });
 
-            createCommandAggregate.Save();
+        //    createCommandAggregate.Save();
 
-            var countryId = createCommandAggregate.RootEntity.Id;
+        //    var countryId = createCommandAggregate.RootEntity.Id;
 
-            // Read
-            var queryAggregate = new CountryQueryAggregate();
+        //    // Read
+        //    var queryAggregate = new CountryQueryAggregate();
 
-            var countryDto = queryAggregate.Get(countryId);
+        //    var countryDto = queryAggregate.Get(countryId);
 
-            Assert.AreEqual(countryId, countryDto.Id);
+        //    Assert.AreEqual(countryId, countryDto.Id);
 
-            Assert.AreEqual("United States", countryDto.Name);
+        //    Assert.AreEqual("United States", countryDto.Name);
 
-            Assert.IsNull(countryDto.CapitalCity);
+        //    Assert.IsNull(countryDto.CapitalCity);
 
-            // Update
-            var updateCommandAggregate = new UpdateCountryCommandAggregate(new UpdateCountryInputDto
-            {
-                Id = countryId,
-                Name = "United States of America"
-            });
+        //    // Update
+        //    var updateCommandAggregate = new UpdateCountryCommandAggregate(new UpdateCountryInputDto
+        //    {
+        //        Id = countryId,
+        //        Name = "United States of America"
+        //    });
 
-            updateCommandAggregate.Save();
+        //    updateCommandAggregate.Save();
 
-            // Read
-            queryAggregate = new CountryQueryAggregate();
+        //    // Read
+        //    queryAggregate = new CountryQueryAggregate();
 
-            countryDto = queryAggregate.Get(countryId);
+        //    countryDto = queryAggregate.Get(countryId);
 
-            Assert.AreEqual(countryId, countryDto.Id);
+        //    Assert.AreEqual(countryId, countryDto.Id);
 
-            Assert.AreEqual("United States of America", countryDto.Name);
+        //    Assert.AreEqual("United States of America", countryDto.Name);
 
-            Assert.IsNull(countryDto.CapitalCity);
+        //    Assert.IsNull(countryDto.CapitalCity);
 
-            // Delete
-            //var deleteAggregate = new DeleteCountryCommandAggregate(new DeleteCountryInputDto
-            //{
-            //    Id = countryId.Value
-            //});
+        //    // Delete
+        //    //var deleteAggregate = new DeleteCountryCommandAggregate(new DeleteCountryInputDto
+        //    //{
+        //    //    Id = countryId.Value
+        //    //});
 
-            //deleteAggregate.Save();
+        //    //deleteAggregate.Save();
 
-            //countryDto = queryAggregate.Get(countryId);
+        //    //countryDto = queryAggregate.Get(countryId);
 
-            //Assert.IsNull(countryDto);
-        }
+        //    //Assert.IsNull(countryDto);
+        //}
 
         [TestMethod]
         public void Save_Country_With_Capital_City_Tests()
@@ -167,6 +168,50 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 
             Assert.AreEqual("Tokyo", capitalCityDto.Name);
 
+            // Add another country to test getting a collection of countries
+
+            createCommandAggregate = new CreateCountryCommandAggregate(new CreateCountryInputDto
+            {
+                Id = "no",
+                Name = "Norway",
+                CapitalCity = new CreateCapitalCityInputDto
+                {
+                    Name = "Oslo"
+                }
+            });
+
+            createCommandAggregate.Save();
+
+            var getCountriesQueryAggregate = new GetCountriesQueryAggregate();
+
+            var countryDtos = getCountriesQueryAggregate.Get(queryParameters: null, user: null);
+
+            Assert.AreEqual(2, countryDtos.Item1);
+
+            countryDto = countryDtos.Item2.ElementAt(0);
+
+            Assert.AreEqual("jp", countryDto.Id);
+
+            Assert.AreEqual("Japan", countryDto.Name);
+
+            capitalCityDto = countryDto.CapitalCity;
+
+            Assert.AreEqual("jp", capitalCityDto.CountryCode);
+
+            Assert.AreEqual("Tokyo", capitalCityDto.Name);
+
+            countryDto = countryDtos.Item2.ElementAt(1);
+
+            Assert.AreEqual("no", countryDto.Id);
+
+            Assert.AreEqual("Norway", countryDto.Name);
+
+            capitalCityDto = countryDto.CapitalCity;
+
+            Assert.AreEqual("no", capitalCityDto.CountryCode);
+
+            Assert.AreEqual("Oslo", capitalCityDto.Name);
+
             // Delete
             //var deleteAggregate = new DeleteCountryCommandAggregate(new DeleteCountryInputDto
             //{
@@ -178,6 +223,8 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             //countryDto = queryAggregate.Get(countryId);
 
             //Assert.IsNull(countryDto);
+
+
         }
 
     }

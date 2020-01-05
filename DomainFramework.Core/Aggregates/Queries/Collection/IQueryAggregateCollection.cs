@@ -1,6 +1,7 @@
 namespace DomainFramework.Core
 {
-    public interface IQueryAggregateCollection<TAggregate, TEntity> : IAggregateCollection<TAggregate>
+    public interface IQueryAggregateCollection<TEntity, TAggregate> : IAggregateCollection<TAggregate>
+        where TEntity : IEntity
         where TAggregate : IAggregate<TEntity>
     {
     }

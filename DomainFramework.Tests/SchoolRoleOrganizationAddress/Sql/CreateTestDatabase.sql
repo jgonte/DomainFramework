@@ -235,15 +235,15 @@ BEGIN
 END;
 GO
 
---CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_DeleteAddress]
---    @organizationId INT
---AS
---BEGIN
---    DELETE FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Address]
---    WHERE [OrganizationId] = @organizationId;
+CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_DeleteAddress]
+    @organizationId INT
+AS
+BEGIN
+    DELETE FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Address]
+    WHERE [OrganizationId] = @organizationId;
 
---END;
---GO
+END;
+GO
 
 CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_DeleteRole]
     @organizationId INT

@@ -223,6 +223,29 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
             Assert.AreEqual(managerDto.Id, employeeDto.SupervisorId);
 
+            // Read again using the GetAllEmployeesForManagerQueryAggregate
+            var queryLinkedAggregate = new GetAllEmployeesForManagerQueryAggregate();
+
+            var employeeDtos = queryLinkedAggregate.GetAll(managerDto.Id, user: null);
+
+            employeeDto = employeeDtos.ElementAt(0);
+
+            Assert.AreEqual("Jorge", employeeDto.Name);
+
+            Assert.AreEqual(managerDto.Id, employeeDto.SupervisorId);
+
+            employeeDto = employeeDtos.ElementAt(1);
+
+            Assert.AreEqual("Moshe", employeeDto.Name);
+
+            Assert.AreEqual(managerDto.Id, employeeDto.SupervisorId);
+
+            employeeDto = employeeDtos.ElementAt(2);
+
+            Assert.AreEqual("Daphni", employeeDto.Name);
+
+            Assert.AreEqual(managerDto.Id, employeeDto.SupervisorId);
+
             // Delete
             //var deleteAggregate = new DeleteManagerCommandAggregate(new DeleteManagerInputDto
             //{

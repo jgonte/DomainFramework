@@ -1,89 +1,28 @@
-//using DomainFramework.Core;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading.Tasks;
+using DomainFramework.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-//namespace ManagerWithEmployees.ManagerBoundedContext
-//{
-//    public class GetAllEmployeesForManagerQueryAggregate : QueryAggregate<Employee, EmployeeOutputDto>
-//    {
-//        public GetAllEmployeesForManagerQueryAggregate()
-//        {
-//            var context = new DomainFramework.DataAccess.RepositoryContext(ManagerWithEmployeesConnectionClass.GetConnectionName());
+namespace ManagerWithEmployees.ManagerBoundedContext
+{
+    public class GetAllEmployeesForManagerQueryAggregate : GetAllLinkedQueryAggregateCollection<int?, Employee, EmployeeOutputDto, GetEmployeeByIdAggregate>
+    {
+        public GetAllEmployeesForManagerQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(ManagerWithEmployeesConnectionClass.GetConnectionName()))
+        {
+            var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
-//            EmployeeQueryRepository.Register(context);
+            EmployeeQueryRepository.Register(context);
 
-//            RepositoryContext = context;
-//        }
+            GetAllLinkedEntities = (repository, id, user) => ((EmployeeQueryRepository)repository).GetAllEmployeesForManager(id).ToList();
 
-//        public EmployeeOutputDto Get(int? managerId, IAuthenticatedUser user)
-//        {
-//            var repository = (EmployeeQueryRepository)RepositoryContext.GetQueryRepository(typeof(Employee));
+            GetAllLinkedEntitiesAsync = async (repository, id, user) =>
+            {
+                var entities = await ((EmployeeQueryRepository)repository).GetAllEmployeesForManagerAsync(id);
 
-//            RootEntity = repository.GetAllEmployeesForManager(managerId, user);
+                return entities.ToList();
+            };
+        }
 
-//            if (RootEntity == null)
-//            {
-//                return null;
-//            }
-
-//            LoadLinks(null);
-
-//            PopulateDto(RootEntity);
-
-//            return OutputDto;
-//        }
-
-//        public async Task<EmployeeOutputDto> GetAsync(int? managerId, IAuthenticatedUser user)
-//        {
-//            var repository = (EmployeeQueryRepository)RepositoryContext.GetQueryRepository(typeof(Employee));
-
-//            RootEntity = await repository.GetAllEmployeesForManagerAsync(managerId, user);
-
-//            if (RootEntity == null)
-//            {
-//                return null;
-//            }
-
-//            await LoadLinksAsync(null);
-
-//            PopulateDto(RootEntity);
-
-//            return OutputDto;
-//        }
-
-//        public override void PopulateDto(Employee entity)
-//        {
-//            if (entity is Manager)
-//            {
-//                var manager = (Manager)entity;
-
-//                var managerDto = new ManagerOutputDto();
-
-//                managerDto.Id = manager.Id.Value;
-
-//                managerDto.Department = manager.Department;
-
-//                managerDto.Name = manager.Name;
-
-//                managerDto.SupervisorId = manager.SupervisorId;
-
-//                OutputDto = managerDto;
-//            }
-//            else
-//            {
-//                var employeeDto = new EmployeeOutputDto();
-
-//                employeeDto.Id = entity.Id.Value;
-
-//                employeeDto.Name = entity.Name;
-
-//                employeeDto.SupervisorId = entity.SupervisorId;
-
-//                OutputDto = employeeDto;
-//            }
-//        }
-
-//    }
-//}
+    }
+}

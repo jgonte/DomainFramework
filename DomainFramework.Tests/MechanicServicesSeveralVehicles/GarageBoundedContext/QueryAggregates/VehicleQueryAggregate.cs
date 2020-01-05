@@ -127,8 +127,6 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
                 OutputDto = vehicleDto;
             }
-
-            //OutputDto.Mechanic = GetMechanicDto();
         }
 
     }

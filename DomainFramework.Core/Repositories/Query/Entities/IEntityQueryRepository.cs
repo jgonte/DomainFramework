@@ -15,5 +15,9 @@ namespace DomainFramework.Core
         (int, IEnumerable<IEntity>) Get(CollectionQueryParameters parameters);
 
         Task<(int, IEnumerable<IEntity>)> GetAsync(CollectionQueryParameters parameters);
+
+        IEnumerable<IEntity> GetAll();
+
+        Task<IEnumerable<IEntity>> GetAllAsync();
     }
 }

@@ -34,8 +34,6 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             OutputDto.AddressId = entity.AddressId;
 
             OutputDto.Phone = GetPhoneDto(entity);
-
-            //OutputDto.Address = GetAddressDto();
         }
 
     }

@@ -4,26 +4,22 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public class GetQueryAggregateCollection<TEntity, TOutputDto, TAggregate> : QueryAggregateCollection<TEntity, TOutputDto, TAggregate>
-        where TAggregate : IQueryAggregate<TEntity, TOutputDto>, new()
+    public class GetAllQueryAggregateCollection<TEntity, TOutputDto, TAggregate> : QueryAggregateCollection<TEntity, TOutputDto, TAggregate>
         where TEntity : IEntity
         where TOutputDto : IOutputDataTransferObject, new()
+        where TAggregate : IQueryAggregate<TEntity, TOutputDto>, new()
     {
-        public GetQueryAggregateCollection() : base(null)
+        public GetAllQueryAggregateCollection(RepositoryContext context) : base(context)
         {
         }
 
-        public GetQueryAggregateCollection(RepositoryContext context) : base(context)
-        {
-        }
-
-        public (int, IEnumerable<TOutputDto>) Get(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
+        public IEnumerable<TOutputDto> GetAll(IAuthenticatedUser user)
         {
             Aggregates = new List<TAggregate>();
 
             var repository = RepositoryContext.GetQueryRepository(typeof(TEntity));
 
-            var (count, entities) = ((IEntityQueryRepository)repository).Get(queryParameters);
+            var entities = ((IEntityQueryRepository)repository).GetAll();
 
             foreach (var entity in entities)
             {
@@ -40,16 +36,16 @@ namespace DomainFramework.Core
                 ((List<TAggregate>)Aggregates).Add(aggregate);
             }
 
-            return (count, Aggregates.Select(a => a.OutputDto));
+            return Aggregates.Select(a => a.OutputDto);
         }
 
-        public async Task<(int, IEnumerable<TOutputDto>)> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
+        public async Task<IEnumerable<TOutputDto>> GetAllAsync(IAuthenticatedUser user)
         {
             Aggregates = new List<TAggregate>();
 
             var repository = RepositoryContext.GetQueryRepository(typeof(TEntity));
 
-            var (count, entities) = await ((IEntityQueryRepository)repository).GetAsync(queryParameters);
+            var entities = await ((IEntityQueryRepository)repository).GetAllAsync();
 
             var tasks = new Queue<Task>();
 
@@ -72,7 +68,7 @@ namespace DomainFramework.Core
 
             await Task.WhenAll(tasks);
 
-            return (count, Aggregates.Select(a => a.OutputDto));
+            return Aggregates.Select(a => a.OutputDto);
         }
     }
 }

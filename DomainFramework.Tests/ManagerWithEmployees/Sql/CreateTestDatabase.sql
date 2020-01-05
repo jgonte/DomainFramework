@@ -226,11 +226,37 @@ CREATE PROCEDURE [ManagerBoundedContext].[pGetAll_Employees_For_Manager]
 AS
 BEGIN
     SELECT
-        e.[EmployeeId] AS "Id",
-        e.[Name] AS "Name",
-        e.[SupervisorId] AS "SupervisorId"
-    FROM [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
-    WHERE e.[SupervisorId] = @managerId;
+        _q_.[Id] AS "Id",
+        _q_.[Name] AS "Name",
+        _q_.[SupervisorId] AS "SupervisorId",
+        _q_.[Department] AS "Department",
+        _q_.[_EntityType_] AS "_EntityType_"
+    FROM 
+    (
+        SELECT
+            m.[ManagerId] AS "Id",
+            e.[Name] AS "Name",
+            e.[SupervisorId] AS "SupervisorId",
+            m.[Department] AS "Department",
+            1 AS "_EntityType_"
+        FROM [ManagerWithEmployees].[ManagerBoundedContext].[Manager] m
+        INNER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
+            ON m.[ManagerId] = e.[EmployeeId]
+        UNION ALL
+        (
+            SELECT
+                e.[EmployeeId] AS "Id",
+                e.[Name] AS "Name",
+                e.[SupervisorId] AS "SupervisorId",
+                NULL AS "Department",
+                2 AS "_EntityType_"
+            FROM [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
+            LEFT OUTER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Manager] m
+                ON m.[ManagerId] = e.[EmployeeId]
+            WHERE m.[ManagerId] IS NULL
+        )
+    ) _q_
+    WHERE _q_.[SupervisorId] = @managerId;
 
 END;
 GO
