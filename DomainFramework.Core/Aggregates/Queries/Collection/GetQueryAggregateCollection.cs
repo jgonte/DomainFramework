@@ -9,10 +9,6 @@ namespace DomainFramework.Core
         where TEntity : IEntity
         where TOutputDto : IOutputDataTransferObject, new()
     {
-        public GetQueryAggregateCollection() : base(null)
-        {
-        }
-
         public GetQueryAggregateCollection(RepositoryContext context) : base(context)
         {
         }

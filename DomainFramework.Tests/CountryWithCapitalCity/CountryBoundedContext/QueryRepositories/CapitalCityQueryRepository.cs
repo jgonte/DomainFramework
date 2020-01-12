@@ -40,7 +40,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public IEnumerable<CapitalCity> GetAll()
+        public override IEnumerable<CapitalCity> GetAll()
         {
             var result = Query<CapitalCity>
                 .Collection()
@@ -51,7 +51,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             return result.Data;
         }
 
-        public async Task<IEnumerable<CapitalCity>> GetAllAsync()
+        public async override Task<IEnumerable<CapitalCity>> GetAllAsync()
         {
             var result = await Query<CapitalCity>
                 .Collection()

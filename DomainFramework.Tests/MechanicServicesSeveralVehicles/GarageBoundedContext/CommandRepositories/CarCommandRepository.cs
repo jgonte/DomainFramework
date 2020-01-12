@@ -18,10 +18,19 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 .Parameters(
                     p => p.Name("passengers").Value(entity.Passengers),
                     p => p.Name("model").Value(entity.Model),
-                    p => p.Name("createdBy").Value(entity.CreatedBy),
-                    p => p.Name("mechanicId").Value(entity.MechanicId)
+                    p => p.Name("createdBy").Value(entity.CreatedBy)
                 )
                 .Instance(entity)
+                .OnBeforeCommandExecuted(cmd =>
+                {
+                    var dependencies = Dependencies();
+
+                    var mechanic = (Mechanic)dependencies.Single().Entity;
+
+                    cmd.Parameters(
+                        p => p.Name("mechanicId").Value(mechanic.Id)
+                    );
+                })
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

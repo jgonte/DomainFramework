@@ -41,14 +41,47 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
             {
                 foreach (var vehicle in mechanic.Vehicles)
                 {
-                    Enqueue(new AddLinkedEntityCommandOperation<Mechanic, Vehicle>(RootEntity, () => new Vehicle
+                    if (vehicle is CarInputDto)
                     {
-                        Model = vehicle.Model,
-                        Cylinders = vehicle.Cylinders.Select(dto => new Cylinder
-                        {
-                            Diameter = dto.Diameter
-                        }).ToList()
-                    }, "Vehicles"));
+                        Enqueue(new AddLinkedAggregateCommandOperation<Mechanic, SaveCarCommandAggregate, CarInputDto>(
+                            RootEntity, 
+                            (CarInputDto)vehicle, 
+                            new EntityDependency[] 
+                            {
+                                new EntityDependency
+                                {
+                                    Entity = RootEntity
+                                }
+                            })
+                        );
+                    }
+                    else if (vehicle is TruckInputDto)
+                    {
+                        Enqueue(new AddLinkedAggregateCommandOperation<Mechanic, SaveTruckCommandAggregate, TruckInputDto>(
+                            RootEntity, 
+                            (TruckInputDto)vehicle,
+                            new EntityDependency[]
+                            {
+                                new EntityDependency
+                                {
+                                    Entity = RootEntity
+                                }
+                            })
+                        );
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    //Enqueue(new AddLinkedEntityCommandOperation<Mechanic, Vehicle>(RootEntity, () => new Vehicle
+                    //{
+                    //    Model = vehicle.Model,
+                    //    Cylinders = vehicle.Cylinders.Select(dto => new Cylinder
+                    //    {
+                    //        Diameter = dto.Diameter
+                    //    }).ToList()
+                    //}, "Vehicles"));
                 }
             }
         }

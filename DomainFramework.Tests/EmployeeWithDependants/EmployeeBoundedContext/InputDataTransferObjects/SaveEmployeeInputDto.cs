@@ -32,6 +32,8 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
                 person.Validate(result);
             }
 
+            CellPhone.ValidateNotNull(result, nameof(CellPhone));
+
             CellPhone?.Validate(result);
         }
 

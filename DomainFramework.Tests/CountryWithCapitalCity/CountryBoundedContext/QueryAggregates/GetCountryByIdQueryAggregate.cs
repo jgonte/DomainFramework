@@ -12,15 +12,13 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 
         public CapitalCity CapitalCity => GetCapitalCityQueryOperation.LinkedEntity;
 
-        public GetCountryByIdQueryAggregate()
+        public GetCountryByIdQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(CountryWithCapitalCityConnectionClass.GetConnectionName()))
         {
-            var context = new DomainFramework.DataAccess.RepositoryContext(CountryWithCapitalCityConnectionClass.GetConnectionName());
+            var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
             CountryQueryRepository.Register(context);
 
             CapitalCityQueryRepository.Register(context);
-
-            RepositoryContext = context;
 
             GetCapitalCityQueryOperation = new GetSingleLinkedEntityQueryOperation<CapitalCity>
             {

@@ -28,7 +28,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 {
                     var dependencies = Dependencies();
 
-                    var e = (Mechanic)dependencies.Single().Entity;
+                    var e = dependencies.Single().Entity;
 
                     cmd.Parameters(
                         p => p.Name("mechanicId").Value(e.Id)

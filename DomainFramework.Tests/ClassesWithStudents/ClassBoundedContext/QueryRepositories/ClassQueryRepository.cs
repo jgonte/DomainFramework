@@ -40,7 +40,7 @@ namespace ClassesWithStudents.ClassBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public IEnumerable<Class> GetAll()
+        public override IEnumerable<Class> GetAll()
         {
             var result = Query<Class>
                 .Collection()
@@ -51,7 +51,7 @@ namespace ClassesWithStudents.ClassBoundedContext
             return result.Data;
         }
 
-        public async Task<IEnumerable<Class>> GetAllAsync()
+        public async override Task<IEnumerable<Class>> GetAllAsync()
         {
             var result = await Query<Class>
                 .Collection()

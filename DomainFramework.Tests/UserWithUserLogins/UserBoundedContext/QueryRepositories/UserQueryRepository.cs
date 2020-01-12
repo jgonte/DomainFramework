@@ -56,7 +56,7 @@ namespace UserWithUserLogins.UserBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public IEnumerable<User> GetAll()
+        public override IEnumerable<User> GetAll()
         {
             var result = Query<User>
                 .Collection()
@@ -75,7 +75,7 @@ namespace UserWithUserLogins.UserBoundedContext
             return result.Data;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async override Task<IEnumerable<User>> GetAllAsync()
         {
             var result = await Query<User>
                 .Collection()

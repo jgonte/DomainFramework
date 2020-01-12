@@ -40,7 +40,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public IEnumerable<Executive> GetAll()
+        public override IEnumerable<Executive> GetAll()
         {
             var result = Query<Executive>
                 .Collection()
@@ -51,7 +51,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             return result.Data;
         }
 
-        public async Task<IEnumerable<Executive>> GetAllAsync()
+        public async override Task<IEnumerable<Executive>> GetAllAsync()
         {
             var result = await Query<Executive>
                 .Collection()

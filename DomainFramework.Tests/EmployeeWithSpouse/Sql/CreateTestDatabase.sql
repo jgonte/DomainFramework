@@ -495,6 +495,55 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE [EmployeeBoundedContext].[pGet_Spouse_For_Person]
+    @personId INT
+AS
+BEGIN
+    SELECT
+        _q_.[Id] AS "Id",
+        _q_.[Name] AS "Name",
+        _q_.[CellPhone.AreaCode] AS "CellPhone.AreaCode",
+        _q_.[CellPhone.Exchange] AS "CellPhone.Exchange",
+        _q_.[CellPhone.Number] AS "CellPhone.Number",
+        _q_.[MarriedToPersonId] AS "MarriedToPersonId",
+        _q_.[HireDate] AS "HireDate",
+        _q_.[_EntityType_] AS "_EntityType_"
+    FROM 
+    (
+        SELECT
+            e.[EmployeeId] AS "Id",
+            p.[Name] AS "Name",
+            p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
+            p.[CellPhone_Exchange] AS "CellPhone.Exchange",
+            p.[CellPhone_Number] AS "CellPhone.Number",
+            p.[MarriedToPersonId] AS "MarriedToPersonId",
+            e.[HireDate] AS "HireDate",
+            1 AS "_EntityType_"
+        FROM [EmployeeWithSpouse].[EmployeeBoundedContext].[Employee] e
+        INNER JOIN [EmployeeWithSpouse].[EmployeeBoundedContext].[Person] p
+            ON e.[EmployeeId] = p.[PersonId]
+        UNION ALL
+        (
+            SELECT
+                p.[PersonId] AS "Id",
+                p.[Name] AS "Name",
+                p.[CellPhone_AreaCode] AS "CellPhone.AreaCode",
+                p.[CellPhone_Exchange] AS "CellPhone.Exchange",
+                p.[CellPhone_Number] AS "CellPhone.Number",
+                p.[MarriedToPersonId] AS "MarriedToPersonId",
+                NULL AS "HireDate",
+                2 AS "_EntityType_"
+            FROM [EmployeeWithSpouse].[EmployeeBoundedContext].[Person] p
+            LEFT OUTER JOIN [EmployeeWithSpouse].[EmployeeBoundedContext].[Employee] e
+                ON e.[EmployeeId] = p.[PersonId]
+            WHERE e.[EmployeeId] IS NULL
+        )
+    ) _q_
+    WHERE _q_.[MarriedToPersonId] = @personId;
+
+END;
+GO
+
 CREATE PROCEDURE [pExecuteDynamicQuery]
 	@$select NVARCHAR(MAX) = NULL,
 	@$filter NVARCHAR(MAX) = NULL,

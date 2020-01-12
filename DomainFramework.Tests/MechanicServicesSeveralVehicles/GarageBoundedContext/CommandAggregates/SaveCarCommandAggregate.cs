@@ -43,7 +43,37 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 }).ToList()
             };
 
-            Enqueue(new SaveEntityCommandOperation<Car>(RootEntity));
+            Enqueue(new SaveEntityCommandOperation<Car>(RootEntity, dependencies));
+
+            //.OnAfterCommandExecuted(cmd =>
+            // {
+            //     var query = (CollectionQuery<TestEntity>)cmd;
+
+            //     foreach (var entity in query.Data)
+            //     {
+            //         var repository = new TestEntity_TypeValues1_QueryRepository();
+
+            //         entity.TypeValues1 = repository.GetAll(entity.Id).ToList();
+            //     }
+            // })
+
+            //.OnAfterCommandExecutedAsync(async cmd =>
+            // {
+            //     var query = (SingleQuery<TestEntity>)cmd;
+
+            //     var entity = query.Data;
+
+            //     if (entity == null)
+            //     {
+            //         return;
+            //     }
+
+            //     var repository = new TestEntity_TypeValues1_QueryRepository();
+
+            //     var valueObjects = await repository.GetAllAsync(entity.Id);
+
+            //     entity.TypeValues1 = valueObjects.ToList();
+            // })
         }
 
     }

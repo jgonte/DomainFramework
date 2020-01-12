@@ -40,7 +40,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public IEnumerable<School> GetAll()
+        public override IEnumerable<School> GetAll()
         {
             var result = Query<School>
                 .Collection()
@@ -51,7 +51,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.Data;
         }
 
-        public async Task<IEnumerable<School>> GetAllAsync()
+        public async override Task<IEnumerable<School>> GetAllAsync()
         {
             var result = await Query<School>
                 .Collection()

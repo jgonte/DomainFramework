@@ -56,7 +56,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public IEnumerable<Car> GetAll()
+        public override IEnumerable<Car> GetAll()
         {
             var result = Query<Car>
                 .Collection()
@@ -75,7 +75,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
             return result.Data;
         }
 
-        public async Task<IEnumerable<Car>> GetAllAsync()
+        public async override Task<IEnumerable<Car>> GetAllAsync()
         {
             var result = await Query<Car>
                 .Collection()

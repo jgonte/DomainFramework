@@ -14,15 +14,13 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
         public IEnumerable<Employee> Employees => GetEmployeesQueryOperation.LinkedEntities;
 
-        public ManagerQueryAggregate()
+        public ManagerQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(ManagerWithEmployeesConnectionClass.GetConnectionName()))
         {
-            var context = new DomainFramework.DataAccess.RepositoryContext(ManagerWithEmployeesConnectionClass.GetConnectionName());
+            var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
             ManagerQueryRepository.Register(context);
 
             EmployeeQueryRepository.Register(context);
-
-            RepositoryContext = context;
 
             GetEmployeesQueryOperation = new GetCollectionLinkedEntityQueryOperation<Employee>
             {

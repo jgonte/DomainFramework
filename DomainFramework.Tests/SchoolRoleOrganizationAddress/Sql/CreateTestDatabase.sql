@@ -211,6 +211,21 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE [SchoolBoundedContext].[pGet_Address_For_Organization]
+    @organizationId INT
+AS
+BEGIN
+    SELECT
+        a.[AddressId] AS "Id",
+        a.[Street] AS "Street"
+    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Address] a
+    INNER JOIN [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization] o
+        ON a.[AddressId] = o.[AddressId]
+    WHERE o.[OrganizationId] = @organizationId;
+
+END;
+GO
+
 CREATE PROCEDURE [SchoolBoundedContext].[pAddress_GetAll]
 AS
 BEGIN
@@ -356,6 +371,23 @@ BEGIN
         o.[Phone_Number] AS "Phone.Number",
         o.[AddressId] AS "AddressId"
     FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization] o;
+
+END;
+GO
+
+CREATE PROCEDURE [SchoolBoundedContext].[pGetAll_Organization_For_Role]
+    @roleId INT
+AS
+BEGIN
+    SELECT
+        o.[OrganizationId] AS "Id",
+        o.[Name] AS "Name",
+        o.[Phone_Number] AS "Phone.Number",
+        o.[AddressId] AS "AddressId"
+    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization] o
+    INNER JOIN [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[OrganizationRole] o1
+        ON o.[OrganizationId] = o1.[OrganizationId]
+    WHERE _q_.[RoleId] = @roleId;
 
 END;
 GO

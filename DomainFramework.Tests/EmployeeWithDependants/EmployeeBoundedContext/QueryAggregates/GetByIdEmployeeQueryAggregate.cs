@@ -14,15 +14,13 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
 
         public IEnumerable<Person> Dependants => GetDependantsQueryOperation.LinkedEntities;
 
-        public GetByIdEmployeeQueryAggregate()
+        public GetByIdEmployeeQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(EmployeeWithDependantsConnectionClass.GetConnectionName()))
         {
-            var context = new DomainFramework.DataAccess.RepositoryContext(EmployeeWithDependantsConnectionClass.GetConnectionName());
+            var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
             EmployeeQueryRepository.Register(context);
 
             PersonQueryRepository.Register(context);
-
-            RepositoryContext = context;
 
             GetDependantsQueryOperation = new GetCollectionLinkedEntityQueryOperation<Person>
             {
@@ -56,7 +54,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
                             HireDate = employee.HireDate,
                             Name = employee.Name,
                             ProviderEmployeeId = employee.ProviderEmployeeId,
-                            CellPhone = (employee.CellPhone.IsEmpty()) ? null : new PhoneNumberOutputDto
+                            CellPhone = new PhoneNumberOutputDto
                             {
                                 AreaCode = employee.CellPhone.AreaCode,
                                 Exchange = employee.CellPhone.Exchange,
@@ -89,7 +87,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
                             Id = person.Id.Value,
                             Name = person.Name,
                             ProviderEmployeeId = person.ProviderEmployeeId,
-                            CellPhone = (person.CellPhone.IsEmpty()) ? null : new PhoneNumberOutputDto
+                            CellPhone = new PhoneNumberOutputDto
                             {
                                 AreaCode = person.CellPhone.AreaCode,
                                 Exchange = person.CellPhone.Exchange,
@@ -108,7 +106,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
         }
 
         public PhoneNumberOutputDto GetCellPhoneDto(Person person) => 
-            (person.CellPhone.IsEmpty()) ? null : new PhoneNumberOutputDto
+            new PhoneNumberOutputDto
             {
                 AreaCode = person.CellPhone.AreaCode,
                 Exchange = person.CellPhone.Exchange,

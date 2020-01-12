@@ -12,15 +12,13 @@ namespace BookWithPages.BookBoundedContext
 
         public IEnumerable<Page> Pages => GetPagesQueryOperation.LinkedEntities;
 
-        public GetBookByTitleQueryAggregate()
+        public GetBookByTitleQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
         {
-            var context = new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName());
+            var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
             BookQueryRepository.Register(context);
 
             PageQueryRepository.Register(context);
-
-            RepositoryContext = context;
 
             GetPagesQueryOperation = new GetCollectionLinkedEntityQueryOperation<Page>
             {

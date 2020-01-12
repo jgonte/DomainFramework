@@ -106,7 +106,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public IEnumerable<Vehicle> GetAll()
+        public override IEnumerable<Vehicle> GetAll()
         {
             var result = Query<Vehicle>
                 .Collection()
@@ -148,7 +148,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             return result.Data;
         }
 
-        public async Task<IEnumerable<Vehicle>> GetAllAsync()
+        public async override Task<IEnumerable<Vehicle>> GetAllAsync()
         {
             var result = await Query<Vehicle>
                 .Collection()
@@ -251,6 +251,108 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
                 .StoredProcedure("[GarageBoundedContext].[pVehicle_GetById]")
                 .Parameters(
                     p => p.Name("vehicleId").Value(vehicleId.Value)
+                )
+                .MapTypes(
+                    5,
+                    tm => tm.Type(typeof(Truck)).Index(1),
+                    tm => tm.Type(typeof(Car)).Index(2),
+                    tm => tm.Type(typeof(Vehicle)).Index(3)
+                )
+                .OnAfterCommandExecutedAsync(async cmd =>
+                {
+                    var query = (SingleQuery<Vehicle>)cmd;
+
+                    var entity = query.Data;
+
+                    if (entity == null)
+                    {
+                        return;
+                    }
+
+                    if (entity is Truck)
+                    {
+                        var repository = new Truck_Inspections_QueryRepository();
+
+                        var valueObjects = await repository.GetAllAsync(entity.Id);
+
+                        var truck = (Truck)entity;
+
+                        truck.Inspections = valueObjects.ToList();
+                    }
+
+                    if (entity is Car)
+                    {
+                        var repository1 = new Car_Doors_QueryRepository();
+
+                        var valueObjects1 = await repository1.GetAllAsync(entity.Id);
+
+                        var car = (Car)entity;
+
+                        car.Doors = valueObjects1.ToList();
+                    }
+                })
+                .ExecuteAsync();
+
+            return result.Data;
+        }
+
+        public Vehicle GetVehicleForMechanic(int? mechanicId)
+        {
+            var result = Query<Vehicle>
+                .Single()
+                .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
+                .StoredProcedure("[GarageBoundedContext].[pGet_Vehicle_For_Mechanic]")
+                .Parameters(
+                    p => p.Name("mechanicId").Value(mechanicId.Value)
+                )
+                .MapTypes(
+                    5,
+                    tm => tm.Type(typeof(Truck)).Index(1),
+                    tm => tm.Type(typeof(Car)).Index(2),
+                    tm => tm.Type(typeof(Vehicle)).Index(3)
+                )
+                .OnAfterCommandExecuted(cmd =>
+                {
+                    var query = (SingleQuery<Vehicle>)cmd;
+
+                    var entity = query.Data;
+
+                    if (entity == null)
+                    {
+                        return;
+                    }
+
+                    if (entity is Truck)
+                    {
+                        var repository = new Truck_Inspections_QueryRepository();
+
+                        var truck = (Truck)entity;
+
+                        truck.Inspections = repository.GetAll(entity.Id).ToList();
+                    }
+
+                    if (entity is Car)
+                    {
+                        var repository1 = new Car_Doors_QueryRepository();
+
+                        var car = (Car)entity;
+
+                        car.Doors = repository1.GetAll(entity.Id).ToList();
+                    }
+                })
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<Vehicle> GetVehicleForMechanicAsync(int? mechanicId)
+        {
+            var result = await Query<Vehicle>
+                .Single()
+                .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
+                .StoredProcedure("[GarageBoundedContext].[pGet_Vehicle_For_Mechanic]")
+                .Parameters(
+                    p => p.Name("mechanicId").Value(mechanicId.Value)
                 )
                 .MapTypes(
                     5,

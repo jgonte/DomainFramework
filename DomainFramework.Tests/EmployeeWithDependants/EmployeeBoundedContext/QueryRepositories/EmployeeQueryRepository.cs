@@ -40,7 +40,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public IEnumerable<Employee> GetAll()
+        public override IEnumerable<Employee> GetAll()
         {
             var result = Query<Employee>
                 .Collection()
@@ -51,7 +51,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
             return result.Data;
         }
 
-        public async Task<IEnumerable<Employee>> GetAllAsync()
+        public async override Task<IEnumerable<Employee>> GetAllAsync()
         {
             var result = await Query<Employee>
                 .Collection()

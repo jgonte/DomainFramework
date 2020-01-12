@@ -40,7 +40,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public IEnumerable<Organization> GetAll()
+        public override IEnumerable<Organization> GetAll()
         {
             var result = Query<Organization>
                 .Collection()
@@ -51,7 +51,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.Data;
         }
 
-        public async Task<IEnumerable<Organization>> GetAllAsync()
+        public async override Task<IEnumerable<Organization>> GetAllAsync()
         {
             var result = await Query<Organization>
                 .Collection()
@@ -84,6 +84,34 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 .StoredProcedure("[SchoolBoundedContext].[pOrganization_GetById]")
                 .Parameters(
                     p => p.Name("organizationId").Value(organizationId.Value)
+                )
+                .ExecuteAsync();
+
+            return result.Data;
+        }
+
+        public IEnumerable<Organization> GetAllOrganizationForRole(int? roleId)
+        {
+            var result = Query<Organization>
+                .Collection()
+                .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
+                .StoredProcedure("[SchoolBoundedContext].[pGetAll_Organization_For_Role]")
+                .Parameters(
+                    p => p.Name("roleId").Value(roleId.Value)
+                )
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<IEnumerable<Organization>> GetAllOrganizationForRoleAsync(int? roleId)
+        {
+            var result = await Query<Organization>
+                .Collection()
+                .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
+                .StoredProcedure("[SchoolBoundedContext].[pGetAll_Organization_For_Role]")
+                .Parameters(
+                    p => p.Name("roleId").Value(roleId.Value)
                 )
                 .ExecuteAsync();
 

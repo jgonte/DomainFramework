@@ -13,6 +13,8 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
             CountryQueryRepository.Register(context);
+
+            CapitalCityQueryRepository.Register(context);
         }
 
     }

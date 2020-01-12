@@ -19,9 +19,9 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
                     p => p.Name("hireDate").Value(entity.HireDate),
                     p => p.Name("name").Value(entity.Name),
                     p => p.Name("createdBy").Value(entity.CreatedBy),
-                    p => p.Name("cellPhone_AreaCode").Value(entity.CellPhone?.AreaCode),
-                    p => p.Name("cellPhone_Exchange").Value(entity.CellPhone?.Exchange),
-                    p => p.Name("cellPhone_Number").Value(entity.CellPhone?.Number),
+                    p => p.Name("cellPhone_AreaCode").Value(entity.CellPhone.AreaCode),
+                    p => p.Name("cellPhone_Exchange").Value(entity.CellPhone.Exchange),
+                    p => p.Name("cellPhone_Number").Value(entity.CellPhone.Number),
                     p => p.Name("providerEmployeeId").Value(entity.ProviderEmployeeId)
                 )
                 .Instance(entity)
@@ -53,9 +53,9 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
                     p => p.Name("hireDate").Value(entity.HireDate),
                     p => p.Name("name").Value(entity.Name),
                     p => p.Name("updatedBy").Value(entity.UpdatedBy),
-                    p => p.Name("cellPhone_AreaCode").Value(entity.CellPhone?.AreaCode),
-                    p => p.Name("cellPhone_Exchange").Value(entity.CellPhone?.Exchange),
-                    p => p.Name("cellPhone_Number").Value(entity.CellPhone?.Number),
+                    p => p.Name("cellPhone_AreaCode").Value(entity.CellPhone.AreaCode),
+                    p => p.Name("cellPhone_Exchange").Value(entity.CellPhone.Exchange),
+                    p => p.Name("cellPhone_Number").Value(entity.CellPhone.Number),
                     p => p.Name("providerEmployeeId").Value(entity.ProviderEmployeeId)
                 );
         }

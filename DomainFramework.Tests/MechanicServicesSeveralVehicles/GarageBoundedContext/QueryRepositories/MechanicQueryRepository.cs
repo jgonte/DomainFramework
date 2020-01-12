@@ -40,7 +40,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public IEnumerable<Mechanic> GetAll()
+        public override IEnumerable<Mechanic> GetAll()
         {
             var result = Query<Mechanic>
                 .Collection()
@@ -51,7 +51,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
             return result.Data;
         }
 
-        public async Task<IEnumerable<Mechanic>> GetAllAsync()
+        public async override Task<IEnumerable<Mechanic>> GetAllAsync()
         {
             var result = await Query<Mechanic>
                 .Collection()
@@ -84,6 +84,34 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 .StoredProcedure("[GarageBoundedContext].[pMechanic_GetById]")
                 .Parameters(
                     p => p.Name("mechanicId").Value(mechanicId.Value)
+                )
+                .ExecuteAsync();
+
+            return result.Data;
+        }
+
+        public Mechanic GetMechanicForVehicle(int? vehicleId)
+        {
+            var result = Query<Mechanic>
+                .Single()
+                .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
+                .StoredProcedure("[GarageBoundedContext].[pGet_Mechanic_For_Vehicle]")
+                .Parameters(
+                    p => p.Name("vehicleId").Value(vehicleId.Value)
+                )
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<Mechanic> GetMechanicForVehicleAsync(int? vehicleId)
+        {
+            var result = await Query<Mechanic>
+                .Single()
+                .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
+                .StoredProcedure("[GarageBoundedContext].[pGet_Mechanic_For_Vehicle]")
+                .Parameters(
+                    p => p.Name("vehicleId").Value(vehicleId.Value)
                 )
                 .ExecuteAsync();
 

@@ -10,15 +10,13 @@ namespace UserWithUserLogins.UserBoundedContext
     {
         public SetCollectionLinkedValueObjectQueryOperation<User, User_UserLogins_QueryRepository.RepositoryKey> UserLogins { get; private set; }
 
-        public GetUserByNormalizedEmailQueryAggregate()
+        public GetUserByNormalizedEmailQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(UserWithUserLoginsConnectionClass.GetConnectionName()))
         {
-            var context = new DomainFramework.DataAccess.RepositoryContext(UserWithUserLoginsConnectionClass.GetConnectionName());
+            var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
             UserQueryRepository.Register(context);
 
             User_UserLogins_QueryRepository.Register(context);
-
-            RepositoryContext = context;
 
             UserLogins = new SetCollectionLinkedValueObjectQueryOperation<User, User_UserLogins_QueryRepository.RepositoryKey>
             {

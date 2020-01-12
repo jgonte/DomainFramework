@@ -40,7 +40,7 @@ namespace BookWithPages.BookBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public IEnumerable<Page> GetAll()
+        public override IEnumerable<Page> GetAll()
         {
             var result = Query<Page>
                 .Collection()
@@ -51,7 +51,7 @@ namespace BookWithPages.BookBoundedContext
             return result.Data;
         }
 
-        public async Task<IEnumerable<Page>> GetAllAsync()
+        public async override Task<IEnumerable<Page>> GetAllAsync()
         {
             var result = await Query<Page>
                 .Collection()

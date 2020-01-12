@@ -8,17 +8,15 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
 {
     public class GetByIdPersonQueryAggregate : GetByIdQueryAggregate<Person, int?, PersonOutputDto>
     {
-        public GetByIdPersonQueryAggregate()
+        public GetByIdPersonQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(EmployeeWithDependantsConnectionClass.GetConnectionName()))
         {
-            var context = new DomainFramework.DataAccess.RepositoryContext(EmployeeWithDependantsConnectionClass.GetConnectionName());
+            var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
             PersonQueryRepository.Register(context);
-
-            RepositoryContext = context;
         }
 
         public PhoneNumberOutputDto GetCellPhoneDto(Person person) => 
-            (person.CellPhone.IsEmpty()) ? null : new PhoneNumberOutputDto
+            new PhoneNumberOutputDto
             {
                 AreaCode = person.CellPhone.AreaCode,
                 Exchange = person.CellPhone.Exchange,

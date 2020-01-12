@@ -8,13 +8,11 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
 {
     public class PersonQueryAggregate : GetByIdQueryAggregate<Person, int?, PersonOutputDto>
     {
-        public PersonQueryAggregate()
+        public PersonQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName()))
         {
-            var context = new DomainFramework.DataAccess.RepositoryContext(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName());
+            var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
             PersonQueryRepository.Register(context);
-
-            RepositoryContext = context;
         }
 
         public AssetOutputDto GetAssetDto(Executive executive) => 

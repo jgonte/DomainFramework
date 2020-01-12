@@ -12,15 +12,13 @@ namespace ClassesWithStudents.ClassBoundedContext
 
         public IEnumerable<Student> Students => GetStudentsQueryOperation.LinkedEntities;
 
-        public GetClassByIdQueryAggregate()
+        public GetClassByIdQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(ClassesWithStudentsConnectionClass.GetConnectionName()))
         {
-            var context = new DomainFramework.DataAccess.RepositoryContext(ClassesWithStudentsConnectionClass.GetConnectionName());
+            var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
             ClassQueryRepository.Register(context);
 
             StudentQueryRepository.Register(context);
-
-            RepositoryContext = context;
 
             GetStudentsQueryOperation = new GetCollectionLinkedEntityQueryOperation<Student>
             {

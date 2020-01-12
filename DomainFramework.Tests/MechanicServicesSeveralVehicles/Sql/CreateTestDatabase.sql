@@ -437,6 +437,21 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE [GarageBoundedContext].[pGet_Mechanic_For_Vehicle]
+    @vehicleId INT
+AS
+BEGIN
+    SELECT
+        m.[MechanicId] AS "Id",
+        m.[Name] AS "Name"
+    FROM [MechanicServicesSeveralVehicles].[GarageBoundedContext].[Mechanic] m
+    INNER JOIN [MechanicServicesSeveralVehicles].[GarageBoundedContext].[Vehicle] v
+        ON m.[MechanicId] = v.[MechanicId]
+    WHERE v.[VehicleId] = @vehicleId;
+
+END;
+GO
+
 CREATE PROCEDURE [GarageBoundedContext].[pTruck_DeleteInspections]
     @truckId INT
 AS
@@ -786,6 +801,65 @@ BEGIN
             AND c.[CarId] IS NULL
         )
     ) _q_;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pGetAll_Vehicles_For_Mechanic]
+    @mechanicId INT
+AS
+BEGIN
+    SELECT
+        _q_.[Id] AS "Id",
+        _q_.[Model] AS "Model",
+        _q_.[MechanicId] AS "MechanicId",
+        _q_.[Weight] AS "Weight",
+        _q_.[Passengers] AS "Passengers",
+        _q_.[_EntityType_] AS "_EntityType_"
+    FROM 
+    (
+        SELECT
+            t.[TruckId] AS "Id",
+            v.[Model] AS "Model",
+            v.[MechanicId] AS "MechanicId",
+            t.[Weight] AS "Weight",
+            NULL AS "Passengers",
+            1 AS "_EntityType_"
+        FROM [MechanicServicesSeveralVehicles].[GarageBoundedContext].[Truck] t
+        INNER JOIN [MechanicServicesSeveralVehicles].[GarageBoundedContext].[Vehicle] v
+            ON t.[TruckId] = v.[VehicleId]
+        UNION ALL
+        (
+            SELECT
+                c.[CarId] AS "Id",
+                v.[Model] AS "Model",
+                v.[MechanicId] AS "MechanicId",
+                NULL AS "Weight",
+                c.[Passengers] AS "Passengers",
+                2 AS "_EntityType_"
+            FROM [MechanicServicesSeveralVehicles].[GarageBoundedContext].[Car] c
+            INNER JOIN [MechanicServicesSeveralVehicles].[GarageBoundedContext].[Vehicle] v
+                ON c.[CarId] = v.[VehicleId]
+        )
+        UNION ALL
+        (
+            SELECT
+                v.[VehicleId] AS "Id",
+                v.[Model] AS "Model",
+                v.[MechanicId] AS "MechanicId",
+                NULL AS "Weight",
+                NULL AS "Passengers",
+                3 AS "_EntityType_"
+            FROM [MechanicServicesSeveralVehicles].[GarageBoundedContext].[Vehicle] v
+            LEFT OUTER JOIN [MechanicServicesSeveralVehicles].[GarageBoundedContext].[Truck] t
+                ON t.[TruckId] = v.[VehicleId]
+            LEFT OUTER JOIN [MechanicServicesSeveralVehicles].[GarageBoundedContext].[Car] c
+                ON c.[CarId] = v.[VehicleId]
+            WHERE t.[TruckId] IS NULL
+            AND c.[CarId] IS NULL
+        )
+    ) _q_
+    WHERE _q_.[MechanicId] = @mechanicId;
 
 END;
 GO

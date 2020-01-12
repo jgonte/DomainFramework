@@ -50,7 +50,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public IEnumerable<Person> GetAll()
+        public override IEnumerable<Person> GetAll()
         {
             var result = Query<Person>
                 .Collection()
@@ -66,7 +66,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             return result.Data;
         }
 
-        public async Task<IEnumerable<Person>> GetAllAsync()
+        public async override Task<IEnumerable<Person>> GetAllAsync()
         {
             var result = await Query<Person>
                 .Collection()
@@ -107,6 +107,44 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
                 .Single()
                 .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
                 .StoredProcedure("[EmployeeBoundedContext].[pPerson_GetById]")
+                .Parameters(
+                    p => p.Name("personId").Value(personId.Value)
+                )
+                .MapTypes(
+                    7,
+                    tm => tm.Type(typeof(Employee)).Index(1),
+                    tm => tm.Type(typeof(Person)).Index(2)
+                )
+                .ExecuteAsync();
+
+            return result.Data;
+        }
+
+        public Person GetSpouseForPerson(int? personId)
+        {
+            var result = Query<Person>
+                .Single()
+                .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
+                .StoredProcedure("[EmployeeBoundedContext].[pGet_Spouse_For_Person]")
+                .Parameters(
+                    p => p.Name("personId").Value(personId.Value)
+                )
+                .MapTypes(
+                    7,
+                    tm => tm.Type(typeof(Employee)).Index(1),
+                    tm => tm.Type(typeof(Person)).Index(2)
+                )
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<Person> GetSpouseForPersonAsync(int? personId)
+        {
+            var result = await Query<Person>
+                .Single()
+                .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
+                .StoredProcedure("[EmployeeBoundedContext].[pGet_Spouse_For_Person]")
                 .Parameters(
                     p => p.Name("personId").Value(personId.Value)
                 )

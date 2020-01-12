@@ -40,7 +40,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public IEnumerable<Address> GetAll()
+        public override IEnumerable<Address> GetAll()
         {
             var result = Query<Address>
                 .Collection()
@@ -51,7 +51,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.Data;
         }
 
-        public async Task<IEnumerable<Address>> GetAllAsync()
+        public async override Task<IEnumerable<Address>> GetAllAsync()
         {
             var result = await Query<Address>
                 .Collection()
@@ -84,6 +84,34 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 .StoredProcedure("[SchoolBoundedContext].[pAddress_GetById]")
                 .Parameters(
                     p => p.Name("addressId").Value(addressId.Value)
+                )
+                .ExecuteAsync();
+
+            return result.Data;
+        }
+
+        public Address GetAddressForOrganization(int? organizationId)
+        {
+            var result = Query<Address>
+                .Single()
+                .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
+                .StoredProcedure("[SchoolBoundedContext].[pGet_Address_For_Organization]")
+                .Parameters(
+                    p => p.Name("organizationId").Value(organizationId.Value)
+                )
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<Address> GetAddressForOrganizationAsync(int? organizationId)
+        {
+            var result = await Query<Address>
+                .Single()
+                .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
+                .StoredProcedure("[SchoolBoundedContext].[pGet_Address_For_Organization]")
+                .Parameters(
+                    p => p.Name("organizationId").Value(organizationId.Value)
                 )
                 .ExecuteAsync();
 

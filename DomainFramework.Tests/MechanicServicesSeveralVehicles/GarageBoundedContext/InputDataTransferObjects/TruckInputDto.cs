@@ -6,19 +6,13 @@ using Utilities.Validation;
 
 namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 {
-    public class TruckInputDto : IInputDataTransferObject
+    public class TruckInputDto : VehicleInputDto
     {
         public int? Id { get; set; }
 
         public int Weight { get; set; }
 
-        public string Model { get; set; }
-
-        public int MechanicId { get; set; }
-
         public List<InspectionInputDto> Inspections { get; set; } = new List<InspectionInputDto>();
-
-        public List<CylinderInputDto> Cylinders { get; set; } = new List<CylinderInputDto>();
 
         public void Validate(ValidationResult result)
         {

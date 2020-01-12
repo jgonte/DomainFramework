@@ -8,11 +8,15 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 {
     public class VehicleQueryAggregate : GetByIdQueryAggregate<Vehicle, int?, VehicleOutputDto>
     {
+        public GetSingleLinkedEntityQueryOperation<Mechanic> GetMechanicQueryOperation { get; }
+
+        public Mechanic Mechanic => GetMechanicQueryOperation.LinkedEntity;
+
         public SetCollectionLinkedValueObjectQueryOperation<Vehicle, Vehicle_Cylinders_QueryRepository.RepositoryKey> Cylinders { get; private set; }
 
-        public VehicleQueryAggregate()
+        public VehicleQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName()))
         {
-            var context = new DomainFramework.DataAccess.RepositoryContext(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName());
+            var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
             VehicleQueryRepository.Register(context);
 
@@ -20,7 +24,13 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
             Vehicle_Cylinders_QueryRepository.Register(context);
 
-            RepositoryContext = context;
+            GetMechanicQueryOperation = new GetSingleLinkedEntityQueryOperation<Mechanic>
+            {
+                GetLinkedEntity = (repository, entity, user) => ((MechanicQueryRepository)repository).GetMechanicForVehicle(RootEntity.Id),
+                GetLinkedEntityAsync = async (repository, entity, user) => await ((MechanicQueryRepository)repository).GetMechanicForVehicleAsync(RootEntity.Id)
+            };
+
+            QueryOperations.Enqueue(GetMechanicQueryOperation);
 
             Cylinders = new SetCollectionLinkedValueObjectQueryOperation<Vehicle, Vehicle_Cylinders_QueryRepository.RepositoryKey>
             {
@@ -36,6 +46,22 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
             };
 
             QueryOperations.Enqueue(Cylinders);
+        }
+
+        public MechanicOutputDto GetMechanicDto()
+        {
+            if (Mechanic != null)
+            {
+                var dto = new MechanicOutputDto
+                {
+                    Id = Mechanic.Id.Value,
+                    Name = Mechanic.Name
+                };
+
+                return dto;
+            }
+
+            return null;
         }
 
         public List<CylinderOutputDto> GetCylindersDtos(Vehicle vehicle)
@@ -127,6 +153,8 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
                 OutputDto = vehicleDto;
             }
+
+            OutputDto.Mechanic = GetMechanicDto();
         }
 
     }

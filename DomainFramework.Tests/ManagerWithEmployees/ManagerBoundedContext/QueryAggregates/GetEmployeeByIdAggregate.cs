@@ -8,13 +8,11 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 {
     public class GetEmployeeByIdAggregate : GetByIdQueryAggregate<Employee, int?, EmployeeOutputDto>
     {
-        public GetEmployeeByIdAggregate()
+        public GetEmployeeByIdAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(ManagerWithEmployeesConnectionClass.GetConnectionName()))
         {
-            var context = new DomainFramework.DataAccess.RepositoryContext(ManagerWithEmployeesConnectionClass.GetConnectionName());
+            var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
             EmployeeQueryRepository.Register(context);
-
-            RepositoryContext = context;
         }
 
         public override void PopulateDto(Employee entity)
