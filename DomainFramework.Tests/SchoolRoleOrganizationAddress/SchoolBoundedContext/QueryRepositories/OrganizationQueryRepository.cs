@@ -90,12 +90,12 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.Data;
         }
 
-        public IEnumerable<Organization> GetAllOrganizationForRole(int? roleId)
+        public Organization GetOrganizationForRole(int? roleId)
         {
             var result = Query<Organization>
-                .Collection()
+                .Single()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                .StoredProcedure("[SchoolBoundedContext].[pGetAll_Organization_For_Role]")
+                .StoredProcedure("[SchoolBoundedContext].[pRole_GetOrganization]")
                 .Parameters(
                     p => p.Name("roleId").Value(roleId.Value)
                 )
@@ -104,12 +104,12 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.Data;
         }
 
-        public async Task<IEnumerable<Organization>> GetAllOrganizationForRoleAsync(int? roleId)
+        public async Task<Organization> GetOrganizationForRoleAsync(int? roleId)
         {
             var result = await Query<Organization>
-                .Collection()
+                .Single()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                .StoredProcedure("[SchoolBoundedContext].[pGetAll_Organization_For_Role]")
+                .StoredProcedure("[SchoolBoundedContext].[pRole_GetOrganization]")
                 .Parameters(
                     p => p.Name("roleId").Value(roleId.Value)
                 )

@@ -63,7 +63,7 @@ ALTER TABLE [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Employe
     ADD CONSTRAINT Employee_Person_IFK FOREIGN KEY ([EmployeeId])
         REFERENCES [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person] ([PersonId])
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION;
+        ON DELETE CASCADE;
 GO
 
 CREATE INDEX [Employee_Person_IFK_IX]
@@ -77,7 +77,7 @@ ALTER TABLE [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Executi
     ADD CONSTRAINT Executive_Employee_IFK FOREIGN KEY ([ExecutiveId])
         REFERENCES [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Employee] ([EmployeeId])
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION;
+        ON DELETE CASCADE;
 GO
 
 CREATE INDEX [Executive_Employee_IFK_IX]
@@ -91,7 +91,7 @@ ALTER TABLE [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Custome
     ADD CONSTRAINT Customer_Person_IFK FOREIGN KEY ([CustomerId])
         REFERENCES [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person] ([PersonId])
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION;
+        ON DELETE CASCADE;
 GO
 
 CREATE INDEX [Customer_Person_IFK_IX]
@@ -164,7 +164,7 @@ CREATE PROCEDURE [ExecutiveBoundedContext].[pCustomer_Update]
     @customerId INT,
     @rating INT,
     @name VARCHAR(50),
-    @updatedBy INT
+    @updatedBy INT = NULL
 AS
 BEGIN
     UPDATE [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person]
@@ -178,62 +178,6 @@ BEGIN
     SET
         [Rating] = @rating
     WHERE [CustomerId] = @customerId;
-
-END;
-GO
-
-CREATE PROCEDURE [ExecutiveBoundedContext].[pCustomer_Get]
-    @$select NVARCHAR(MAX) = NULL,
-    @$filter NVARCHAR(MAX) = NULL,
-    @$orderby NVARCHAR(MAX) = NULL,
-    @$skip NVARCHAR(10) = NULL,
-    @$top NVARCHAR(10) = NULL,
-    @count INT OUTPUT
-AS
-BEGIN
-    EXEC [dbo].[pExecuteDynamicQuery]
-        @$select = @$select,
-        @$filter = @$filter,
-        @$orderby = @$orderby,
-        @$skip = @$skip,
-        @$top = @$top,
-        @selectList = N'    c.[CustomerId] AS "Id",
-    p.[Name] AS "Name",
-    c.[Rating] AS "Rating"',
-        @from = N'[ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Customer] c
-INNER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person] p
-    ON c.[CustomerId] = p.[PersonId]',
-        @count = @count OUTPUT
-
-END;
-GO
-
-CREATE PROCEDURE [ExecutiveBoundedContext].[pCustomer_GetAll]
-AS
-BEGIN
-    SELECT
-        c.[CustomerId] AS "Id",
-        p.[Name] AS "Name",
-        c.[Rating] AS "Rating"
-    FROM [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Customer] c
-    INNER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person] p
-        ON c.[CustomerId] = p.[PersonId];
-
-END;
-GO
-
-CREATE PROCEDURE [ExecutiveBoundedContext].[pCustomer_GetById]
-    @customerId INT
-AS
-BEGIN
-    SELECT
-        c.[CustomerId] AS "Id",
-        p.[Name] AS "Name",
-        c.[Rating] AS "Rating"
-    FROM [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Customer] c
-    INNER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person] p
-        ON c.[CustomerId] = p.[PersonId]
-    WHERE c.[CustomerId] = @customerId;
 
 END;
 GO
@@ -301,7 +245,7 @@ CREATE PROCEDURE [ExecutiveBoundedContext].[pEmployee_Update]
     @employeeId INT,
     @hireDate DATETIME,
     @name VARCHAR(50),
-    @updatedBy INT
+    @updatedBy INT = NULL
 AS
 BEGIN
     UPDATE [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person]
@@ -315,6 +259,223 @@ BEGIN
     SET
         [HireDate] = @hireDate
     WHERE [EmployeeId] = @employeeId;
+
+END;
+GO
+
+CREATE PROCEDURE [ExecutiveBoundedContext].[pExecutive_Delete]
+    @executiveId INT
+AS
+BEGIN
+    DELETE FROM [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Executive]
+    WHERE [ExecutiveId] = @executiveId;
+
+END;
+GO
+
+CREATE PROCEDURE [ExecutiveBoundedContext].[pExecutive_Insert]
+    @bonus MONEY,
+    @asset_Number INT = NULL,
+    @hireDate DATETIME,
+    @name VARCHAR(50),
+    @createdBy INT
+AS
+BEGIN
+    DECLARE @personId INT;
+
+    DECLARE @personOutputData TABLE
+    (
+        [PersonId] INT
+    );
+
+    INSERT INTO [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person]
+    (
+        [Name],
+        [CreatedBy]
+    )
+    OUTPUT
+        INSERTED.[PersonId]
+        INTO @personOutputData
+    VALUES
+    (
+        @name,
+        @createdBy
+    );
+
+    SELECT
+        @personId = [PersonId]
+    FROM @personOutputData;
+
+    INSERT INTO [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Employee]
+    (
+        [EmployeeId],
+        [HireDate]
+    )
+    VALUES
+    (
+        @personId,
+        @hireDate
+    );
+
+    INSERT INTO [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Executive]
+    (
+        [ExecutiveId],
+        [Bonus],
+        [Asset_Number]
+    )
+    VALUES
+    (
+        @personId,
+        @bonus,
+        @asset_Number
+    );
+
+    SELECT
+        [PersonId]
+    FROM @personOutputData;
+
+END;
+GO
+
+CREATE PROCEDURE [ExecutiveBoundedContext].[pExecutive_Update]
+    @executiveId INT,
+    @bonus MONEY,
+    @asset_Number INT = NULL,
+    @hireDate DATETIME,
+    @name VARCHAR(50),
+    @updatedBy INT = NULL
+AS
+BEGIN
+    UPDATE [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person]
+    SET
+        [Name] = @name,
+        [UpdatedBy] = @updatedBy,
+        [UpdatedDateTime] = GETDATE()
+    WHERE [PersonId] = @executiveId;
+
+    UPDATE [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Employee]
+    SET
+        [HireDate] = @hireDate
+    WHERE [EmployeeId] = @executiveId;
+
+    UPDATE [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Executive]
+    SET
+        [Bonus] = @bonus,
+        [Asset_Number] = @asset_Number
+    WHERE [ExecutiveId] = @executiveId;
+
+END;
+GO
+
+CREATE PROCEDURE [ExecutiveBoundedContext].[pPerson_Delete]
+    @personId INT
+AS
+BEGIN
+    DELETE FROM [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person]
+    WHERE [PersonId] = @personId;
+
+END;
+GO
+
+CREATE PROCEDURE [ExecutiveBoundedContext].[pPerson_Insert]
+    @name VARCHAR(50),
+    @createdBy INT
+AS
+BEGIN
+    DECLARE @personOutputData TABLE
+    (
+        [PersonId] INT
+    );
+
+    INSERT INTO [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person]
+    (
+        [Name],
+        [CreatedBy]
+    )
+    OUTPUT
+        INSERTED.[PersonId]
+        INTO @personOutputData
+    VALUES
+    (
+        @name,
+        @createdBy
+    );
+
+    SELECT
+        [PersonId]
+    FROM @personOutputData;
+
+END;
+GO
+
+CREATE PROCEDURE [ExecutiveBoundedContext].[pPerson_Update]
+    @personId INT,
+    @name VARCHAR(50),
+    @updatedBy INT = NULL
+AS
+BEGIN
+    UPDATE [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person]
+    SET
+        [Name] = @name,
+        [UpdatedBy] = @updatedBy,
+        [UpdatedDateTime] = GETDATE()
+    WHERE [PersonId] = @personId;
+
+END;
+GO
+
+CREATE PROCEDURE [ExecutiveBoundedContext].[pCustomer_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
+AS
+BEGIN
+    EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'    c.[CustomerId] AS "Id",
+    p.[Name] AS "Name",
+    c.[Rating] AS "Rating"',
+        @from = N'[ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Customer] c
+INNER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person] p
+    ON c.[CustomerId] = p.[PersonId]',
+        @count = @count OUTPUT
+
+END;
+GO
+
+CREATE PROCEDURE [ExecutiveBoundedContext].[pCustomer_GetAll]
+AS
+BEGIN
+    SELECT
+        c.[CustomerId] AS "Id",
+        p.[Name] AS "Name",
+        c.[Rating] AS "Rating"
+    FROM [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Customer] c
+    INNER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person] p
+        ON c.[CustomerId] = p.[PersonId];
+
+END;
+GO
+
+CREATE PROCEDURE [ExecutiveBoundedContext].[pCustomer_GetById]
+    @customerId INT
+AS
+BEGIN
+    SELECT
+        c.[CustomerId] AS "Id",
+        p.[Name] AS "Name",
+        c.[Rating] AS "Rating"
+    FROM [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Customer] c
+    INNER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person] p
+        ON c.[CustomerId] = p.[PersonId]
+    WHERE c.[CustomerId] = @customerId;
 
 END;
 GO
@@ -468,110 +629,6 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [ExecutiveBoundedContext].[pExecutive_Delete]
-    @executiveId INT
-AS
-BEGIN
-    DELETE FROM [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Executive]
-    WHERE [ExecutiveId] = @executiveId;
-
-END;
-GO
-
-CREATE PROCEDURE [ExecutiveBoundedContext].[pExecutive_Insert]
-    @bonus MONEY,
-    @asset_Number INT,
-    @hireDate DATETIME,
-    @name VARCHAR(50),
-    @createdBy INT
-AS
-BEGIN
-    DECLARE @personId INT;
-
-    DECLARE @personOutputData TABLE
-    (
-        [PersonId] INT
-    );
-
-    INSERT INTO [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person]
-    (
-        [Name],
-        [CreatedBy]
-    )
-    OUTPUT
-        INSERTED.[PersonId]
-        INTO @personOutputData
-    VALUES
-    (
-        @name,
-        @createdBy
-    );
-
-    SELECT
-        @personId = [PersonId]
-    FROM @personOutputData;
-
-    INSERT INTO [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Employee]
-    (
-        [EmployeeId],
-        [HireDate]
-    )
-    VALUES
-    (
-        @personId,
-        @hireDate
-    );
-
-    INSERT INTO [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Executive]
-    (
-        [ExecutiveId],
-        [Bonus],
-        [Asset_Number]
-    )
-    VALUES
-    (
-        @personId,
-        @bonus,
-        @asset_Number
-    );
-
-    SELECT
-        [PersonId]
-    FROM @personOutputData;
-
-END;
-GO
-
-CREATE PROCEDURE [ExecutiveBoundedContext].[pExecutive_Update]
-    @executiveId INT,
-    @bonus MONEY,
-    @asset_Number INT,
-    @hireDate DATETIME,
-    @name VARCHAR(50),
-    @updatedBy INT
-AS
-BEGIN
-    UPDATE [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person]
-    SET
-        [Name] = @name,
-        [UpdatedBy] = @updatedBy,
-        [UpdatedDateTime] = GETDATE()
-    WHERE [PersonId] = @executiveId;
-
-    UPDATE [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Employee]
-    SET
-        [HireDate] = @hireDate
-    WHERE [EmployeeId] = @executiveId;
-
-    UPDATE [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Executive]
-    SET
-        [Bonus] = @bonus,
-        [Asset_Number] = @asset_Number
-    WHERE [ExecutiveId] = @executiveId;
-
-END;
-GO
-
 CREATE PROCEDURE [ExecutiveBoundedContext].[pExecutive_Get]
     @$select NVARCHAR(MAX) = NULL,
     @$filter NVARCHAR(MAX) = NULL,
@@ -636,63 +693,6 @@ BEGIN
     INNER JOIN [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person] p
         ON e1.[EmployeeId] = p.[PersonId]
     WHERE e.[ExecutiveId] = @executiveId;
-
-END;
-GO
-
-CREATE PROCEDURE [ExecutiveBoundedContext].[pPerson_Delete]
-    @personId INT
-AS
-BEGIN
-    DELETE FROM [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person]
-    WHERE [PersonId] = @personId;
-
-END;
-GO
-
-CREATE PROCEDURE [ExecutiveBoundedContext].[pPerson_Insert]
-    @name VARCHAR(50),
-    @createdBy INT
-AS
-BEGIN
-    DECLARE @personOutputData TABLE
-    (
-        [PersonId] INT
-    );
-
-    INSERT INTO [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person]
-    (
-        [Name],
-        [CreatedBy]
-    )
-    OUTPUT
-        INSERTED.[PersonId]
-        INTO @personOutputData
-    VALUES
-    (
-        @name,
-        @createdBy
-    );
-
-    SELECT
-        [PersonId]
-    FROM @personOutputData;
-
-END;
-GO
-
-CREATE PROCEDURE [ExecutiveBoundedContext].[pPerson_Update]
-    @personId INT,
-    @name VARCHAR(50),
-    @updatedBy INT
-AS
-BEGIN
-    UPDATE [ExecutiveEmployeePersonCustomer].[ExecutiveBoundedContext].[Person]
-    SET
-        [Name] = @name,
-        [UpdatedBy] = @updatedBy,
-        [UpdatedDateTime] = GETDATE()
-    WHERE [PersonId] = @personId;
 
 END;
 GO
@@ -1052,6 +1052,5 @@ BEGIN
 	EXECUTE sp_executesql @sqlCommand, @paramDefinition, @cnt = @count OUTPUT
 
 END;
-
 GO
 

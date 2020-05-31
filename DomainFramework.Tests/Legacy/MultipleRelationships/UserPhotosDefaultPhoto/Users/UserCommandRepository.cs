@@ -28,7 +28,7 @@ namespace DomainFramework.Tests
                 );
         }
 
-        protected override Command CreateUpdateCommand(UserEntity entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(UserEntity entity, IAuthenticatedUser user, string selector)
         {
             Expression<Func<UserEntity, object>>[] excludedProperties;
 
@@ -79,7 +79,7 @@ namespace DomainFramework.Tests
 
         }
 
-        protected override Command CreateDeleteCommand(UserEntity entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(UserEntity entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()

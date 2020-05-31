@@ -43,7 +43,7 @@ CREATE TABLE [CountryWithCapitalCity].[CountryBoundedContext].[CapitalCity]
     [CreatedDateTime] DATETIME NOT NULL DEFAULT GETDATE(),
     [UpdatedBy] INT,
     [UpdatedDateTime] DATETIME,
-    [CountryCode] CHAR(2) NOT NULL
+    [CountryCode] CHAR(2)
     CONSTRAINT CapitalCity_PK PRIMARY KEY ([CapitalCityId])
 );
 GO
@@ -75,7 +75,7 @@ GO
 CREATE PROCEDURE [CountryBoundedContext].[pCapitalCity_Insert]
     @name VARCHAR(150),
     @createdBy INT,
-    @countryCode CHAR(2)
+    @countryCode CHAR(2) = NULL
 AS
 BEGIN
     DECLARE @capitalCityOutputData TABLE
@@ -109,8 +109,8 @@ GO
 CREATE PROCEDURE [CountryBoundedContext].[pCapitalCity_Update]
     @capitalCityId INT,
     @name VARCHAR(150),
-    @updatedBy INT,
-    @countryCode CHAR(2)
+    @updatedBy INT = NULL,
+    @countryCode CHAR(2) = NULL
 AS
 BEGIN
     UPDATE [CountryWithCapitalCity].[CountryBoundedContext].[CapitalCity]
@@ -120,6 +120,91 @@ BEGIN
         [CountryCode] = @countryCode,
         [UpdatedDateTime] = GETDATE()
     WHERE [CapitalCityId] = @capitalCityId;
+
+END;
+GO
+
+CREATE PROCEDURE [CountryBoundedContext].[pCountry_Activate]
+    @countryCode CHAR(2),
+    @updatedBy INT = NULL
+AS
+BEGIN
+    UPDATE [CountryWithCapitalCity].[CountryBoundedContext].[Country]
+    SET
+        [UpdatedBy] = @updatedBy,
+        [IsActive] = 1,
+        [UpdatedDateTime] = GETDATE()
+    WHERE [CountryCode] = @countryCode;
+
+END;
+GO
+
+CREATE PROCEDURE [CountryBoundedContext].[pCountry_Inactivate]
+    @countryCode CHAR(2),
+    @updatedBy INT = NULL
+AS
+BEGIN
+    UPDATE [CountryWithCapitalCity].[CountryBoundedContext].[Country]
+    SET
+        [UpdatedBy] = @updatedBy,
+        [IsActive] = 0,
+        [UpdatedDateTime] = GETDATE()
+    WHERE [CountryCode] = @countryCode;
+
+END;
+GO
+
+CREATE PROCEDURE [CountryBoundedContext].[pCountry_Insert]
+    @countryCode CHAR(2),
+    @name VARCHAR(150),
+    @isActive BIT,
+    @createdBy INT
+AS
+BEGIN
+    INSERT INTO [CountryWithCapitalCity].[CountryBoundedContext].[Country]
+    (
+        [CountryCode],
+        [Name],
+        [IsActive],
+        [CreatedBy]
+    )
+    VALUES
+    (
+        @countryCode,
+        @name,
+        @isActive,
+        @createdBy
+    );
+
+END;
+GO
+
+CREATE PROCEDURE [CountryBoundedContext].[pCountry_Update]
+    @countryCode CHAR(2),
+    @name VARCHAR(150),
+    @isActive BIT,
+    @updatedBy INT = NULL
+AS
+BEGIN
+    UPDATE [CountryWithCapitalCity].[CountryBoundedContext].[Country]
+    SET
+        [Name] = @name,
+        [IsActive] = @isActive,
+        [UpdatedBy] = @updatedBy,
+        [UpdatedDateTime] = GETDATE()
+    WHERE [CountryCode] = @countryCode;
+
+END;
+GO
+
+CREATE PROCEDURE [CountryBoundedContext].[pCountry_UnlinkCapitalCity]
+    @countryCode CHAR(2)
+AS
+BEGIN
+    UPDATE [CountryWithCapitalCity].[CountryBoundedContext].[CapitalCity]
+    SET
+        [CountryCode] = NULL
+    WHERE [CountryCode] = @countryCode;
 
 END;
 GO
@@ -174,7 +259,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [CountryBoundedContext].[pGet_CapitalCity_For_Country]
+CREATE PROCEDURE [CountryBoundedContext].[pCountry_GetCapitalCity]
     @countryCode CHAR(2)
 AS
 BEGIN
@@ -184,91 +269,6 @@ BEGIN
         c.[CountryCode] AS "CountryCode"
     FROM [CountryWithCapitalCity].[CountryBoundedContext].[CapitalCity] c
     WHERE c.[CountryCode] = @countryCode;
-
-END;
-GO
-
-CREATE PROCEDURE [CountryBoundedContext].[pCountry_DeleteCapitalCity]
-    @countryCode CHAR(2)
-AS
-BEGIN
-    DELETE FROM [CountryWithCapitalCity].[CountryBoundedContext].[CapitalCity]
-    WHERE [CountryCode] = @countryCode;
-
-END;
-GO
-
-CREATE PROCEDURE [CountryBoundedContext].[pCountry_Activate]
-    @countryCode CHAR(2),
-    @isActive BIT,
-    @updatedBy INT
-AS
-BEGIN
-    UPDATE [CountryWithCapitalCity].[CountryBoundedContext].[Country]
-    SET
-        [IsActive] = @isActive,
-        [UpdatedBy] = @updatedBy,
-        [UpdatedDateTime] = GETDATE()
-    WHERE [CountryCode] = @countryCode;
-
-END;
-GO
-
-CREATE PROCEDURE [CountryBoundedContext].[pCountry_Deactivate]
-    @countryCode CHAR(2),
-    @isActive BIT,
-    @updatedBy INT
-AS
-BEGIN
-    UPDATE [CountryWithCapitalCity].[CountryBoundedContext].[Country]
-    SET
-        [IsActive] = @isActive,
-        [UpdatedBy] = @updatedBy,
-        [UpdatedDateTime] = GETDATE()
-    WHERE [CountryCode] = @countryCode;
-
-END;
-GO
-
-CREATE PROCEDURE [CountryBoundedContext].[pCountry_Insert]
-    @countryCode CHAR(2),
-    @name VARCHAR(150),
-    @isActive BIT,
-    @createdBy INT
-AS
-BEGIN
-    INSERT INTO [CountryWithCapitalCity].[CountryBoundedContext].[Country]
-    (
-        [CountryCode],
-        [Name],
-        [IsActive],
-        [CreatedBy]
-    )
-    VALUES
-    (
-        @countryCode,
-        @name,
-        @isActive,
-        @createdBy
-    );
-
-END;
-GO
-
-CREATE PROCEDURE [CountryBoundedContext].[pCountry_Update]
-    @countryCode CHAR(2),
-    @name VARCHAR(150),
-    @isActive BIT,
-    @updatedBy INT
-AS
-BEGIN
-    UPDATE [CountryWithCapitalCity].[CountryBoundedContext].[Country]
-    SET
-        [Name] = @name,
-        [IsActive] = @isActive,
-        [UpdatedBy] = @updatedBy,
-        [UpdatedDateTime] = GETDATE()
-    WHERE [CountryCode] = @countryCode;
 
 END;
 GO
@@ -323,7 +323,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [CountryBoundedContext].[pGet_Country_For_CapitalCity]
+CREATE PROCEDURE [CountryBoundedContext].[pCapitalCity_GetCountry]
     @capitalCityId INT
 AS
 BEGIN
@@ -431,6 +431,5 @@ BEGIN
 	EXECUTE sp_executesql @sqlCommand, @paramDefinition, @cnt = @count OUTPUT
 
 END;
-
 GO
 

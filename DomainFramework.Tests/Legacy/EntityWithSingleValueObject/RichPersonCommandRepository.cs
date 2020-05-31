@@ -30,7 +30,7 @@ namespace DomainFramework.Tests.EntityWithValueObjects
                 );
         }
 
-        protected override Command CreateUpdateCommand(RichPersonEntity entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(RichPersonEntity entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()

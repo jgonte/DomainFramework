@@ -25,35 +25,50 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
         {
             RegisterCommandRepositoryFactory<Organization>(() => new OrganizationCommandRepository());
 
-            RegisterCommandRepositoryFactory<Address>(() => new AddressCommandRepository());
-
-            var address = organization.Address;
-
-            var entityForAddress = new Address
-            {
-                Street = address.Street
-            };
-
-            Enqueue(new SaveEntityCommandOperation<Address>(entityForAddress));
+            var addressDependency = (Address)dependencies?.SingleOrDefault()?.Entity;
 
             RootEntity = new Organization
             {
-                Id = organization.Id,
+                Id = organization.OrganizationId,
                 Name = organization.Name,
-                AddressId = organization.AddressId,
+                AddressId = (addressDependency != null) ? addressDependency.Id : organization.AddressId,
                 Phone = new Phone
                 {
                     Number = organization.Phone.Number
                 }
             };
 
-            Enqueue(new SaveEntityCommandOperation<Organization>(RootEntity, new EntityDependency[]
+            var existanceDependencies = new List<EntityDependency>();
+
+            Enqueue(new DeleteLinksCommandOperation<Organization>(RootEntity, "UnlinkAddressFromOrganization"));
+
+            if (organization.Address != null)
             {
-                new EntityDependency
+                var address = organization.Address;
+
+                if (address is AddressInputDto)
                 {
-                    Entity = entityForAddress
+                    var operation = new AddLinkedAggregateCommandOperation<Organization, SaveAddressCommandAggregate, AddressInputDto>(
+                        RootEntity,
+                        (AddressInputDto)address,
+                        dependencies
+                    );
+
+                    Enqueue(operation);
+
+                    existanceDependencies.Add(new EntityDependency
+                    {
+                        Entity = operation.CommandAggregate.RootEntity,
+                        Selector = "Address"
+                    });
                 }
-            }));
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            Enqueue(new SaveEntityCommandOperation<Organization>(RootEntity, existanceDependencies.ToArray()));
         }
 
     }

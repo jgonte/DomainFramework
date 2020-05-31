@@ -60,7 +60,7 @@ namespace DomainFramework.Tests
                 });
         }
 
-        protected override Command CreateUpdateCommand(DepartmentManagerRoleEntity entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(DepartmentManagerRoleEntity entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -74,7 +74,7 @@ namespace DomainFramework.Tests
                 );
         }
 
-        protected override Command CreateDeleteCommand(DepartmentManagerRoleEntity entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(DepartmentManagerRoleEntity entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()

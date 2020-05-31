@@ -8,7 +8,5 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
     {
         public int Weight { get; set; }
 
-        public List<Inspection> Inspections { get; set; }
-
     }
 }

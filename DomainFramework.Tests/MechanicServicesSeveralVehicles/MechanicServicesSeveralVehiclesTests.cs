@@ -68,12 +68,12 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
             Assert.AreEqual("Sasha", mechanicDto.Name);
 
-            Assert.IsNull(mechanicDto.Vehicles);
+            Assert.AreEqual(0, mechanicDto.Vehicles.Count());
 
             // Update
             commandAggregate = new SaveMechanicCommandAggregate(new SaveMechanicInputDto
             {
-                Id = mechanicId,
+                MechanicId = mechanicId,
                 Name = "Alexander"
             });
 
@@ -88,7 +88,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
             Assert.AreEqual("Alexander", mechanicDto.Name);
 
-            Assert.IsNull(mechanicDto.Vehicles);
+            Assert.AreEqual(0, mechanicDto.Vehicles.Count());
 
             // Delete
             //var deleteAggregate = new DeleteMechanicCommandAggregate(new DeleteMechanicInputDto
@@ -147,32 +147,68 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                         },
                         Passengers = 4
                     },
-                    //new VehicleInputDto
-                    //{
-                    //    Model = "Huyndai",
-                    //    Cylinders = new List<CylinderInputDto>
-                    //    {
-                    //        new CylinderInputDto
-                    //        {
-                    //            Diameter = 5
-                    //        },
-                    //        new CylinderInputDto
-                    //        {
-                    //            Diameter = 6
-                    //        }
-                    //    }
-                    //},
-                    //new VehicleInputDto
-                    //{
-                    //    Model = "Chevrolet",
-                    //    Cylinders = new List<CylinderInputDto>
-                    //    {
-                    //        new CylinderInputDto
-                    //        {
-                    //            Diameter = 7
-                    //        }
-                    //    }
-                    //}
+                    new TruckInputDto
+                    {
+                        Model = "Chevrolet",
+                        Weight = 4000,
+                        Cylinders = new List<CylinderInputDto>
+                        {
+                            new CylinderInputDto
+                            {
+                                Diameter = 1
+                            },
+                            new CylinderInputDto
+                            {
+                                Diameter = 2
+                            },
+                            new CylinderInputDto
+                            {
+                                Diameter = 3
+                            },
+                            new CylinderInputDto
+                            {
+                                Diameter = 4
+                            },
+                            new CylinderInputDto
+                            {
+                                Diameter = 5
+                            },
+                            new CylinderInputDto
+                            {
+                                Diameter = 6
+                            }
+                        },
+                        Inspections = new List<InspectionInputDto>
+                        {
+                            new InspectionInputDto
+                            {
+                                Date = new System.DateTime(2012, 1, 18)
+                            },
+                            new InspectionInputDto
+                            {
+                                Date = new System.DateTime(2016, 12, 23)
+                            },
+                            new InspectionInputDto
+                            {
+                                Date = new System.DateTime(2019, 2, 13)
+                            }
+                        }
+                    },
+                    new VehicleInputDto
+                    {
+                        Model = "Huyndai",
+                        Cylinders = new List<CylinderInputDto>
+                        {
+                            new CylinderInputDto
+                            {
+                                Diameter = 5
+                            },
+                            new CylinderInputDto
+                            {
+                                Diameter = 6
+                            }
+                        }
+                    }
                 }
             });
 
@@ -193,13 +229,25 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
             var vehicleDto = mechanicDto.Vehicles.ElementAt(0);
 
-            Assert.AreEqual("Honda", vehicleDto.Model);
+            Assert.AreEqual("Chevrolet", vehicleDto.Model);
 
-            Assert.AreEqual(4, vehicleDto.Cylinders.Count());
+            Assert.AreEqual(6, vehicleDto.Cylinders.Count());
+
+            Assert.AreEqual(3, ((TruckOutputDto)vehicleDto).Inspections.Count());
 
             Assert.AreEqual(mechanicDto.Id, vehicleDto.MechanicId);
 
             vehicleDto = mechanicDto.Vehicles.ElementAt(1);
+
+            Assert.AreEqual("Honda", vehicleDto.Model);
+
+            Assert.AreEqual(4, vehicleDto.Cylinders.Count());
+
+            Assert.AreEqual(2, ((CarOutputDto)vehicleDto).Doors.Count());
+
+            Assert.AreEqual(mechanicDto.Id, vehicleDto.MechanicId);
+
+            vehicleDto = mechanicDto.Vehicles.ElementAt(2);
 
             Assert.AreEqual("Huyndai", vehicleDto.Model);
 
@@ -207,18 +255,10 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
             Assert.AreEqual(mechanicDto.Id, vehicleDto.MechanicId);
 
-            vehicleDto = mechanicDto.Vehicles.ElementAt(2);
-
-            Assert.AreEqual("Chevrolet", vehicleDto.Model);
-
-            Assert.AreEqual(1, vehicleDto.Cylinders.Count());
-
-            Assert.AreEqual(mechanicDto.Id, vehicleDto.MechanicId);
-
             // Update
             commandAggregate = new SaveMechanicCommandAggregate(new SaveMechanicInputDto
             {
-                Id = mechanicId,
+                MechanicId = mechanicId,
                 Name = "Alexander",
                 Vehicles = new List<VehicleInputDto>
                 {

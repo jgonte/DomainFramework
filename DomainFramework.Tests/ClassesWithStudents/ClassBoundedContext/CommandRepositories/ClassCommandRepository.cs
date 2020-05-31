@@ -42,7 +42,7 @@ namespace ClassesWithStudents.ClassBoundedContext
             await ((SingleQuery<Class>)command).ExecuteAsync();
         }
 
-        protected override Command CreateUpdateCommand(Class entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(Class entity, IAuthenticatedUser user, string selector)
         {
             if (user != null)
             {
@@ -74,7 +74,7 @@ namespace ClassesWithStudents.ClassBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCommand(Class entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(Class entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -99,25 +99,25 @@ namespace ClassesWithStudents.ClassBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCollectionCommand(Class entity, IAuthenticatedUser user, string selector)
+        protected override Command CreateDeleteLinksCommand(Class entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
-                .StoredProcedure("[ClassBoundedContext].[pClass_DeleteStudents]")
+                .StoredProcedure("[ClassBoundedContext].[pClass_UnlinkStudents]")
                 .Parameters(
                     p => p.Name("classId").Value(entity.Id)
                 );
         }
 
-        protected override bool HandleDeleteCollection(Command command)
+        protected override bool HandleDeleteLinks(Command command)
         {
             var result = ((NonQueryCommand)command).Execute();
 
             return result.AffectedRows > 0;
         }
 
-        protected async override Task<bool> HandleDeleteCollectionAsync(Command command)
+        protected async override Task<bool> HandleDeleteLinksAsync(Command command)
         {
             var result = await ((NonQueryCommand)command).ExecuteAsync();
 

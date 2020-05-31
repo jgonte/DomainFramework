@@ -125,7 +125,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             var result = Query<Person>
                 .Single()
                 .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
-                .StoredProcedure("[EmployeeBoundedContext].[pGet_Spouse_For_Person]")
+                .StoredProcedure("[EmployeeBoundedContext].[pPerson_GetSpouse]")
                 .Parameters(
                     p => p.Name("personId").Value(personId.Value)
                 )
@@ -144,7 +144,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             var result = await Query<Person>
                 .Single()
                 .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
-                .StoredProcedure("[EmployeeBoundedContext].[pGet_Spouse_For_Person]")
+                .StoredProcedure("[EmployeeBoundedContext].[pPerson_GetSpouse]")
                 .Parameters(
                     p => p.Name("personId").Value(personId.Value)
                 )

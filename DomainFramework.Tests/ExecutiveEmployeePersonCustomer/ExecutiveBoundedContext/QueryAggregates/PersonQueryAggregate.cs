@@ -8,77 +8,22 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
 {
     public class PersonQueryAggregate : GetByIdQueryAggregate<Person, int?, PersonOutputDto>
     {
-        public PersonQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName()))
+        public PersonQueryAggregate() : this(null)
+        {
+        }
+
+        public PersonQueryAggregate(HashSet<(string, IEntity)> processedEntities = null) : base(new DomainFramework.DataAccess.RepositoryContext(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName()), processedEntities)
         {
             var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
             PersonQueryRepository.Register(context);
         }
 
-        public AssetOutputDto GetAssetDto(Executive executive) => 
-            (executive.Asset.IsEmpty()) ? null : new AssetOutputDto
-            {
-                Number = executive.Asset.Number
-            };
-
-        public override void PopulateDto(Person entity)
+        public override void PopulateDto()
         {
-            if (entity is Customer)
-            {
-                var customer = (Customer)entity;
+            OutputDto.Id = RootEntity.Id.Value;
 
-                var customerDto = new CustomerOutputDto();
-
-                customerDto.Id = customer.Id.Value;
-
-                customerDto.Rating = customer.Rating;
-
-                customerDto.Name = customer.Name;
-
-                OutputDto = customerDto;
-            }
-            else if (entity is Executive)
-            {
-                var executive = (Executive)entity;
-
-                var executiveDto = new ExecutiveOutputDto();
-
-                executiveDto.Id = executive.Id.Value;
-
-                executiveDto.Bonus = executive.Bonus;
-
-                executiveDto.HireDate = executive.HireDate;
-
-                executiveDto.Name = executive.Name;
-
-                executiveDto.Asset = GetAssetDto(executive);
-
-                OutputDto = executiveDto;
-            }
-            else if (entity is Employee)
-            {
-                var employee = (Employee)entity;
-
-                var employeeDto = new EmployeeOutputDto();
-
-                employeeDto.Id = employee.Id.Value;
-
-                employeeDto.HireDate = employee.HireDate;
-
-                employeeDto.Name = employee.Name;
-
-                OutputDto = employeeDto;
-            }
-            else
-            {
-                var personDto = new PersonOutputDto();
-
-                personDto.Id = entity.Id.Value;
-
-                personDto.Name = entity.Name;
-
-                OutputDto = personDto;
-            }
+            OutputDto.Name = RootEntity.Name;
         }
 
     }

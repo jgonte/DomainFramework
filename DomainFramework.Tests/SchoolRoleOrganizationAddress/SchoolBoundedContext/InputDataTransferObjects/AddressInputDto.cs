@@ -7,9 +7,11 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
     public class AddressInputDto : IInputDataTransferObject
     {
+        public int? AddressId { get; set; }
+
         public string Street { get; set; }
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
             Street.ValidateNotEmpty(result, nameof(Street));
 

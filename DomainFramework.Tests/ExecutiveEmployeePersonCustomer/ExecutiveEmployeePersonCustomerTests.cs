@@ -66,9 +66,9 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             var executiveId = commandAggregate.RootEntity.Id;
 
             // Read
-            var queryAggregate = new PersonQueryAggregate();
+            var queryAggregate = new GetExecutiveByIdQueryAggregate();
 
-            var executiveDto = (ExecutiveOutputDto)queryAggregate.Get(executiveId);
+            var executiveDto = queryAggregate.Get(executiveId);
 
             Assert.AreEqual(executiveId, executiveDto.Id);
 
@@ -83,7 +83,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             // Update
             commandAggregate = new SaveExecutiveCommandAggregate(new SaveExecutiveInputDto
             {
-                Id = executiveId,
+                ExecutiveId = executiveId,
                 Name = "William",
                 HireDate = new DateTime(1988, 4, 28),
                 Bonus = 2000000.00m,
@@ -96,9 +96,9 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             commandAggregate.Save();
 
             // Read
-            queryAggregate = new PersonQueryAggregate();
+            queryAggregate = new GetExecutiveByIdQueryAggregate();
 
-            executiveDto = (ExecutiveOutputDto)queryAggregate.Get(executiveId);
+            executiveDto = queryAggregate.Get(executiveId);
 
             Assert.AreEqual(executiveId, executiveDto.Id);
 

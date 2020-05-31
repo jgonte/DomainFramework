@@ -7,7 +7,7 @@ namespace BookWithPages.BookBoundedContext
 {
     public class SaveBookInputDto : IInputDataTransferObject
     {
-        public int? Id { get; set; }
+        public int? BookId { get; set; }
 
         public string Title { get; set; }
 
@@ -21,7 +21,7 @@ namespace BookWithPages.BookBoundedContext
 
         public List<SavePageInputDto> Pages { get; set; } = new List<SavePageInputDto>();
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
             Title.ValidateNotEmpty(result, nameof(Title));
 

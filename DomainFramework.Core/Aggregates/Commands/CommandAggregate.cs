@@ -5,23 +5,23 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public abstract class CommandAggregate<TEntity> : ICommandAggregate<TEntity>
+    public abstract class CommandAggregate<TEntity> : ICommandAggregate
         where TEntity : class, IEntity
     {
-        IRepositoryContext IAggregate.RepositoryContext { get; set; }
+        public IRepositoryContext RepositoryContext { get; set; }
 
-        TEntity IAggregate<TEntity>.RootEntity { get; set; }
+        IEntity IAggregate.RootEntity { get; set; }
 
         public TEntity RootEntity
         {
             get
             {
-                return ((IAggregate<TEntity>)this).RootEntity;
+                return (TEntity)((IAggregate)this).RootEntity;
             }
 
-            protected set
+            set
             {
-                ((IAggregate<TEntity>)this).RootEntity = value;
+                ((IAggregate)this).RootEntity = value;
             }
         }
 
@@ -29,7 +29,7 @@ namespace DomainFramework.Core
         /// The save operations that are performed inside a unit of work
         /// </summary>
         private Queue<ICommandOperation> _commandOperations { get; set; } = new Queue<ICommandOperation>();
-
+ 
         public CommandAggregate()
         {
         }
@@ -38,12 +38,12 @@ namespace DomainFramework.Core
 
         public CommandAggregate(IRepositoryContext repositoryContext)
         {
-            ((IAggregate)this).RepositoryContext = repositoryContext;
+            RepositoryContext = repositoryContext;
         }
 
         public void RegisterCommandRepositoryFactory<T>(Func<ICommandRepository> factory)
         {
-            ((IAggregate)this).RepositoryContext.RegisterCommandRepositoryFactory<T>(factory);
+            RepositoryContext.RegisterCommandRepositoryFactory<T>(factory);
         }
 
         public void Enqueue(ICommandOperation operation)

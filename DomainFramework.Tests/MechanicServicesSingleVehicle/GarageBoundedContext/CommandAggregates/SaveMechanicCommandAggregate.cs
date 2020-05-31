@@ -25,32 +25,77 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
         {
             RegisterCommandRepositoryFactory<Mechanic>(() => new MechanicCommandRepository());
 
-            RegisterCommandRepositoryFactory<Vehicle>(() => new VehicleCommandRepository());
-
             RootEntity = new Mechanic
             {
-                Id = mechanic.Id,
+                Id = mechanic.MechanicId,
                 Name = mechanic.Name
             };
 
-            Enqueue(new SaveEntityCommandOperation<Mechanic>(RootEntity));
+            Enqueue(new SaveEntityCommandOperation<Mechanic>(RootEntity, dependencies));
 
-            Enqueue(new DeleteEntityCollectionCommandOperation<Mechanic>(RootEntity, "Vehicle"));
+            Enqueue(new DeleteLinksCommandOperation<Mechanic>(RootEntity, "UnlinkVehicleFromMechanic"));
 
             if (mechanic.Vehicle != null)
             {
+                ILinkedAggregateCommandOperation operation;
+
                 var vehicle = mechanic.Vehicle;
 
-                var entityForVehicle = new Vehicle
+                if (vehicle is CarInputDto)
                 {
-                    Model = vehicle.Model,
-                    Cylinders = vehicle.Cylinders.Select(dto => new Cylinder
-                    {
-                        Diameter = dto.Diameter
-                    }).ToList()
-                };
+                    operation = new AddLinkedAggregateCommandOperation<Mechanic, SaveCarCommandAggregate, CarInputDto>(
+                        RootEntity,
+                        (CarInputDto)vehicle,
+                        new EntityDependency[]
+                        {
+                            new EntityDependency
+                            {
+                                Entity = RootEntity,
+                                Selector = "Vehicle"
+                            }
+                        }
+                    );
 
-                Enqueue(new AddLinkedEntityCommandOperation<Mechanic, Vehicle>(RootEntity, () => entityForVehicle, "Vehicle"));
+                    Enqueue(operation);
+                }
+                else if (vehicle is TruckInputDto)
+                {
+                    operation = new AddLinkedAggregateCommandOperation<Mechanic, SaveTruckCommandAggregate, TruckInputDto>(
+                        RootEntity,
+                        (TruckInputDto)vehicle,
+                        new EntityDependency[]
+                        {
+                            new EntityDependency
+                            {
+                                Entity = RootEntity,
+                                Selector = "Vehicle"
+                            }
+                        }
+                    );
+
+                    Enqueue(operation);
+                }
+                else if (vehicle is VehicleInputDto)
+                {
+                    operation = new AddLinkedAggregateCommandOperation<Mechanic, SaveVehicleCommandAggregate, VehicleInputDto>(
+                        RootEntity,
+                        (VehicleInputDto)vehicle,
+                        new EntityDependency[]
+                        {
+                            new EntityDependency
+                            {
+                                Entity = RootEntity,
+                                Selector = "Vehicle"
+                            }
+                        }
+                    );
+
+                    Enqueue(operation);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
             }
         }
 

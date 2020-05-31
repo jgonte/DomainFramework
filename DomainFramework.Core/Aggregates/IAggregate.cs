@@ -3,10 +3,7 @@
     public interface IAggregate
     {
         IRepositoryContext RepositoryContext { get; set; }
-    }
 
-    public interface IAggregate<TEntity> : IAggregate
-    {
-        TEntity RootEntity { get; set; }
+        IEntity RootEntity { get; set; }
     }
 }

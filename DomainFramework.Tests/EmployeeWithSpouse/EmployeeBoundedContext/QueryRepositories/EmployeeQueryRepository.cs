@@ -90,6 +90,44 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             return result.Data;
         }
 
+        public Person GetSpouseForPerson(int? personId)
+        {
+            var result = Query<Person>
+                .Single()
+                .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
+                .StoredProcedure("[EmployeeBoundedContext].[pPerson_GetSpouse]")
+                .Parameters(
+                    p => p.Name("personId").Value(personId.Value)
+                )
+                .MapTypes(
+                    7,
+                    tm => tm.Type(typeof(Employee)).Index(1),
+                    tm => tm.Type(typeof(Person)).Index(2)
+                )
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<Person> GetSpouseForPersonAsync(int? personId)
+        {
+            var result = await Query<Person>
+                .Single()
+                .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
+                .StoredProcedure("[EmployeeBoundedContext].[pPerson_GetSpouse]")
+                .Parameters(
+                    p => p.Name("personId").Value(personId.Value)
+                )
+                .MapTypes(
+                    7,
+                    tm => tm.Type(typeof(Employee)).Index(1),
+                    tm => tm.Type(typeof(Person)).Index(2)
+                )
+                .ExecuteAsync();
+
+            return result.Data;
+        }
+
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)
         {
             context.RegisterQueryRepository<Employee>(new EmployeeQueryRepository());

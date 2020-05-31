@@ -12,8 +12,6 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
 
         public int? MarriedToPersonId { get; set; }
 
-        public PersonOutputDto Spouse { get; set; }
-
         public PhoneNumberOutputDto CellPhone { get; set; }
 
     }

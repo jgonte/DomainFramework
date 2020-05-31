@@ -15,7 +15,7 @@ namespace DomainFramework.Tests
 
         public IEnumerable<PersonEntity> Friends => GetFriendsLoadOperation.LinkedEntities;
 
-        public PersonFriendsQueryAggregate(RepositoryContext context) : base(context)
+        public PersonFriendsQueryAggregate(RepositoryContext context) : base(context, null)
         {
             GetFriendsLoadOperation = new GetCollectionLinkedEntityQueryOperation<PersonEntity>
             {
@@ -35,7 +35,7 @@ namespace DomainFramework.Tests
             );
         }
 
-        public override void PopulateDto(PersonEntity entity)
+        public override void PopulateDto()
         {
         }
     }

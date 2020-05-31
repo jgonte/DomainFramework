@@ -8,11 +8,13 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 {
     public class MechanicQueryAggregate : GetByIdQueryAggregate<Mechanic, int?, MechanicOutputDto>
     {
-        public GetCollectionLinkedEntityQueryOperation<Vehicle> GetVehiclesQueryOperation { get; }
+        public GetAllLinkedAggregateQueryCollectionOperation<int?, Vehicle, VehicleOutputDto> GetAllVehiclesLinkedAggregateQueryOperation { get; set; }
 
-        public IEnumerable<Vehicle> Vehicles => GetVehiclesQueryOperation.LinkedEntities;
+        public MechanicQueryAggregate() : this(null)
+        {
+        }
 
-        public MechanicQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName()))
+        public MechanicQueryAggregate(HashSet<(string, IEntity)> processedEntities = null) : base(new DomainFramework.DataAccess.RepositoryContext(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName()), processedEntities)
         {
             var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
@@ -20,102 +22,46 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
             VehicleQueryRepository.Register(context);
 
-            GetVehiclesQueryOperation = new GetCollectionLinkedEntityQueryOperation<Vehicle>
+            GetAllVehiclesLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Vehicle, VehicleOutputDto>
             {
-                GetLinkedEntities = (repository, entity, user) => ((VehicleQueryRepository)repository).GetAllVehiclesForMechanic(RootEntity.Id).ToList(),
-                GetLinkedEntitiesAsync = async (repository, entity, user) =>
+                GetAllLinkedEntities = (repository, entity, user) => ((VehicleQueryRepository)repository).GetAllVehiclesForMechanic(RootEntity.Id).ToList(),
+                GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
                 {
                     var entities = await ((VehicleQueryRepository)repository).GetAllVehiclesForMechanicAsync(RootEntity.Id);
 
                     return entities.ToList();
-                }
-            };
-
-            QueryOperations.Enqueue(GetVehiclesQueryOperation);
-        }
-
-        public List<VehicleOutputDto> GetVehiclesDtos()
-        {
-            if (Vehicles?.Any() == true)
-            {
-                var vehicles = new List<VehicleOutputDto>();
-
-                foreach (var vehicle in Vehicles)
+                },
+                CreateLinkedQueryAggregate = entity => 
                 {
-                    if (vehicle is Truck)
+                    if (entity is Car)
                     {
-                        var truck = (Truck)vehicle;
-
-                        var dto = new TruckOutputDto
-                        {
-                            Id = truck.Id.Value,
-                            Weight = truck.Weight,
-                            Model = truck.Model,
-                            MechanicId = truck.MechanicId,
-                            Inspections = truck.Inspections.Select(vo => new InspectionOutputDto
-                            {
-                                Date = vo.Date
-                            }).ToList(),
-                            Cylinders = truck.Cylinders.Select(vo => new CylinderOutputDto
-                            {
-                                Diameter = vo.Diameter
-                            }).ToList()
-                        };
-
-                        vehicles.Add(dto);
+                        return new GetCarByIdQueryAggregate();
                     }
-                    else if (vehicle is Car)
+                    else if (entity is Truck)
                     {
-                        var car = (Car)vehicle;
-
-                        var dto = new CarOutputDto
-                        {
-                            Id = car.Id.Value,
-                            Passengers = car.Passengers,
-                            Model = car.Model,
-                            MechanicId = car.MechanicId,
-                            Doors = car.Doors.Select(vo => new DoorOutputDto
-                            {
-                                Number = vo.Number
-                            }).ToList(),
-                            Cylinders = car.Cylinders.Select(vo => new CylinderOutputDto
-                            {
-                                Diameter = vo.Diameter
-                            }).ToList()
-                        };
-
-                        vehicles.Add(dto);
+                        return new GetTruckByIdQueryAggregate();
+                    }
+                    else if (entity is Vehicle)
+                    {
+                        return new GetVehicleByIdQueryAggregate();
                     }
                     else
                     {
-                        var dto = new VehicleOutputDto
-                        {
-                            Id = vehicle.Id.Value,
-                            Model = vehicle.Model,
-                            MechanicId = vehicle.MechanicId,
-                            Cylinders = vehicle.Cylinders.Select(vo => new CylinderOutputDto
-                            {
-                                Diameter = vo.Diameter
-                            }).ToList()
-                        };
-
-                        vehicles.Add(dto);
+                        throw new InvalidOperationException();
                     }
                 }
+            };
 
-                return vehicles;
-            }
-
-            return null;
+            QueryOperations.Enqueue(GetAllVehiclesLinkedAggregateQueryOperation);
         }
 
-        public override void PopulateDto(Mechanic entity)
+        public override void PopulateDto()
         {
-            OutputDto.Id = entity.Id.Value;
+            OutputDto.Id = RootEntity.Id.Value;
 
-            OutputDto.Name = entity.Name;
+            OutputDto.Name = RootEntity.Name;
 
-            OutputDto.Vehicles = GetVehiclesDtos();
+            OutputDto.Vehicles = GetAllVehiclesLinkedAggregateQueryOperation.OutputDtos;
         }
 
     }

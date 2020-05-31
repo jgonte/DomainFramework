@@ -14,7 +14,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             return Command
                 .NonQuery()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
-                .StoredProcedure("[GarageBoundedContext].[pInsert_Doors_For_Car]")
+                .StoredProcedure("[GarageBoundedContext].[pCar_AddDoors]")
                 .Parameters(
                     p => p.Name("number").Value(valueObject.Number)
                 )
@@ -40,12 +40,12 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             await ((NonQueryCommand)command).ExecuteAsync();
         }
 
-        protected override Command CreateDeleteCollectionCommand(IAuthenticatedUser user)
+        protected override Command CreateDeleteLinksCommand(IAuthenticatedUser user)
         {
             return Command
                 .NonQuery()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
-                .StoredProcedure("[GarageBoundedContext].[pDelete_Doors_For_Car]")
+                .StoredProcedure("[GarageBoundedContext].[pCar_DeleteDoors]")
                 .OnBeforeCommandExecuted(cmd =>
                 {
                     var dependencies = Dependencies();
@@ -58,14 +58,14 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
                 });
         }
 
-        protected override bool HandleDeleteCollection(Command command)
+        protected override bool HandleDeleteLinks(Command command)
         {
             var result = ((NonQueryCommand)command).Execute();
 
             return result.AffectedRows > 0;
         }
 
-        protected async override Task<bool> HandleDeleteCollectionAsync(Command command)
+        protected async override Task<bool> HandleDeleteLinksAsync(Command command)
         {
             var result = await ((NonQueryCommand)command).ExecuteAsync();
 

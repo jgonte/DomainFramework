@@ -53,7 +53,7 @@ namespace DomainFramework.Tests
             ((NonQueryCommand)command).Execute();
         }
 
-        protected override Command CreateDeleteCollectionCommand(ClassEnrollmentEntity entity, IAuthenticatedUser user, string selector)
+        protected override Command CreateDeleteLinksCommand(ClassEnrollmentEntity entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -64,7 +64,7 @@ namespace DomainFramework.Tests
                 );
         }
 
-        protected override bool HandleDeleteCollection(Command command)
+        protected override bool HandleDeleteLinks(Command command)
         {
             var result = ((NonQueryCommand)command).Execute();
 

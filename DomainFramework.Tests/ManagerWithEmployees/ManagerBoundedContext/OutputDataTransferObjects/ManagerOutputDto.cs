@@ -8,7 +8,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
     {
         public string Department { get; set; }
 
-        public List<EmployeeOutputDto> Employees { get; set; } = new List<EmployeeOutputDto>();
+        public IEnumerable<EmployeeOutputDto> Employees { get; set; }
 
     }
 }

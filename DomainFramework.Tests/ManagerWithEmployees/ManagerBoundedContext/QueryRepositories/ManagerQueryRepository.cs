@@ -90,6 +90,44 @@ namespace ManagerWithEmployees.ManagerBoundedContext
             return result.Data;
         }
 
+        public IEnumerable<Employee> GetAllEmployeesForManager(int? managerId)
+        {
+            var result = Query<Employee>
+                .Collection()
+                .Connection(ManagerWithEmployeesConnectionClass.GetConnectionName())
+                .StoredProcedure("[ManagerBoundedContext].[pManager_GetAllEmployees]")
+                .Parameters(
+                    p => p.Name("managerId").Value(managerId.Value)
+                )
+                .MapTypes(
+                    4,
+                    tm => tm.Type(typeof(Manager)).Index(1),
+                    tm => tm.Type(typeof(Employee)).Index(2)
+                )
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<IEnumerable<Employee>> GetAllEmployeesForManagerAsync(int? managerId)
+        {
+            var result = await Query<Employee>
+                .Collection()
+                .Connection(ManagerWithEmployeesConnectionClass.GetConnectionName())
+                .StoredProcedure("[ManagerBoundedContext].[pManager_GetAllEmployees]")
+                .Parameters(
+                    p => p.Name("managerId").Value(managerId.Value)
+                )
+                .MapTypes(
+                    4,
+                    tm => tm.Type(typeof(Manager)).Index(1),
+                    tm => tm.Type(typeof(Employee)).Index(2)
+                )
+                .ExecuteAsync();
+
+            return result.Data;
+        }
+
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)
         {
             context.RegisterQueryRepository<Manager>(new ManagerQueryRepository());

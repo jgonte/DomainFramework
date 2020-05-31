@@ -42,7 +42,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             await ((SingleQuery<Mechanic>)command).ExecuteAsync();
         }
 
-        protected override Command CreateUpdateCommand(Mechanic entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(Mechanic entity, IAuthenticatedUser user, string selector)
         {
             if (user != null)
             {
@@ -74,7 +74,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCommand(Mechanic entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(Mechanic entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -99,25 +99,25 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCollectionCommand(Mechanic entity, IAuthenticatedUser user, string selector)
+        protected override Command CreateDeleteLinksCommand(Mechanic entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
-                .StoredProcedure("[GarageBoundedContext].[pMechanic_DeleteVehicle]")
+                .StoredProcedure("[GarageBoundedContext].[pMechanic_UnlinkVehicle]")
                 .Parameters(
                     p => p.Name("mechanicId").Value(entity.Id)
                 );
         }
 
-        protected override bool HandleDeleteCollection(Command command)
+        protected override bool HandleDeleteLinks(Command command)
         {
             var result = ((NonQueryCommand)command).Execute();
 
             return result.AffectedRows > 0;
         }
 
-        protected async override Task<bool> HandleDeleteCollectionAsync(Command command)
+        protected async override Task<bool> HandleDeleteLinksAsync(Command command)
         {
             var result = await ((NonQueryCommand)command).ExecuteAsync();
 

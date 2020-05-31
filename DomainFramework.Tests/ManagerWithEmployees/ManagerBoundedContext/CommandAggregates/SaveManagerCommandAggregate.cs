@@ -27,26 +27,47 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
             RegisterCommandRepositoryFactory<Employee>(() => new EmployeeCommandRepository());
 
+            var managerDependency = (Manager)dependencies?.SingleOrDefault()?.Entity;
+
             RootEntity = new Manager
             {
-                Id = manager.Id,
+                Id = manager.ManagerId,
                 Department = manager.Department,
                 Name = manager.Name,
-                SupervisorId = manager.SupervisorId
+                SupervisorId = (managerDependency != null) ? managerDependency.Id : manager.SupervisorId
             };
 
-            Enqueue(new SaveEntityCommandOperation<Manager>(RootEntity));
+            Enqueue(new SaveEntityCommandOperation<Manager>(RootEntity, dependencies));
 
-            Enqueue(new DeleteEntityCollectionCommandOperation<Manager>(RootEntity, "Employees"));
+            Enqueue(new DeleteLinksCommandOperation<Manager>(RootEntity, "UnlinkEmployeesFromManager"));
 
             if (manager.Employees?.Any() == true)
             {
-                foreach (var employee in manager.Employees)
+                foreach (var dto in manager.Employees)
                 {
-                    Enqueue(new AddLinkedEntityCommandOperation<Manager, Employee>(RootEntity, () => new Employee
+                    ILinkedAggregateCommandOperation operation;
+
+                    if (dto is EmployeeInputDto)
                     {
-                        Name = employee.Name
-                    }, "Employees"));
+                        operation = new AddLinkedAggregateCommandOperation<Manager, SaveEmployeeCommandAggregate, EmployeeInputDto>(
+                            RootEntity,
+                            (EmployeeInputDto)dto,
+                            new EntityDependency[]
+                            {
+                                new EntityDependency
+                                {
+                                    Entity = RootEntity,
+                                    Selector = "Employees"
+                                }
+                            }
+                        );
+
+                        Enqueue(operation);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
             }
         }

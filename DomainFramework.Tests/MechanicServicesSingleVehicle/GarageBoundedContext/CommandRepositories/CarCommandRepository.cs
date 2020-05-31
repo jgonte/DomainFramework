@@ -18,9 +18,23 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
                 .Parameters(
                     p => p.Name("passengers").Value(entity.Passengers),
                     p => p.Name("model").Value(entity.Model),
-                    p => p.Name("createdBy").Value(entity.CreatedBy),
-                    p => p.Name("mechanicId").Value(entity.MechanicId)
+                    p => p.Name("createdBy").Value(entity.CreatedBy)
                 )
+                .OnBeforeCommandExecuted(cmd =>
+                {
+                    var dependencies = Dependencies();
+
+                    var mechanicDependency = (Mechanic)dependencies?.SingleOrDefault()?.Entity;
+
+                    if (mechanicDependency != null)
+                    {
+                        entity.MechanicId = mechanicDependency.Id;
+                    }
+
+                    cmd.Parameters(
+                        p => p.Name("mechanicId").Value(entity.MechanicId)
+                    );
+                })
                 .Instance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
@@ -39,7 +53,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             await ((SingleQuery<Car>)command).ExecuteAsync();
         }
 
-        protected override Command CreateUpdateCommand(Car entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(Car entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -68,7 +82,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCommand(Car entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(Car entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -93,25 +107,46 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCollectionCommand(Car entity, IAuthenticatedUser user, string selector)
+        protected override Command CreateDeleteLinksCommand(Car entity, IAuthenticatedUser user, string selector)
         {
-            return Command
-                .NonQuery()
-                .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
-                .StoredProcedure("[GarageBoundedContext].[pCar_DeleteDoors]")
-                .Parameters(
-                    p => p.Name("carId").Value(entity.Id)
-                );
+            switch (selector)
+            {
+                case "UnlinkMechanicFromVehicle": return Command
+                    .NonQuery()
+                    .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
+                    .StoredProcedure("[GarageBoundedContext].[pVehicle_UnlinkMechanic]")
+                    .Parameters(
+                        p => p.Name("vehicleId").Value(entity.Id)
+                    );
+
+                case "DeleteCylindersFromVehicle": return Command
+                    .NonQuery()
+                    .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
+                    .StoredProcedure("[GarageBoundedContext].[pVehicle_DeleteCylinders]")
+                    .Parameters(
+                        p => p.Name("vehicleId").Value(entity.Id)
+                    );
+
+                case "DeleteDoorsFromCar": return Command
+                    .NonQuery()
+                    .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
+                    .StoredProcedure("[GarageBoundedContext].[pCar_DeleteDoors]")
+                    .Parameters(
+                        p => p.Name("carId").Value(entity.Id)
+                    );
+
+                default: throw new InvalidOperationException();
+            }
         }
 
-        protected override bool HandleDeleteCollection(Command command)
+        protected override bool HandleDeleteLinks(Command command)
         {
             var result = ((NonQueryCommand)command).Execute();
 
             return result.AffectedRows > 0;
         }
 
-        protected async override Task<bool> HandleDeleteCollectionAsync(Command command)
+        protected async override Task<bool> HandleDeleteLinksAsync(Command command)
         {
             var result = await ((NonQueryCommand)command).ExecuteAsync();
 

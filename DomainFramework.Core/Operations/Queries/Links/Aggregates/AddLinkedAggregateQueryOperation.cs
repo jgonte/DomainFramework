@@ -7,7 +7,7 @@ namespace DomainFramework.Core
 {
     public class AddLinkedAggregateQueryOperation<TEntity, TLinkedAggregate, TOutputDto> : IQueryOperation
         where TEntity : IEntity
-        where TLinkedAggregate : IQueryAggregate<TEntity, TOutputDto>, new()
+        where TLinkedAggregate : IQueryAggregate, new()
         where TOutputDto : IOutputDataTransferObject, new()
     {
         private TLinkedAggregate _queryAggregate;

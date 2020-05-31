@@ -169,7 +169,7 @@ GO
                 ConnectionName = connectionName
             };
 
-            commandRepository.Save(richPersonEntity, user: null, unitOfWork: null);
+            commandRepository.Save(richPersonEntity, user: null, unitOfWork: null, selector: null);
 
             var id = richPersonEntity.Id;
 
@@ -192,7 +192,7 @@ GO
 
             richPersonEntity.Capital = richPersonEntity.Capital.Add(new Money(100000000));
 
-            commandRepository.Save(richPersonEntity, user: null, unitOfWork: null);
+            commandRepository.Save(richPersonEntity, user: null, unitOfWork: null, selector: null);
 
             // Read changes
             richPersonEntity = queryRepository.GetById(id);

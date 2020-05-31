@@ -18,14 +18,6 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 .StoredProcedure("[GarageBoundedContext].[pTruck_Get]")
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
-                .OnAfterCommandExecuted(cmd =>
-                {
-                    var query = (CollectionQuery<Truck>)cmd;
-
-                    foreach (var entity in query.Data)
-                    {
-                    }
-                })
                 .Execute();
 
             var count = (string)result.GetParameter("count").Value;
@@ -41,14 +33,6 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 .StoredProcedure("[GarageBoundedContext].[pTruck_Get]")
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
-                .OnAfterCommandExecutedAsync(async cmd =>
-                {
-                    var query = (CollectionQuery<Truck>)cmd;
-
-                    foreach (var entity in query.Data)
-                    {
-                    }
-                })
                 .ExecuteAsync();
 
             var count = (string)result.GetParameter("count").Value;
@@ -62,14 +46,6 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 .Collection()
                 .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pTruck_GetAll]")
-                .OnAfterCommandExecuted(cmd =>
-                {
-                    var query = (CollectionQuery<Truck>)cmd;
-
-                    foreach (var entity in query.Data)
-                    {
-                    }
-                })
                 .Execute();
 
             return result.Data;
@@ -81,14 +57,6 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 .Collection()
                 .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pTruck_GetAll]")
-                .OnAfterCommandExecutedAsync(async cmd =>
-                {
-                    var query = (CollectionQuery<Truck>)cmd;
-
-                    foreach (var entity in query.Data)
-                    {
-                    }
-                })
                 .ExecuteAsync();
 
             return result.Data;
@@ -103,17 +71,6 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 .Parameters(
                     p => p.Name("truckId").Value(truckId.Value)
                 )
-                .OnAfterCommandExecuted(cmd =>
-                {
-                    var query = (SingleQuery<Truck>)cmd;
-
-                    var entity = query.Data;
-
-                    if (entity == null)
-                    {
-                        return;
-                    }
-                })
                 .Execute();
 
             return result.Data;
@@ -128,17 +85,46 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 .Parameters(
                     p => p.Name("truckId").Value(truckId.Value)
                 )
-                .OnAfterCommandExecutedAsync(async cmd =>
-                {
-                    var query = (SingleQuery<Truck>)cmd;
+                .ExecuteAsync();
 
-                    var entity = query.Data;
+            return result.Data;
+        }
 
-                    if (entity == null)
-                    {
-                        return;
-                    }
-                })
+        public IEnumerable<Vehicle> GetAllVehiclesForMechanic(int? mechanicId)
+        {
+            var result = Query<Vehicle>
+                .Collection()
+                .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
+                .StoredProcedure("[GarageBoundedContext].[pMechanic_GetAllVehicles]")
+                .Parameters(
+                    p => p.Name("mechanicId").Value(mechanicId.Value)
+                )
+                .MapTypes(
+                    5,
+                    tm => tm.Type(typeof(Truck)).Index(1),
+                    tm => tm.Type(typeof(Car)).Index(2),
+                    tm => tm.Type(typeof(Vehicle)).Index(3)
+                )
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<IEnumerable<Vehicle>> GetAllVehiclesForMechanicAsync(int? mechanicId)
+        {
+            var result = await Query<Vehicle>
+                .Collection()
+                .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
+                .StoredProcedure("[GarageBoundedContext].[pMechanic_GetAllVehicles]")
+                .Parameters(
+                    p => p.Name("mechanicId").Value(mechanicId.Value)
+                )
+                .MapTypes(
+                    5,
+                    tm => tm.Type(typeof(Truck)).Index(1),
+                    tm => tm.Type(typeof(Car)).Index(2),
+                    tm => tm.Type(typeof(Vehicle)).Index(3)
+                )
                 .ExecuteAsync();
 
             return result.Data;

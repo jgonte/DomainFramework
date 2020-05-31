@@ -73,7 +73,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             // Update
             commandAggregate = new SaveMechanicCommandAggregate(new SaveMechanicInputDto
             {
-                Id = mechanicId,
+                MechanicId = mechanicId,
                 Name = "Alexander"
             });
 
@@ -104,7 +104,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
         }
 
         [TestMethod]
-        public void Save_Mechanic_With_Vehicles_Tests()
+        public void Save_Mechanic_With_Vehicle_Tests()
         {
             // Insert
             var commandAggregate = new SaveMechanicCommandAggregate(new SaveMechanicInputDto
@@ -133,7 +133,6 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
                             }
 
                         }
-                        
                     }
             });
 
@@ -161,7 +160,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             // Update
             commandAggregate = new SaveMechanicCommandAggregate(new SaveMechanicInputDto
             {
-                Id = mechanicId,
+                MechanicId = mechanicId,
                 Name = "Alexander",
                 Vehicle = new VehicleInputDto
                 {
@@ -193,7 +192,6 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             Assert.AreEqual("Toyota", vehicleDto.Model);
 
             Assert.AreEqual(mechanicDto.Id, vehicleDto.MechanicId);
-
 
             // Delete
             //var deleteAggregate = new DeleteMechanicCommandAggregate(new DeleteMechanicInputDto

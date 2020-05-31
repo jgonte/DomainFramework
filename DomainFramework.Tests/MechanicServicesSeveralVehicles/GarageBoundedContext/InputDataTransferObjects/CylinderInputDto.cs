@@ -9,7 +9,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
     {
         public int? Diameter { get; set; }
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
         }
 

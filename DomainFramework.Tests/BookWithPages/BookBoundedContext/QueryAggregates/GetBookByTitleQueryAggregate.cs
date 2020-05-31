@@ -8,9 +8,7 @@ namespace BookWithPages.BookBoundedContext
 {
     public class GetBookByTitleQueryAggregate : QueryAggregate<Book, BookOutputDto>
     {
-        public GetCollectionLinkedEntityQueryOperation<Page> GetPagesQueryOperation { get; }
-
-        public IEnumerable<Page> Pages => GetPagesQueryOperation.LinkedEntities;
+        public GetAllLinkedAggregateQueryCollectionOperation<int?, Page, PageOutputDto> GetAllPagesLinkedAggregateQueryOperation { get; set; }
 
         public GetBookByTitleQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
         {
@@ -20,18 +18,29 @@ namespace BookWithPages.BookBoundedContext
 
             PageQueryRepository.Register(context);
 
-            GetPagesQueryOperation = new GetCollectionLinkedEntityQueryOperation<Page>
+            GetAllPagesLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Page, PageOutputDto>
             {
-                GetLinkedEntities = (repository, entity, user) => ((PageQueryRepository)repository).GetAllPagesForBook(RootEntity.Id).ToList(),
-                GetLinkedEntitiesAsync = async (repository, entity, user) =>
+                GetAllLinkedEntities = (repository, entity, user) => ((PageQueryRepository)repository).GetAllPagesForBook(RootEntity.Id).ToList(),
+                GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
                 {
                     var entities = await ((PageQueryRepository)repository).GetAllPagesForBookAsync(RootEntity.Id);
 
                     return entities.ToList();
+                },
+                CreateLinkedQueryAggregate = entity => 
+                {
+                    if (entity is Page)
+                    {
+                        return new GetPageByIdQueryAggregate();
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException();
+                    }
                 }
             };
 
-            QueryOperations.Enqueue(GetPagesQueryOperation);
+            QueryOperations.Enqueue(GetAllPagesLinkedAggregateQueryOperation);
         }
 
         public BookOutputDto Get(string title)
@@ -47,7 +56,7 @@ namespace BookWithPages.BookBoundedContext
 
             LoadLinks(null);
 
-            PopulateDto(RootEntity);
+            PopulateDto();
 
             return OutputDto;
         }
@@ -65,38 +74,26 @@ namespace BookWithPages.BookBoundedContext
 
             await LoadLinksAsync(null);
 
-            PopulateDto(RootEntity);
+            PopulateDto();
 
             return OutputDto;
         }
 
-        public List<PageOutputDto> GetPagesDtos()
+        public override void PopulateDto()
         {
-            return Pages
-                .Select(e => new PageOutputDto
-                {
-                    PageId = e.Id.Value,
-                    Index = e.Index,
-                    BookId = e.BookId
-                })
-                .ToList();
-        }
+            OutputDto.BookId = RootEntity.Id.Value;
 
-        public override void PopulateDto(Book entity)
-        {
-            OutputDto.BookId = entity.Id.Value;
+            OutputDto.Title = RootEntity.Title;
 
-            OutputDto.Title = entity.Title;
+            OutputDto.Category = RootEntity.Category;
 
-            OutputDto.Category = entity.Category;
+            OutputDto.DatePublished = RootEntity.DatePublished;
 
-            OutputDto.DatePublished = entity.DatePublished;
+            OutputDto.PublisherId = RootEntity.PublisherId;
 
-            OutputDto.PublisherId = entity.PublisherId;
+            OutputDto.IsHardCopy = RootEntity.IsHardCopy;
 
-            OutputDto.IsHardCopy = entity.IsHardCopy;
-
-            OutputDto.Pages = GetPagesDtos();
+            OutputDto.Pages = GetAllPagesLinkedAggregateQueryOperation.OutputDtos;
         }
 
     }

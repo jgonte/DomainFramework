@@ -46,7 +46,7 @@ namespace BookWithPages.BookBoundedContext
             await ((SingleQuery<Book>)command).ExecuteAsync();
         }
 
-        protected override Command CreateUpdateCommand(Book entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(Book entity, IAuthenticatedUser user, string selector)
         {
             if (user != null)
             {
@@ -82,7 +82,7 @@ namespace BookWithPages.BookBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCommand(Book entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(Book entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -107,25 +107,25 @@ namespace BookWithPages.BookBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCollectionCommand(Book entity, IAuthenticatedUser user, string selector)
+        protected override Command CreateDeleteLinksCommand(Book entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
                 .Connection(BookWithPagesConnectionClass.GetConnectionName())
-                .StoredProcedure("[BookBoundedContext].[pBook_DeletePages]")
+                .StoredProcedure("[BookBoundedContext].[pBook_UnlinkPages]")
                 .Parameters(
                     p => p.Name("bookId").Value(entity.Id)
                 );
         }
 
-        protected override bool HandleDeleteCollection(Command command)
+        protected override bool HandleDeleteLinks(Command command)
         {
             var result = ((NonQueryCommand)command).Execute();
 
             return result.AffectedRows > 0;
         }
 
-        protected async override Task<bool> HandleDeleteCollectionAsync(Command command)
+        protected async override Task<bool> HandleDeleteLinksAsync(Command command)
         {
             var result = await ((NonQueryCommand)command).ExecuteAsync();
 

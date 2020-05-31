@@ -15,7 +15,7 @@ namespace DomainFramework.Tests
                 }
             };
 
-            var removeBinaryEntities = new DeleteEntityCollectionCommandOperation<ClassEnrollmentEntity>(RootEntity, selector: null);
+            var removeBinaryEntities = new DeleteLinksCommandOperation<ClassEnrollmentEntity>(RootEntity, selector: null);
 
             Enqueue(removeBinaryEntities);
 

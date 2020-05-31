@@ -1,11 +1,9 @@
 using DomainFramework.Core;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 {
-    [TypeConverter(typeof(DoorTypeConverter))]
     public class Door : ValueObject<Door>
     {
         public int? Number { get; set; }
@@ -18,24 +16,6 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
             {
                 Number
             };
-
-        public static bool TryParse(string s, out Door result)
-        {
-            if (string.IsNullOrWhiteSpace(s))
-            {
-                result = new Door
-                {
-                    Number = null
-                };
-            }
-
-            result = new Door
-            {
-                Number = int.Parse(s)
-            };
-
-            return true;
-        }
 
     }
 }

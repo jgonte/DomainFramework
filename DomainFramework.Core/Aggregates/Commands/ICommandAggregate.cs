@@ -14,8 +14,4 @@ namespace DomainFramework.Core
 
         Task SaveAsync(IAuthenticatedUser user = null, IUnitOfWork unitOfWork = null);
     }
-
-    public interface ICommandAggregate<TEntity> : IAggregate<TEntity>, ICommandAggregate
-    {
-    }
 }

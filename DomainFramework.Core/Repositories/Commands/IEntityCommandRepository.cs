@@ -12,22 +12,22 @@ namespace DomainFramework.Core
 
         void Insert(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
 
-        bool Update(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
+        bool Update(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
 
-        bool Delete(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
+        bool Delete(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
 
         // Pass the root entity to have access to its parameters if needed
-        bool DeleteCollection(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
+        bool DeleteLinks(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
 
         Task SaveAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
 
         Task InsertAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
 
-        Task<bool> UpdateAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
+        Task<bool> UpdateAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
 
-        Task<bool> DeleteAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork);
+        Task<bool> DeleteAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
 
         // Pass the root entity to have access to its parameters if needed
-        Task<bool> DeleteCollectionAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
+        Task<bool> DeleteLinksAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector);
     }
 }

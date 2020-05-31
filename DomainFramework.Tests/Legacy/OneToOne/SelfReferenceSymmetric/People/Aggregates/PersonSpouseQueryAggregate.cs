@@ -8,7 +8,7 @@ namespace DomainFramework.Tests
 
         public PersonEntity2 Spouse => GetSpouseLoadOperation.LinkedEntity;
 
-        public PersonSpouseQueryAggregate(DataAccess.RepositoryContext context) : base(context)
+        public PersonSpouseQueryAggregate(DataAccess.RepositoryContext context) : base(context, null)
         {
             GetSpouseLoadOperation = new GetSingleLinkedEntityQueryOperation<PersonEntity2>
             {
@@ -24,7 +24,7 @@ namespace DomainFramework.Tests
             );
         }
 
-        public override void PopulateDto(PersonEntity2 entity)
+        public override void PopulateDto()
         {
         }
     }

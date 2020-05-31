@@ -36,7 +36,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             await ((SingleQuery<Address>)command).ExecuteAsync();
         }
 
-        protected override Command CreateUpdateCommand(Address entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(Address entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -62,7 +62,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCommand(Address entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(Address entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -81,52 +81,6 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
         }
 
         protected async override Task<bool> HandleDeleteAsync(Command command)
-        {
-            var result = await ((NonQueryCommand)command).ExecuteAsync();
-
-            return result.AffectedRows > 0;
-        }
-
-        protected override Command CreateDeleteCollectionCommand(Address entity, IAuthenticatedUser user, string selector)
-        {
-            switch (selector)
-            {
-                case "Organization": return Command
-                    .NonQuery()
-                    .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                    .StoredProcedure("[SchoolBoundedContext].[pAddress_DeleteOrganization]")
-                    .Parameters(
-                        p => p.Name("addressId").Value(entity.Id)
-                    );
-
-                case "Role": return Command
-                    .NonQuery()
-                    .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                    .StoredProcedure("[SchoolBoundedContext].[pAddress_DeleteRole]")
-                    .Parameters(
-                        p => p.Name("addressId").Value(entity.Id)
-                    );
-
-                case "Organizations": return Command
-                    .NonQuery()
-                    .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                    .StoredProcedure("[SchoolBoundedContext].[pAddress_DeleteOrganizations]")
-                    .Parameters(
-                        p => p.Name("addressId").Value(entity.Id)
-                    );
-
-                default: throw new InvalidOperationException();
-            }
-        }
-
-        protected override bool HandleDeleteCollection(Command command)
-        {
-            var result = ((NonQueryCommand)command).Execute();
-
-            return result.AffectedRows > 0;
-        }
-
-        protected async override Task<bool> HandleDeleteCollectionAsync(Command command)
         {
             var result = await ((NonQueryCommand)command).ExecuteAsync();
 

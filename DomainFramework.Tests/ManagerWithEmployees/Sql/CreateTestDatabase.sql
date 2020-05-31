@@ -47,7 +47,7 @@ ALTER TABLE [ManagerWithEmployees].[ManagerBoundedContext].[Manager]
     ADD CONSTRAINT Manager_Employee_IFK FOREIGN KEY ([ManagerId])
         REFERENCES [ManagerWithEmployees].[ManagerBoundedContext].[Employee] ([EmployeeId])
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION;
+        ON DELETE CASCADE;
 GO
 
 CREATE INDEX [Manager_Employee_IFK_IX]
@@ -84,7 +84,7 @@ GO
 CREATE PROCEDURE [ManagerBoundedContext].[pEmployee_Insert]
     @name VARCHAR(50),
     @createdBy INT,
-    @supervisorId INT
+    @supervisorId INT = NULL
 AS
 BEGIN
     DECLARE @employeeOutputData TABLE
@@ -118,8 +118,8 @@ GO
 CREATE PROCEDURE [ManagerBoundedContext].[pEmployee_Update]
     @employeeId INT,
     @name VARCHAR(50),
-    @updatedBy INT,
-    @supervisorId INT
+    @updatedBy INT = NULL,
+    @supervisorId INT = NULL
 AS
 BEGIN
     UPDATE [ManagerWithEmployees].[ManagerBoundedContext].[Employee]
@@ -129,6 +129,104 @@ BEGIN
         [SupervisorId] = @supervisorId,
         [UpdatedDateTime] = GETDATE()
     WHERE [EmployeeId] = @employeeId;
+
+END;
+GO
+
+CREATE PROCEDURE [ManagerBoundedContext].[pManager_Delete]
+    @managerId INT
+AS
+BEGIN
+    DELETE FROM [ManagerWithEmployees].[ManagerBoundedContext].[Manager]
+    WHERE [ManagerId] = @managerId;
+
+END;
+GO
+
+CREATE PROCEDURE [ManagerBoundedContext].[pManager_Insert]
+    @department VARCHAR(50),
+    @name VARCHAR(50),
+    @createdBy INT,
+    @supervisorId INT = NULL
+AS
+BEGIN
+    DECLARE @employeeId INT;
+
+    DECLARE @employeeOutputData TABLE
+    (
+        [EmployeeId] INT
+    );
+
+    INSERT INTO [ManagerWithEmployees].[ManagerBoundedContext].[Employee]
+    (
+        [Name],
+        [CreatedBy],
+        [SupervisorId]
+    )
+    OUTPUT
+        INSERTED.[EmployeeId]
+        INTO @employeeOutputData
+    VALUES
+    (
+        @name,
+        @createdBy,
+        @supervisorId
+    );
+
+    SELECT
+        @employeeId = [EmployeeId]
+    FROM @employeeOutputData;
+
+    INSERT INTO [ManagerWithEmployees].[ManagerBoundedContext].[Manager]
+    (
+        [ManagerId],
+        [Department]
+    )
+    VALUES
+    (
+        @employeeId,
+        @department
+    );
+
+    SELECT
+        [EmployeeId]
+    FROM @employeeOutputData;
+
+END;
+GO
+
+CREATE PROCEDURE [ManagerBoundedContext].[pManager_Update]
+    @managerId INT,
+    @department VARCHAR(50),
+    @name VARCHAR(50),
+    @updatedBy INT = NULL,
+    @supervisorId INT = NULL
+AS
+BEGIN
+    UPDATE [ManagerWithEmployees].[ManagerBoundedContext].[Employee]
+    SET
+        [Name] = @name,
+        [UpdatedBy] = @updatedBy,
+        [SupervisorId] = @supervisorId,
+        [UpdatedDateTime] = GETDATE()
+    WHERE [EmployeeId] = @managerId;
+
+    UPDATE [ManagerWithEmployees].[ManagerBoundedContext].[Manager]
+    SET
+        [Department] = @department
+    WHERE [ManagerId] = @managerId;
+
+END;
+GO
+
+CREATE PROCEDURE [ManagerBoundedContext].[pManager_UnlinkEmployees]
+    @managerId INT
+AS
+BEGIN
+    UPDATE [ManagerWithEmployees].[ManagerBoundedContext].[Employee]
+    SET
+        [SupervisorId] = NULL
+    WHERE [SupervisorId] = @managerId;
 
 END;
 GO
@@ -221,46 +319,6 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [ManagerBoundedContext].[pGetAll_Employees_For_Manager]
-    @managerId INT
-AS
-BEGIN
-    SELECT
-        _q_.[Id] AS "Id",
-        _q_.[Name] AS "Name",
-        _q_.[SupervisorId] AS "SupervisorId",
-        _q_.[Department] AS "Department",
-        _q_.[_EntityType_] AS "_EntityType_"
-    FROM 
-    (
-        SELECT
-            m.[ManagerId] AS "Id",
-            e.[Name] AS "Name",
-            e.[SupervisorId] AS "SupervisorId",
-            m.[Department] AS "Department",
-            1 AS "_EntityType_"
-        FROM [ManagerWithEmployees].[ManagerBoundedContext].[Manager] m
-        INNER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
-            ON m.[ManagerId] = e.[EmployeeId]
-        UNION ALL
-        (
-            SELECT
-                e.[EmployeeId] AS "Id",
-                e.[Name] AS "Name",
-                e.[SupervisorId] AS "SupervisorId",
-                NULL AS "Department",
-                2 AS "_EntityType_"
-            FROM [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
-            LEFT OUTER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Manager] m
-                ON m.[ManagerId] = e.[EmployeeId]
-            WHERE m.[ManagerId] IS NULL
-        )
-    ) _q_
-    WHERE _q_.[SupervisorId] = @managerId;
-
-END;
-GO
-
 CREATE PROCEDURE [ManagerBoundedContext].[pEmployee_GetById]
     @employeeId INT
 AS
@@ -301,98 +359,42 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [ManagerBoundedContext].[pManager_DeleteEmployees]
-    @supervisorId INT
-AS
-BEGIN
-    DELETE FROM [ManagerWithEmployees].[ManagerBoundedContext].[Employee]
-    WHERE [SupervisorId] = @supervisorId;
-
-END;
-GO
-
-CREATE PROCEDURE [ManagerBoundedContext].[pManager_Delete]
+CREATE PROCEDURE [ManagerBoundedContext].[pManager_GetAllEmployees]
     @managerId INT
 AS
 BEGIN
-    DELETE FROM [ManagerWithEmployees].[ManagerBoundedContext].[Manager]
-    WHERE [ManagerId] = @managerId;
-
-END;
-GO
-
-CREATE PROCEDURE [ManagerBoundedContext].[pManager_Insert]
-    @department VARCHAR(50),
-    @name VARCHAR(50),
-    @createdBy INT,
-    @supervisorId INT
-AS
-BEGIN
-    DECLARE @employeeId INT;
-
-    DECLARE @employeeOutputData TABLE
-    (
-        [EmployeeId] INT
-    );
-
-    INSERT INTO [ManagerWithEmployees].[ManagerBoundedContext].[Employee]
-    (
-        [Name],
-        [CreatedBy],
-        [SupervisorId]
-    )
-    OUTPUT
-        INSERTED.[EmployeeId]
-        INTO @employeeOutputData
-    VALUES
-    (
-        @name,
-        @createdBy,
-        @supervisorId
-    );
-
     SELECT
-        @employeeId = [EmployeeId]
-    FROM @employeeOutputData;
-
-    INSERT INTO [ManagerWithEmployees].[ManagerBoundedContext].[Manager]
+        _q_.[Id] AS "Id",
+        _q_.[Name] AS "Name",
+        _q_.[SupervisorId] AS "SupervisorId",
+        _q_.[Department] AS "Department",
+        _q_.[_EntityType_] AS "_EntityType_"
+    FROM 
     (
-        [ManagerId],
-        [Department]
-    )
-    VALUES
-    (
-        @employeeId,
-        @department
-    );
-
-    SELECT
-        [EmployeeId]
-    FROM @employeeOutputData;
-
-END;
-GO
-
-CREATE PROCEDURE [ManagerBoundedContext].[pManager_Update]
-    @managerId INT,
-    @department VARCHAR(50),
-    @name VARCHAR(50),
-    @updatedBy INT,
-    @supervisorId INT
-AS
-BEGIN
-    UPDATE [ManagerWithEmployees].[ManagerBoundedContext].[Employee]
-    SET
-        [Name] = @name,
-        [UpdatedBy] = @updatedBy,
-        [SupervisorId] = @supervisorId,
-        [UpdatedDateTime] = GETDATE()
-    WHERE [EmployeeId] = @managerId;
-
-    UPDATE [ManagerWithEmployees].[ManagerBoundedContext].[Manager]
-    SET
-        [Department] = @department
-    WHERE [ManagerId] = @managerId;
+        SELECT
+            m.[ManagerId] AS "Id",
+            e.[Name] AS "Name",
+            e.[SupervisorId] AS "SupervisorId",
+            m.[Department] AS "Department",
+            1 AS "_EntityType_"
+        FROM [ManagerWithEmployees].[ManagerBoundedContext].[Manager] m
+        INNER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
+            ON m.[ManagerId] = e.[EmployeeId]
+        UNION ALL
+        (
+            SELECT
+                e.[EmployeeId] AS "Id",
+                e.[Name] AS "Name",
+                e.[SupervisorId] AS "SupervisorId",
+                NULL AS "Department",
+                2 AS "_EntityType_"
+            FROM [ManagerWithEmployees].[ManagerBoundedContext].[Employee] e
+            LEFT OUTER JOIN [ManagerWithEmployees].[ManagerBoundedContext].[Manager] m
+                ON m.[ManagerId] = e.[EmployeeId]
+            WHERE m.[ManagerId] IS NULL
+        )
+    ) _q_
+    WHERE _q_.[SupervisorId] = @managerId;
 
 END;
 GO
@@ -548,6 +550,5 @@ BEGIN
 	EXECUTE sp_executesql @sqlCommand, @paramDefinition, @cnt = @count OUTPUT
 
 END;
-
 GO
 

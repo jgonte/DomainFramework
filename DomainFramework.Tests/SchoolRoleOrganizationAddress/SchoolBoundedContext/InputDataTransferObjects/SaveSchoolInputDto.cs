@@ -7,13 +7,13 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
     public class SaveSchoolInputDto : IInputDataTransferObject
     {
-        public int? Id { get; set; }
+        public int? SchoolId { get; set; }
 
         public bool IsCharter { get; set; }
 
         public OrganizationInputDto Organization { get; set; }
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
             Organization?.Validate(result);
         }

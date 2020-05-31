@@ -34,10 +34,5 @@ namespace UserWithUserLogins.UserBoundedContext
 
         public DateTime? UpdatedDateTime { get; set; }
 
-        /// <summary>
-        /// The user logins of this user
-        /// </summary>
-        public List<UserLogin> UserLogins { get; set; }
-
     }
 }

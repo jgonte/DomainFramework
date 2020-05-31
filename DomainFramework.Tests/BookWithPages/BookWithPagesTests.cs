@@ -154,7 +154,7 @@ namespace BookWithPages.BookBoundedContext
 
             Assert.AreEqual(Guid.Parse("15383656-f9ec-42e9-9049-436efd08e76d"), bookDto.PublisherId);
 
-            Assert.AreEqual(3, bookDto.Pages.Count);
+            Assert.AreEqual(3, bookDto.Pages.Count());
 
             var pageDto = bookDto.Pages.ElementAt(0);
 
@@ -183,7 +183,7 @@ namespace BookWithPages.BookBoundedContext
             // Update
             saveCommandAggregate = new SaveBookCommandAggregate(new SaveBookInputDto
             {
-                Id = bookId,
+                BookId = bookId,
                 Title = "Programming C# 2nd Edition",
                 DatePublished = new DateTime(2009, 01, 31),
                 IsHardCopy = true,
@@ -224,7 +224,7 @@ namespace BookWithPages.BookBoundedContext
 
             Assert.AreEqual(Guid.Parse("15383656-f9ec-42e9-9049-436efd08e76e"), bookDto.PublisherId);
 
-            Assert.AreEqual(3, bookDto.Pages.Count);
+            Assert.AreEqual(3, bookDto.Pages.Count());
 
             pageDto = bookDto.Pages.ElementAt(0);
 
@@ -253,14 +253,14 @@ namespace BookWithPages.BookBoundedContext
             // Add pages to the book
             var addPagesCommandAggregate = new AddBookPagesCommandAggregate(new BookAddPagesInputDto
             {
-                Id = bookId.Value,
-                Pages = new List<AddPageInputDto>
+                BookId = bookId.Value,
+                Pages = new List<SavePageInputDto>
                 {
-                    new AddPageInputDto
+                    new SavePageInputDto
                     {
                         Index = 4
                     },
-                    new AddPageInputDto
+                    new SavePageInputDto
                     {
                         Index = 5
                     }
@@ -284,7 +284,7 @@ namespace BookWithPages.BookBoundedContext
 
             Assert.AreEqual(Guid.Parse("15383656-f9ec-42e9-9049-436efd08e76e"), bookDto.PublisherId);
 
-            Assert.AreEqual(5, bookDto.Pages.Count);
+            Assert.AreEqual(5, bookDto.Pages.Count());
 
             pageDto = bookDto.Pages.ElementAt(0);
 
@@ -329,7 +329,7 @@ namespace BookWithPages.BookBoundedContext
             // Delete
             var deleteAggregate = new DeleteBookCommandAggregate(new DeleteBookInputDto
             {
-                Id = bookId.Value
+                BookId = bookId.Value
             });
 
             deleteAggregate.Save();

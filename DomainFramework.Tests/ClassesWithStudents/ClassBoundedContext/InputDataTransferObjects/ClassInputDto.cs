@@ -9,7 +9,7 @@ namespace ClassesWithStudents.ClassBoundedContext
     {
         public string Name { get; set; }
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
             Name.ValidateNotEmpty(result, nameof(Name));
 

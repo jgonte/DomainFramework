@@ -27,12 +27,14 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
 
             RegisterCommandRepositoryFactory<Person>(() => new PersonCommandRepository());
 
+            var marriedToDependency = (Person)dependencies?.SingleOrDefault()?.Entity;
+
             RootEntity = new Employee
             {
-                Id = employee.Id,
+                Id = employee.EmployeeId,
                 HireDate = employee.HireDate,
                 Name = employee.Name,
-                MarriedToPersonId = employee.MarriedToPersonId,
+                MarriedToPersonId = (marriedToDependency != null) ? marriedToDependency.Id : employee.MarriedToPersonId,
                 CellPhone = (employee.CellPhone != null) ? new PhoneNumber
                 {
                     AreaCode = employee.CellPhone.AreaCode,
@@ -41,32 +43,43 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
                 } : null
             };
 
-            Enqueue(new SaveEntityCommandOperation<Employee>(RootEntity));
+            Enqueue(new SaveEntityCommandOperation<Employee>(RootEntity, dependencies));
 
-            Enqueue(new DeleteEntityCollectionCommandOperation<Employee>(RootEntity, "Spouse"));
+            Enqueue(new DeleteLinksCommandOperation<Employee>(RootEntity, "UnlinkSpouseFromPerson"));
 
             if (employee.Spouse != null)
             {
+                ILinkedAggregateCommandOperation operation;
+
                 var spouse = employee.Spouse;
 
-                var entityForSpouse = new Person
+                if (spouse is PersonInputDto)
                 {
-                    Name = spouse.Name,
-                    CellPhone = (spouse.CellPhone != null) ? new PhoneNumber
-                    {
-                        AreaCode = spouse.CellPhone.AreaCode,
-                        Exchange = spouse.CellPhone.Exchange,
-                        Number = spouse.CellPhone.Number
-                    } : null
-                };
+                    operation = new AddLinkedAggregateCommandOperation<Employee, SavePersonCommandAggregate, PersonInputDto>(
+                        RootEntity,
+                        (PersonInputDto)spouse,
+                        new EntityDependency[]
+                        {
+                            new EntityDependency
+                            {
+                                Entity = RootEntity,
+                                Selector = "Spouse"
+                            }
+                        }
+                    );
 
-                Enqueue(new AddLinkedEntityCommandOperation<Employee, Person>(RootEntity, () => entityForSpouse, "Spouse"));
+                    Enqueue(operation);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
 
                 Enqueue(new UpdateEntityCommandOperation<Employee>(RootEntity, new EntityDependency[]
                 {
                     new EntityDependency
                     {
-                        Entity = entityForSpouse,
+                        Entity = operation.CommandAggregate.RootEntity,
                         Selector = "Spouse"
                     }
                 }));

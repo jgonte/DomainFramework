@@ -2,12 +2,15 @@
 
 namespace DomainFramework.Core
 {
-    public class AddLinkedAggregateCommandOperation<TEntity, TLinkedAggregate, TInputDto> : CommandOperation<TEntity>
+    public class AddLinkedAggregateCommandOperation<TEntity, TLinkedAggregate, TInputDto> : CommandOperation<TEntity>,
+        ILinkedAggregateCommandOperation
         where TEntity : IEntity
         where TLinkedAggregate : ICommandAggregate, new()
         where TInputDto : IInputDataTransferObject
     {
         public TLinkedAggregate CommandAggregate { get; private set; }
+
+        ICommandAggregate ILinkedAggregateCommandOperation.CommandAggregate => CommandAggregate;
 
         public AddLinkedAggregateCommandOperation(TEntity entity, TInputDto inputDto, EntityDependency[] dependencies = null) : base(entity)
         {

@@ -7,11 +7,11 @@ namespace BookWithPages.BookBoundedContext
 {
     public class DeleteBookInputDto : IInputDataTransferObject
     {
-        public int Id { get; set; }
+        public int BookId { get; set; }
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
-            Id.ValidateNotZero(result, nameof(Id));
+            BookId.ValidateNotZero(result, nameof(BookId));
         }
 
     }

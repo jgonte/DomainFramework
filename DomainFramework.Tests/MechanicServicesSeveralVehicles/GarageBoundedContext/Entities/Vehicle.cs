@@ -16,9 +16,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
         public DateTime? UpdatedDateTime { get; set; }
 
-        public int MechanicId { get; set; }
-
-        public List<Cylinder> Cylinders { get; set; }
+        public int? MechanicId { get; set; }
 
     }
 }

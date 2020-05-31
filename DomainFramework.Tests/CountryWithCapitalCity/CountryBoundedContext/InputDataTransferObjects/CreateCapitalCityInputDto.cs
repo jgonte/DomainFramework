@@ -11,13 +11,11 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 
         public string CountryCode { get; set; }
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
             Name.ValidateNotEmpty(result, nameof(Name));
 
             Name.ValidateMaxLength(result, nameof(Name), 150);
-
-            CountryCode.ValidateNotEmpty(result, nameof(CountryCode));
 
             CountryCode.ValidateMaxLength(result, nameof(CountryCode), 2);
         }

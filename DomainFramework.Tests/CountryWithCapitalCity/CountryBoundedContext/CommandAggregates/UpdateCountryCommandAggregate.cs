@@ -25,29 +25,44 @@ namespace CountryWithCapitalCity.CountryBoundedContext
         {
             RegisterCommandRepositoryFactory<Country>(() => new CountryCommandRepository());
 
-            RegisterCommandRepositoryFactory<CapitalCity>(() => new CapitalCityCommandRepository());
-
             RootEntity = new Country
             {
-                Id = country.Id,
+                Id = country.CountryCode,
                 Name = country.Name,
                 IsActive = country.IsActive
             };
 
-            Enqueue(new UpdateEntityCommandOperation<Country>(RootEntity));
+            Enqueue(new UpdateEntityCommandOperation<Country>(RootEntity, dependencies));
 
-            Enqueue(new DeleteEntityCollectionCommandOperation<Country>(RootEntity, "CapitalCity"));
+            Enqueue(new DeleteLinksCommandOperation<Country>(RootEntity, "UnlinkCapitalCityFromCountry"));
 
             if (country.CapitalCity != null)
             {
+                ILinkedAggregateCommandOperation operation;
+
                 var capitalCity = country.CapitalCity;
 
-                var entityForCapitalCity = new CapitalCity
+                if (capitalCity is CreateCapitalCityInputDto)
                 {
-                    Name = capitalCity.Name
-                };
+                    operation = new AddLinkedAggregateCommandOperation<Country, CreateCapitalCityCommandAggregate, CreateCapitalCityInputDto>(
+                        RootEntity,
+                        (CreateCapitalCityInputDto)capitalCity,
+                        new EntityDependency[]
+                        {
+                            new EntityDependency
+                            {
+                                Entity = RootEntity,
+                                Selector = "CapitalCity"
+                            }
+                        }
+                    );
 
-                Enqueue(new AddLinkedEntityCommandOperation<Country, CapitalCity>(RootEntity, () => entityForCapitalCity, "CapitalCity"));
+                    Enqueue(operation);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
             }
         }
 

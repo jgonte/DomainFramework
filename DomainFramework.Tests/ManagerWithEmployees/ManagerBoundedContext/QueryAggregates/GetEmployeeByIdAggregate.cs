@@ -8,43 +8,24 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 {
     public class GetEmployeeByIdAggregate : GetByIdQueryAggregate<Employee, int?, EmployeeOutputDto>
     {
-        public GetEmployeeByIdAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(ManagerWithEmployeesConnectionClass.GetConnectionName()))
+        public GetEmployeeByIdAggregate() : this(null)
+        {
+        }
+
+        public GetEmployeeByIdAggregate(HashSet<(string, IEntity)> processedEntities = null) : base(new DomainFramework.DataAccess.RepositoryContext(ManagerWithEmployeesConnectionClass.GetConnectionName()), processedEntities)
         {
             var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
             EmployeeQueryRepository.Register(context);
         }
 
-        public override void PopulateDto(Employee entity)
+        public override void PopulateDto()
         {
-            if (entity is Manager)
-            {
-                var manager = (Manager)entity;
+            OutputDto.Id = RootEntity.Id.Value;
 
-                var managerDto = new ManagerOutputDto();
+            OutputDto.Name = RootEntity.Name;
 
-                managerDto.Id = manager.Id.Value;
-
-                managerDto.Department = manager.Department;
-
-                managerDto.Name = manager.Name;
-
-                managerDto.SupervisorId = manager.SupervisorId;
-
-                OutputDto = managerDto;
-            }
-            else
-            {
-                var employeeDto = new EmployeeOutputDto();
-
-                employeeDto.Id = entity.Id.Value;
-
-                employeeDto.Name = entity.Name;
-
-                employeeDto.SupervisorId = entity.SupervisorId;
-
-                OutputDto = employeeDto;
-            }
+            OutputDto.SupervisorId = RootEntity.SupervisorId;
         }
 
     }

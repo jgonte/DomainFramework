@@ -30,7 +30,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 FirstName = student.FirstName
             };
 
-            Enqueue(new InsertEntityCommandOperation<Student>(RootEntity));
+            Enqueue(new InsertEntityCommandOperation<Student>(RootEntity, dependencies));
         }
 
     }

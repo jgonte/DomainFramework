@@ -7,7 +7,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
 {
     public class SaveEmployeeInputDto : IInputDataTransferObject
     {
-        public int? Id { get; set; }
+        public int? EmployeeId { get; set; }
 
         public DateTime HireDate { get; set; }
 
@@ -15,11 +15,11 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
 
         public int? MarriedToPersonId { get; set; }
 
+        public PhoneNumberInputDto CellPhone { get; set; }
+
         public PersonInputDto Spouse { get; set; }
 
-        public SavePhoneNumberInputDto CellPhone { get; set; }
-
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
             HireDate.ValidateNotEmpty(result, nameof(HireDate));
 
@@ -27,9 +27,9 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
 
             Name.ValidateMaxLength(result, nameof(Name), 50);
 
-            Spouse?.Validate(result);
-
             CellPhone?.Validate(result);
+
+            Spouse?.Validate(result);
         }
 
     }

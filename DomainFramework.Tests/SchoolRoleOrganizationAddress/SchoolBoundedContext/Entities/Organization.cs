@@ -19,7 +19,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
         public DateTime? UpdatedDateTime { get; set; }
 
-        public int AddressId { get; set; }
+        public int? AddressId { get; set; }
 
         public Phone Phone { get; set; }
 

@@ -125,7 +125,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
             var result = Query<Person>
                 .Collection()
                 .Connection(EmployeeWithDependantsConnectionClass.GetConnectionName())
-                .StoredProcedure("[EmployeeBoundedContext].[pGetAll_Dependants_For_Employee]")
+                .StoredProcedure("[EmployeeBoundedContext].[pEmployee_GetAllDependants]")
                 .Parameters(
                     p => p.Name("employeeId").Value(employeeId.Value)
                 )
@@ -144,7 +144,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
             var result = await Query<Person>
                 .Collection()
                 .Connection(EmployeeWithDependantsConnectionClass.GetConnectionName())
-                .StoredProcedure("[EmployeeBoundedContext].[pGetAll_Dependants_For_Employee]")
+                .StoredProcedure("[EmployeeBoundedContext].[pEmployee_GetAllDependants]")
                 .Parameters(
                     p => p.Name("employeeId").Value(employeeId.Value)
                 )

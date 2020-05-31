@@ -3,16 +3,41 @@ using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
-    public abstract class QueryAggregate<TEntity, TOutputDto> : IQueryAggregate<TEntity, TOutputDto>
+    public abstract class QueryAggregate<TEntity, TOutputDto> : IQueryAggregate
         where TEntity : IEntity
         where TOutputDto : IOutputDataTransferObject, new()
     {
         public IRepositoryContext RepositoryContext { get; set; }
 
-        public TEntity RootEntity { get; set; }
+        IEntity IAggregate.RootEntity { get; set; }
 
-        // It needs to be created here so the nested query aggregates (if any) can use it
-        public TOutputDto OutputDto { get; set; } = new TOutputDto();
+        public TEntity RootEntity
+        {
+            get
+            {
+                return (TEntity)((IAggregate)this).RootEntity;
+            }
+
+            set
+            {
+                ((IAggregate)this).RootEntity = value;
+            }
+        }
+
+        IOutputDataTransferObject IQueryAggregate.OutputDto { get; set; } = new TOutputDto();
+
+        public TOutputDto OutputDto
+        {
+            get
+            {
+                return (TOutputDto)((IQueryAggregate)this).OutputDto;
+            }
+
+            set
+            {
+                ((IQueryAggregate)this).OutputDto = value;
+            }
+        }
 
         public Queue<IQueryOperation> QueryOperations { get; set; } = new Queue<IQueryOperation>();
 
@@ -47,6 +72,6 @@ namespace DomainFramework.Core
             await Task.WhenAll(tasks);
         }
 
-        public abstract void PopulateDto(TEntity entity);
+        public abstract void PopulateDto();
     }
 }

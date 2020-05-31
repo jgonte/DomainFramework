@@ -8,11 +8,13 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 {
     public class GetCountryByIdQueryAggregate : GetByIdQueryAggregate<Country, string, CountryOutputDto>
     {
-        public GetSingleLinkedEntityQueryOperation<CapitalCity> GetCapitalCityQueryOperation { get; }
+        public GetLinkedAggregateQuerySingleItemOperation<string, CapitalCity, CapitalCityOutputDto> GetCapitalCityLinkedAggregateQueryOperation { get; set; }
 
-        public CapitalCity CapitalCity => GetCapitalCityQueryOperation.LinkedEntity;
+        public GetCountryByIdQueryAggregate() : this(null)
+        {
+        }
 
-        public GetCountryByIdQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(CountryWithCapitalCityConnectionClass.GetConnectionName()))
+        public GetCountryByIdQueryAggregate(HashSet<(string, IEntity)> processedEntities = null) : base(new DomainFramework.DataAccess.RepositoryContext(CountryWithCapitalCityConnectionClass.GetConnectionName()), processedEntities)
         {
             var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
@@ -20,41 +22,46 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 
             CapitalCityQueryRepository.Register(context);
 
-            GetCapitalCityQueryOperation = new GetSingleLinkedEntityQueryOperation<CapitalCity>
+            GetCapitalCityLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<string, CapitalCity, CapitalCityOutputDto>
             {
+                OnBeforeExecute = entity =>
+                {
+                    if (ProcessedEntities.Contains(("CapitalCity", entity)))
+                    {
+                        return false;
+                    }
+
+                    ProcessedEntities.Add(("CapitalCity", entity));
+
+                    return true;
+                },
                 GetLinkedEntity = (repository, entity, user) => ((CapitalCityQueryRepository)repository).GetCapitalCityForCountry(RootEntity.Id),
-                GetLinkedEntityAsync = async (repository, entity, user) => await ((CapitalCityQueryRepository)repository).GetCapitalCityForCountryAsync(RootEntity.Id)
+                GetLinkedEntityAsync = async (repository, entity, user) => await ((CapitalCityQueryRepository)repository).GetCapitalCityForCountryAsync(RootEntity.Id),
+                CreateLinkedQueryAggregate = entity => 
+                {
+                    if (entity is CapitalCity)
+                    {
+                        return new GetCapitalCityByIdQueryAggregate();
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException();
+                    }
+                }
             };
 
-            QueryOperations.Enqueue(GetCapitalCityQueryOperation);
+            QueryOperations.Enqueue(GetCapitalCityLinkedAggregateQueryOperation);
         }
 
-        public CapitalCityOutputDto GetCapitalCityDto()
+        public override void PopulateDto()
         {
-            if (CapitalCity != null)
-            {
-                var dto = new CapitalCityOutputDto
-                {
-                    Id = CapitalCity.Id.Value,
-                    Name = CapitalCity.Name,
-                    CountryCode = CapitalCity.CountryCode
-                };
+            OutputDto.Id = RootEntity.Id;
 
-                return dto;
-            }
+            OutputDto.Name = RootEntity.Name;
 
-            return null;
-        }
+            OutputDto.IsActive = RootEntity.IsActive;
 
-        public override void PopulateDto(Country entity)
-        {
-            OutputDto.Id = entity.Id;
-
-            OutputDto.Name = entity.Name;
-
-            OutputDto.IsActive = entity.IsActive;
-
-            OutputDto.CapitalCity = GetCapitalCityDto();
+            OutputDto.CapitalCity = GetCapitalCityLinkedAggregateQueryOperation.OutputDto;
         }
 
     }

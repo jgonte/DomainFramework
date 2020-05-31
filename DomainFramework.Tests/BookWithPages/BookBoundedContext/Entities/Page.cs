@@ -16,7 +16,7 @@ namespace BookWithPages.BookBoundedContext
 
         public DateTime? UpdatedDateTime { get; set; }
 
-        public int BookId { get; set; }
+        public int? BookId { get; set; }
 
     }
 }

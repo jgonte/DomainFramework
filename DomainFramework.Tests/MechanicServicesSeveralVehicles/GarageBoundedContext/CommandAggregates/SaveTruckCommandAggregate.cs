@@ -23,27 +23,49 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
         private void Initialize(TruckInputDto truck, EntityDependency[] dependencies)
         {
+            RegisterCommandRepositoryFactory<Truck>(() => new TruckCommandRepository());
+
             RegisterCommandRepositoryFactory<Vehicle>(() => new VehicleCommandRepository());
 
-            RegisterCommandRepositoryFactory<Truck>(() => new TruckCommandRepository());
+            RegisterCommandRepositoryFactory<Vehicle_Cylinders_CommandRepository.RepositoryKey>(() => new Vehicle_Cylinders_CommandRepository());
+
+            RegisterCommandRepositoryFactory<Truck_Inspections_CommandRepository.RepositoryKey>(() => new Truck_Inspections_CommandRepository());
+
+            var mechanicDependency = (Mechanic)dependencies?.SingleOrDefault()?.Entity;
 
             RootEntity = new Truck
             {
-                Id = truck.Id,
+                Id = truck.TruckId,
                 Weight = truck.Weight,
                 Model = truck.Model,
-                MechanicId = truck.MechanicId,
-                Inspections = (truck.Inspections != null) ? truck.Inspections.Select(dto => new Inspection
-                {
-                    Date = dto.Date
-                }).ToList() : null,
-                Cylinders = truck.Cylinders.Select(dto => new Cylinder
-                {
-                    Diameter = dto.Diameter
-                }).ToList()
+                MechanicId = (mechanicDependency != null) ? mechanicDependency.Id : truck.MechanicId
             };
 
-            Enqueue(new SaveEntityCommandOperation<Truck>(RootEntity));
+            Enqueue(new SaveEntityCommandOperation<Truck>(RootEntity, dependencies));
+
+            Enqueue(new DeleteLinkedValueObjectCommandOperation<Truck, Cylinder, Vehicle_Cylinders_CommandRepository.RepositoryKey>(RootEntity));
+
+            foreach (var dto in truck.Cylinders)
+            {
+                var cylinderValueObject = new Cylinder
+                {
+                    Diameter = dto.Diameter
+                };
+
+                Enqueue(new AddLinkedValueObjectCommandOperation<Truck, Cylinder, Vehicle_Cylinders_CommandRepository.RepositoryKey>(RootEntity, cylinderValueObject));
+            }
+
+            Enqueue(new DeleteLinkedValueObjectCommandOperation<Truck, Inspection, Truck_Inspections_CommandRepository.RepositoryKey>(RootEntity));
+
+            foreach (var dto in truck.Inspections)
+            {
+                var inspectionValueObject = new Inspection
+                {
+                    Date = dto.Date
+                };
+
+                Enqueue(new AddLinkedValueObjectCommandOperation<Truck, Inspection, Truck_Inspections_CommandRepository.RepositoryKey>(RootEntity, inspectionValueObject));
+            }
         }
 
     }

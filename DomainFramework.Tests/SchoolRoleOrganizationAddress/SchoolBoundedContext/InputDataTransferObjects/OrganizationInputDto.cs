@@ -7,31 +7,32 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
     public class OrganizationInputDto : IInputDataTransferObject
     {
-        public int? Id { get; set; }
+        public int? OrganizationId { get; set; }
 
         public string Name { get; set; }
 
-        public int AddressId { get; set; }
+        public int? AddressId { get; set; }
 
-        public AddressInputDto Address { get; set; }
+        public OrganizationRoleInputDto OrganizationRole { get; set; }
 
         public PhoneInputDto Phone { get; set; }
 
-        public void Validate(ValidationResult result)
+        /// <summary>
+        /// The address where the organization is located
+        /// </summary>
+        public AddressInputDto Address { get; set; }
+
+        public virtual void Validate(ValidationResult result)
         {
             Name.ValidateNotEmpty(result, nameof(Name));
 
             Name.ValidateMaxLength(result, nameof(Name), 50);
 
-            AddressId.ValidateNotZero(result, nameof(AddressId));
+            OrganizationRole.Validate(result);
 
-            Address.ValidateNotNull(result, nameof(Address));
+            Phone.Validate(result);
 
             Address?.Validate(result);
-
-            Phone.ValidateNotNull(result, nameof(Phone));
-
-            Phone?.Validate(result);
         }
 
     }

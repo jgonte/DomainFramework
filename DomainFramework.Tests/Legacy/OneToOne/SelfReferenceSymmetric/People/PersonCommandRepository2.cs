@@ -67,7 +67,7 @@ namespace DomainFramework.Tests
             return command;
         }
 
-        protected override Command CreateUpdateCommand(PersonEntity2 entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(PersonEntity2 entity, IAuthenticatedUser user, string selector)
         {
             var command = Command
                 .NonQuery()

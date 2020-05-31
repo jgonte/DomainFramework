@@ -24,31 +24,6 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                     tm => tm.Type(typeof(Car)).Index(2),
                     tm => tm.Type(typeof(Vehicle)).Index(3)
                 )
-                .OnAfterCommandExecuted(cmd =>
-                {
-                    var query = (CollectionQuery<Vehicle>)cmd;
-
-                    foreach (var entity in query.Data)
-                    {
-                        if (entity is Truck)
-                        {
-                            var repository = new Truck_Inspections_QueryRepository();
-
-                            var truck = (Truck)entity;
-
-                            truck.Inspections = repository.GetAll(entity.Id).ToList();
-                        }
-
-                        if (entity is Car)
-                        {
-                            var repository1 = new Car_Doors_QueryRepository();
-
-                            var car = (Car)entity;
-
-                            car.Doors = repository1.GetAll(entity.Id).ToList();
-                        }
-                    }
-                })
                 .Execute();
 
             var count = (string)result.GetParameter("count").Value;
@@ -70,35 +45,6 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                     tm => tm.Type(typeof(Car)).Index(2),
                     tm => tm.Type(typeof(Vehicle)).Index(3)
                 )
-                .OnAfterCommandExecutedAsync(async cmd =>
-                {
-                    var query = (CollectionQuery<Vehicle>)cmd;
-
-                    foreach (var entity in query.Data)
-                    {
-                        if (entity is Truck)
-                        {
-                            var repository = new Truck_Inspections_QueryRepository();
-
-                            var valueObjects = await repository.GetAllAsync(entity.Id);
-
-                            var truck = (Truck)entity;
-
-                            truck.Inspections = valueObjects.ToList();
-                        }
-
-                        if (entity is Car)
-                        {
-                            var repository1 = new Car_Doors_QueryRepository();
-
-                            var valueObjects1 = await repository1.GetAllAsync(entity.Id);
-
-                            var car = (Car)entity;
-
-                            car.Doors = valueObjects1.ToList();
-                        }
-                    }
-                })
                 .ExecuteAsync();
 
             var count = (string)result.GetParameter("count").Value;
@@ -118,31 +64,6 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                     tm => tm.Type(typeof(Car)).Index(2),
                     tm => tm.Type(typeof(Vehicle)).Index(3)
                 )
-                .OnAfterCommandExecuted(cmd =>
-                {
-                    var query = (CollectionQuery<Vehicle>)cmd;
-
-                    foreach (var entity in query.Data)
-                    {
-                        if (entity is Truck)
-                        {
-                            var repository = new Truck_Inspections_QueryRepository();
-
-                            var truck = (Truck)entity;
-
-                            truck.Inspections = repository.GetAll(entity.Id).ToList();
-                        }
-
-                        if (entity is Car)
-                        {
-                            var repository1 = new Car_Doors_QueryRepository();
-
-                            var car = (Car)entity;
-
-                            car.Doors = repository1.GetAll(entity.Id).ToList();
-                        }
-                    }
-                })
                 .Execute();
 
             return result.Data;
@@ -160,35 +81,6 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                     tm => tm.Type(typeof(Car)).Index(2),
                     tm => tm.Type(typeof(Vehicle)).Index(3)
                 )
-                .OnAfterCommandExecutedAsync(async cmd =>
-                {
-                    var query = (CollectionQuery<Vehicle>)cmd;
-
-                    foreach (var entity in query.Data)
-                    {
-                        if (entity is Truck)
-                        {
-                            var repository = new Truck_Inspections_QueryRepository();
-
-                            var valueObjects = await repository.GetAllAsync(entity.Id);
-
-                            var truck = (Truck)entity;
-
-                            truck.Inspections = valueObjects.ToList();
-                        }
-
-                        if (entity is Car)
-                        {
-                            var repository1 = new Car_Doors_QueryRepository();
-
-                            var valueObjects1 = await repository1.GetAllAsync(entity.Id);
-
-                            var car = (Car)entity;
-
-                            car.Doors = valueObjects1.ToList();
-                        }
-                    }
-                })
                 .ExecuteAsync();
 
             return result.Data;
@@ -209,35 +101,6 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                     tm => tm.Type(typeof(Car)).Index(2),
                     tm => tm.Type(typeof(Vehicle)).Index(3)
                 )
-                .OnAfterCommandExecuted(cmd =>
-                {
-                    var query = (SingleQuery<Vehicle>)cmd;
-
-                    var entity = query.Data;
-
-                    if (entity == null)
-                    {
-                        return;
-                    }
-
-                    if (entity is Truck)
-                    {
-                        var repository = new Truck_Inspections_QueryRepository();
-
-                        var truck = (Truck)entity;
-
-                        truck.Inspections = repository.GetAll(entity.Id).ToList();
-                    }
-
-                    if (entity is Car)
-                    {
-                        var repository1 = new Car_Doors_QueryRepository();
-
-                        var car = (Car)entity;
-
-                        car.Doors = repository1.GetAll(entity.Id).ToList();
-                    }
-                })
                 .Execute();
 
             return result.Data;
@@ -258,39 +121,6 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                     tm => tm.Type(typeof(Car)).Index(2),
                     tm => tm.Type(typeof(Vehicle)).Index(3)
                 )
-                .OnAfterCommandExecutedAsync(async cmd =>
-                {
-                    var query = (SingleQuery<Vehicle>)cmd;
-
-                    var entity = query.Data;
-
-                    if (entity == null)
-                    {
-                        return;
-                    }
-
-                    if (entity is Truck)
-                    {
-                        var repository = new Truck_Inspections_QueryRepository();
-
-                        var valueObjects = await repository.GetAllAsync(entity.Id);
-
-                        var truck = (Truck)entity;
-
-                        truck.Inspections = valueObjects.ToList();
-                    }
-
-                    if (entity is Car)
-                    {
-                        var repository1 = new Car_Doors_QueryRepository();
-
-                        var valueObjects1 = await repository1.GetAllAsync(entity.Id);
-
-                        var car = (Car)entity;
-
-                        car.Doors = valueObjects1.ToList();
-                    }
-                })
                 .ExecuteAsync();
 
             return result.Data;
@@ -301,7 +131,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
             var result = Query<Vehicle>
                 .Collection()
                 .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
-                .StoredProcedure("[GarageBoundedContext].[pGetAll_Vehicles_For_Mechanic]")
+                .StoredProcedure("[GarageBoundedContext].[pMechanic_GetAllVehicles]")
                 .Parameters(
                     p => p.Name("mechanicId").Value(mechanicId.Value)
                 )
@@ -311,31 +141,6 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                     tm => tm.Type(typeof(Car)).Index(2),
                     tm => tm.Type(typeof(Vehicle)).Index(3)
                 )
-                .OnAfterCommandExecuted(cmd =>
-                {
-                    var query = (CollectionQuery<Vehicle>)cmd;
-
-                    foreach (var entity in query.Data)
-                    {
-                        if (entity is Truck)
-                        {
-                            var repository = new Truck_Inspections_QueryRepository();
-
-                            var truck = (Truck)entity;
-
-                            truck.Inspections = repository.GetAll(entity.Id).ToList();
-                        }
-
-                        if (entity is Car)
-                        {
-                            var repository1 = new Car_Doors_QueryRepository();
-
-                            var car = (Car)entity;
-
-                            car.Doors = repository1.GetAll(entity.Id).ToList();
-                        }
-                    }
-                })
                 .Execute();
 
             return result.Data;
@@ -346,7 +151,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
             var result = await Query<Vehicle>
                 .Collection()
                 .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
-                .StoredProcedure("[GarageBoundedContext].[pGetAll_Vehicles_For_Mechanic]")
+                .StoredProcedure("[GarageBoundedContext].[pMechanic_GetAllVehicles]")
                 .Parameters(
                     p => p.Name("mechanicId").Value(mechanicId.Value)
                 )
@@ -356,35 +161,6 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                     tm => tm.Type(typeof(Car)).Index(2),
                     tm => tm.Type(typeof(Vehicle)).Index(3)
                 )
-                .OnAfterCommandExecutedAsync(async cmd =>
-                {
-                    var query = (CollectionQuery<Vehicle>)cmd;
-
-                    foreach (var entity in query.Data)
-                    {
-                        if (entity is Truck)
-                        {
-                            var repository = new Truck_Inspections_QueryRepository();
-
-                            var valueObjects = await repository.GetAllAsync(entity.Id);
-
-                            var truck = (Truck)entity;
-
-                            truck.Inspections = valueObjects.ToList();
-                        }
-
-                        if (entity is Car)
-                        {
-                            var repository1 = new Car_Doors_QueryRepository();
-
-                            var valueObjects1 = await repository1.GetAllAsync(entity.Id);
-
-                            var car = (Car)entity;
-
-                            car.Doors = valueObjects1.ToList();
-                        }
-                    }
-                })
                 .ExecuteAsync();
 
             return result.Data;

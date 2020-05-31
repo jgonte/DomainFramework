@@ -7,7 +7,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 {
     public class SaveManagerInputDto : IInputDataTransferObject
     {
-        public int? Id { get; set; }
+        public int? ManagerId { get; set; }
 
         public string Department { get; set; }
 
@@ -17,7 +17,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
         public List<EmployeeInputDto> Employees { get; set; } = new List<EmployeeInputDto>();
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
             Department.ValidateNotEmpty(result, nameof(Department));
 

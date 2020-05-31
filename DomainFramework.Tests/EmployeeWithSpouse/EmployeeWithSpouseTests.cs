@@ -47,13 +47,13 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
         #endregion
 
         [TestMethod]
-        public void Save_Employee_Only_Tests()
+        public void EmployeeWithSpouse_Save_Tests()
         {
             // Insert
             var commandAggregate = new SaveEmployeeCommandAggregate(new SaveEmployeeInputDto
             {
                 Name = "George",
-                CellPhone = new SavePhoneNumberInputDto
+                CellPhone = new PhoneNumberInputDto
                 {
                     AreaCode = "305",
                     Exchange = "234",
@@ -90,9 +90,9 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             // Update
             commandAggregate = new SaveEmployeeCommandAggregate(new SaveEmployeeInputDto
             {
-                Id = employeeId,
+                EmployeeId = employeeId,
                 Name = "Jorge",
-                CellPhone = new SavePhoneNumberInputDto
+                CellPhone = new PhoneNumberInputDto
                 {
                     AreaCode = "786",
                     Exchange = "567",
@@ -145,35 +145,35 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             Assert.AreEqual("8900", cellPhone.Number);
 
             // Read polymorphic
-            var personQueryAggregate = new PersonQueryAggregate();
+            //var personQueryAggregate = new PersonQueryAggregate();
 
-            employeeDto = (EmployeeOutputDto)personQueryAggregate.Get(employeeId);
+            //employeeDto = (EmployeeOutputDto)personQueryAggregate.Get(employeeId);
 
-            Assert.AreEqual(employeeId, employeeDto.Id);
+            //Assert.AreEqual(employeeId, employeeDto.Id);
 
-            Assert.AreEqual("Jorge", employeeDto.Name);
+            //Assert.AreEqual("Jorge", employeeDto.Name);
 
-            cellPhone = employeeDto.CellPhone;
+            //cellPhone = employeeDto.CellPhone;
 
-            Assert.AreEqual("786", cellPhone.AreaCode);
+            //Assert.AreEqual("786", cellPhone.AreaCode);
 
-            Assert.AreEqual("567", cellPhone.Exchange);
+            //Assert.AreEqual("567", cellPhone.Exchange);
 
-            Assert.AreEqual("5678", cellPhone.Number);
+            //Assert.AreEqual("5678", cellPhone.Number);
 
-            Assert.AreEqual(new DateTime(2016, 4, 28), employeeDto.HireDate);
+            //Assert.AreEqual(new DateTime(2016, 4, 28), employeeDto.HireDate);
 
-            spouseDto = employeeDto.Spouse;
+            //spouseDto = employeeDto.Spouse;
 
-            Assert.AreEqual("Yana", spouseDto.Name);
+            //Assert.AreEqual("Yana", spouseDto.Name);
 
-            cellPhone = spouseDto.CellPhone;
+            //cellPhone = spouseDto.CellPhone;
 
-            Assert.AreEqual("305", cellPhone.AreaCode);
+            //Assert.AreEqual("305", cellPhone.AreaCode);
 
-            Assert.AreEqual("890", cellPhone.Exchange);
+            //Assert.AreEqual("890", cellPhone.Exchange);
 
-            Assert.AreEqual("8900", cellPhone.Number);
+            //Assert.AreEqual("8900", cellPhone.Number);
 
             // Delete
             //var deleteAggregate = new DeleteEmployeeCommandAggregate(new DeleteEmployeeInputDto

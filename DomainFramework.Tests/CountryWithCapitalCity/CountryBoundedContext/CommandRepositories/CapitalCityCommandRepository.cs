@@ -28,10 +28,15 @@ namespace CountryWithCapitalCity.CountryBoundedContext
                 {
                     var dependencies = Dependencies();
 
-                    var e = (Country)dependencies.Single().Entity;
+                    var countryDependency = (Country)dependencies?.SingleOrDefault()?.Entity;
+
+                    if (countryDependency != null)
+                    {
+                        entity.CountryCode = countryDependency.Id;
+                    }
 
                     cmd.Parameters(
-                        p => p.Name("countryCode").Value(e.Id)
+                        p => p.Name("countryCode").Value(entity.CountryCode)
                     );
                 })
                 .Instance(entity)
@@ -52,7 +57,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             await ((SingleQuery<CapitalCity>)command).ExecuteAsync();
         }
 
-        protected override Command CreateUpdateCommand(CapitalCity entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(CapitalCity entity, IAuthenticatedUser user, string selector)
         {
             if (user != null)
             {
@@ -85,7 +90,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCommand(CapitalCity entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(CapitalCity entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()

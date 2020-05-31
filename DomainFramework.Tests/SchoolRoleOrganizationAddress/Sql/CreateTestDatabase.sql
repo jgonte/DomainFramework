@@ -39,7 +39,7 @@ CREATE TABLE [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organizatio
     [UpdatedBy] INT,
     [UpdatedDateTime] DATETIME,
     [Phone_Number] VARCHAR(10) NOT NULL,
-    [AddressId] INT NOT NULL
+    [AddressId] INT
     CONSTRAINT Organization_PK PRIMARY KEY ([OrganizationId])
 );
 GO
@@ -83,7 +83,7 @@ ALTER TABLE [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[School]
     ADD CONSTRAINT School_Role_IFK FOREIGN KEY ([SchoolId])
         REFERENCES [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Role] ([RoleId])
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION;
+        ON DELETE CASCADE;
 GO
 
 CREATE INDEX [School_Role_IFK_IX]
@@ -105,36 +105,6 @@ CREATE INDEX [Address_Organizations_FK_IX]
     (
         [AddressId]
     );
-GO
-
-CREATE PROCEDURE [SchoolBoundedContext].[pAddress_DeleteOrganization]
-    @roleId INT
-AS
-BEGIN
-    DELETE FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[OrganizationRole]
-    WHERE [RoleId] = @roleId;
-
-END;
-GO
-
-CREATE PROCEDURE [SchoolBoundedContext].[pAddress_DeleteRole]
-    @organizationId INT
-AS
-BEGIN
-    DELETE FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[OrganizationRole]
-    WHERE [OrganizationId] = @organizationId;
-
-END;
-GO
-
-CREATE PROCEDURE [SchoolBoundedContext].[pAddress_DeleteOrganizations]
-    @addressId INT
-AS
-BEGIN
-    DELETE FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization]
-    WHERE [AddressId] = @addressId;
-
-END;
 GO
 
 CREATE PROCEDURE [SchoolBoundedContext].[pAddress_Delete]
@@ -188,88 +158,6 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [SchoolBoundedContext].[pAddress_Get]
-    @$select NVARCHAR(MAX) = NULL,
-    @$filter NVARCHAR(MAX) = NULL,
-    @$orderby NVARCHAR(MAX) = NULL,
-    @$skip NVARCHAR(10) = NULL,
-    @$top NVARCHAR(10) = NULL,
-    @count INT OUTPUT
-AS
-BEGIN
-    EXEC [dbo].[pExecuteDynamicQuery]
-        @$select = @$select,
-        @$filter = @$filter,
-        @$orderby = @$orderby,
-        @$skip = @$skip,
-        @$top = @$top,
-        @selectList = N'    a.[AddressId] AS "Id",
-    a.[Street] AS "Street"',
-        @from = N'[SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Address] a',
-        @count = @count OUTPUT
-
-END;
-GO
-
-CREATE PROCEDURE [SchoolBoundedContext].[pGet_Address_For_Organization]
-    @organizationId INT
-AS
-BEGIN
-    SELECT
-        a.[AddressId] AS "Id",
-        a.[Street] AS "Street"
-    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Address] a
-    INNER JOIN [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization] o
-        ON a.[AddressId] = o.[AddressId]
-    WHERE o.[OrganizationId] = @organizationId;
-
-END;
-GO
-
-CREATE PROCEDURE [SchoolBoundedContext].[pAddress_GetAll]
-AS
-BEGIN
-    SELECT
-        a.[AddressId] AS "Id",
-        a.[Street] AS "Street"
-    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Address] a;
-
-END;
-GO
-
-CREATE PROCEDURE [SchoolBoundedContext].[pAddress_GetById]
-    @addressId INT
-AS
-BEGIN
-    SELECT
-        a.[AddressId] AS "Id",
-        a.[Street] AS "Street"
-    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Address] a
-    WHERE a.[AddressId] = @addressId;
-
-END;
-GO
-
-CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_DeleteAddress]
-    @organizationId INT
-AS
-BEGIN
-    DELETE FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Address]
-    WHERE [OrganizationId] = @organizationId;
-
-END;
-GO
-
-CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_DeleteRole]
-    @organizationId INT
-AS
-BEGIN
-    DELETE FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[OrganizationRole]
-    WHERE [OrganizationId] = @organizationId;
-
-END;
-GO
-
 CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_Delete]
     @organizationId INT
 AS
@@ -284,7 +172,7 @@ CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_Insert]
     @name VARCHAR(50),
     @createdBy INT,
     @phone_Number VARCHAR(10),
-    @addressId INT
+    @addressId INT = NULL
 AS
 BEGIN
     DECLARE @organizationOutputData TABLE
@@ -320,9 +208,9 @@ GO
 CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_Update]
     @organizationId INT,
     @name VARCHAR(50),
-    @updatedBy INT,
+    @updatedBy INT = NULL,
     @phone_Number VARCHAR(10),
-    @addressId INT
+    @addressId INT = NULL
 AS
 BEGIN
     UPDATE [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization]
@@ -337,91 +225,39 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_Get]
-    @$select NVARCHAR(MAX) = NULL,
-    @$filter NVARCHAR(MAX) = NULL,
-    @$orderby NVARCHAR(MAX) = NULL,
-    @$skip NVARCHAR(10) = NULL,
-    @$top NVARCHAR(10) = NULL,
-    @count INT OUTPUT
+CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_AddAddress]
+    @organizationId INT,
+    @addressId INT = NULL
 AS
 BEGIN
-    EXEC [dbo].[pExecuteDynamicQuery]
-        @$select = @$select,
-        @$filter = @$filter,
-        @$orderby = @$orderby,
-        @$skip = @$skip,
-        @$top = @$top,
-        @selectList = N'    o.[OrganizationId] AS "Id",
-    o.[Name] AS "Name",
-    o.[Phone_Number] AS "Phone.Number",
-    o.[AddressId] AS "AddressId"',
-        @from = N'[SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization] o',
-        @count = @count OUTPUT
+    UPDATE [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization]
+    SET
+        [AddressId] = @addressId
+    WHERE [OrganizationId] = @organizationId;
 
 END;
 GO
 
-CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_GetAll]
+CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_LinkAddress]
+    @organizationId INT,
+    @addressId INT = NULL
 AS
 BEGIN
-    SELECT
-        o.[OrganizationId] AS "Id",
-        o.[Name] AS "Name",
-        o.[Phone_Number] AS "Phone.Number",
-        o.[AddressId] AS "AddressId"
-    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization] o;
+    UPDATE [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization]
+    SET
+        [AddressId] = @addressId
+    WHERE [OrganizationId] = @organizationId;
 
 END;
 GO
 
-CREATE PROCEDURE [SchoolBoundedContext].[pGetAll_Organization_For_Role]
-    @roleId INT
-AS
-BEGIN
-    SELECT
-        o.[OrganizationId] AS "Id",
-        o.[Name] AS "Name",
-        o.[Phone_Number] AS "Phone.Number",
-        o.[AddressId] AS "AddressId"
-    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization] o
-    INNER JOIN [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[OrganizationRole] o1
-        ON o.[OrganizationId] = o1.[OrganizationId]
-    WHERE _q_.[RoleId] = @roleId;
-
-END;
-GO
-
-CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_GetById]
+CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_UnlinkAddress]
     @organizationId INT
 AS
 BEGIN
-    SELECT
-        o.[OrganizationId] AS "Id",
-        o.[Name] AS "Name",
-        o.[Phone_Number] AS "Phone.Number",
-        o.[AddressId] AS "AddressId"
-    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization] o
-    WHERE o.[OrganizationId] = @organizationId;
-
-END;
-GO
-
-CREATE PROCEDURE [SchoolBoundedContext].[pOrganizationRole_DeleteOrganization]
-    @roleId INT
-AS
-BEGIN
-    DELETE FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[OrganizationRole]
-    WHERE [RoleId] = @roleId;
-
-END;
-GO
-
-CREATE PROCEDURE [SchoolBoundedContext].[pOrganizationRole_DeleteRole]
-    @organizationId INT
-AS
-BEGIN
-    DELETE FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[OrganizationRole]
+    UPDATE [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization]
+    SET
+        [AddressId] = NULL
     WHERE [OrganizationId] = @organizationId;
 
 END;
@@ -464,7 +300,7 @@ GO
 CREATE PROCEDURE [SchoolBoundedContext].[pOrganizationRole_Update]
     @organizationId INT,
     @roleId INT,
-    @updatedBy INT
+    @updatedBy INT = NULL
 AS
 BEGIN
     UPDATE [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[OrganizationRole]
@@ -473,16 +309,6 @@ BEGIN
         [UpdatedDateTime] = GETDATE()
     WHERE [OrganizationId] = @organizationId
     AND [RoleId] = @roleId;
-
-END;
-GO
-
-CREATE PROCEDURE [SchoolBoundedContext].[pRole_DeleteOrganization]
-    @roleId INT
-AS
-BEGIN
-    DELETE FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[OrganizationRole]
-    WHERE [RoleId] = @roleId;
 
 END;
 GO
@@ -527,7 +353,7 @@ GO
 
 CREATE PROCEDURE [SchoolBoundedContext].[pRole_Update]
     @roleId INT,
-    @updatedBy INT
+    @updatedBy INT = NULL
 AS
 BEGIN
     UPDATE [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Role]
@@ -535,6 +361,272 @@ BEGIN
         [UpdatedBy] = @updatedBy,
         [UpdatedDateTime] = GETDATE()
     WHERE [RoleId] = @roleId;
+
+END;
+GO
+
+CREATE PROCEDURE [SchoolBoundedContext].[pRole_AddOrganization]
+    @organizationId INT,
+    @roleId INT,
+    @createdBy INT
+AS
+BEGIN
+    INSERT INTO [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[OrganizationRole]
+    (
+        [OrganizationId],
+        [RoleId],
+        [CreatedBy]
+    )
+    VALUES
+    (
+        @organizationId,
+        @roleId,
+        @createdBy
+    );
+
+END;
+GO
+
+CREATE PROCEDURE [SchoolBoundedContext].[pRole_LinkOrganization]
+    @organizationId INT,
+    @roleId INT,
+    @createdBy INT
+AS
+BEGIN
+    INSERT INTO [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[OrganizationRole]
+    (
+        [OrganizationId],
+        [RoleId],
+        [CreatedBy]
+    )
+    VALUES
+    (
+        @organizationId,
+        @roleId,
+        @createdBy
+    );
+
+END;
+GO
+
+CREATE PROCEDURE [SchoolBoundedContext].[pRole_UnlinkOrganization]
+    @roleId INT
+AS
+BEGIN
+    DELETE FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[OrganizationRole]
+    WHERE [RoleId] = @roleId;
+
+END;
+GO
+
+CREATE PROCEDURE [SchoolBoundedContext].[pSchool_Delete]
+    @schoolId INT
+AS
+BEGIN
+    DELETE FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[School]
+    WHERE [SchoolId] = @schoolId;
+
+END;
+GO
+
+CREATE PROCEDURE [SchoolBoundedContext].[pSchool_Insert]
+    @isCharter BIT,
+    @createdBy INT
+AS
+BEGIN
+    DECLARE @roleId INT;
+
+    DECLARE @roleOutputData TABLE
+    (
+        [RoleId] INT
+    );
+
+    INSERT INTO [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Role]
+    (
+        [CreatedBy]
+    )
+    OUTPUT
+        INSERTED.[RoleId]
+        INTO @roleOutputData
+    VALUES
+    (
+        @createdBy
+    );
+
+    SELECT
+        @roleId = [RoleId]
+    FROM @roleOutputData;
+
+    INSERT INTO [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[School]
+    (
+        [SchoolId],
+        [IsCharter],
+        [CreatedBy]
+    )
+    VALUES
+    (
+        @roleId,
+        @isCharter,
+        @createdBy
+    );
+
+    SELECT
+        [RoleId]
+    FROM @roleOutputData;
+
+END;
+GO
+
+CREATE PROCEDURE [SchoolBoundedContext].[pSchool_Update]
+    @schoolId INT,
+    @isCharter BIT,
+    @updatedBy INT = NULL
+AS
+BEGIN
+    UPDATE [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Role]
+    SET
+        [UpdatedBy] = @updatedBy,
+        [UpdatedDateTime] = GETDATE()
+    WHERE [RoleId] = @schoolId;
+
+    UPDATE [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[School]
+    SET
+        [IsCharter] = @isCharter,
+        [UpdatedBy] = @updatedBy,
+        [UpdatedDateTime] = GETDATE()
+    WHERE [SchoolId] = @schoolId;
+
+END;
+GO
+
+CREATE PROCEDURE [SchoolBoundedContext].[pAddress_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
+AS
+BEGIN
+    EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'    a.[AddressId] AS "Id",
+    a.[Street] AS "Street"',
+        @from = N'[SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Address] a',
+        @count = @count OUTPUT
+
+END;
+GO
+
+CREATE PROCEDURE [SchoolBoundedContext].[pAddress_GetAll]
+AS
+BEGIN
+    SELECT
+        a.[AddressId] AS "Id",
+        a.[Street] AS "Street"
+    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Address] a;
+
+END;
+GO
+
+CREATE PROCEDURE [SchoolBoundedContext].[pAddress_GetById]
+    @addressId INT
+AS
+BEGIN
+    SELECT
+        a.[AddressId] AS "Id",
+        a.[Street] AS "Street"
+    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Address] a
+    WHERE a.[AddressId] = @addressId;
+
+END;
+GO
+
+CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_GetAddress]
+    @organizationId INT
+AS
+BEGIN
+    SELECT
+        a.[AddressId] AS "Id",
+        a.[Street] AS "Street"
+    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Address] a
+    INNER JOIN [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization] o
+        ON a.[AddressId] = o.[AddressId]
+    WHERE o.[OrganizationId] = @organizationId;
+
+END;
+GO
+
+CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_Get]
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
+AS
+BEGIN
+    EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'    o.[OrganizationId] AS "Id",
+    o.[Name] AS "Name",
+    o.[Phone_Number] AS "Phone.Number",
+    o.[AddressId] AS "AddressId"',
+        @from = N'[SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization] o',
+        @count = @count OUTPUT
+
+END;
+GO
+
+CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_GetAll]
+AS
+BEGIN
+    SELECT
+        o.[OrganizationId] AS "Id",
+        o.[Name] AS "Name",
+        o.[Phone_Number] AS "Phone.Number",
+        o.[AddressId] AS "AddressId"
+    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization] o;
+
+END;
+GO
+
+CREATE PROCEDURE [SchoolBoundedContext].[pOrganization_GetById]
+    @organizationId INT
+AS
+BEGIN
+    SELECT
+        o.[OrganizationId] AS "Id",
+        o.[Name] AS "Name",
+        o.[Phone_Number] AS "Phone.Number",
+        o.[AddressId] AS "AddressId"
+    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization] o
+    WHERE o.[OrganizationId] = @organizationId;
+
+END;
+GO
+
+CREATE PROCEDURE [SchoolBoundedContext].[pRole_GetOrganization]
+    @roleId INT
+AS
+BEGIN
+    SELECT
+        o.[OrganizationId] AS "Id",
+        o.[Name] AS "Name",
+        o.[Phone_Number] AS "Phone.Number",
+        o.[AddressId] AS "AddressId"
+    FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Organization] o
+    INNER JOIN [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[OrganizationRole] o1
+        ON o.[OrganizationId] = o1.[OrganizationId]
+    WHERE o1.[RoleId] = @roleId;
 
 END;
 GO
@@ -645,106 +737,6 @@ BEGIN
         )
     ) _q_
     WHERE _q_.[Id] = @roleId;
-
-END;
-GO
-
-CREATE PROCEDURE [SchoolBoundedContext].[pSchool_DeleteOrganization]
-    @roleId INT
-AS
-BEGIN
-    DELETE FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[OrganizationRole]
-    WHERE [RoleId] = @roleId;
-
-END;
-GO
-
-CREATE PROCEDURE [SchoolBoundedContext].[pSchool_DeleteRole]
-    @organizationId INT
-AS
-BEGIN
-    DELETE FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[OrganizationRole]
-    WHERE [OrganizationId] = @organizationId;
-
-END;
-GO
-
-CREATE PROCEDURE [SchoolBoundedContext].[pSchool_Delete]
-    @schoolId INT
-AS
-BEGIN
-    DELETE FROM [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[School]
-    WHERE [SchoolId] = @schoolId;
-
-END;
-GO
-
-CREATE PROCEDURE [SchoolBoundedContext].[pSchool_Insert]
-    @isCharter BIT,
-    @createdBy INT
-AS
-BEGIN
-    DECLARE @roleId INT;
-
-    DECLARE @roleOutputData TABLE
-    (
-        [RoleId] INT
-    );
-
-    INSERT INTO [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Role]
-    (
-        [CreatedBy]
-    )
-    OUTPUT
-        INSERTED.[RoleId]
-        INTO @roleOutputData
-    VALUES
-    (
-        @createdBy
-    );
-
-    SELECT
-        @roleId = [RoleId]
-    FROM @roleOutputData;
-
-    INSERT INTO [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[School]
-    (
-        [SchoolId],
-        [IsCharter],
-        [CreatedBy]
-    )
-    VALUES
-    (
-        @roleId,
-        @isCharter,
-        @createdBy
-    );
-
-    SELECT
-        [RoleId]
-    FROM @roleOutputData;
-
-END;
-GO
-
-CREATE PROCEDURE [SchoolBoundedContext].[pSchool_Update]
-    @schoolId INT,
-    @isCharter BIT,
-    @updatedBy INT
-AS
-BEGIN
-    UPDATE [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[Role]
-    SET
-        [UpdatedBy] = @updatedBy,
-        [UpdatedDateTime] = GETDATE()
-    WHERE [RoleId] = @schoolId;
-
-    UPDATE [SchoolRoleOrganizationAddress].[SchoolBoundedContext].[School]
-    SET
-        [IsCharter] = @isCharter,
-        [UpdatedBy] = @updatedBy,
-        [UpdatedDateTime] = GETDATE()
-    WHERE [SchoolId] = @schoolId;
 
 END;
 GO
@@ -894,6 +886,5 @@ BEGIN
 	EXECUTE sp_executesql @sqlCommand, @paramDefinition, @cnt = @count OUTPUT
 
 END;
-
 GO
 

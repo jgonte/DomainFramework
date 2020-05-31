@@ -8,5 +8,9 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
     {
         public DateTime HireDate { get; set; }
 
+        public PhoneNumberOutputDto CellPhone { get; set; }
+
+        public PersonOutputDto Spouse { get; set; }
+
     }
 }

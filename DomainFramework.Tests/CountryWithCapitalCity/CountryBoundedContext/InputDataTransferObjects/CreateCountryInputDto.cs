@@ -7,7 +7,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 {
     public class CreateCountryInputDto : IInputDataTransferObject
     {
-        public string Id { get; set; }
+        public string CountryCode { get; set; }
 
         public string Name { get; set; }
 
@@ -15,11 +15,11 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 
         public CreateCapitalCityInputDto CapitalCity { get; set; }
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
-            Id.ValidateNotEmpty(result, nameof(Id));
+            CountryCode.ValidateNotEmpty(result, nameof(CountryCode));
 
-            Id.ValidateMaxLength(result, nameof(Id), 2);
+            CountryCode.ValidateMaxLength(result, nameof(CountryCode), 2);
 
             Name.ValidateNotEmpty(result, nameof(Name));
 

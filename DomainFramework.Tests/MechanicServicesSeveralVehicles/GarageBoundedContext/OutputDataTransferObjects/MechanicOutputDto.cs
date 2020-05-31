@@ -10,7 +10,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
         public string Name { get; set; }
 
-        public List<VehicleOutputDto> Vehicles { get; set; } = new List<VehicleOutputDto>();
+        public IEnumerable<VehicleOutputDto> Vehicles { get; set; }
 
     }
 }

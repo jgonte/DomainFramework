@@ -8,7 +8,7 @@ namespace DomainFramework.Tests
         {
             RootEntity = bookEntity;
 
-            var removeLinkedEntities = new DeleteEntityCollectionCommandOperation<BookEntity>(bookEntity, selector: null);
+            var removeLinkedEntities = new DeleteLinksCommandOperation<BookEntity>(bookEntity, selector: null);
 
             Enqueue(removeLinkedEntities);
 

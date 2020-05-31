@@ -10,11 +10,11 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
         public string Name { get; set; }
 
-        public int AddressId { get; set; }
-
-        public AddressOutputDto Address { get; set; }
+        public int? AddressId { get; set; }
 
         public PhoneOutputDto Phone { get; set; }
+
+        public AddressOutputDto Address { get; set; }
 
     }
 }

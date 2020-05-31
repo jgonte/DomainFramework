@@ -7,7 +7,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
 {
     public class SaveExecutiveInputDto : IInputDataTransferObject
     {
-        public int? Id { get; set; }
+        public int? ExecutiveId { get; set; }
 
         public decimal Bonus { get; set; }
 
@@ -17,7 +17,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
 
         public AssetInputDto Asset { get; set; }
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
             HireDate.ValidateNotEmpty(result, nameof(HireDate));
 
@@ -25,7 +25,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
 
             Name.ValidateMaxLength(result, nameof(Name), 50);
 
-            Asset?.Validate(result);
+            Asset.Validate(result);
         }
 
     }

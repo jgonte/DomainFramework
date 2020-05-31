@@ -31,20 +31,16 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
                 {
                     var dependencies = Dependencies();
 
-                    var entityForSpouse = (Person)dependencies.SingleOrDefault(d => d.Selector == "Spouse")?.Entity;
+                    var marriedToDependency = (Person)dependencies?.SingleOrDefault()?.Entity;
 
-                    if (entityForSpouse != null)
+                    if (marriedToDependency != null)
                     {
-                        cmd.Parameters(
-                            p => p.Name("marriedToPersonId").Value(entityForSpouse.Id)
-                        );
+                        entity.MarriedToPersonId = marriedToDependency.Id;
                     }
-                    else
-                    {
-                        cmd.Parameters(
-                            p => p.Name("marriedToPersonId").Value(entity.MarriedToPersonId)
-                        );
-                    }
+
+                    cmd.Parameters(
+                        p => p.Name("marriedToPersonId").Value(entity.MarriedToPersonId)
+                    );
                 })
                 .Instance(entity)
                 .MapProperties(
@@ -64,7 +60,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             await ((SingleQuery<Person>)command).ExecuteAsync();
         }
 
-        protected override Command CreateUpdateCommand(Person entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(Person entity, IAuthenticatedUser user, string selector)
         {
             if (user != null)
             {
@@ -94,16 +90,12 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
 
                     if (entityForSpouse != null)
                     {
-                        cmd.Parameters(
-                            p => p.Name("marriedToPersonId").Value(entityForSpouse.Id)
-                        );
+                        entity.MarriedToPersonId = entityForSpouse.Id;
                     }
-                    else
-                    {
-                        cmd.Parameters(
-                            p => p.Name("marriedToPersonId").Value(entity.MarriedToPersonId)
-                        );
-                    }
+
+                    cmd.Parameters(
+                        p => p.Name("marriedToPersonId").Value(entity.MarriedToPersonId)
+                    );
                 });
         }
 
@@ -121,7 +113,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCommand(Person entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(Person entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -146,25 +138,25 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCollectionCommand(Person entity, IAuthenticatedUser user, string selector)
+        protected override Command CreateDeleteLinksCommand(Person entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
                 .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
-                .StoredProcedure("[EmployeeBoundedContext].[pPerson_DeleteSpouse]")
+                .StoredProcedure("[EmployeeBoundedContext].[pPerson_UnlinkSpouse]")
                 .Parameters(
-                    p => p.Name("marriedToPersonId").Value(entity.Id)
+                    p => p.Name("personId").Value(entity.Id)
                 );
         }
 
-        protected override bool HandleDeleteCollection(Command command)
+        protected override bool HandleDeleteLinks(Command command)
         {
             var result = ((NonQueryCommand)command).Execute();
 
             return result.AffectedRows > 0;
         }
 
-        protected async override Task<bool> HandleDeleteCollectionAsync(Command command)
+        protected async override Task<bool> HandleDeleteLinksAsync(Command command)
         {
             var result = await ((NonQueryCommand)command).ExecuteAsync();
 
