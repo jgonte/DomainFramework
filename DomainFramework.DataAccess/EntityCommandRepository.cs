@@ -18,7 +18,7 @@ namespace DomainFramework.DataAccess
         // This is needed because the id of the entity might not be available until the entity is inserted
         public Func<IEnumerable<EntityDependency>> Dependencies { get; set; } = EntityDependency.EmptyEntityDependencies;
 
-        public virtual void Save(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector = null)
+        public virtual void Save(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
             if (entity.Id == null)
             {
@@ -26,7 +26,7 @@ namespace DomainFramework.DataAccess
             }
             else
             {
-                Update(entity, user, unitOfWork);
+                Update(entity, user, unitOfWork, selector);
             }
         }
 
@@ -60,9 +60,9 @@ namespace DomainFramework.DataAccess
 
         #region Update
 
-        public bool Update(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        public bool Update(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            var command = CreateUpdateCommand(entity, user);
+            var command = CreateUpdateCommand(entity, user, selector);
 
             if (unitOfWork != null)
             {
@@ -76,7 +76,7 @@ namespace DomainFramework.DataAccess
             }
         }
 
-        protected virtual Command CreateUpdateCommand(TEntity entity, IAuthenticatedUser user)
+        protected virtual Command CreateUpdateCommand(TEntity entity, IAuthenticatedUser user, string selector)
         {
             throw new NotImplementedException();
         }
@@ -90,9 +90,9 @@ namespace DomainFramework.DataAccess
 
         #region Delete
     
-        public bool Delete(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        public bool Delete(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            var command = CreateDeleteCommand(entity, user);
+            var command = CreateDeleteCommand(entity, user, selector);
 
             if (unitOfWork != null)
             {
@@ -106,7 +106,7 @@ namespace DomainFramework.DataAccess
             }
         }
 
-        protected virtual Command CreateDeleteCommand(TEntity entity, IAuthenticatedUser user)
+        protected virtual Command CreateDeleteCommand(TEntity entity, IAuthenticatedUser user, string selector)
         {
             throw new NotImplementedException();
         }
@@ -118,11 +118,11 @@ namespace DomainFramework.DataAccess
 
         #endregion
 
-        #region DeleteCollection
+        #region DeleteLinks
 
-        public bool DeleteCollection(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector = null)
+        public bool DeleteLinks(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            var command = CreateDeleteCollectionCommand(entity, user, selector);
+            var command = CreateDeleteLinksCommand(entity, user, selector);
 
             if (unitOfWork != null)
             {
@@ -132,16 +132,16 @@ namespace DomainFramework.DataAccess
             }
             else
             {
-                return HandleDeleteCollection(command);
+                return HandleDeleteLinks(command);
             }
         }
 
-        protected virtual Command CreateDeleteCollectionCommand(TEntity entity, IAuthenticatedUser user, string selector)
+        protected virtual Command CreateDeleteLinksCommand(TEntity entity, IAuthenticatedUser user, string selector)
         {
             throw new NotImplementedException();
         }
 
-        protected virtual bool HandleDeleteCollection(Command command)
+        protected virtual bool HandleDeleteLinks(Command command)
         {
             throw new NotImplementedException();
         }
@@ -156,7 +156,7 @@ namespace DomainFramework.DataAccess
             }
             else
             {
-                await UpdateAsync(entity, user, unitOfWork);
+                await UpdateAsync(entity, user, unitOfWork, selector);
             }
         }
 
@@ -185,9 +185,9 @@ namespace DomainFramework.DataAccess
 
         #region UpdateAsync
 
-        public async Task<bool> UpdateAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        public async Task<bool> UpdateAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            var command = CreateUpdateCommand(entity, user);
+            var command = CreateUpdateCommand(entity, user, selector);
 
             if (unitOfWork != null)
             {
@@ -210,9 +210,9 @@ namespace DomainFramework.DataAccess
 
         #region DeleteAsync
 
-        public async Task<bool> DeleteAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        public async Task<bool> DeleteAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            var command = CreateDeleteCommand(entity, user);
+            var command = CreateDeleteCommand(entity, user, selector);
 
             if (unitOfWork != null)
             {
@@ -233,11 +233,11 @@ namespace DomainFramework.DataAccess
 
         #endregion
 
-        #region DeleteCollectionAsync
+        #region DeleteLinksAsync
 
-        public async Task<bool> DeleteCollectionAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
+        public async Task<bool> DeleteLinksAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            var command = CreateDeleteCollectionCommand(entity, user, selector);
+            var command = CreateDeleteLinksCommand(entity, user, selector);
 
             if (unitOfWork != null)
             {
@@ -247,11 +247,11 @@ namespace DomainFramework.DataAccess
             }
             else
             {
-                return await HandleDeleteCollectionAsync(command);
+                return await HandleDeleteLinksAsync(command);
             }
         }
 
-        protected virtual Task<bool> HandleDeleteCollectionAsync(Command command)
+        protected virtual Task<bool> HandleDeleteLinksAsync(Command command)
         {
             throw new NotImplementedException();
         }
@@ -270,19 +270,19 @@ namespace DomainFramework.DataAccess
             Insert((TEntity)entity, user, unitOfWork, selector);
         }
 
-        bool IEntityCommandRepository.Update(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        bool IEntityCommandRepository.Update(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            return Update((TEntity)entity, user, unitOfWork);
+            return Update((TEntity)entity, user, unitOfWork, selector);
         }
 
-        bool IEntityCommandRepository.Delete(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        bool IEntityCommandRepository.Delete(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            return Delete((TEntity)entity, user, unitOfWork);
+            return Delete((TEntity)entity, user, unitOfWork, selector);
         }
 
-        bool IEntityCommandRepository.DeleteCollection(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
+        bool IEntityCommandRepository.DeleteLinks(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            return DeleteCollection((TEntity)entity, user, unitOfWork, selector);
+            return DeleteLinks((TEntity)entity, user, unitOfWork, selector);
         }
 
         async Task IEntityCommandRepository.SaveAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
@@ -295,19 +295,19 @@ namespace DomainFramework.DataAccess
             await InsertAsync((TEntity)entity, user, unitOfWork, selector);
         }
 
-        async Task<bool> IEntityCommandRepository.UpdateAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        async Task<bool> IEntityCommandRepository.UpdateAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            return await UpdateAsync((TEntity)entity, user, unitOfWork);
+            return await UpdateAsync((TEntity)entity, user, unitOfWork, selector);
         }
 
-        async Task<bool> IEntityCommandRepository.DeleteAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        async Task<bool> IEntityCommandRepository.DeleteAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            return await DeleteAsync((TEntity)entity, user, unitOfWork);
+            return await DeleteAsync((TEntity)entity, user, unitOfWork, selector);
         }
 
-        async Task<bool> IEntityCommandRepository.DeleteCollectionAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
+        async Task<bool> IEntityCommandRepository.DeleteLinksAsync(IEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            return await DeleteCollectionAsync((TEntity)entity, user, unitOfWork, selector);
+            return await DeleteLinksAsync((TEntity)entity, user, unitOfWork, selector);
         }
 
         #endregion

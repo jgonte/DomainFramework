@@ -5,36 +5,28 @@ using Utilities.Validation;
 
 namespace EmployeeWithDependants.EmployeeBoundedContext
 {
-    public class SaveEmployeeInputDto : IInputDataTransferObject
+    public class SaveEmployeeInputDto : PersonInputDto
     {
-        public int? Id { get; set; }
+        public int? EmployeeId { get; set; }
 
         public DateTime HireDate { get; set; }
 
-        public string Name { get; set; }
-
-        public int? ProviderEmployeeId { get; set; }
+        public PhoneNumberInputDto CellPhone { get; set; }
 
         public List<PersonInputDto> Dependants { get; set; } = new List<PersonInputDto>();
 
-        public SavePhoneNumberInputDto CellPhone { get; set; }
-
-        public void Validate(ValidationResult result)
+        public override void Validate(ValidationResult result)
         {
+            base.Validate(result);
+
             HireDate.ValidateNotEmpty(result, nameof(HireDate));
 
-            Name.ValidateNotEmpty(result, nameof(Name));
-
-            Name.ValidateMaxLength(result, nameof(Name), 50);
+            CellPhone.Validate(result);
 
             foreach (var person in Dependants)
             {
                 person.Validate(result);
             }
-
-            CellPhone.ValidateNotNull(result, nameof(CellPhone));
-
-            CellPhone?.Validate(result);
         }
 
     }

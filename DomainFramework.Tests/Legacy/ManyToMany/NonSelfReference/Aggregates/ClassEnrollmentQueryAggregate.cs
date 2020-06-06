@@ -16,7 +16,7 @@ namespace DomainFramework.Tests
 
         public IEnumerable<StudentEntity> Students => GetStudentsLoadOperation.LinkedEntities;
 
-        public ClassEnrollmentQueryAggregate(RepositoryContext context) : base(context)
+        public ClassEnrollmentQueryAggregate(RepositoryContext context) : base(context, null)
         {
             GetStudentsLoadOperation = new GetCollectionLinkedEntityQueryOperation<StudentEntity>
             {
@@ -36,7 +36,7 @@ namespace DomainFramework.Tests
             );
         }
 
-        public override void PopulateDto(ClassEntity entity)
+        public override void PopulateDto()
         {
         }
     }

@@ -8,11 +8,13 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
     public class GetByIdOrganizationQueryAggregate : GetByIdQueryAggregate<Organization, int?, OrganizationOutputDto>
     {
-        public GetSingleLinkedEntityQueryOperation<Address> GetAddressQueryOperation { get; }
+        public GetLinkedAggregateQuerySingleItemOperation<int?, Address, AddressOutputDto> GetAddressLinkedAggregateQueryOperation { get; set; }
 
-        public Address Address => GetAddressQueryOperation.LinkedEntity;
+        public GetByIdOrganizationQueryAggregate() : this(null)
+        {
+        }
 
-        public GetByIdOrganizationQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName()))
+        public GetByIdOrganizationQueryAggregate(HashSet<(string, IEntity)> processedEntities = null) : base(new DomainFramework.DataAccess.RepositoryContext(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName()), processedEntities)
         {
             var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
@@ -20,49 +22,55 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
             AddressQueryRepository.Register(context);
 
-            GetAddressQueryOperation = new GetSingleLinkedEntityQueryOperation<Address>
+            GetAddressLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int?, Address, AddressOutputDto>
             {
+                OnBeforeExecute = entity =>
+                {
+                    if (ProcessedEntities.Contains(("Address", entity)))
+                    {
+                        return false;
+                    }
+
+                    ProcessedEntities.Add(("Address", entity));
+
+                    return true;
+                },
                 GetLinkedEntity = (repository, entity, user) => ((AddressQueryRepository)repository).GetAddressForOrganization(RootEntity.Id),
-                GetLinkedEntityAsync = async (repository, entity, user) => await ((AddressQueryRepository)repository).GetAddressForOrganizationAsync(RootEntity.Id)
+                GetLinkedEntityAsync = async (repository, entity, user) => await ((AddressQueryRepository)repository).GetAddressForOrganizationAsync(RootEntity.Id),
+                CreateLinkedQueryAggregate = entity => 
+                {
+                    if (entity is Address)
+                    {
+                        return new GetAddressByIdQueryAggregate();
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException();
+                    }
+                }
             };
 
-            QueryOperations.Enqueue(GetAddressQueryOperation);
+            QueryOperations.Enqueue(GetAddressLinkedAggregateQueryOperation);
         }
 
-        public AddressOutputDto GetAddressDto()
+        public override void PopulateDto()
         {
-            if (Address != null)
-            {
-                var dto = new AddressOutputDto
-                {
-                    Id = Address.Id.Value,
-                    Street = Address.Street
-                };
+            OutputDto.Id = RootEntity.Id.Value;
 
-                return dto;
-            }
+            OutputDto.Name = RootEntity.Name;
 
-            return null;
+            OutputDto.AddressId = RootEntity.AddressId;
+
+            OutputDto.Phone = GetPhoneDto();
+
+            OutputDto.Address = GetAddressLinkedAggregateQueryOperation.OutputDto;
         }
 
-        public PhoneOutputDto GetPhoneDto(Organization organization) => 
+        public PhoneOutputDto GetPhoneDto() => 
             new PhoneOutputDto
             {
-                Number = organization.Phone.Number
+                Number = RootEntity.Phone.Number
             };
-
-        public override void PopulateDto(Organization entity)
-        {
-            OutputDto.Id = entity.Id.Value;
-
-            OutputDto.Name = entity.Name;
-
-            OutputDto.AddressId = entity.AddressId;
-
-            OutputDto.Phone = GetPhoneDto(entity);
-
-            OutputDto.Address = GetAddressDto();
-        }
 
     }
 }

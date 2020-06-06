@@ -23,21 +23,40 @@ namespace BookWithPages.BookBoundedContext
 
         private void Initialize(BookAddPagesInputDto book, EntityDependency[] dependencies)
         {
-            RegisterCommandRepositoryFactory<Page>(() => new PageCommandRepository());
+            RegisterCommandRepositoryFactory<Book>(() => new BookCommandRepository());
 
             RootEntity = new Book
             {
-                Id = book.Id
+                Id = book.BookId
             };
 
             if (book.Pages?.Any() == true)
             {
-                foreach (var page in book.Pages)
+                foreach (var dto in book.Pages)
                 {
-                    Enqueue(new AddLinkedEntityCommandOperation<Book, Page>(RootEntity, () => new Page
+                    ILinkedAggregateCommandOperation operation;
+
+                    if (dto is SavePageInputDto)
                     {
-                        Index = page.Index
-                    }, "Pages"));
+                        operation = new AddLinkedAggregateCommandOperation<Book, SavePageCommandAggregate, SavePageInputDto>(
+                            RootEntity,
+                            (SavePageInputDto)dto,
+                            new EntityDependency[]
+                            {
+                                new EntityDependency
+                                {
+                                    Entity = RootEntity,
+                                    Selector = "Pages"
+                                }
+                            }
+                        );
+
+                        Enqueue(operation);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
             }
         }

@@ -8,7 +8,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
     {
         public int Weight { get; set; }
 
-        public List<InspectionOutputDto> Inspections { get; set; } = new List<InspectionOutputDto>();
+        public IEnumerable<InspectionOutputDto> Inspections { get; set; }
 
     }
 }

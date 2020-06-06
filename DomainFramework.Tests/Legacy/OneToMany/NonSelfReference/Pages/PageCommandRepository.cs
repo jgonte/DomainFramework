@@ -31,7 +31,7 @@ namespace DomainFramework.Tests
                 });
         }
 
-        protected override Command CreateUpdateCommand(PageEntity entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(PageEntity entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()

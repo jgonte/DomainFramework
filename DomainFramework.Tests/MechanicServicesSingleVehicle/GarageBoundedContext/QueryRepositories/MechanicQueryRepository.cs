@@ -95,7 +95,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             var result = Query<Mechanic>
                 .Single()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
-                .StoredProcedure("[GarageBoundedContext].[pGet_Mechanic_For_Vehicle]")
+                .StoredProcedure("[GarageBoundedContext].[pVehicle_GetMechanic]")
                 .Parameters(
                     p => p.Name("vehicleId").Value(vehicleId.Value)
                 )
@@ -109,7 +109,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             var result = await Query<Mechanic>
                 .Single()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
-                .StoredProcedure("[GarageBoundedContext].[pGet_Mechanic_For_Vehicle]")
+                .StoredProcedure("[GarageBoundedContext].[pVehicle_GetMechanic]")
                 .Parameters(
                     p => p.Name("vehicleId").Value(vehicleId.Value)
                 )

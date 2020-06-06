@@ -12,7 +12,7 @@ namespace UserWithUserLogins.UserBoundedContext
 
         public string Email { get; set; }
 
-        public List<UserLoginOutputDto> UserLogins { get; set; } = new List<UserLoginOutputDto>();
+        public IEnumerable<UserLoginOutputDto> UserLogins { get; set; }
 
     }
 }

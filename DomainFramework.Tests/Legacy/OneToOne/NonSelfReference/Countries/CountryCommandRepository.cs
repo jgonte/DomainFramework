@@ -18,7 +18,7 @@ namespace DomainFramework.Tests
                 );
         }
 
-        protected override Command CreateUpdateCommand(CountryEntity entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(CountryEntity entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -30,7 +30,7 @@ namespace DomainFramework.Tests
                 );
         }
 
-        protected override Command CreateDeleteCommand(CountryEntity entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(CountryEntity entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()

@@ -13,7 +13,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
 
         public string Number { get; set; }
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
             AreaCode.ValidateNotEmpty(result, nameof(AreaCode));
 

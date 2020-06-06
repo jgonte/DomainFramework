@@ -113,7 +113,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             // Insert
             var createCommandAggregate = new CreateCountryCommandAggregate(new CreateCountryInputDto
             {
-                Id = "jp",
+                CountryCode = "jp",
                 Name = "Japon",
                 CapitalCity = new CreateCapitalCityInputDto
                 {
@@ -126,7 +126,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             var countryCode = createCommandAggregate.RootEntity.Id;
 
             // Read
-            var queryAggregate = new CountryQueryAggregate();
+            var queryAggregate = new GetCountryByIdQueryAggregate();
 
             var countryDto = queryAggregate.Get(countryCode);
 
@@ -143,9 +143,9 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             // Update
             var updateCommandAggregate = new UpdateCountryCommandAggregate(new UpdateCountryInputDto
             {
-                Id = countryCode,
+                CountryCode = countryCode,
                 Name = "Japan",
-                CapitalCity = new UpdateCapitalCityInputDto
+                CapitalCity = new CreateCapitalCityInputDto
                 {
                     Name = "Tokyo"
                 }
@@ -154,7 +154,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             updateCommandAggregate.Save();
 
             // Read
-            queryAggregate = new CountryQueryAggregate();
+            queryAggregate = new GetCountryByIdQueryAggregate();
 
             countryDto = queryAggregate.Get(countryCode);
 
@@ -169,10 +169,9 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             Assert.AreEqual("Tokyo", capitalCityDto.Name);
 
             // Add another country to test getting a collection of countries
-
             createCommandAggregate = new CreateCountryCommandAggregate(new CreateCountryInputDto
             {
-                Id = "no",
+                CountryCode = "no",
                 Name = "Norway",
                 CapitalCity = new CreateCapitalCityInputDto
                 {
@@ -211,6 +210,34 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             Assert.AreEqual("no", capitalCityDto.CountryCode);
 
             Assert.AreEqual("Oslo", capitalCityDto.Name);
+
+            // Inactivate a country
+            var inactivateCountryAggregate = new InactivateCountryCommandAggregate(new IsActiveCountryInputDto { CountryCode = "jp" });
+
+            inactivateCountryAggregate.Save();
+
+            // Read the inactive country
+            queryAggregate = new GetCountryByIdQueryAggregate();
+
+            countryDto = queryAggregate.Get("jp");
+
+            Assert.AreEqual("Japan", countryDto.Name);
+
+            Assert.IsFalse(countryDto.IsActive);
+
+            // Activate a country
+            var activateCountryAggregate = new ActivateCountryCommandAggregate(new IsActiveCountryInputDto { CountryCode = "jp" });
+
+            activateCountryAggregate.Save();
+
+            // Read the active country
+            queryAggregate = new GetCountryByIdQueryAggregate();
+
+            countryDto = queryAggregate.Get("jp");
+
+            Assert.AreEqual("Japan", countryDto.Name);
+
+            Assert.IsTrue(countryDto.IsActive);
 
             // Delete
             //var deleteAggregate = new DeleteCountryCommandAggregate(new DeleteCountryInputDto

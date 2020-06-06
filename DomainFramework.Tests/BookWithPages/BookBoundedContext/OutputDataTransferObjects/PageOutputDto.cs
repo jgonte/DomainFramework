@@ -8,7 +8,7 @@ namespace BookWithPages.BookBoundedContext
     {
         public int Index { get; set; }
 
-        public int BookId { get; set; }
+        public int? BookId { get; set; }
 
         public int PageId { get; set; }
 

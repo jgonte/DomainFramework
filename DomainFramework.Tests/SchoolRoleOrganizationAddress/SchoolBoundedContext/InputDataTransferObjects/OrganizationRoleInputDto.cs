@@ -11,7 +11,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
         public int RoleId { get; set; }
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
             OrganizationId.ValidateNotZero(result, nameof(OrganizationId));
 

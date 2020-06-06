@@ -95,7 +95,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             var result = Query<Address>
                 .Single()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                .StoredProcedure("[SchoolBoundedContext].[pGet_Address_For_Organization]")
+                .StoredProcedure("[SchoolBoundedContext].[pOrganization_GetAddress]")
                 .Parameters(
                     p => p.Name("organizationId").Value(organizationId.Value)
                 )
@@ -109,7 +109,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             var result = await Query<Address>
                 .Single()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                .StoredProcedure("[SchoolBoundedContext].[pGet_Address_For_Organization]")
+                .StoredProcedure("[SchoolBoundedContext].[pOrganization_GetAddress]")
                 .Parameters(
                     p => p.Name("organizationId").Value(organizationId.Value)
                 )

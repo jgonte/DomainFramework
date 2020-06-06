@@ -12,12 +12,38 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
     {
         public override (int, IEnumerable<Door>) Get(int? carId, CollectionQueryParameters queryParameters)
         {
-            throw new NotImplementedException();
+            var result = Query<Door>
+                .Collection()
+                .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
+                .StoredProcedure("[GarageBoundedContext].[pCar_GetDoors]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(
+                    p => p.Name("carId").Value(carId.Value)
+                )
+                .Execute();
+
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
         public async override Task<(int, IEnumerable<Door>)> GetAsync(int? carId, CollectionQueryParameters queryParameters)
         {
-            throw new NotImplementedException();
+            var result = await Query<Door>
+                .Collection()
+                .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
+                .StoredProcedure("[GarageBoundedContext].[pCar_GetDoors]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(
+                    p => p.Name("carId").Value(carId.Value)
+                )
+                .ExecuteAsync();
+
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
         public override IEnumerable<Door> GetAll(int? carId)
@@ -25,7 +51,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             var result = Query<Door>
                 .Collection()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
-                .StoredProcedure("[GarageBoundedContext].[pGetAll_Doors_For_Car]")
+                .StoredProcedure("[GarageBoundedContext].[pCar_GetAllDoors]")
                 .Parameters(
                     p => p.Name("carId").Value(carId.Value)
                 )
@@ -39,7 +65,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             var result = await Query<Door>
                 .Collection()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
-                .StoredProcedure("[GarageBoundedContext].[pGetAll_Doors_For_Car]")
+                .StoredProcedure("[GarageBoundedContext].[pCar_GetAllDoors]")
                 .Parameters(
                     p => p.Name("carId").Value(carId.Value)
                 )

@@ -8,11 +8,13 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
 {
     public class MechanicQueryAggregate : GetByIdQueryAggregate<Mechanic, int?, MechanicOutputDto>
     {
-        public GetSingleLinkedEntityQueryOperation<Vehicle> GetVehicleQueryOperation { get; }
+        public GetLinkedAggregateQuerySingleItemOperation<int?, Vehicle, VehicleOutputDto> GetVehicleLinkedAggregateQueryOperation { get; set; }
 
-        public Vehicle Vehicle => GetVehicleQueryOperation.LinkedEntity;
+        public MechanicQueryAggregate() : this(null)
+        {
+        }
 
-        public MechanicQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(MechanicServicesSingleVehicleConnectionClass.GetConnectionName()))
+        public MechanicQueryAggregate(HashSet<(string, IEntity)> processedEntities = null) : base(new DomainFramework.DataAccess.RepositoryContext(MechanicServicesSingleVehicleConnectionClass.GetConnectionName()), processedEntities)
         {
             var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
@@ -20,39 +22,52 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
 
             VehicleQueryRepository.Register(context);
 
-            GetVehicleQueryOperation = new GetSingleLinkedEntityQueryOperation<Vehicle>
+            GetVehicleLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int?, Vehicle, VehicleOutputDto>
             {
+                OnBeforeExecute = entity =>
+                {
+                    if (ProcessedEntities.Contains(("Vehicle", entity)))
+                    {
+                        return false;
+                    }
+
+                    ProcessedEntities.Add(("Vehicle", entity));
+
+                    return true;
+                },
                 GetLinkedEntity = (repository, entity, user) => ((VehicleQueryRepository)repository).GetVehicleForMechanic(RootEntity.Id),
-                GetLinkedEntityAsync = async (repository, entity, user) => await ((VehicleQueryRepository)repository).GetVehicleForMechanicAsync(RootEntity.Id)
+                GetLinkedEntityAsync = async (repository, entity, user) => await ((VehicleQueryRepository)repository).GetVehicleForMechanicAsync(RootEntity.Id),
+                CreateLinkedQueryAggregate = entity => 
+                {
+                    if (entity is Car)
+                    {
+                        return new GetCarByIdQueryAggregate();
+                    }
+                    else if (entity is Truck)
+                    {
+                        return new GetTruckByIdQueryAggregate();
+                    }
+                    else if (entity is Vehicle)
+                    {
+                        return new GetVehicleByIdQueryAggregate();
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException();
+                    }
+                }
             };
 
-            QueryOperations.Enqueue(GetVehicleQueryOperation);
+            QueryOperations.Enqueue(GetVehicleLinkedAggregateQueryOperation);
         }
 
-        public VehicleOutputDto GetVehicleDto()
+        public override void PopulateDto()
         {
-            if (Vehicle != null)
-            {
-                var dto = new VehicleOutputDto
-                {
-                    Id = Vehicle.Id.Value,
-                    Model = Vehicle.Model,
-                    MechanicId = Vehicle.MechanicId
-                };
+            OutputDto.Id = RootEntity.Id.Value;
 
-                return dto;
-            }
+            OutputDto.Name = RootEntity.Name;
 
-            return null;
-        }
-
-        public override void PopulateDto(Mechanic entity)
-        {
-            OutputDto.Id = entity.Id.Value;
-
-            OutputDto.Name = entity.Name;
-
-            OutputDto.Vehicle = GetVehicleDto();
+            OutputDto.Vehicle = GetVehicleLinkedAggregateQueryOperation.OutputDto;
         }
 
     }

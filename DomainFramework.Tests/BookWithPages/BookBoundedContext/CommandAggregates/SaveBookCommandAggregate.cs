@@ -25,11 +25,9 @@ namespace BookWithPages.BookBoundedContext
         {
             RegisterCommandRepositoryFactory<Book>(() => new BookCommandRepository());
 
-            RegisterCommandRepositoryFactory<Page>(() => new PageCommandRepository());
-
             RootEntity = new Book
             {
-                Id = book.Id,
+                Id = book.BookId,
                 Title = book.Title,
                 Category = book.Category,
                 DatePublished = book.DatePublished,
@@ -37,19 +35,37 @@ namespace BookWithPages.BookBoundedContext
                 IsHardCopy = book.IsHardCopy
             };
 
-            Enqueue(new SaveEntityCommandOperation<Book>(RootEntity));
+            Enqueue(new SaveEntityCommandOperation<Book>(RootEntity, dependencies));
 
-            Enqueue(new DeleteEntityCollectionCommandOperation<Book>(RootEntity, "Pages"));
+            Enqueue(new DeleteLinksCommandOperation<Book>(RootEntity, "UnlinkPagesFromBook"));
 
             if (book.Pages?.Any() == true)
             {
-                foreach (var page in book.Pages)
+                foreach (var dto in book.Pages)
                 {
-                    Enqueue(new AddLinkedEntityCommandOperation<Book, Page>(RootEntity, () => new Page
+                    ILinkedAggregateCommandOperation operation;
+
+                    if (dto is SavePageInputDto)
                     {
-                        Id = page.PageId,
-                        Index = page.Index
-                    }, "Pages"));
+                        operation = new AddLinkedAggregateCommandOperation<Book, SavePageCommandAggregate, SavePageInputDto>(
+                            RootEntity,
+                            (SavePageInputDto)dto,
+                            new EntityDependency[]
+                            {
+                                new EntityDependency
+                                {
+                                    Entity = RootEntity,
+                                    Selector = "Pages"
+                                }
+                            }
+                        );
+
+                        Enqueue(operation);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
             }
         }

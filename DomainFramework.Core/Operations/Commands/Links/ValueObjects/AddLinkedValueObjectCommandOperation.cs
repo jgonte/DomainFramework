@@ -1,5 +1,4 @@
 ﻿using DomainFramework.DataAccess;
-using System;
 using System.Threading.Tasks;
 
 namespace DomainFramework.Core
@@ -9,18 +8,16 @@ namespace DomainFramework.Core
         where TEntity : IEntity
         where TLinkedValueObject : IValueObject
     {
-        private Func<TLinkedValueObject> _getLinkedValueObject;
+        private TLinkedValueObject _linkedValueObject;
 
-        public AddLinkedValueObjectCommandOperation(TEntity entity, Func<TLinkedValueObject> getLinkedValueObject) : base(entity)
+        public AddLinkedValueObjectCommandOperation(TEntity entity, TLinkedValueObject linkedValueObject) : base(entity)
         {
-            _getLinkedValueObject = getLinkedValueObject;
+            _linkedValueObject = linkedValueObject;
         }
 
         public override void Execute(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var linkedValueObject = _getLinkedValueObject();
-
-            if (linkedValueObject != null)
+            if (_linkedValueObject != null)
             {
                 var repository = (ILinkedValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TRepositoryKey));
 
@@ -33,15 +30,13 @@ namespace DomainFramework.Core
                     }
                 };
 
-                repository.Add(linkedValueObject, user, unitOfWork);
+                repository.Add(_linkedValueObject, user, unitOfWork);
             }
         }
 
         public override async Task ExecuteAsync(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var linkedValueObject = _getLinkedValueObject();
-
-            if (linkedValueObject != null)
+            if (_linkedValueObject != null)
             {
                 var repository = (ILinkedValueObjectCommandRepository)repositoryContext.CreateCommandRepository(typeof(TRepositoryKey));
 
@@ -54,7 +49,7 @@ namespace DomainFramework.Core
                     }
                 };
 
-                await repository.AddAsync(linkedValueObject, user, unitOfWork);
+                await repository.AddAsync(_linkedValueObject, user, unitOfWork);
             }
         }
     }

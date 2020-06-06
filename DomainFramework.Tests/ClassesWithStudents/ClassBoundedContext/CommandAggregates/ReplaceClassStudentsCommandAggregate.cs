@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace ClassesWithStudents.ClassBoundedContext
 {
-    public class ReplaceClassStudentsCommandAggregate : CommandAggregate<ClassEnrollment>
+    public class ReplaceClassStudentsCommandAggregate : CommandAggregate<Class>
     {
         public ReplaceClassStudentsCommandAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(ClassesWithStudentsConnectionClass.GetConnectionName()))
         {
@@ -23,48 +23,52 @@ namespace ClassesWithStudents.ClassBoundedContext
 
         private void Initialize(ReplaceClassStudentsInputDto enrollment, EntityDependency[] dependencies)
         {
-            RegisterCommandRepositoryFactory<ClassEnrollment>(() => new ClassEnrollmentCommandRepository());
+            RegisterCommandRepositoryFactory<Class>(() => new ClassCommandRepository());
 
-            RegisterCommandRepositoryFactory<Student>(() => new StudentCommandRepository());
-
-            RootEntity = new ClassEnrollment
+            RootEntity = new Class
             {
-                Id = new ClassEnrollmentId
-                {
-                    ClassId = enrollment.ClassId,
-                    StudentId = enrollment.StudentId
-                }
+                Id = enrollment.ClassId
             };
 
-            Enqueue(new DeleteEntityCollectionCommandOperation<ClassEnrollment>(RootEntity, "Students"));
+            Enqueue(new DeleteLinksCommandOperation<Class>(RootEntity, "UnlinkStudentsFromClass"));
 
             if (enrollment.Students?.Any() == true)
             {
-                foreach (var student in enrollment.Students)
+                foreach (var dto in enrollment.Students)
                 {
-                    var studentEntity = new Student
-                    {
-                        FirstName = student.FirstName
-                    };
+                    ILinkedAggregateCommandOperation operation;
 
-                    Enqueue(new InsertEntityCommandOperation<Student>(studentEntity));
-
-                    var classEnrollmentEntity = new ClassEnrollment
+                    if (dto is StudentInputDto)
                     {
-                        Id = new ClassEnrollmentId
+                        operation = new AddLinkedAggregateCommandOperation<Class, CreateStudentCommandAggregate, StudentInputDto>(
+                            RootEntity,
+                            (StudentInputDto)dto
+                        );
+
+                        Enqueue(operation);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    Enqueue(new AddLinkedAggregateCommandOperation<Class, CreateClassEnrollmentCommandAggregate, ClassEnrollmentInputDto>(
+                        RootEntity,
+                        dto.Enrollment,
+                        new EntityDependency[]
                         {
-                            ClassId = enrollment.ClassId
-                        },
-                        StartedDateTime = student.StartedDateTime
-                    };
-
-                    Enqueue(new InsertEntityCommandOperation<ClassEnrollment>(classEnrollmentEntity, new EntityDependency[]
-                    {
-                        new EntityDependency
-                        {
-                            Entity = studentEntity
+                            new EntityDependency
+                            {
+                                Entity = RootEntity,
+                                Selector = "Classes"
+                            },
+                            new EntityDependency
+                            {
+                                Entity = operation.CommandAggregate.RootEntity,
+                                Selector = "Students"
+                            }
                         }
-                    }, selector: "Classes"));
+                    ));
                 }
             }
         }

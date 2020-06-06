@@ -125,7 +125,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
             var result = Query<Employee>
                 .Collection()
                 .Connection(ManagerWithEmployeesConnectionClass.GetConnectionName())
-                .StoredProcedure("[ManagerBoundedContext].[pGetAll_Employees_For_Manager]")
+                .StoredProcedure("[ManagerBoundedContext].[pManager_GetAllEmployees]")
                 .Parameters(
                     p => p.Name("managerId").Value(managerId.Value)
                 )
@@ -144,7 +144,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
             var result = await Query<Employee>
                 .Collection()
                 .Connection(ManagerWithEmployeesConnectionClass.GetConnectionName())
-                .StoredProcedure("[ManagerBoundedContext].[pGetAll_Employees_For_Manager]")
+                .StoredProcedure("[ManagerBoundedContext].[pManager_GetAllEmployees]")
                 .Parameters(
                     p => p.Name("managerId").Value(managerId.Value)
                 )

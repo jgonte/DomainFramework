@@ -8,7 +8,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
     {
         public int Passengers { get; set; }
 
-        public List<DoorOutputDto> Doors { get; set; } = new List<DoorOutputDto>();
+        public IEnumerable<DoorOutputDto> Doors { get; set; }
 
     }
 }

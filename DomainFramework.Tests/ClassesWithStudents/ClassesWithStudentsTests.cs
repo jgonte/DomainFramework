@@ -151,17 +151,30 @@ namespace ClassesWithStudents.ClassBoundedContext
                     new StudentInputDto
                     {
                         FirstName = "Jorge",
-                        StartedDateTime = new DateTime(2010, 3, 11, 9, 16, 37)
+                        Enrollment = new ClassEnrollmentInputDto
+                        {
+                            StartedDateTime = new DateTime(2010, 3, 11, 9, 16, 37),
+                            ClassId = classId.Value
+                        }
+                        
                     },
                     new StudentInputDto
                     {
                         FirstName = "Moshe",
-                        StartedDateTime = new DateTime(2011, 3, 11, 9, 16, 37)
+                        Enrollment = new ClassEnrollmentInputDto
+                        {
+                            StartedDateTime = new DateTime(2011, 4, 12, 10, 16, 37),
+                            ClassId = classId.Value
+                        }
                     },
                     new StudentInputDto
                     {
                         FirstName = "Daphni",
-                        StartedDateTime = new DateTime(2012, 3, 11, 9, 16, 37)
+                        Enrollment = new ClassEnrollmentInputDto
+                        {
+                            StartedDateTime =new DateTime(2012, 5, 13, 11, 16, 37),
+                            ClassId = classId.Value
+                        }
                     }
                 }
 

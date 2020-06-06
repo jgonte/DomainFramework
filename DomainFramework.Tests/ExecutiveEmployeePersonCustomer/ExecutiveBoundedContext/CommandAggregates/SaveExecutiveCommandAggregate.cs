@@ -23,25 +23,25 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
 
         private void Initialize(SaveExecutiveInputDto executive, EntityDependency[] dependencies)
         {
-            RegisterCommandRepositoryFactory<Person>(() => new PersonCommandRepository());
+            RegisterCommandRepositoryFactory<Executive>(() => new ExecutiveCommandRepository());
 
             RegisterCommandRepositoryFactory<Employee>(() => new EmployeeCommandRepository());
 
-            RegisterCommandRepositoryFactory<Executive>(() => new ExecutiveCommandRepository());
+            RegisterCommandRepositoryFactory<Person>(() => new PersonCommandRepository());
 
             RootEntity = new Executive
             {
-                Id = executive.Id,
+                Id = executive.ExecutiveId,
                 Bonus = executive.Bonus,
                 HireDate = executive.HireDate,
                 Name = executive.Name,
-                Asset = (executive.Asset != null) ? new Asset
+                Asset = new Asset
                 {
                     Number = executive.Asset.Number
-                } : null
+                }
             };
 
-            Enqueue(new SaveEntityCommandOperation<Executive>(RootEntity));
+            Enqueue(new SaveEntityCommandOperation<Executive>(RootEntity, dependencies));
         }
 
     }

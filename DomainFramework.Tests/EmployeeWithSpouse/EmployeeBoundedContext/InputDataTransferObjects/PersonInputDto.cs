@@ -7,11 +7,15 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
 {
     public class PersonInputDto : IInputDataTransferObject
     {
+        public int? PersonId { get; set; }
+
         public string Name { get; set; }
+
+        public int? MarriedToPersonId { get; set; }
 
         public PhoneNumberInputDto CellPhone { get; set; }
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
             Name.ValidateNotEmpty(result, nameof(Name));
 

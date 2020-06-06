@@ -62,9 +62,9 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
                             default:
                                 {
-                                    var organization = (Organization)dependencies.ElementAt(0).Entity;
+                                    var organization = (Organization)dependencies.Single(d => d.Selector == "Organization").Entity;
 
-                                    var role = (Role)dependencies.ElementAt(1).Entity;
+                                    var role = (Role)dependencies.Single(d => d.Selector == "Role").Entity;
 
                                     entity.Id = new OrganizationRoleId
                                     {
@@ -95,7 +95,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             await ((NonQueryCommand)command).ExecuteAsync();
         }
 
-        protected override Command CreateUpdateCommand(OrganizationRole entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(OrganizationRole entity, IAuthenticatedUser user, string selector)
         {
             if (user != null)
             {
@@ -127,7 +127,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCommand(OrganizationRole entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(OrganizationRole entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -147,44 +147,6 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
         }
 
         protected async override Task<bool> HandleDeleteAsync(Command command)
-        {
-            var result = await ((NonQueryCommand)command).ExecuteAsync();
-
-            return result.AffectedRows > 0;
-        }
-
-        protected override Command CreateDeleteCollectionCommand(OrganizationRole entity, IAuthenticatedUser user, string selector)
-        {
-            switch (selector)
-            {
-                case "Organization": return Command
-                    .NonQuery()
-                    .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                    .StoredProcedure("[SchoolBoundedContext].[pOrganizationRole_DeleteOrganization]")
-                    .Parameters(
-                        p => p.Name("roleId").Value(entity.Id.RoleId)
-                    );
-
-                case "Role": return Command
-                    .NonQuery()
-                    .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                    .StoredProcedure("[SchoolBoundedContext].[pOrganizationRole_DeleteRole]")
-                    .Parameters(
-                        p => p.Name("organizationId").Value(entity.Id.OrganizationId)
-                    );
-
-                default: throw new InvalidOperationException();
-            }
-        }
-
-        protected override bool HandleDeleteCollection(Command command)
-        {
-            var result = ((NonQueryCommand)command).Execute();
-
-            return result.AffectedRows > 0;
-        }
-
-        protected async override Task<bool> HandleDeleteCollectionAsync(Command command)
         {
             var result = await ((NonQueryCommand)command).ExecuteAsync();
 

@@ -38,7 +38,7 @@ namespace DomainFramework.Tests
             });
         }
 
-        protected override Command CreateUpdateCommand(PhotoEntity entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(PhotoEntity entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -53,7 +53,7 @@ namespace DomainFramework.Tests
                 );
         }
 
-        protected override Command CreateDeleteCommand(PhotoEntity entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(PhotoEntity entity, IAuthenticatedUser user, string selector)
         {
             throw new NotImplementedException();
         }

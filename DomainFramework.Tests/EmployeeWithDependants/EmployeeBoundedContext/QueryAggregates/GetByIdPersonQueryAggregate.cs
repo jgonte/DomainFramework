@@ -8,56 +8,35 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
 {
     public class GetByIdPersonQueryAggregate : GetByIdQueryAggregate<Person, int?, PersonOutputDto>
     {
-        public GetByIdPersonQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(EmployeeWithDependantsConnectionClass.GetConnectionName()))
+        public GetByIdPersonQueryAggregate() : this(null)
+        {
+        }
+
+        public GetByIdPersonQueryAggregate(HashSet<(string, IEntity)> processedEntities = null) : base(new DomainFramework.DataAccess.RepositoryContext(EmployeeWithDependantsConnectionClass.GetConnectionName()), processedEntities)
         {
             var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
             PersonQueryRepository.Register(context);
         }
 
-        public PhoneNumberOutputDto GetCellPhoneDto(Person person) => 
+        public override void PopulateDto()
+        {
+            OutputDto.Id = RootEntity.Id.Value;
+
+            OutputDto.Name = RootEntity.Name;
+
+            OutputDto.ProviderEmployeeId = RootEntity.ProviderEmployeeId;
+
+            OutputDto.CellPhone = GetCellPhoneDto();
+        }
+
+        public PhoneNumberOutputDto GetCellPhoneDto() => 
             new PhoneNumberOutputDto
             {
-                AreaCode = person.CellPhone.AreaCode,
-                Exchange = person.CellPhone.Exchange,
-                Number = person.CellPhone.Number
+                AreaCode = RootEntity.CellPhone.AreaCode,
+                Exchange = RootEntity.CellPhone.Exchange,
+                Number = RootEntity.CellPhone.Number
             };
-
-        public override void PopulateDto(Person entity)
-        {
-            if (entity is Employee)
-            {
-                var employee = (Employee)entity;
-
-                var employeeDto = new EmployeeOutputDto();
-
-                employeeDto.Id = employee.Id.Value;
-
-                employeeDto.HireDate = employee.HireDate;
-
-                employeeDto.Name = employee.Name;
-
-                employeeDto.ProviderEmployeeId = employee.ProviderEmployeeId;
-
-                employeeDto.CellPhone = GetCellPhoneDto(employee);
-
-                OutputDto = employeeDto;
-            }
-            else
-            {
-                var personDto = new PersonOutputDto();
-
-                personDto.Id = entity.Id.Value;
-
-                personDto.Name = entity.Name;
-
-                personDto.ProviderEmployeeId = entity.ProviderEmployeeId;
-
-                personDto.CellPhone = GetCellPhoneDto(entity);
-
-                OutputDto = personDto;
-            }
-        }
 
     }
 }

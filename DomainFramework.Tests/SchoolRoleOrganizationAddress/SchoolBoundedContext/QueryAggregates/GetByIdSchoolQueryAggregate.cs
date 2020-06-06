@@ -8,7 +8,13 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
     public class GetByIdSchoolQueryAggregate : GetByIdQueryAggregate<School, int?, SchoolOutputDto>
     {
-        public GetByIdSchoolQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName()))
+        public GetLinkedAggregateQuerySingleItemOperation<int?, Organization, OrganizationOutputDto> GetOrganizationLinkedAggregateQueryOperation { get; set; }
+
+        public GetByIdSchoolQueryAggregate() : this(null)
+        {
+        }
+
+        public GetByIdSchoolQueryAggregate(HashSet<(string, IEntity)> processedEntities = null) : base(new DomainFramework.DataAccess.RepositoryContext(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName()), processedEntities)
         {
             var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
@@ -16,46 +22,51 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
             OrganizationQueryRepository.Register(context);
 
-            var linkedGetByIdOrganizationQueryAggregateOperation = new AddLinkedAggregateQueryOperation<Organization, GetByIdOrganizationQueryAggregate, OrganizationOutputDto>
+            GetOrganizationLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int?, Organization, OrganizationOutputDto>
             {
-                Query = (aggregate, user) =>
+                OnBeforeExecute = entity =>
                 {
-                    var repository = RepositoryContext.GetQueryRepository(typeof(Organization));
+                    if (ProcessedEntities.Contains(("Organization", entity)))
+                    {
+                        return false;
+                    }
 
-                    var entity = ((OrganizationQueryRepository)repository).GetById(RootEntity.Id);
+                    ProcessedEntities.Add(("Organization", entity));
 
-                    aggregate.RootEntity = entity;
-
-                    aggregate.LoadLinks(user);
-
-                    aggregate.PopulateDto(entity);
-
-                    OutputDto.Organization = aggregate.OutputDto;
+                    return true;
                 },
-                QueryAsync = async (aggregate, user) =>
+                GetLinkedEntity = (repository, entity, user) => ((OrganizationQueryRepository)repository).GetOrganizationForRole(RootEntity.Id),
+                GetLinkedEntityAsync = async (repository, entity, user) => await ((OrganizationQueryRepository)repository).GetOrganizationForRoleAsync(RootEntity.Id),
+                CreateLinkedQueryAggregate = entity => 
                 {
-                    var repository = RepositoryContext.GetQueryRepository(typeof(Organization));
-
-                    var entity = await ((OrganizationQueryRepository)repository).GetByIdAsync(RootEntity.Id);
-
-                    aggregate.RootEntity = entity;
-
-                    await aggregate.LoadLinksAsync(user);
-
-                    aggregate.PopulateDto(entity);
-
-                    OutputDto.Organization = aggregate.OutputDto;
+                    if (entity is School)
+                    {
+                        return new GetByIdSchoolQueryAggregate(new HashSet<(string, IEntity)>
+                        {
+                            ("Organization", entity)
+                        });
+                    }
+                    else if (entity is Organization)
+                    {
+                        return new GetByIdOrganizationQueryAggregate();
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException();
+                    }
                 }
             };
 
-            QueryOperations.Enqueue(linkedGetByIdOrganizationQueryAggregateOperation);
+            QueryOperations.Enqueue(GetOrganizationLinkedAggregateQueryOperation);
         }
 
-        public override void PopulateDto(School entity)
+        public override void PopulateDto()
         {
-            OutputDto.Id = entity.Id.Value;
+            OutputDto.Id = RootEntity.Id.Value;
 
-            OutputDto.IsCharter = entity.IsCharter;
+            OutputDto.IsCharter = RootEntity.IsCharter;
+
+            OutputDto.Organization = GetOrganizationLinkedAggregateQueryOperation.OutputDto;
         }
 
     }

@@ -95,7 +95,7 @@ namespace BookWithPages.BookBoundedContext
             var result = Query<Page>
                 .Collection()
                 .Connection(BookWithPagesConnectionClass.GetConnectionName())
-                .StoredProcedure("[BookBoundedContext].[pGetAll_Pages_For_Book]")
+                .StoredProcedure("[BookBoundedContext].[pBook_GetAllPages]")
                 .Parameters(
                     p => p.Name("bookId").Value(bookId.Value)
                 )
@@ -109,7 +109,7 @@ namespace BookWithPages.BookBoundedContext
             var result = await Query<Page>
                 .Collection()
                 .Connection(BookWithPagesConnectionClass.GetConnectionName())
-                .StoredProcedure("[BookBoundedContext].[pGetAll_Pages_For_Book]")
+                .StoredProcedure("[BookBoundedContext].[pBook_GetAllPages]")
                 .Parameters(
                     p => p.Name("bookId").Value(bookId.Value)
                 )

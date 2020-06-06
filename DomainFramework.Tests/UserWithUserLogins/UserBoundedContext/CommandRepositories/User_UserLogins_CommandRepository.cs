@@ -14,7 +14,7 @@ namespace UserWithUserLogins.UserBoundedContext
             return Command
                 .NonQuery()
                 .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
-                .StoredProcedure("[UserBoundedContext].[pInsert_UserLogins_For_User]")
+                .StoredProcedure("[UserBoundedContext].[pUser_AddUserLogins]")
                 .Parameters(
                     p => p.Name("provider").Value(valueObject.Provider),
                     p => p.Name("userKey").Value(valueObject.UserKey)
@@ -41,12 +41,12 @@ namespace UserWithUserLogins.UserBoundedContext
             await ((NonQueryCommand)command).ExecuteAsync();
         }
 
-        protected override Command CreateDeleteCollectionCommand(IAuthenticatedUser user)
+        protected override Command CreateDeleteLinksCommand(IAuthenticatedUser user)
         {
             return Command
                 .NonQuery()
                 .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
-                .StoredProcedure("[UserBoundedContext].[pDelete_UserLogins_For_User]")
+                .StoredProcedure("[UserBoundedContext].[pUser_DeleteUserLogins]")
                 .OnBeforeCommandExecuted(cmd =>
                 {
                     var dependencies = Dependencies();
@@ -59,14 +59,14 @@ namespace UserWithUserLogins.UserBoundedContext
                 });
         }
 
-        protected override bool HandleDeleteCollection(Command command)
+        protected override bool HandleDeleteLinks(Command command)
         {
             var result = ((NonQueryCommand)command).Execute();
 
             return result.AffectedRows > 0;
         }
 
-        protected async override Task<bool> HandleDeleteCollectionAsync(Command command)
+        protected async override Task<bool> HandleDeleteLinksAsync(Command command)
         {
             var result = await ((NonQueryCommand)command).ExecuteAsync();
 

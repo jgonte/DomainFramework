@@ -42,7 +42,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             await ((SingleQuery<Person>)command).ExecuteAsync();
         }
 
-        protected override Command CreateUpdateCommand(Person entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(Person entity, IAuthenticatedUser user, string selector)
         {
             if (user != null)
             {
@@ -74,7 +74,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCommand(Person entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(Person entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()

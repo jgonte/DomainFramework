@@ -15,7 +15,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
             var result = Query<Inspection>
                 .Collection()
                 .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
-                .StoredProcedure("[GarageBoundedContext].[pGet_Inspections_For_Truck]")
+                .StoredProcedure("[GarageBoundedContext].[pTruck_GetInspections]")
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
@@ -33,7 +33,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
             var result = await Query<Inspection>
                 .Collection()
                 .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
-                .StoredProcedure("[GarageBoundedContext].[pGet_Inspections_For_Truck]")
+                .StoredProcedure("[GarageBoundedContext].[pTruck_GetInspections]")
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
@@ -48,12 +48,30 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
         public override IEnumerable<Inspection> GetAll(int? truckId)
         {
-            throw new NotImplementedException();
+            var result = Query<Inspection>
+                .Collection()
+                .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
+                .StoredProcedure("[GarageBoundedContext].[pTruck_GetAllInspections]")
+                .Parameters(
+                    p => p.Name("truckId").Value(truckId.Value)
+                )
+                .Execute();
+
+            return result.Data;
         }
 
         public async override Task<IEnumerable<Inspection>> GetAllAsync(int? truckId)
         {
-            throw new NotImplementedException();
+            var result = await Query<Inspection>
+                .Collection()
+                .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
+                .StoredProcedure("[GarageBoundedContext].[pTruck_GetAllInspections]")
+                .Parameters(
+                    p => p.Name("truckId").Value(truckId.Value)
+                )
+                .ExecuteAsync();
+
+            return result.Data;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

@@ -95,7 +95,7 @@ namespace ClassesWithStudents.ClassBoundedContext
             var result = Query<Class>
                 .Collection()
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
-                .StoredProcedure("[ClassBoundedContext].[pGetAll_Classes_For_Student]")
+                .StoredProcedure("[ClassBoundedContext].[pStudent_GetAllClasses]")
                 .Parameters(
                     p => p.Name("studentId").Value(studentId.Value)
                 )
@@ -109,7 +109,7 @@ namespace ClassesWithStudents.ClassBoundedContext
             var result = await Query<Class>
                 .Collection()
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
-                .StoredProcedure("[ClassBoundedContext].[pGetAll_Classes_For_Student]")
+                .StoredProcedure("[ClassBoundedContext].[pStudent_GetAllClasses]")
                 .Parameters(
                     p => p.Name("studentId").Value(studentId.Value)
                 )

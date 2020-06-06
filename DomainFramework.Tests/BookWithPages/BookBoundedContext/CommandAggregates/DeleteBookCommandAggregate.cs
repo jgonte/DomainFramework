@@ -27,10 +27,10 @@ namespace BookWithPages.BookBoundedContext
 
             RootEntity = new Book
             {
-                Id = book.Id
+                Id = book.BookId
             };
 
-            Enqueue(new DeleteEntityCommandOperation<Book>(RootEntity));
+            Enqueue(new DeleteEntityCommandOperation<Book>(RootEntity, dependencies));
         }
 
     }

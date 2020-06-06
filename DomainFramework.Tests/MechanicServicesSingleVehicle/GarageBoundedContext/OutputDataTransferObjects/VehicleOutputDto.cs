@@ -10,11 +10,9 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
 
         public string Model { get; set; }
 
-        public int MechanicId { get; set; }
+        public int? MechanicId { get; set; }
 
-        public MechanicOutputDto Mechanic { get; set; }
-
-        public List<CylinderOutputDto> Cylinders { get; set; } = new List<CylinderOutputDto>();
+        public IEnumerable<CylinderOutputDto> Cylinders { get; set; }
 
     }
 }

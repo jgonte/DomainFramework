@@ -23,23 +23,40 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 
         private void Initialize(CountryAddCapitalCityInputDto country, EntityDependency[] dependencies)
         {
-            RegisterCommandRepositoryFactory<CapitalCity>(() => new CapitalCityCommandRepository());
+            RegisterCommandRepositoryFactory<Country>(() => new CountryCommandRepository());
 
             RootEntity = new Country
             {
-                Id = country.Id
+                Id = country.CountryCode
             };
 
             if (country.CapitalCity != null)
             {
+                ILinkedAggregateCommandOperation operation;
+
                 var capitalCity = country.CapitalCity;
 
-                var entityForCapitalCity = new CapitalCity
+                if (capitalCity is CreateCapitalCityInputDto)
                 {
-                    Name = capitalCity.Name
-                };
+                    operation = new AddLinkedAggregateCommandOperation<Country, CreateCapitalCityCommandAggregate, CreateCapitalCityInputDto>(
+                        RootEntity,
+                        (CreateCapitalCityInputDto)capitalCity,
+                        new EntityDependency[]
+                        {
+                            new EntityDependency
+                            {
+                                Entity = RootEntity,
+                                Selector = "CapitalCity"
+                            }
+                        }
+                    );
 
-                Enqueue(new AddLinkedEntityCommandOperation<Country, CapitalCity>(RootEntity, () => entityForCapitalCity, "CapitalCity"));
+                    Enqueue(operation);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
             }
         }
 

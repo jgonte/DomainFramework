@@ -35,7 +35,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 StartedDateTime = enrollment.StartedDateTime
             };
 
-            Enqueue(new InsertEntityCommandOperation<ClassEnrollment>(RootEntity));
+            Enqueue(new InsertEntityCommandOperation<ClassEnrollment>(RootEntity, dependencies));
         }
 
     }

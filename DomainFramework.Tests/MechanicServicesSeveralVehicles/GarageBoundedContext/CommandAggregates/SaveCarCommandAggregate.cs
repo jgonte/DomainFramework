@@ -23,57 +23,49 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
         private void Initialize(CarInputDto car, EntityDependency[] dependencies)
         {
+            RegisterCommandRepositoryFactory<Car>(() => new CarCommandRepository());
+
             RegisterCommandRepositoryFactory<Vehicle>(() => new VehicleCommandRepository());
 
-            RegisterCommandRepositoryFactory<Car>(() => new CarCommandRepository());
+            RegisterCommandRepositoryFactory<Vehicle_Cylinders_CommandRepository.RepositoryKey>(() => new Vehicle_Cylinders_CommandRepository());
+
+            RegisterCommandRepositoryFactory<Car_Doors_CommandRepository.RepositoryKey>(() => new Car_Doors_CommandRepository());
+
+            var mechanicDependency = (Mechanic)dependencies?.SingleOrDefault()?.Entity;
 
             RootEntity = new Car
             {
-                Id = car.Id,
+                Id = car.CarId,
                 Passengers = car.Passengers,
                 Model = car.Model,
-                MechanicId = car.MechanicId,
-                Doors = car.Doors.Select(dto => new Door
-                {
-                    Number = dto.Number
-                }).ToList(),
-                Cylinders = car.Cylinders.Select(dto => new Cylinder
-                {
-                    Diameter = dto.Diameter
-                }).ToList()
+                MechanicId = (mechanicDependency != null) ? mechanicDependency.Id : car.MechanicId
             };
 
             Enqueue(new SaveEntityCommandOperation<Car>(RootEntity, dependencies));
 
-            //.OnAfterCommandExecuted(cmd =>
-            // {
-            //     var query = (CollectionQuery<TestEntity>)cmd;
+            Enqueue(new DeleteLinkedValueObjectCommandOperation<Car, Cylinder, Vehicle_Cylinders_CommandRepository.RepositoryKey>(RootEntity));
 
-            //     foreach (var entity in query.Data)
-            //     {
-            //         var repository = new TestEntity_TypeValues1_QueryRepository();
+            foreach (var dto in car.Cylinders)
+            {
+                var cylinderValueObject = new Cylinder
+                {
+                    Diameter = dto.Diameter
+                };
 
-            //         entity.TypeValues1 = repository.GetAll(entity.Id).ToList();
-            //     }
-            // })
+                Enqueue(new AddLinkedValueObjectCommandOperation<Car, Cylinder, Vehicle_Cylinders_CommandRepository.RepositoryKey>(RootEntity, cylinderValueObject));
+            }
 
-            //.OnAfterCommandExecutedAsync(async cmd =>
-            // {
-            //     var query = (SingleQuery<TestEntity>)cmd;
+            Enqueue(new DeleteLinkedValueObjectCommandOperation<Car, Door, Car_Doors_CommandRepository.RepositoryKey>(RootEntity));
 
-            //     var entity = query.Data;
+            foreach (var dto in car.Doors)
+            {
+                var doorValueObject = new Door
+                {
+                    Number = dto.Number
+                };
 
-            //     if (entity == null)
-            //     {
-            //         return;
-            //     }
-
-            //     var repository = new TestEntity_TypeValues1_QueryRepository();
-
-            //     var valueObjects = await repository.GetAllAsync(entity.Id);
-
-            //     entity.TypeValues1 = valueObjects.ToList();
-            // })
+                Enqueue(new AddLinkedValueObjectCommandOperation<Car, Door, Car_Doors_CommandRepository.RepositoryKey>(RootEntity, doorValueObject));
+            }
         }
 
     }

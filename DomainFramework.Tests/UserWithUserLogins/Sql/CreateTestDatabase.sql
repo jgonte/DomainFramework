@@ -73,20 +73,13 @@ CREATE INDEX [User_UserLogins_FK_IX]
     );
 GO
 
-CREATE PROCEDURE [UserBoundedContext].[pUser_DeleteUserLogins]
-    @userId INT
-AS
-BEGIN
-    DELETE FROM [UserWithUserLogins].[UserBoundedContext].[User_UserLogins]
-    WHERE [UserId] = @userId;
-
-END;
-GO
-
 CREATE PROCEDURE [UserBoundedContext].[pUser_Delete]
     @userId INT
 AS
 BEGIN
+
+    EXECUTE [dbo].[SetUserContext] @userId;
+
     DELETE FROM [UserWithUserLogins].[UserBoundedContext].[User]
     WHERE [UserId] = @userId;
 
@@ -139,7 +132,7 @@ CREATE PROCEDURE [UserBoundedContext].[pUser_Update]
     @normalizedUserName NVARCHAR(256),
     @email NVARCHAR(256),
     @normalizedEmail NVARCHAR(256),
-    @updatedBy INT
+    @updatedBy INT = NULL
 AS
 BEGIN
     UPDATE [UserWithUserLogins].[UserBoundedContext].[User]
@@ -150,6 +143,41 @@ BEGIN
         [NormalizedEmail] = @normalizedEmail,
         [UpdatedBy] = @updatedBy,
         [UpdatedDateTime] = GETDATE()
+    WHERE [UserId] = @userId;
+
+END;
+GO
+
+CREATE PROCEDURE [UserBoundedContext].[pUser_AddUserLogins]
+    @userId INT,
+    @provider VARCHAR(128),
+    @userKey VARCHAR(128)
+AS
+BEGIN
+    INSERT INTO [UserWithUserLogins].[UserBoundedContext].[User_UserLogins]
+    (
+        [UserId],
+        [Provider],
+        [UserKey]
+    )
+    VALUES
+    (
+        @userId,
+        @provider,
+        @userKey
+    );
+
+END;
+GO
+
+CREATE PROCEDURE [UserBoundedContext].[pUser_DeleteUserLogins]
+    @userId INT
+AS
+BEGIN
+
+    EXECUTE [dbo].[SetUserContext] @userId;
+
+    DELETE FROM [UserWithUserLogins].[UserBoundedContext].[User_UserLogins]
     WHERE [UserId] = @userId;
 
 END;
@@ -247,48 +275,48 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [UserBoundedContext].[pDelete_UserLogins_For_User]
-    @userId INT
-AS
-BEGIN
-    DELETE FROM [UserWithUserLogins].[UserBoundedContext].[User_UserLogins]
-    WHERE [UserId] = @userId;
-
-END;
-GO
-
-CREATE PROCEDURE [UserBoundedContext].[pInsert_UserLogins_For_User]
+CREATE PROCEDURE [UserBoundedContext].[pUser_GetUserLogins]
     @userId INT,
-    @provider VARCHAR(128),
-    @userKey VARCHAR(128)
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    INSERT INTO [UserWithUserLogins].[UserBoundedContext].[User_UserLogins]
-    (
-        [UserId],
-        [Provider],
-        [UserKey]
-    )
-    VALUES
-    (
-        @userId,
-        @provider,
-        @userKey
-    );
+    IF @$filter IS NULL
+    BEGIN
+        SET @$filter = N'u.[UserId] = @userId';
+    END
+    ELSE
+    BEGIN
+        SET @$filter = N'u.[UserId] = @userId AND ' + @$filter;
+    END;
+
+    EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'    u.[Provider] AS "Provider",
+    u.[UserKey] AS "UserKey"',
+        @from = N'[UserWithUserLogins].[UserBoundedContext].[User_UserLogins] u',
+        @count = @count OUTPUT
 
 END;
 GO
 
-CREATE PROCEDURE [UserBoundedContext].[pGetAll_UserLogins_For_User]
+CREATE PROCEDURE [UserBoundedContext].[pUser_GetAllUserLogins]
     @userId INT
 AS
 BEGIN
     SELECT
-        [UserId] AS "UserId",
-        [Provider] AS "Provider",
-        [UserKey] AS "UserKey"
-    FROM [UserWithUserLogins].[UserBoundedContext].[User_UserLogins]
-    WHERE [UserId] = @userId;
+        u.[Provider] AS "Provider",
+        u.[UserKey] AS "UserKey"
+    FROM [UserWithUserLogins].[UserBoundedContext].[User_UserLogins] u
+    WHERE u.[UserId] = @userId;
 
 END;
 GO
@@ -385,6 +413,5 @@ BEGIN
 	EXECUTE sp_executesql @sqlCommand, @paramDefinition, @cnt = @count OUTPUT
 
 END;
-
 GO
 

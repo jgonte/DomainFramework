@@ -28,10 +28,15 @@ namespace BookWithPages.BookBoundedContext
                 {
                     var dependencies = Dependencies();
 
-                    var e = (Book)dependencies.Single().Entity;
+                    var bookDependency = (Book)dependencies?.SingleOrDefault()?.Entity;
+
+                    if (bookDependency != null)
+                    {
+                        entity.BookId = bookDependency.Id;
+                    }
 
                     cmd.Parameters(
-                        p => p.Name("bookId").Value(e.Id)
+                        p => p.Name("bookId").Value(entity.BookId)
                     );
                 })
                 .Instance(entity)
@@ -52,7 +57,7 @@ namespace BookWithPages.BookBoundedContext
             await ((SingleQuery<Page>)command).ExecuteAsync();
         }
 
-        protected override Command CreateUpdateCommand(Page entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(Page entity, IAuthenticatedUser user, string selector)
         {
             if (user != null)
             {
@@ -85,7 +90,7 @@ namespace BookWithPages.BookBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCommand(Page entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(Page entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()

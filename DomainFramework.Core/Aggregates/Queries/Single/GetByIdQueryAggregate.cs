@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
@@ -6,12 +7,16 @@ namespace DomainFramework.Core
         where TEntity : Entity<TKey>
         where TOutputDto : IOutputDataTransferObject, new()
     {
-        public GetByIdQueryAggregate()
-        {
-        }
+        public HashSet<(string, IEntity)> ProcessedEntities { get; set; }
 
-        public GetByIdQueryAggregate(RepositoryContext repositoryContext) : base(repositoryContext)
+        public GetByIdQueryAggregate(RepositoryContext repositoryContext, HashSet<(string, IEntity)> processedEntities) : base(repositoryContext)
         {
+            ProcessedEntities = processedEntities;
+
+            if (ProcessedEntities == null)
+            {
+                ProcessedEntities = new HashSet<(string, IEntity)>();
+            }
         }
 
         public TOutputDto Get(TKey rootEntityId, IAuthenticatedUser user = null)
@@ -27,7 +32,7 @@ namespace DomainFramework.Core
 
             LoadLinks(user);
 
-            PopulateDto(RootEntity);
+            PopulateDto();
 
             return OutputDto;
         }
@@ -45,7 +50,7 @@ namespace DomainFramework.Core
 
             await LoadLinksAsync(user);
 
-            PopulateDto(RootEntity);
+            PopulateDto();
 
             return OutputDto;
         }

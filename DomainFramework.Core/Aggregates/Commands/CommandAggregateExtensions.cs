@@ -13,16 +13,13 @@ namespace DomainFramework.Core
         {
             var rootEntity = aggregate.RootEntity;
 
-            var deleteCollection = new DeleteValueObjectCollectionCommandOperation<TEntity, TValueObject, TRepositoryKey>(rootEntity);
+            var deleteCollection = new DeleteLinkedValueObjectCommandOperation<TEntity, TValueObject, TRepositoryKey>(rootEntity);
 
             aggregate.Enqueue(deleteCollection);
 
             foreach (var valueObject in valueObjects)
             {
-                var addPhone = new AddLinkedValueObjectCommandOperation<TEntity, TValueObject, TRepositoryKey>(
-                    rootEntity,
-                    () => valueObject
-                );
+                var addPhone = new AddLinkedValueObjectCommandOperation<TEntity, TValueObject, TRepositoryKey>(rootEntity, valueObject);
 
                 aggregate.Enqueue(addPhone);
             }

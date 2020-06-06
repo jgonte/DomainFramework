@@ -13,7 +13,7 @@ namespace ClassesWithStudents.ClassBoundedContext
 
         public DateTime StartedDateTime { get; set; }
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
             ClassId.ValidateNotZero(result, nameof(ClassId));
 

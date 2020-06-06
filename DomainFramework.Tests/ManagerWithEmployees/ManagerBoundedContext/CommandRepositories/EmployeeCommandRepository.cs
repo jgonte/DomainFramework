@@ -28,10 +28,15 @@ namespace ManagerWithEmployees.ManagerBoundedContext
                 {
                     var dependencies = Dependencies();
 
-                    var e = (Manager)dependencies.Single().Entity;
+                    var managerDependency = (Manager)dependencies?.SingleOrDefault()?.Entity;
+
+                    if (managerDependency != null)
+                    {
+                        entity.SupervisorId = managerDependency.Id;
+                    }
 
                     cmd.Parameters(
-                        p => p.Name("supervisorId").Value(e.Id)
+                        p => p.Name("supervisorId").Value(entity.SupervisorId)
                     );
                 })
                 .Instance(entity)
@@ -52,7 +57,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
             await ((SingleQuery<Employee>)command).ExecuteAsync();
         }
 
-        protected override Command CreateUpdateCommand(Employee entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(Employee entity, IAuthenticatedUser user, string selector)
         {
             if (user != null)
             {
@@ -85,7 +90,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCommand(Employee entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(Employee entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()

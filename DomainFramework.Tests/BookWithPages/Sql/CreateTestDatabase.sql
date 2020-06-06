@@ -46,7 +46,7 @@ CREATE TABLE [BookWithPages].[BookBoundedContext].[Page]
     [CreatedDateTime] DATETIME NOT NULL DEFAULT GETDATE(),
     [UpdatedBy] INT,
     [UpdatedDateTime] DATETIME,
-    [BookId] INT NOT NULL
+    [BookId] INT
     CONSTRAINT Page_PK PRIMARY KEY ([PageId])
 );
 GO
@@ -63,16 +63,6 @@ CREATE INDEX [Book_Pages_FK_IX]
     (
         [BookId]
     );
-GO
-
-CREATE PROCEDURE [BookBoundedContext].[pBook_DeletePages]
-    @bookId INT
-AS
-BEGIN
-    DELETE FROM [BookWithPages].[BookBoundedContext].[Page]
-    WHERE [BookId] = @bookId;
-
-END;
 GO
 
 CREATE PROCEDURE [BookBoundedContext].[pBook_Delete]
@@ -135,7 +125,7 @@ CREATE PROCEDURE [BookBoundedContext].[pBook_Update]
     @datePublished DATE,
     @publisherId UNIQUEIDENTIFIER,
     @isHardCopy BIT,
-    @updatedBy INT
+    @updatedBy INT = NULL
 AS
 BEGIN
     UPDATE [BookWithPages].[BookBoundedContext].[Book]
@@ -148,6 +138,80 @@ BEGIN
         [UpdatedBy] = @updatedBy,
         [UpdatedDateTime] = GETDATE()
     WHERE [BookId] = @bookId;
+
+END;
+GO
+
+CREATE PROCEDURE [BookBoundedContext].[pBook_UnlinkPages]
+    @bookId INT
+AS
+BEGIN
+    UPDATE [BookWithPages].[BookBoundedContext].[Page]
+    SET
+        [BookId] = NULL
+    WHERE [BookId] = @bookId;
+
+END;
+GO
+
+CREATE PROCEDURE [BookBoundedContext].[pPage_Delete]
+    @pageId INT
+AS
+BEGIN
+    DELETE FROM [BookWithPages].[BookBoundedContext].[Page]
+    WHERE [PageId] = @pageId;
+
+END;
+GO
+
+CREATE PROCEDURE [BookBoundedContext].[pPage_Insert]
+    @index INT,
+    @createdBy INT,
+    @bookId INT = NULL
+AS
+BEGIN
+    DECLARE @pageOutputData TABLE
+    (
+        [PageId] INT
+    );
+
+    INSERT INTO [BookWithPages].[BookBoundedContext].[Page]
+    (
+        [Index],
+        [CreatedBy],
+        [BookId]
+    )
+    OUTPUT
+        INSERTED.[PageId]
+        INTO @pageOutputData
+    VALUES
+    (
+        @index,
+        @createdBy,
+        @bookId
+    );
+
+    SELECT
+        [PageId]
+    FROM @pageOutputData;
+
+END;
+GO
+
+CREATE PROCEDURE [BookBoundedContext].[pPage_Update]
+    @pageId INT,
+    @index INT,
+    @updatedBy INT = NULL,
+    @bookId INT = NULL
+AS
+BEGIN
+    UPDATE [BookWithPages].[BookBoundedContext].[Page]
+    SET
+        [Index] = @index,
+        [UpdatedBy] = @updatedBy,
+        [BookId] = @bookId,
+        [UpdatedDateTime] = GETDATE()
+    WHERE [PageId] = @pageId;
 
 END;
 GO
@@ -211,25 +275,6 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [BookBoundedContext].[pGet_Book_For_Page]
-    @pageId INT
-AS
-BEGIN
-    SELECT
-        b.[BookId] AS "Id",
-        b.[Title] AS "Title",
-        b.[Category] AS "Category",
-        b.[DatePublished] AS "DatePublished",
-        b.[PublisherId] AS "PublisherId",
-        b.[IsHardCopy] AS "IsHardCopy"
-    FROM [BookWithPages].[BookBoundedContext].[Book] b
-    INNER JOIN [BookWithPages].[BookBoundedContext].[Page] p
-        ON b.[BookId] = p.[BookId]
-    WHERE p.[PageId] = @pageId;
-
-END;
-GO
-
 CREATE PROCEDURE [BookBoundedContext].[pBook_GetById]
     @bookId INT
 AS
@@ -247,64 +292,21 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [BookBoundedContext].[pPage_Delete]
+CREATE PROCEDURE [BookBoundedContext].[pPage_GetBook]
     @pageId INT
 AS
 BEGIN
-    DELETE FROM [BookWithPages].[BookBoundedContext].[Page]
-    WHERE [PageId] = @pageId;
-
-END;
-GO
-
-CREATE PROCEDURE [BookBoundedContext].[pPage_Insert]
-    @index INT,
-    @createdBy INT,
-    @bookId INT
-AS
-BEGIN
-    DECLARE @pageOutputData TABLE
-    (
-        [PageId] INT
-    );
-
-    INSERT INTO [BookWithPages].[BookBoundedContext].[Page]
-    (
-        [Index],
-        [CreatedBy],
-        [BookId]
-    )
-    OUTPUT
-        INSERTED.[PageId]
-        INTO @pageOutputData
-    VALUES
-    (
-        @index,
-        @createdBy,
-        @bookId
-    );
-
     SELECT
-        [PageId]
-    FROM @pageOutputData;
-
-END;
-GO
-
-CREATE PROCEDURE [BookBoundedContext].[pPage_Update]
-    @pageId INT,
-    @index INT,
-    @updatedBy INT,
-    @bookId INT
-AS
-BEGIN
-    UPDATE [BookWithPages].[BookBoundedContext].[Page]
-    SET
-        [Index] = @index,
-        [UpdatedBy] = @updatedBy,
-        [BookId] = @bookId,
-        [UpdatedDateTime] = GETDATE()
-    WHERE [PageId] = @pageId;
+        b.[BookId] AS "Id",
+        b.[Title] AS "Title",
+        b.[Category] AS "Category",
+        b.[DatePublished] AS "DatePublished",
+        b.[PublisherId] AS "PublisherId",
+        b.[IsHardCopy] AS "IsHardCopy"
+    FROM [BookWithPages].[BookBoundedContext].[Book] b
+    INNER JOIN [BookWithPages].[BookBoundedContext].[Page] p
+        ON b.[BookId] = p.[BookId]
+    WHERE p.[PageId] = @pageId;
 
 END;
 GO
@@ -345,20 +347,6 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [BookBoundedContext].[pGetAll_Pages_For_Book]
-    @bookId INT
-AS
-BEGIN
-    SELECT
-        p.[PageId] AS "Id",
-        p.[Index] AS "Index",
-        p.[BookId] AS "BookId"
-    FROM [BookWithPages].[BookBoundedContext].[Page] p
-    WHERE p.[BookId] = @bookId;
-
-END;
-GO
-
 CREATE PROCEDURE [BookBoundedContext].[pPage_GetById]
     @pageId INT
 AS
@@ -369,6 +357,20 @@ BEGIN
         p.[BookId] AS "BookId"
     FROM [BookWithPages].[BookBoundedContext].[Page] p
     WHERE p.[PageId] = @pageId;
+
+END;
+GO
+
+CREATE PROCEDURE [BookBoundedContext].[pBook_GetAllPages]
+    @bookId INT
+AS
+BEGIN
+    SELECT
+        p.[PageId] AS "Id",
+        p.[Index] AS "Index",
+        p.[BookId] AS "BookId"
+    FROM [BookWithPages].[BookBoundedContext].[Page] p
+    WHERE p.[BookId] = @bookId;
 
 END;
 GO
@@ -465,7 +467,6 @@ BEGIN
 	EXECUTE sp_executesql @sqlCommand, @paramDefinition, @cnt = @count OUTPUT
 
 END;
-
 GO
 
 INSERT INTO [BookWithPages].[BookBoundedContext].[Book]

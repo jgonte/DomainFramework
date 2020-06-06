@@ -7,13 +7,13 @@ namespace BookWithPages.BookBoundedContext
 {
     public class BookAddPagesInputDto : IInputDataTransferObject
     {
-        public int Id { get; set; }
+        public int BookId { get; set; }
 
-        public List<AddPageInputDto> Pages { get; set; } = new List<AddPageInputDto>();
+        public List<SavePageInputDto> Pages { get; set; } = new List<SavePageInputDto>();
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
-            Id.ValidateNotZero(result, nameof(Id));
+            BookId.ValidateNotZero(result, nameof(BookId));
 
             foreach (var page in Pages)
             {

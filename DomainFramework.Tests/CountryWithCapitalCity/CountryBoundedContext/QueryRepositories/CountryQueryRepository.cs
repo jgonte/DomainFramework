@@ -95,7 +95,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             var result = Query<Country>
                 .Single()
                 .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
-                .StoredProcedure("[CountryBoundedContext].[pGet_Country_For_CapitalCity]")
+                .StoredProcedure("[CountryBoundedContext].[pCapitalCity_GetCountry]")
                 .Parameters(
                     p => p.Name("capitalCityId").Value(capitalCityId.Value)
                 )
@@ -109,7 +109,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             var result = await Query<Country>
                 .Single()
                 .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
-                .StoredProcedure("[CountryBoundedContext].[pGet_Country_For_CapitalCity]")
+                .StoredProcedure("[CountryBoundedContext].[pCapitalCity_GetCountry]")
                 .Parameters(
                     p => p.Name("capitalCityId").Value(capitalCityId.Value)
                 )

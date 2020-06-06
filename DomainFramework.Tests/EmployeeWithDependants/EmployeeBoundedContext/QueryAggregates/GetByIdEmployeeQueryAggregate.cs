@@ -8,13 +8,13 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
 {
     public class GetByIdEmployeeQueryAggregate : GetByIdQueryAggregate<Employee, int?, EmployeeOutputDto>
     {
-        private GetByIdEmployeeQueryAggregate _getByIdEmployeeQueryAggregate;
+        public GetAllLinkedAggregateQueryCollectionOperation<int?, Person, PersonOutputDto> GetAllDependantsLinkedAggregateQueryOperation { get; set; }
 
-        public GetCollectionLinkedEntityQueryOperation<Person> GetDependantsQueryOperation { get; }
+        public GetByIdEmployeeQueryAggregate() : this(null)
+        {
+        }
 
-        public IEnumerable<Person> Dependants => GetDependantsQueryOperation.LinkedEntities;
-
-        public GetByIdEmployeeQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(EmployeeWithDependantsConnectionClass.GetConnectionName()))
+        public GetByIdEmployeeQueryAggregate(HashSet<(string, IEntity)> processedEntities = null) : base(new DomainFramework.DataAccess.RepositoryContext(EmployeeWithDependantsConnectionClass.GetConnectionName()), processedEntities)
         {
             var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
@@ -22,111 +22,60 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
 
             PersonQueryRepository.Register(context);
 
-            GetDependantsQueryOperation = new GetCollectionLinkedEntityQueryOperation<Person>
+            GetAllDependantsLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Person, PersonOutputDto>
             {
-                GetLinkedEntities = (repository, entity, user) => ((PersonQueryRepository)repository).GetAllDependantsForEmployee(RootEntity.Id).ToList(),
-                GetLinkedEntitiesAsync = async (repository, entity, user) =>
+                GetAllLinkedEntities = (repository, entity, user) => ((PersonQueryRepository)repository).GetAllDependantsForEmployee(RootEntity.Id).ToList(),
+                GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
                 {
                     var entities = await ((PersonQueryRepository)repository).GetAllDependantsForEmployeeAsync(RootEntity.Id);
 
                     return entities.ToList();
-                }
-            };
-
-            QueryOperations.Enqueue(GetDependantsQueryOperation);
-        }
-
-        public List<PersonOutputDto> GetDependantsDtos()
-        {
-            if (Dependants?.Any() == true)
-            {
-                var dependants = new List<PersonOutputDto>();
-
-                foreach (var person in Dependants)
+                },
+                CreateLinkedQueryAggregate = entity => 
                 {
-                    if (person is Employee)
+                    if (entity is Employee)
                     {
-                        var employee = (Employee)person;
-
-                        var dto = new EmployeeOutputDto
+                        return new GetByIdEmployeeQueryAggregate(new HashSet<(string, IEntity)>
                         {
-                            Id = employee.Id.Value,
-                            HireDate = employee.HireDate,
-                            Name = employee.Name,
-                            ProviderEmployeeId = employee.ProviderEmployeeId,
-                            CellPhone = new PhoneNumberOutputDto
-                            {
-                                AreaCode = employee.CellPhone.AreaCode,
-                                Exchange = employee.CellPhone.Exchange,
-                                Number = employee.CellPhone.Number
-                            }
-                        };
-
-                        if (_getByIdEmployeeQueryAggregate == null)
-                        {
-                            _getByIdEmployeeQueryAggregate = new GetByIdEmployeeQueryAggregate();
-                        }
-
-                        if (_getByIdEmployeeQueryAggregate.RootEntity == null)
-                        {
-                            _getByIdEmployeeQueryAggregate.RootEntity = employee;
-
-                            _getByIdEmployeeQueryAggregate.LoadLinks();
-
-                            dto.Dependants = _getByIdEmployeeQueryAggregate.GetDependantsDtos();
-
-                            _getByIdEmployeeQueryAggregate.RootEntity = null;
-                        }
-
-                        dependants.Add(dto);
+                            ("Dependants", entity)
+                        });
+                    }
+                    else if (entity is Person)
+                    {
+                        return new GetByIdPersonQueryAggregate();
                     }
                     else
                     {
-                        var dto = new PersonOutputDto
-                        {
-                            Id = person.Id.Value,
-                            Name = person.Name,
-                            ProviderEmployeeId = person.ProviderEmployeeId,
-                            CellPhone = new PhoneNumberOutputDto
-                            {
-                                AreaCode = person.CellPhone.AreaCode,
-                                Exchange = person.CellPhone.Exchange,
-                                Number = person.CellPhone.Number
-                            }
-                        };
-
-                        dependants.Add(dto);
+                        throw new InvalidOperationException();
                     }
                 }
-
-                return dependants;
-            }
-
-            return null;
-        }
-
-        public PhoneNumberOutputDto GetCellPhoneDto(Person person) => 
-            new PhoneNumberOutputDto
-            {
-                AreaCode = person.CellPhone.AreaCode,
-                Exchange = person.CellPhone.Exchange,
-                Number = person.CellPhone.Number
             };
 
-        public override void PopulateDto(Employee entity)
-        {
-            OutputDto.Id = entity.Id.Value;
-
-            OutputDto.HireDate = entity.HireDate;
-
-            OutputDto.Name = entity.Name;
-
-            OutputDto.ProviderEmployeeId = entity.ProviderEmployeeId;
-
-            OutputDto.CellPhone = GetCellPhoneDto(entity);
-
-            OutputDto.Dependants = GetDependantsDtos();
+            QueryOperations.Enqueue(GetAllDependantsLinkedAggregateQueryOperation);
         }
+
+        public override void PopulateDto()
+        {
+            OutputDto.Id = RootEntity.Id.Value;
+
+            OutputDto.HireDate = RootEntity.HireDate;
+
+            OutputDto.Name = RootEntity.Name;
+
+            OutputDto.ProviderEmployeeId = RootEntity.ProviderEmployeeId;
+
+            OutputDto.CellPhone = GetCellPhoneDto();
+
+            OutputDto.Dependants = GetAllDependantsLinkedAggregateQueryOperation.OutputDtos;
+        }
+
+        public PhoneNumberOutputDto GetCellPhoneDto() => 
+            new PhoneNumberOutputDto
+            {
+                AreaCode = RootEntity.CellPhone.AreaCode,
+                Exchange = RootEntity.CellPhone.Exchange,
+                Number = RootEntity.CellPhone.Number
+            };
 
     }
 }

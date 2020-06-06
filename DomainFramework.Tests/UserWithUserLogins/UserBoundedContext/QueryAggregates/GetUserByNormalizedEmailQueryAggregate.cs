@@ -8,7 +8,7 @@ namespace UserWithUserLogins.UserBoundedContext
 {
     public class GetUserByNormalizedEmailQueryAggregate : QueryAggregate<User, UserOutputDto>
     {
-        public SetCollectionLinkedValueObjectQueryOperation<User, User_UserLogins_QueryRepository.RepositoryKey> UserLogins { get; private set; }
+        public GetCollectionLinkedValueObjectQueryOperation<User, UserLogin, User_UserLogins_QueryRepository.RepositoryKey> GetUserLoginsOperation { get; private set; }
 
         public GetUserByNormalizedEmailQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(UserWithUserLoginsConnectionClass.GetConnectionName()))
         {
@@ -18,20 +18,18 @@ namespace UserWithUserLogins.UserBoundedContext
 
             User_UserLogins_QueryRepository.Register(context);
 
-            UserLogins = new SetCollectionLinkedValueObjectQueryOperation<User, User_UserLogins_QueryRepository.RepositoryKey>
+            GetUserLoginsOperation = new GetCollectionLinkedValueObjectQueryOperation<User, UserLogin, User_UserLogins_QueryRepository.RepositoryKey>
             {
-                SetLinkedValueObjects = (repository, entity, user) => entity.UserLogins = ((User_UserLogins_QueryRepository)repository)
-                    .GetAll(RootEntity.Id)
-                    .ToList(),
-                SetLinkedValueObjectsAsync = async (repository, entity, user) =>
+                GetLinkedValueObjects = (repository, entity, user) => ((User_UserLogins_QueryRepository)repository).GetAll(RootEntity.Id).ToList(),
+                GetLinkedValueObjectsAsync = async (repository, entity, user) =>
                 {
                     var items = await ((User_UserLogins_QueryRepository)repository).GetAllAsync(RootEntity.Id);
 
-                    entity.UserLogins = items.ToList();
+                    return items.ToList();
                 }
             };
 
-            QueryOperations.Enqueue(UserLogins);
+            QueryOperations.Enqueue(GetUserLoginsOperation);
         }
 
         public UserOutputDto Get(string email)
@@ -47,7 +45,7 @@ namespace UserWithUserLogins.UserBoundedContext
 
             LoadLinks(null);
 
-            PopulateDto(RootEntity);
+            PopulateDto();
 
             return OutputDto;
         }
@@ -65,32 +63,32 @@ namespace UserWithUserLogins.UserBoundedContext
 
             await LoadLinksAsync(null);
 
-            PopulateDto(RootEntity);
+            PopulateDto();
 
             return OutputDto;
         }
 
-        public List<UserLoginOutputDto> GetUserLoginsDtos(User user)
+        public override void PopulateDto()
         {
-            return user
-                .UserLogins
+            OutputDto.Id = RootEntity.Id.Value;
+
+            OutputDto.UserName = RootEntity.UserName;
+
+            OutputDto.Email = RootEntity.Email;
+
+            OutputDto.UserLogins = GetUserLoginsDtos();
+        }
+
+        public List<UserLoginOutputDto> GetUserLoginsDtos()
+        {
+            return GetUserLoginsOperation
+                .LinkedValueObjects
                 .Select(vo => new UserLoginOutputDto
                 {
                     Provider = vo.Provider,
                     UserKey = vo.UserKey
                 })
                 .ToList();
-        }
-
-        public override void PopulateDto(User entity)
-        {
-            OutputDto.Id = entity.Id.Value;
-
-            OutputDto.UserName = entity.UserName;
-
-            OutputDto.Email = entity.Email;
-
-            OutputDto.UserLogins = GetUserLoginsDtos(entity);
         }
 
     }

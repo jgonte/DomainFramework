@@ -45,7 +45,7 @@ namespace UserWithUserLogins.UserBoundedContext
             await ((SingleQuery<User>)command).ExecuteAsync();
         }
 
-        protected override Command CreateUpdateCommand(User entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(User entity, IAuthenticatedUser user, string selector)
         {
             if (user != null)
             {
@@ -80,7 +80,7 @@ namespace UserWithUserLogins.UserBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCommand(User entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(User entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -105,7 +105,7 @@ namespace UserWithUserLogins.UserBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCollectionCommand(User entity, IAuthenticatedUser user, string selector)
+        protected override Command CreateDeleteLinksCommand(User entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -116,14 +116,14 @@ namespace UserWithUserLogins.UserBoundedContext
                 );
         }
 
-        protected override bool HandleDeleteCollection(Command command)
+        protected override bool HandleDeleteLinks(Command command)
         {
             var result = ((NonQueryCommand)command).Execute();
 
             return result.AffectedRows > 0;
         }
 
-        protected async override Task<bool> HandleDeleteCollectionAsync(Command command)
+        protected async override Task<bool> HandleDeleteLinksAsync(Command command)
         {
             var result = await ((NonQueryCommand)command).ExecuteAsync();
 

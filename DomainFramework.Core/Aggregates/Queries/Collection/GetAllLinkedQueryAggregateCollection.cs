@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace DomainFramework.Core
 {
     public class GetAllLinkedQueryAggregateCollection<TKey, TEntity, TOutputDto, TAggregate> : QueryAggregateCollection<TEntity, TOutputDto, TAggregate>
-        where TAggregate : IQueryAggregate<TEntity, TOutputDto>, new()
+        where TAggregate : IQueryAggregate, new()
         where TEntity : IEntity
         where TOutputDto : IOutputDataTransferObject, new()
     {
@@ -40,12 +40,12 @@ namespace DomainFramework.Core
 
                 aggregate.LoadLinks();
 
-                aggregate.PopulateDto((TEntity)entity);
+                aggregate.PopulateDto();
 
                 ((List<TAggregate>)Aggregates).Add(aggregate);
             }
 
-            return Aggregates.Select(a => a.OutputDto);
+            return Aggregates.Select(a => (TOutputDto)a.OutputDto);
         }
 
         public async Task<IEnumerable<TOutputDto>> GetAllAsync(TKey id, IAuthenticatedUser user)
@@ -70,14 +70,14 @@ namespace DomainFramework.Core
                     aggregate.LoadLinksAsync()
                 );
 
-                aggregate.PopulateDto((TEntity)entity);
+                aggregate.PopulateDto();
 
                 ((List<TAggregate>)Aggregates).Add(aggregate);
             }
 
             await Task.WhenAll(tasks);
 
-            return Aggregates.Select(a => a.OutputDto);
+            return Aggregates.Select(a => (TOutputDto)a.OutputDto);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace ClassesWithStudents.ClassBoundedContext
 
         public string Name { get; set; }
 
-        public List<StudentOutputDto> Students { get; set; } = new List<StudentOutputDto>();
+        public IEnumerable<StudentOutputDto> Students { get; set; }
 
     }
 }

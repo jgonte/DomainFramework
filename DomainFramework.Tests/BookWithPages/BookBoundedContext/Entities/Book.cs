@@ -14,6 +14,9 @@ namespace BookWithPages.BookBoundedContext
             Romantic
         }
 
+        /// <summary>
+        /// The title of the book
+        /// </summary>
         public string Title { get; set; }
 
         /// <summary>

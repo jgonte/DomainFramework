@@ -5,7 +5,7 @@ namespace DomainFramework.Core
     public abstract class QueryAggregateCollection<TEntity, TOutputDto, TAggregate> : IQueryAggregateCollection<TEntity, TAggregate>
         where TEntity : IEntity
         where TOutputDto : IOutputDataTransferObject, new()
-        where TAggregate : IQueryAggregate<TEntity, TOutputDto>, new()       
+        where TAggregate : IQueryAggregate, new()       
     {
         public IRepositoryContext RepositoryContext { get; set; }
 

@@ -18,14 +18,6 @@ namespace UserWithUserLogins.UserBoundedContext
                 .StoredProcedure("[UserBoundedContext].[pUser_Get]")
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
-                .OnAfterCommandExecuted(cmd =>
-                {
-                    var query = (CollectionQuery<User>)cmd;
-
-                    foreach (var entity in query.Data)
-                    {
-                    }
-                })
                 .Execute();
 
             var count = (string)result.GetParameter("count").Value;
@@ -41,14 +33,6 @@ namespace UserWithUserLogins.UserBoundedContext
                 .StoredProcedure("[UserBoundedContext].[pUser_Get]")
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
-                .OnAfterCommandExecutedAsync(async cmd =>
-                {
-                    var query = (CollectionQuery<User>)cmd;
-
-                    foreach (var entity in query.Data)
-                    {
-                    }
-                })
                 .ExecuteAsync();
 
             var count = (string)result.GetParameter("count").Value;
@@ -62,14 +46,6 @@ namespace UserWithUserLogins.UserBoundedContext
                 .Collection()
                 .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
                 .StoredProcedure("[UserBoundedContext].[pUser_GetAll]")
-                .OnAfterCommandExecuted(cmd =>
-                {
-                    var query = (CollectionQuery<User>)cmd;
-
-                    foreach (var entity in query.Data)
-                    {
-                    }
-                })
                 .Execute();
 
             return result.Data;
@@ -81,14 +57,6 @@ namespace UserWithUserLogins.UserBoundedContext
                 .Collection()
                 .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
                 .StoredProcedure("[UserBoundedContext].[pUser_GetAll]")
-                .OnAfterCommandExecutedAsync(async cmd =>
-                {
-                    var query = (CollectionQuery<User>)cmd;
-
-                    foreach (var entity in query.Data)
-                    {
-                    }
-                })
                 .ExecuteAsync();
 
             return result.Data;
@@ -103,17 +71,6 @@ namespace UserWithUserLogins.UserBoundedContext
                 .Parameters(
                     p => p.Name("userId").Value(userId.Value)
                 )
-                .OnAfterCommandExecuted(cmd =>
-                {
-                    var query = (SingleQuery<User>)cmd;
-
-                    var entity = query.Data;
-
-                    if (entity == null)
-                    {
-                        return;
-                    }
-                })
                 .Execute();
 
             return result.Data;
@@ -128,17 +85,34 @@ namespace UserWithUserLogins.UserBoundedContext
                 .Parameters(
                     p => p.Name("userId").Value(userId.Value)
                 )
-                .OnAfterCommandExecutedAsync(async cmd =>
-                {
-                    var query = (SingleQuery<User>)cmd;
+                .ExecuteAsync();
 
-                    var entity = query.Data;
+            return result.Data;
+        }
 
-                    if (entity == null)
-                    {
-                        return;
-                    }
-                })
+        public User GetUserByNormalizedEmail(string email)
+        {
+            var result = Query<User>
+                .Single()
+                .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
+                .StoredProcedure("[UserBoundedContext].[pUser_GetByNormalizedEmail]")
+                .Parameters(
+                    p => p.Name("email").Value(email)
+                )
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<User> GetUserByNormalizedEmailAsync(string email)
+        {
+            var result = await Query<User>
+                .Single()
+                .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
+                .StoredProcedure("[UserBoundedContext].[pUser_GetByNormalizedEmail]")
+                .Parameters(
+                    p => p.Name("email").Value(email)
+                )
                 .ExecuteAsync();
 
             return result.Data;
@@ -154,17 +128,6 @@ namespace UserWithUserLogins.UserBoundedContext
                     p => p.Name("provider").Value(provider),
                     p => p.Name("userKey").Value(userKey)
                 )
-                .OnAfterCommandExecuted(cmd =>
-                {
-                    var query = (SingleQuery<User>)cmd;
-
-                    var entity = query.Data;
-
-                    if (entity == null)
-                    {
-                        return;
-                    }
-                })
                 .Execute();
 
             return result.Data;
@@ -180,67 +143,6 @@ namespace UserWithUserLogins.UserBoundedContext
                     p => p.Name("provider").Value(provider),
                     p => p.Name("userKey").Value(userKey)
                 )
-                .OnAfterCommandExecutedAsync(async cmd =>
-                {
-                    var query = (SingleQuery<User>)cmd;
-
-                    var entity = query.Data;
-
-                    if (entity == null)
-                    {
-                        return;
-                    }
-                })
-                .ExecuteAsync();
-
-            return result.Data;
-        }
-
-        public User GetUserByNormalizedEmail(string email)
-        {
-            var result = Query<User>
-                .Single()
-                .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
-                .StoredProcedure("[UserBoundedContext].[pUser_GetByNormalizedEmail]")
-                .Parameters(
-                    p => p.Name("email").Value(email)
-                )
-                .OnAfterCommandExecuted(cmd =>
-                {
-                    var query = (SingleQuery<User>)cmd;
-
-                    var entity = query.Data;
-
-                    if (entity == null)
-                    {
-                        return;
-                    }
-                })
-                .Execute();
-
-            return result.Data;
-        }
-
-        public async Task<User> GetUserByNormalizedEmailAsync(string email)
-        {
-            var result = await Query<User>
-                .Single()
-                .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
-                .StoredProcedure("[UserBoundedContext].[pUser_GetByNormalizedEmail]")
-                .Parameters(
-                    p => p.Name("email").Value(email)
-                )
-                .OnAfterCommandExecutedAsync(async cmd =>
-                {
-                    var query = (SingleQuery<User>)cmd;
-
-                    var entity = query.Data;
-
-                    if (entity == null)
-                    {
-                        return;
-                    }
-                })
                 .ExecuteAsync();
 
             return result.Data;

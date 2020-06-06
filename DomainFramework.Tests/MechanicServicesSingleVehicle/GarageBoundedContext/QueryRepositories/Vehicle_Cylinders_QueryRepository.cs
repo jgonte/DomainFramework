@@ -12,12 +12,38 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
     {
         public override (int, IEnumerable<Cylinder>) Get(int? vehicleId, CollectionQueryParameters queryParameters)
         {
-            throw new NotImplementedException();
+            var result = Query<Cylinder>
+                .Collection()
+                .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
+                .StoredProcedure("[GarageBoundedContext].[pVehicle_GetCylinders]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(
+                    p => p.Name("vehicleId").Value(vehicleId.Value)
+                )
+                .Execute();
+
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
         public async override Task<(int, IEnumerable<Cylinder>)> GetAsync(int? vehicleId, CollectionQueryParameters queryParameters)
         {
-            throw new NotImplementedException();
+            var result = await Query<Cylinder>
+                .Collection()
+                .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
+                .StoredProcedure("[GarageBoundedContext].[pVehicle_GetCylinders]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(
+                    p => p.Name("vehicleId").Value(vehicleId.Value)
+                )
+                .ExecuteAsync();
+
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
         public override IEnumerable<Cylinder> GetAll(int? vehicleId)
@@ -25,7 +51,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             var result = Query<Cylinder>
                 .Collection()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
-                .StoredProcedure("[GarageBoundedContext].[pGetAll_Cylinders_For_Vehicle]")
+                .StoredProcedure("[GarageBoundedContext].[pVehicle_GetAllCylinders]")
                 .Parameters(
                     p => p.Name("vehicleId").Value(vehicleId.Value)
                 )
@@ -39,7 +65,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             var result = await Query<Cylinder>
                 .Collection()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
-                .StoredProcedure("[GarageBoundedContext].[pGetAll_Cylinders_For_Vehicle]")
+                .StoredProcedure("[GarageBoundedContext].[pVehicle_GetAllCylinders]")
                 .Parameters(
                     p => p.Name("vehicleId").Value(vehicleId.Value)
                 )

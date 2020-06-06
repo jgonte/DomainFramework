@@ -42,7 +42,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             await ((SingleQuery<School>)command).ExecuteAsync();
         }
 
-        protected override Command CreateUpdateCommand(School entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(School entity, IAuthenticatedUser user, string selector)
         {
             if (user != null)
             {
@@ -56,6 +56,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 .Parameters(
                     p => p.Name("schoolId").Value(entity.Id),
                     p => p.Name("isCharter").Value(entity.IsCharter),
+                    p => p.Name("updatedBy").Value(entity.UpdatedBy),
                     p => p.Name("updatedBy").Value(entity.UpdatedBy)
                 );
         }
@@ -74,7 +75,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCommand(School entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(School entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -99,38 +100,25 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCollectionCommand(School entity, IAuthenticatedUser user, string selector)
+        protected override Command CreateDeleteLinksCommand(School entity, IAuthenticatedUser user, string selector)
         {
-            switch (selector)
-            {
-                case "Organization": return Command
-                    .NonQuery()
-                    .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                    .StoredProcedure("[SchoolBoundedContext].[pSchool_DeleteOrganization]")
-                    .Parameters(
-                        p => p.Name("schoolId").Value(entity.Id)
-                    );
-
-                case "Role": return Command
-                    .NonQuery()
-                    .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                    .StoredProcedure("[SchoolBoundedContext].[pSchool_DeleteRole]")
-                    .Parameters(
-                        p => p.Name("schoolId").Value(entity.Id)
-                    );
-
-                default: throw new InvalidOperationException();
-            }
+            return Command
+                .NonQuery()
+                .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
+                .StoredProcedure("[SchoolBoundedContext].[pRole_UnlinkOrganization]")
+                .Parameters(
+                    p => p.Name("roleId").Value(entity.Id)
+                );
         }
 
-        protected override bool HandleDeleteCollection(Command command)
+        protected override bool HandleDeleteLinks(Command command)
         {
             var result = ((NonQueryCommand)command).Execute();
 
             return result.AffectedRows > 0;
         }
 
-        protected async override Task<bool> HandleDeleteCollectionAsync(Command command)
+        protected async override Task<bool> HandleDeleteLinksAsync(Command command)
         {
             var result = await ((NonQueryCommand)command).ExecuteAsync();
 

@@ -32,19 +32,20 @@ namespace UserWithUserLogins.UserBoundedContext
                 UserName = user.UserName,
                 Email = user.Email,
                 NormalizedUserName = user.UserName.ToUpperInvariant(),
-                NormalizedEmail = user.Email.ToUpperInvariant(),
-                UserLogins = user.UserLogins.Select(dto => new UserLogin
+                NormalizedEmail = user.Email.ToUpperInvariant()
+            };
+
+            Enqueue(new InsertEntityCommandOperation<User>(RootEntity, dependencies));
+
+            foreach (var dto in user.UserLogins)
+            {
+                var userLoginValueObject = new UserLogin
                 {
                     Provider = dto.Provider,
                     UserKey = dto.UserKey
-                }).ToList()
-            };
+                };
 
-            Enqueue(new InsertEntityCommandOperation<User>(RootEntity));
-
-            foreach (var userLogin in RootEntity.UserLogins)
-            {
-                Enqueue(new AddLinkedValueObjectCommandOperation<User, UserLogin, User_UserLogins_CommandRepository.RepositoryKey>(RootEntity, () => userLogin));
+                Enqueue(new AddLinkedValueObjectCommandOperation<User, UserLogin, User_UserLogins_CommandRepository.RepositoryKey>(RootEntity, userLoginValueObject));
             }
         }
 

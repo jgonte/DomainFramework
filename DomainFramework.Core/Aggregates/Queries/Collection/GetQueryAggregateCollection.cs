@@ -5,10 +5,14 @@ using System.Threading.Tasks;
 namespace DomainFramework.Core
 {
     public class GetQueryAggregateCollection<TEntity, TOutputDto, TAggregate> : QueryAggregateCollection<TEntity, TOutputDto, TAggregate>
-        where TAggregate : IQueryAggregate<TEntity, TOutputDto>, new()
+        where TAggregate : IQueryAggregate, new()
         where TEntity : IEntity
         where TOutputDto : IOutputDataTransferObject, new()
     {
+        public GetQueryAggregateCollection() : this(context: null)
+        {
+        }
+
         public GetQueryAggregateCollection(RepositoryContext context) : base(context)
         {
         }
@@ -31,12 +35,12 @@ namespace DomainFramework.Core
 
                 aggregate.LoadLinks();
 
-                aggregate.PopulateDto((TEntity)entity);
+                aggregate.PopulateDto();
 
                 ((List<TAggregate>)Aggregates).Add(aggregate);
             }
 
-            return (count, Aggregates.Select(a => a.OutputDto));
+            return (count, Aggregates.Select(a => (TOutputDto)a.OutputDto));
         }
 
         public async Task<(int, IEnumerable<TOutputDto>)> GetAsync(CollectionQueryParameters queryParameters, IAuthenticatedUser user)
@@ -61,14 +65,14 @@ namespace DomainFramework.Core
                     aggregate.LoadLinksAsync()
                 );
 
-                aggregate.PopulateDto((TEntity)entity);
+                aggregate.PopulateDto();
 
                 ((List<TAggregate>)Aggregates).Add(aggregate);
             }
 
             await Task.WhenAll(tasks);
 
-            return (count, Aggregates.Select(a => a.OutputDto));
+            return (count, Aggregates.Select(a => (TOutputDto)a.OutputDto));
         }
     }
 }

@@ -8,13 +8,13 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 {
     public class ManagerQueryAggregate : GetByIdQueryAggregate<Manager, int?, ManagerOutputDto>
     {
-        private ManagerQueryAggregate _managerQueryAggregate;
+        public GetAllLinkedAggregateQueryCollectionOperation<int?, Employee, EmployeeOutputDto> GetAllEmployeesLinkedAggregateQueryOperation { get; set; }
 
-        public GetCollectionLinkedEntityQueryOperation<Employee> GetEmployeesQueryOperation { get; }
+        public ManagerQueryAggregate() : this(null)
+        {
+        }
 
-        public IEnumerable<Employee> Employees => GetEmployeesQueryOperation.LinkedEntities;
-
-        public ManagerQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(ManagerWithEmployeesConnectionClass.GetConnectionName()))
+        public ManagerQueryAggregate(HashSet<(string, IEntity)> processedEntities = null) : base(new DomainFramework.DataAccess.RepositoryContext(ManagerWithEmployeesConnectionClass.GetConnectionName()), processedEntities)
         {
             var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
@@ -22,88 +22,49 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
             EmployeeQueryRepository.Register(context);
 
-            GetEmployeesQueryOperation = new GetCollectionLinkedEntityQueryOperation<Employee>
+            GetAllEmployeesLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Employee, EmployeeOutputDto>
             {
-                GetLinkedEntities = (repository, entity, user) => ((EmployeeQueryRepository)repository).GetAllEmployeesForManager(RootEntity.Id).ToList(),
-                GetLinkedEntitiesAsync = async (repository, entity, user) =>
+                GetAllLinkedEntities = (repository, entity, user) => ((EmployeeQueryRepository)repository).GetAllEmployeesForManager(RootEntity.Id).ToList(),
+                GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
                 {
                     var entities = await ((EmployeeQueryRepository)repository).GetAllEmployeesForManagerAsync(RootEntity.Id);
 
                     return entities.ToList();
-                }
-            };
-
-            QueryOperations.Enqueue(GetEmployeesQueryOperation);
-        }
-
-        public List<EmployeeOutputDto> GetEmployeesDtos()
-        {
-            if (Employees?.Any() == true)
-            {
-                var employees = new List<EmployeeOutputDto>();
-
-                foreach (var employee in Employees)
+                },
+                CreateLinkedQueryAggregate = entity => 
                 {
-                    if (employee is Manager)
+                    if (entity is Manager)
                     {
-                        var manager = (Manager)employee;
-
-                        var dto = new ManagerOutputDto
+                        return new ManagerQueryAggregate(new HashSet<(string, IEntity)>
                         {
-                            Id = manager.Id.Value,
-                            Department = manager.Department,
-                            Name = manager.Name,
-                            SupervisorId = manager.SupervisorId
-                        };
-
-                        if (_managerQueryAggregate == null)
-                        {
-                            _managerQueryAggregate = new ManagerQueryAggregate();
-                        }
-
-                        if (_managerQueryAggregate.RootEntity == null)
-                        {
-                            _managerQueryAggregate.RootEntity = manager;
-
-                            _managerQueryAggregate.LoadLinks();
-
-                            dto.Employees = _managerQueryAggregate.GetEmployeesDtos();
-
-                            _managerQueryAggregate.RootEntity = null;
-                        }
-
-                        employees.Add(dto);
+                            ("Employees", entity)
+                        });
+                    }
+                    else if (entity is Employee)
+                    {
+                        return new GetEmployeeByIdAggregate();
                     }
                     else
                     {
-                        var dto = new EmployeeOutputDto
-                        {
-                            Id = employee.Id.Value,
-                            Name = employee.Name,
-                            SupervisorId = employee.SupervisorId
-                        };
-
-                        employees.Add(dto);
+                        throw new InvalidOperationException();
                     }
                 }
+            };
 
-                return employees;
-            }
-
-            return null;
+            QueryOperations.Enqueue(GetAllEmployeesLinkedAggregateQueryOperation);
         }
 
-        public override void PopulateDto(Manager entity)
+        public override void PopulateDto()
         {
-            OutputDto.Id = entity.Id.Value;
+            OutputDto.Id = RootEntity.Id.Value;
 
-            OutputDto.Department = entity.Department;
+            OutputDto.Department = RootEntity.Department;
 
-            OutputDto.Name = entity.Name;
+            OutputDto.Name = RootEntity.Name;
 
-            OutputDto.SupervisorId = entity.SupervisorId;
+            OutputDto.SupervisorId = RootEntity.SupervisorId;
 
-            OutputDto.Employees = GetEmployeesDtos();
+            OutputDto.Employees = GetAllEmployeesLinkedAggregateQueryOperation.OutputDtos;
         }
 
     }

@@ -8,13 +8,13 @@ namespace UserWithUserLogins.UserBoundedContext
 {
     public class UserAddUserLoginInputDto : IInputDataTransferObject
     {
-        public int Id { get; set; }
+        public int UserId { get; set; }
 
-        public List<AddUserLoginInputDto> UserLogins { get; set; } = new List<AddUserLoginInputDto>();
+        public List<UserLoginInputDto> UserLogins { get; set; } = new List<UserLoginInputDto>();
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
-            Id.ValidateNotZero(result, nameof(Id));
+            UserId.ValidateNotZero(result, nameof(UserId));
 
             var userLoginsCount = (uint)UserLogins.Where(item => item != null).Count();
 

@@ -90,6 +90,44 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
             return result.Data;
         }
 
+        public IEnumerable<Person> GetAllDependantsForEmployee(int? employeeId)
+        {
+            var result = Query<Person>
+                .Collection()
+                .Connection(EmployeeWithDependantsConnectionClass.GetConnectionName())
+                .StoredProcedure("[EmployeeBoundedContext].[pEmployee_GetAllDependants]")
+                .Parameters(
+                    p => p.Name("employeeId").Value(employeeId.Value)
+                )
+                .MapTypes(
+                    7,
+                    tm => tm.Type(typeof(Employee)).Index(1),
+                    tm => tm.Type(typeof(Person)).Index(2)
+                )
+                .Execute();
+
+            return result.Data;
+        }
+
+        public async Task<IEnumerable<Person>> GetAllDependantsForEmployeeAsync(int? employeeId)
+        {
+            var result = await Query<Person>
+                .Collection()
+                .Connection(EmployeeWithDependantsConnectionClass.GetConnectionName())
+                .StoredProcedure("[EmployeeBoundedContext].[pEmployee_GetAllDependants]")
+                .Parameters(
+                    p => p.Name("employeeId").Value(employeeId.Value)
+                )
+                .MapTypes(
+                    7,
+                    tm => tm.Type(typeof(Employee)).Index(1),
+                    tm => tm.Type(typeof(Person)).Index(2)
+                )
+                .ExecuteAsync();
+
+            return result.Data;
+        }
+
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)
         {
             context.RegisterQueryRepository<Employee>(new EmployeeQueryRepository());

@@ -9,7 +9,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
     {
         public string Number { get; set; }
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
             Number.ValidateNotEmpty(result, nameof(Number));
 

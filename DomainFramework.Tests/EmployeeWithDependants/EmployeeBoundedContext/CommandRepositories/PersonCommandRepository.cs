@@ -31,10 +31,15 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
                 {
                     var dependencies = Dependencies();
 
-                    var e = (Employee)dependencies.Single().Entity;
+                    var employeeDependency = (Employee)dependencies?.SingleOrDefault()?.Entity;
+
+                    if (employeeDependency != null)
+                    {
+                        entity.ProviderEmployeeId = employeeDependency.Id;
+                    }
 
                     cmd.Parameters(
-                        p => p.Name("providerEmployeeId").Value(e.Id)
+                        p => p.Name("providerEmployeeId").Value(entity.ProviderEmployeeId)
                     );
                 })
                 .Instance(entity)
@@ -55,7 +60,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
             await ((SingleQuery<Person>)command).ExecuteAsync();
         }
 
-        protected override Command CreateUpdateCommand(Person entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(Person entity, IAuthenticatedUser user, string selector)
         {
             if (user != null)
             {
@@ -91,7 +96,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCommand(Person entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(Person entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()

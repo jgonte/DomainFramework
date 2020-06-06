@@ -7,21 +7,21 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
 {
     public class PersonInputDto : IInputDataTransferObject
     {
+        public int? PersonId { get; set; }
+
         public string Name { get; set; }
 
         public int? ProviderEmployeeId { get; set; }
 
         public PhoneNumberInputDto CellPhone { get; set; }
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
             Name.ValidateNotEmpty(result, nameof(Name));
 
             Name.ValidateMaxLength(result, nameof(Name), 50);
 
-            CellPhone.ValidateNotNull(result, nameof(CellPhone));
-
-            CellPhone?.Validate(result);
+            CellPhone.Validate(result);
         }
 
     }

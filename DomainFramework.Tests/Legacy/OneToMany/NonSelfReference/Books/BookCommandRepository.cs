@@ -20,7 +20,7 @@ namespace DomainFramework.Tests
                 );
         }
 
-        protected override Command CreateUpdateCommand(BookEntity entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(BookEntity entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -32,7 +32,7 @@ namespace DomainFramework.Tests
                 );
         }
 
-        protected override Command CreateDeleteCommand(BookEntity entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(BookEntity entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -62,7 +62,7 @@ namespace DomainFramework.Tests
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCollectionCommand(BookEntity entity, IAuthenticatedUser user, string selector)
+        protected override Command CreateDeleteLinksCommand(BookEntity entity, IAuthenticatedUser user, string selector)
         {
             switch (selector)
             {
@@ -77,7 +77,7 @@ namespace DomainFramework.Tests
             
         }
 
-        protected override bool HandleDeleteCollection(Command command)
+        protected override bool HandleDeleteLinks(Command command)
         {
             var result = ((NonQueryCommand)command).Execute();
 

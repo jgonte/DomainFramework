@@ -12,9 +12,9 @@ namespace UserWithUserLogins.UserBoundedContext
 
         public string Email { get; set; }
 
-        public List<CreateUserLoginInputDto> UserLogins { get; set; } = new List<CreateUserLoginInputDto>();
+        public List<UserLoginInputDto> UserLogins { get; set; } = new List<UserLoginInputDto>();
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
             UserName.ValidateNotEmpty(result, nameof(UserName));
 

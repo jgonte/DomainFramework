@@ -42,7 +42,7 @@ CREATE TABLE [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle]
     [CreatedDateTime] DATETIME NOT NULL DEFAULT GETDATE(),
     [UpdatedBy] INT,
     [UpdatedDateTime] DATETIME,
-    [MechanicId] INT NOT NULL
+    [MechanicId] INT
     CONSTRAINT Vehicle_PK PRIMARY KEY ([VehicleId])
 );
 GO
@@ -88,7 +88,7 @@ ALTER TABLE [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck]
     ADD CONSTRAINT Truck_Vehicle_IFK FOREIGN KEY ([TruckId])
         REFERENCES [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] ([VehicleId])
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION;
+        ON DELETE CASCADE;
 GO
 
 CREATE INDEX [Truck_Vehicle_IFK_IX]
@@ -102,7 +102,7 @@ ALTER TABLE [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car]
     ADD CONSTRAINT Car_Vehicle_IFK FOREIGN KEY ([CarId])
         REFERENCES [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] ([VehicleId])
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION;
+        ON DELETE CASCADE;
 GO
 
 CREATE INDEX [Car_Vehicle_IFK_IX]
@@ -168,16 +168,6 @@ CREATE INDEX [Car_Doors_FK_IX]
     );
 GO
 
-CREATE PROCEDURE [GarageBoundedContext].[pCar_DeleteDoors]
-    @carId INT
-AS
-BEGIN
-    DELETE FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car_Doors]
-    WHERE [CarId] = @carId;
-
-END;
-GO
-
 CREATE PROCEDURE [GarageBoundedContext].[pCar_Delete]
     @carId INT
 AS
@@ -192,7 +182,7 @@ CREATE PROCEDURE [GarageBoundedContext].[pCar_Insert]
     @passengers INT,
     @model VARCHAR(50),
     @createdBy INT,
-    @mechanicId INT
+    @mechanicId INT = NULL
 AS
 BEGIN
     DECLARE @vehicleId INT;
@@ -244,8 +234,8 @@ CREATE PROCEDURE [GarageBoundedContext].[pCar_Update]
     @carId INT,
     @passengers INT,
     @model VARCHAR(50),
-    @updatedBy INT,
-    @mechanicId INT
+    @updatedBy INT = NULL,
+    @mechanicId INT = NULL
 AS
 BEGIN
     UPDATE [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle]
@@ -260,6 +250,348 @@ BEGIN
     SET
         [Passengers] = @passengers
     WHERE [CarId] = @carId;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pVehicle_AddMechanic]
+    @vehicleId INT,
+    @mechanicId INT = NULL
+AS
+BEGIN
+    UPDATE [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle]
+    SET
+        [MechanicId] = @mechanicId
+    WHERE [VehicleId] = @vehicleId;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pVehicle_LinkMechanic]
+    @vehicleId INT,
+    @mechanicId INT = NULL
+AS
+BEGIN
+    UPDATE [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle]
+    SET
+        [MechanicId] = @mechanicId
+    WHERE [VehicleId] = @vehicleId;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pVehicle_UnlinkMechanic]
+    @vehicleId INT
+AS
+BEGIN
+    UPDATE [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle]
+    SET
+        [MechanicId] = NULL
+    WHERE [VehicleId] = @vehicleId;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pVehicle_AddCylinders]
+    @vehicleId INT,
+    @diameter INT = NULL
+AS
+BEGIN
+    INSERT INTO [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle_Cylinders]
+    (
+        [VehicleId],
+        [Diameter]
+    )
+    VALUES
+    (
+        @vehicleId,
+        @diameter
+    );
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pCar_AddDoors]
+    @carId INT,
+    @number INT = NULL
+AS
+BEGIN
+    INSERT INTO [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car_Doors]
+    (
+        [CarId],
+        [Number]
+    )
+    VALUES
+    (
+        @carId,
+        @number
+    );
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pVehicle_DeleteCylinders]
+    @vehicleId INT
+AS
+BEGIN
+    DELETE FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle_Cylinders]
+    WHERE [VehicleId] = @vehicleId;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pCar_DeleteDoors]
+    @carId INT
+AS
+BEGIN
+    DELETE FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car_Doors]
+    WHERE [CarId] = @carId;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pMechanic_Delete]
+    @mechanicId INT
+AS
+BEGIN
+    DELETE FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Mechanic]
+    WHERE [MechanicId] = @mechanicId;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pMechanic_Insert]
+    @name VARCHAR(50),
+    @createdBy INT
+AS
+BEGIN
+    DECLARE @mechanicOutputData TABLE
+    (
+        [MechanicId] INT
+    );
+
+    INSERT INTO [MechanicServicesSingleVehicle].[GarageBoundedContext].[Mechanic]
+    (
+        [Name],
+        [CreatedBy]
+    )
+    OUTPUT
+        INSERTED.[MechanicId]
+        INTO @mechanicOutputData
+    VALUES
+    (
+        @name,
+        @createdBy
+    );
+
+    SELECT
+        [MechanicId]
+    FROM @mechanicOutputData;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pMechanic_Update]
+    @mechanicId INT,
+    @name VARCHAR(50),
+    @updatedBy INT = NULL
+AS
+BEGIN
+    UPDATE [MechanicServicesSingleVehicle].[GarageBoundedContext].[Mechanic]
+    SET
+        [Name] = @name,
+        [UpdatedBy] = @updatedBy,
+        [UpdatedDateTime] = GETDATE()
+    WHERE [MechanicId] = @mechanicId;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pMechanic_UnlinkVehicle]
+    @mechanicId INT
+AS
+BEGIN
+    UPDATE [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle]
+    SET
+        [MechanicId] = NULL
+    WHERE [MechanicId] = @mechanicId;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pTruck_Delete]
+    @truckId INT
+AS
+BEGIN
+    DELETE FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck]
+    WHERE [TruckId] = @truckId;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pTruck_Insert]
+    @weight INT,
+    @model VARCHAR(50),
+    @createdBy INT,
+    @mechanicId INT = NULL
+AS
+BEGIN
+    DECLARE @vehicleId INT;
+
+    DECLARE @vehicleOutputData TABLE
+    (
+        [VehicleId] INT
+    );
+
+    INSERT INTO [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle]
+    (
+        [Model],
+        [CreatedBy],
+        [MechanicId]
+    )
+    OUTPUT
+        INSERTED.[VehicleId]
+        INTO @vehicleOutputData
+    VALUES
+    (
+        @model,
+        @createdBy,
+        @mechanicId
+    );
+
+    SELECT
+        @vehicleId = [VehicleId]
+    FROM @vehicleOutputData;
+
+    INSERT INTO [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck]
+    (
+        [TruckId],
+        [Weight]
+    )
+    VALUES
+    (
+        @vehicleId,
+        @weight
+    );
+
+    SELECT
+        [VehicleId]
+    FROM @vehicleOutputData;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pTruck_Update]
+    @truckId INT,
+    @weight INT,
+    @model VARCHAR(50),
+    @updatedBy INT = NULL,
+    @mechanicId INT = NULL
+AS
+BEGIN
+    UPDATE [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle]
+    SET
+        [Model] = @model,
+        [UpdatedBy] = @updatedBy,
+        [MechanicId] = @mechanicId,
+        [UpdatedDateTime] = GETDATE()
+    WHERE [VehicleId] = @truckId;
+
+    UPDATE [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck]
+    SET
+        [Weight] = @weight
+    WHERE [TruckId] = @truckId;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pTruck_AddInspections]
+    @truckId INT,
+    @date DATETIME = NULL
+AS
+BEGIN
+    INSERT INTO [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck_Inspections]
+    (
+        [TruckId],
+        [Date]
+    )
+    VALUES
+    (
+        @truckId,
+        @date
+    );
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pTruck_DeleteInspections]
+    @truckId INT
+AS
+BEGIN
+    DELETE FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck_Inspections]
+    WHERE [TruckId] = @truckId;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pVehicle_Delete]
+    @vehicleId INT
+AS
+BEGIN
+    DELETE FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle]
+    WHERE [VehicleId] = @vehicleId;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pVehicle_Insert]
+    @model VARCHAR(50),
+    @createdBy INT,
+    @mechanicId INT = NULL
+AS
+BEGIN
+    DECLARE @vehicleOutputData TABLE
+    (
+        [VehicleId] INT
+    );
+
+    INSERT INTO [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle]
+    (
+        [Model],
+        [CreatedBy],
+        [MechanicId]
+    )
+    OUTPUT
+        INSERTED.[VehicleId]
+        INTO @vehicleOutputData
+    VALUES
+    (
+        @model,
+        @createdBy,
+        @mechanicId
+    );
+
+    SELECT
+        [VehicleId]
+    FROM @vehicleOutputData;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pVehicle_Update]
+    @vehicleId INT,
+    @model VARCHAR(50),
+    @updatedBy INT = NULL,
+    @mechanicId INT = NULL
+AS
+BEGIN
+    UPDATE [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle]
+    SET
+        [Model] = @model,
+        [UpdatedBy] = @updatedBy,
+        [MechanicId] = @mechanicId,
+        [UpdatedDateTime] = GETDATE()
+    WHERE [VehicleId] = @vehicleId;
 
 END;
 GO
@@ -323,69 +655,149 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [GarageBoundedContext].[pMechanic_DeleteVehicle]
+CREATE PROCEDURE [GarageBoundedContext].[pMechanic_GetVehicle]
     @mechanicId INT
 AS
 BEGIN
-    DELETE FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle]
-    WHERE [MechanicId] = @mechanicId;
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pMechanic_Delete]
-    @mechanicId INT
-AS
-BEGIN
-    DELETE FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Mechanic]
-    WHERE [MechanicId] = @mechanicId;
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pMechanic_Insert]
-    @name VARCHAR(50),
-    @createdBy INT
-AS
-BEGIN
-    DECLARE @mechanicOutputData TABLE
-    (
-        [MechanicId] INT
-    );
-
-    INSERT INTO [MechanicServicesSingleVehicle].[GarageBoundedContext].[Mechanic]
-    (
-        [Name],
-        [CreatedBy]
-    )
-    OUTPUT
-        INSERTED.[MechanicId]
-        INTO @mechanicOutputData
-    VALUES
-    (
-        @name,
-        @createdBy
-    );
-
     SELECT
-        [MechanicId]
-    FROM @mechanicOutputData;
+        _q_.[Id] AS "Id",
+        _q_.[Model] AS "Model",
+        _q_.[MechanicId] AS "MechanicId",
+        _q_.[Weight] AS "Weight",
+        _q_.[Passengers] AS "Passengers",
+        _q_.[_EntityType_] AS "_EntityType_"
+    FROM 
+    (
+        SELECT
+            t.[TruckId] AS "Id",
+            v.[Model] AS "Model",
+            v.[MechanicId] AS "MechanicId",
+            t.[Weight] AS "Weight",
+            NULL AS "Passengers",
+            1 AS "_EntityType_"
+        FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck] t
+        INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
+            ON t.[TruckId] = v.[VehicleId]
+        UNION ALL
+        (
+            SELECT
+                c.[CarId] AS "Id",
+                v.[Model] AS "Model",
+                v.[MechanicId] AS "MechanicId",
+                NULL AS "Weight",
+                c.[Passengers] AS "Passengers",
+                2 AS "_EntityType_"
+            FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car] c
+            INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
+                ON c.[CarId] = v.[VehicleId]
+        )
+        UNION ALL
+        (
+            SELECT
+                v.[VehicleId] AS "Id",
+                v.[Model] AS "Model",
+                v.[MechanicId] AS "MechanicId",
+                NULL AS "Weight",
+                NULL AS "Passengers",
+                3 AS "_EntityType_"
+            FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
+            LEFT OUTER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck] t
+                ON t.[TruckId] = v.[VehicleId]
+            LEFT OUTER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car] c
+                ON c.[CarId] = v.[VehicleId]
+            WHERE t.[TruckId] IS NULL
+            AND c.[CarId] IS NULL
+        )
+    ) _q_
+    WHERE _q_.[MechanicId] = @mechanicId;
 
 END;
 GO
 
-CREATE PROCEDURE [GarageBoundedContext].[pMechanic_Update]
-    @mechanicId INT,
-    @name VARCHAR(50),
-    @updatedBy INT
+CREATE PROCEDURE [GarageBoundedContext].[pVehicle_GetCylinders]
+    @vehicleId INT,
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    UPDATE [MechanicServicesSingleVehicle].[GarageBoundedContext].[Mechanic]
-    SET
-        [Name] = @name,
-        [UpdatedBy] = @updatedBy,
-        [UpdatedDateTime] = GETDATE()
-    WHERE [MechanicId] = @mechanicId;
+    IF @$filter IS NULL
+    BEGIN
+        SET @$filter = N'v.[VehicleId] = @vehicleId';
+    END
+    ELSE
+    BEGIN
+        SET @$filter = N'v.[VehicleId] = @vehicleId AND ' + @$filter;
+    END;
+
+    EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'    v.[Diameter] AS "Diameter"',
+        @from = N'[MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle_Cylinders] v',
+        @count = @count OUTPUT
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pCar_GetDoors]
+    @carId INT,
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
+AS
+BEGIN
+    IF @$filter IS NULL
+    BEGIN
+        SET @$filter = N'c.[CarId] = @carId';
+    END
+    ELSE
+    BEGIN
+        SET @$filter = N'c.[CarId] = @carId AND ' + @$filter;
+    END;
+
+    EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'    c.[Number] AS "Number"',
+        @from = N'[MechanicServicesSingleVehicle].[GarageBoundedContext].[Car_Doors] c',
+        @count = @count OUTPUT
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pVehicle_GetAllCylinders]
+    @vehicleId INT
+AS
+BEGIN
+    SELECT
+        v.[Diameter] AS "Diameter"
+    FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle_Cylinders] v
+    WHERE v.[VehicleId] = @vehicleId;
+
+END;
+GO
+
+CREATE PROCEDURE [GarageBoundedContext].[pCar_GetAllDoors]
+    @carId INT
+AS
+BEGIN
+    SELECT
+        c.[Number] AS "Number"
+    FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car_Doors] c
+    WHERE c.[CarId] = @carId;
 
 END;
 GO
@@ -437,7 +849,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [GarageBoundedContext].[pGet_Mechanic_For_Vehicle]
+CREATE PROCEDURE [GarageBoundedContext].[pVehicle_GetMechanic]
     @vehicleId INT
 AS
 BEGIN
@@ -448,102 +860,6 @@ BEGIN
     INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
         ON m.[MechanicId] = v.[MechanicId]
     WHERE v.[VehicleId] = @vehicleId;
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pTruck_DeleteInspections]
-    @truckId INT
-AS
-BEGIN
-    DELETE FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck_Inspections]
-    WHERE [TruckId] = @truckId;
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pTruck_Delete]
-    @truckId INT
-AS
-BEGIN
-    DELETE FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck]
-    WHERE [TruckId] = @truckId;
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pTruck_Insert]
-    @weight INT,
-    @model VARCHAR(50),
-    @createdBy INT,
-    @mechanicId INT
-AS
-BEGIN
-    DECLARE @vehicleId INT;
-
-    DECLARE @vehicleOutputData TABLE
-    (
-        [VehicleId] INT
-    );
-
-    INSERT INTO [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle]
-    (
-        [Model],
-        [CreatedBy],
-        [MechanicId]
-    )
-    OUTPUT
-        INSERTED.[VehicleId]
-        INTO @vehicleOutputData
-    VALUES
-    (
-        @model,
-        @createdBy,
-        @mechanicId
-    );
-
-    SELECT
-        @vehicleId = [VehicleId]
-    FROM @vehicleOutputData;
-
-    INSERT INTO [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck]
-    (
-        [TruckId],
-        [Weight]
-    )
-    VALUES
-    (
-        @vehicleId,
-        @weight
-    );
-
-    SELECT
-        [VehicleId]
-    FROM @vehicleOutputData;
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pTruck_Update]
-    @truckId INT,
-    @weight INT,
-    @model VARCHAR(50),
-    @updatedBy INT,
-    @mechanicId INT
-AS
-BEGIN
-    UPDATE [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle]
-    SET
-        [Model] = @model,
-        [UpdatedBy] = @updatedBy,
-        [MechanicId] = @mechanicId,
-        [UpdatedDateTime] = GETDATE()
-    WHERE [VehicleId] = @truckId;
-
-    UPDATE [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck]
-    SET
-        [Weight] = @weight
-    WHERE [TruckId] = @truckId;
 
 END;
 GO
@@ -607,74 +923,46 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [GarageBoundedContext].[pVehicle_DeleteCylinders]
-    @vehicleId INT
+CREATE PROCEDURE [GarageBoundedContext].[pTruck_GetInspections]
+    @truckId INT,
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    DELETE FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle_Cylinders]
-    WHERE [VehicleId] = @vehicleId;
+    IF @$filter IS NULL
+    BEGIN
+        SET @$filter = N't.[TruckId] = @truckId';
+    END
+    ELSE
+    BEGIN
+        SET @$filter = N't.[TruckId] = @truckId AND ' + @$filter;
+    END;
+
+    EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'    t.[Date] AS "Date"',
+        @from = N'[MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck_Inspections] t',
+        @count = @count OUTPUT
 
 END;
 GO
 
-CREATE PROCEDURE [GarageBoundedContext].[pVehicle_Delete]
-    @vehicleId INT
+CREATE PROCEDURE [GarageBoundedContext].[pTruck_GetAllInspections]
+    @truckId INT
 AS
 BEGIN
-    DELETE FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle]
-    WHERE [VehicleId] = @vehicleId;
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pVehicle_Insert]
-    @model VARCHAR(50),
-    @createdBy INT,
-    @mechanicId INT
-AS
-BEGIN
-    DECLARE @vehicleOutputData TABLE
-    (
-        [VehicleId] INT
-    );
-
-    INSERT INTO [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle]
-    (
-        [Model],
-        [CreatedBy],
-        [MechanicId]
-    )
-    OUTPUT
-        INSERTED.[VehicleId]
-        INTO @vehicleOutputData
-    VALUES
-    (
-        @model,
-        @createdBy,
-        @mechanicId
-    );
-
     SELECT
-        [VehicleId]
-    FROM @vehicleOutputData;
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pVehicle_Update]
-    @vehicleId INT,
-    @model VARCHAR(50),
-    @updatedBy INT,
-    @mechanicId INT
-AS
-BEGIN
-    UPDATE [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle]
-    SET
-        [Model] = @model,
-        [UpdatedBy] = @updatedBy,
-        [MechanicId] = @mechanicId,
-        [UpdatedDateTime] = GETDATE()
-    WHERE [VehicleId] = @vehicleId;
+        t.[Date] AS "Date"
+    FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck_Inspections] t
+    WHERE t.[TruckId] = @truckId;
 
 END;
 GO
@@ -864,191 +1152,6 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE [GarageBoundedContext].[pGet_Vehicle_For_Mechanic]
-    @mechanicId INT
-AS
-BEGIN
-    SELECT
-        _q_.[Id] AS "Id",
-        _q_.[Model] AS "Model",
-        _q_.[MechanicId] AS "MechanicId",
-        _q_.[Weight] AS "Weight",
-        _q_.[Passengers] AS "Passengers",
-        _q_.[_EntityType_] AS "_EntityType_"
-    FROM 
-    (
-        SELECT
-            t.[TruckId] AS "Id",
-            v.[Model] AS "Model",
-            v.[MechanicId] AS "MechanicId",
-            t.[Weight] AS "Weight",
-            NULL AS "Passengers",
-            1 AS "_EntityType_"
-        FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck] t
-        INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
-            ON t.[TruckId] = v.[VehicleId]
-        UNION ALL
-        (
-            SELECT
-                c.[CarId] AS "Id",
-                v.[Model] AS "Model",
-                v.[MechanicId] AS "MechanicId",
-                NULL AS "Weight",
-                c.[Passengers] AS "Passengers",
-                2 AS "_EntityType_"
-            FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car] c
-            INNER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
-                ON c.[CarId] = v.[VehicleId]
-        )
-        UNION ALL
-        (
-            SELECT
-                v.[VehicleId] AS "Id",
-                v.[Model] AS "Model",
-                v.[MechanicId] AS "MechanicId",
-                NULL AS "Weight",
-                NULL AS "Passengers",
-                3 AS "_EntityType_"
-            FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle] v
-            LEFT OUTER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck] t
-                ON t.[TruckId] = v.[VehicleId]
-            LEFT OUTER JOIN [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car] c
-                ON c.[CarId] = v.[VehicleId]
-            WHERE t.[TruckId] IS NULL
-            AND c.[CarId] IS NULL
-        )
-    ) _q_
-    WHERE _q_.[MechanicId] = @mechanicId;
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pDelete_Cylinders_For_Vehicle]
-    @vehicleId INT
-AS
-BEGIN
-    DELETE FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle_Cylinders]
-    WHERE [VehicleId] = @vehicleId;
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pInsert_Cylinders_For_Vehicle]
-    @vehicleId INT,
-    @diameter INT
-AS
-BEGIN
-    INSERT INTO [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle_Cylinders]
-    (
-        [VehicleId],
-        [Diameter]
-    )
-    VALUES
-    (
-        @vehicleId,
-        @diameter
-    );
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pGetAll_Cylinders_For_Vehicle]
-    @vehicleId INT
-AS
-BEGIN
-    SELECT
-        [VehicleId] AS "VehicleId",
-        [Diameter] AS "Diameter"
-    FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Vehicle_Cylinders]
-    WHERE [VehicleId] = @vehicleId;
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pDelete_Inspections_For_Truck]
-    @truckId INT
-AS
-BEGIN
-    DELETE FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck_Inspections]
-    WHERE [TruckId] = @truckId;
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pInsert_Inspections_For_Truck]
-    @truckId INT,
-    @date DATETIME
-AS
-BEGIN
-    INSERT INTO [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck_Inspections]
-    (
-        [TruckId],
-        [Date]
-    )
-    VALUES
-    (
-        @truckId,
-        @date
-    );
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pGet_Inspections_For_Truck]
-    @truckId INT
-AS
-BEGIN
-    SELECT
-        [TruckId] AS "TruckId",
-        [Date] AS "Date"
-    FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Truck_Inspections]
-    WHERE [TruckId] = @truckId;
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pDelete_Doors_For_Car]
-    @carId INT
-AS
-BEGIN
-    DELETE FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car_Doors]
-    WHERE [CarId] = @carId;
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pInsert_Doors_For_Car]
-    @carId INT,
-    @number INT
-AS
-BEGIN
-    INSERT INTO [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car_Doors]
-    (
-        [CarId],
-        [Number]
-    )
-    VALUES
-    (
-        @carId,
-        @number
-    );
-
-END;
-GO
-
-CREATE PROCEDURE [GarageBoundedContext].[pGetAll_Doors_For_Car]
-    @carId INT
-AS
-BEGIN
-    SELECT
-        [CarId] AS "CarId",
-        [Number] AS "Number"
-    FROM [MechanicServicesSingleVehicle].[GarageBoundedContext].[Car_Doors]
-    WHERE [CarId] = @carId;
-
-END;
-GO
-
 CREATE PROCEDURE [pExecuteDynamicQuery]
 	@$select NVARCHAR(MAX) = NULL,
 	@$filter NVARCHAR(MAX) = NULL,
@@ -1141,6 +1244,5 @@ BEGIN
 	EXECUTE sp_executesql @sqlCommand, @paramDefinition, @cnt = @count OUTPUT
 
 END;
-
 GO
 

@@ -8,11 +8,13 @@ namespace ClassesWithStudents.ClassBoundedContext
 {
     public class GetClassByIdQueryAggregate : GetByIdQueryAggregate<Class, int?, ClassOutputDto>
     {
-        public GetCollectionLinkedEntityQueryOperation<Student> GetStudentsQueryOperation { get; }
+        public GetAllLinkedAggregateQueryCollectionOperation<int?, Student, StudentOutputDto> GetAllStudentsLinkedAggregateQueryOperation { get; set; }
 
-        public IEnumerable<Student> Students => GetStudentsQueryOperation.LinkedEntities;
+        public GetClassByIdQueryAggregate() : this(null)
+        {
+        }
 
-        public GetClassByIdQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(ClassesWithStudentsConnectionClass.GetConnectionName()))
+        public GetClassByIdQueryAggregate(HashSet<(string, IEntity)> processedEntities = null) : base(new DomainFramework.DataAccess.RepositoryContext(ClassesWithStudentsConnectionClass.GetConnectionName()), processedEntities)
         {
             var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
@@ -20,38 +22,38 @@ namespace ClassesWithStudents.ClassBoundedContext
 
             StudentQueryRepository.Register(context);
 
-            GetStudentsQueryOperation = new GetCollectionLinkedEntityQueryOperation<Student>
+            GetAllStudentsLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Student, StudentOutputDto>
             {
-                GetLinkedEntities = (repository, entity, user) => ((StudentQueryRepository)repository).GetAllStudentsForClass(RootEntity.Id).ToList(),
-                GetLinkedEntitiesAsync = async (repository, entity, user) =>
+                GetAllLinkedEntities = (repository, entity, user) => ((StudentQueryRepository)repository).GetAllStudentsForClass(RootEntity.Id).ToList(),
+                GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
                 {
                     var entities = await ((StudentQueryRepository)repository).GetAllStudentsForClassAsync(RootEntity.Id);
 
                     return entities.ToList();
+                },
+                CreateLinkedQueryAggregate = entity => 
+                {
+                    if (entity is Student)
+                    {
+                        return new GetStudentByIdQueryAggregate();
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException();
+                    }
                 }
             };
 
-            QueryOperations.Enqueue(GetStudentsQueryOperation);
+            QueryOperations.Enqueue(GetAllStudentsLinkedAggregateQueryOperation);
         }
 
-        public List<StudentOutputDto> GetStudentsDtos()
+        public override void PopulateDto()
         {
-            return Students
-                .Select(e => new StudentOutputDto
-                {
-                    Id = e.Id.Value,
-                    FirstName = e.FirstName
-                })
-                .ToList();
-        }
+            OutputDto.Id = RootEntity.Id.Value;
 
-        public override void PopulateDto(Class entity)
-        {
-            OutputDto.Id = entity.Id.Value;
+            OutputDto.Name = RootEntity.Name;
 
-            OutputDto.Name = entity.Name;
-
-            OutputDto.Students = GetStudentsDtos();
+            OutputDto.Students = GetAllStudentsLinkedAggregateQueryOperation.OutputDtos;
         }
 
     }

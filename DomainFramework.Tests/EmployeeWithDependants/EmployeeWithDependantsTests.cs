@@ -56,7 +56,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
             {
                 Name = "Yana",
                 HireDate = new DateTime(2019, 9, 8),
-                CellPhone = new SavePhoneNumberInputDto
+                CellPhone = new PhoneNumberInputDto
                 {
                     AreaCode = "305",
                     Exchange = "678",
@@ -122,7 +122,6 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
             Assert.AreEqual("555", cellPhone.Exchange);
 
             Assert.AreEqual("7890", cellPhone.Number);
-
         }
 
         [TestMethod]
@@ -133,7 +132,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
             {
                 Name = "Yana",
                 HireDate = new DateTime(2019, 9, 8),
-                CellPhone = new SavePhoneNumberInputDto
+                CellPhone = new PhoneNumberInputDto
                 {
                     AreaCode = "305",
                     Exchange = "678",

@@ -42,11 +42,11 @@ namespace DomainFramework.DataAccess
 
         #endregion
 
-        #region DeleteCollection
+        #region DeleteLinks
 
-        public bool DeleteCollection(IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        public bool DeleteLinks(IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var command = CreateDeleteCollectionCommand(user);
+            var command = CreateDeleteLinksCommand(user);
 
             if (unitOfWork != null)
             {
@@ -56,16 +56,16 @@ namespace DomainFramework.DataAccess
             }
             else
             {
-                return HandleDeleteCollection(command);
+                return HandleDeleteLinks(command);
             }
         }
 
-        protected virtual Command CreateDeleteCollectionCommand(IAuthenticatedUser user)
+        protected virtual Command CreateDeleteLinksCommand(IAuthenticatedUser user)
         {
             throw new NotImplementedException();
         }
 
-        protected virtual bool HandleDeleteCollection(Command command)
+        protected virtual bool HandleDeleteLinks(Command command)
         {
             throw new NotImplementedException();
         }
@@ -95,11 +95,11 @@ namespace DomainFramework.DataAccess
 
         #endregion
 
-        #region DeleteCollectionAsync
+        #region DeleteLinksAsync
 
-        public async Task<bool> DeleteCollectionAsync(IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        public async Task<bool> DeleteLinksAsync(IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            var command = CreateDeleteCollectionCommand(user);
+            var command = CreateDeleteLinksCommand(user);
 
             if (unitOfWork != null)
             {
@@ -109,11 +109,11 @@ namespace DomainFramework.DataAccess
             }
             else
             {
-                return await HandleDeleteCollectionAsync(command);
+                return await HandleDeleteLinksAsync(command);
             }
         }
 
-        protected virtual Task<bool> HandleDeleteCollectionAsync(Command command)
+        protected virtual Task<bool> HandleDeleteLinksAsync(Command command)
         {
             throw new NotImplementedException();
         }
@@ -128,9 +128,9 @@ namespace DomainFramework.DataAccess
             Add((TValueObject)valueObject, user, unitOfWork);
         }
 
-        bool ILinkedValueObjectCommandRepository.DeleteCollection(IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        bool ILinkedValueObjectCommandRepository.DeleteLinks(IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            return DeleteCollection(user, unitOfWork);
+            return DeleteLinks(user, unitOfWork);
         }
 
         async Task ILinkedValueObjectCommandRepository.AddAsync(IValueObject valueObject, IAuthenticatedUser user, IUnitOfWork unitOfWork)
@@ -138,9 +138,9 @@ namespace DomainFramework.DataAccess
             await AddAsync((TValueObject)valueObject, user, unitOfWork);
         }
 
-        async Task<bool> ILinkedValueObjectCommandRepository.DeleteCollectionAsync(IAuthenticatedUser user, IUnitOfWork unitOfWork)
+        async Task<bool> ILinkedValueObjectCommandRepository.DeleteLinksAsync(IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {
-            return await DeleteCollectionAsync(user, unitOfWork);
+            return await DeleteLinksAsync(user, unitOfWork);
         } 
 
         #endregion

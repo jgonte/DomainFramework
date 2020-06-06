@@ -17,7 +17,7 @@ namespace DomainFramework.Tests
 
         public EmployeeEntity Employee => EmployeeLoadOperation.Entity;       
 
-        public ExecutiveEmployeePersonQueryAggregate(RepositoryContext context) : base(context)
+        public ExecutiveEmployeePersonQueryAggregate(RepositoryContext context) : base(context, null)
         {
             PersonLoadOperation = new GetEntityQueryOperation<PersonEntity>();
 
@@ -32,7 +32,7 @@ namespace DomainFramework.Tests
             );
         }
 
-        public override void PopulateDto(ExecutiveEntity entity)
+        public override void PopulateDto()
         {
         }
     }

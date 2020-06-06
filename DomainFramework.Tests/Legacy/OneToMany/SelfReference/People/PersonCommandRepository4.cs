@@ -56,7 +56,7 @@ namespace DomainFramework.Tests
             return command;
         }
 
-        protected override Command CreateUpdateCommand(PersonEntity3 entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(PersonEntity3 entity, IAuthenticatedUser user, string selector)
         {
             Expression<Func<PersonEntity3, object>>[] excludedProperties;
 

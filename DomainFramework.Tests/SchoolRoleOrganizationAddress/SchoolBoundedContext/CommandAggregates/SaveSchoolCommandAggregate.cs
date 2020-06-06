@@ -23,39 +23,58 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
         private void Initialize(SaveSchoolInputDto school, EntityDependency[] dependencies)
         {
-            RegisterCommandRepositoryFactory<Role>(() => new RoleCommandRepository());
-
             RegisterCommandRepositoryFactory<OrganizationRole>(() => new OrganizationRoleCommandRepository());
 
             RegisterCommandRepositoryFactory<School>(() => new SchoolCommandRepository());
 
-            RegisterCommandRepositoryFactory<Organization>(() => new OrganizationCommandRepository());
+            RegisterCommandRepositoryFactory<Role>(() => new RoleCommandRepository());
 
             RootEntity = new School
             {
-                Id = school.Id,
+                Id = school.SchoolId,
                 IsCharter = school.IsCharter
             };
 
-            Enqueue(new SaveEntityCommandOperation<School>(RootEntity));
+            Enqueue(new SaveEntityCommandOperation<School>(RootEntity, dependencies));
 
-            var linkedSaveOrganizationCommandAggregateOperation = new AddLinkedAggregateCommandOperation<School, SaveOrganizationCommandAggregate, OrganizationInputDto>(RootEntity, school.Organization);
+            Enqueue(new DeleteLinksCommandOperation<School>(RootEntity, "UnlinkOrganizationFromRole"));
 
-            Enqueue(linkedSaveOrganizationCommandAggregateOperation);
-
-            var organizationRole = new OrganizationRole();
-
-            Enqueue(new InsertEntityCommandOperation<OrganizationRole>(organizationRole, new EntityDependency[]
+            if (school.Organization != null)
             {
-                new EntityDependency
+                ILinkedAggregateCommandOperation operation;
+
+                if (school.Organization is OrganizationInputDto)
                 {
-                    Entity = linkedSaveOrganizationCommandAggregateOperation.CommandAggregate.RootEntity
-                },
-                new EntityDependency
-                {
-                    Entity = RootEntity
+                    operation = new AddLinkedAggregateCommandOperation<School, SaveOrganizationCommandAggregate, OrganizationInputDto>(
+                        RootEntity,
+                        (OrganizationInputDto)school.Organization
+                    );
+
+                    Enqueue(operation);
                 }
-            }));
+                else
+                {
+                    throw new NotImplementedException();
+                }
+
+                Enqueue(new AddLinkedAggregateCommandOperation<School, CreateOrganizationRoleCommandAggregate, OrganizationRoleInputDto>(
+                    RootEntity,
+                    school.Organization.OrganizationRole,
+                    new EntityDependency[]
+                    {
+                        new EntityDependency
+                        {
+                            Entity = RootEntity,
+                            Selector = "Role"
+                        },
+                        new EntityDependency
+                        {
+                            Entity = operation.CommandAggregate.RootEntity,
+                            Selector = "Organization"
+                        }
+                    }
+                ));
+            }
         }
 
     }

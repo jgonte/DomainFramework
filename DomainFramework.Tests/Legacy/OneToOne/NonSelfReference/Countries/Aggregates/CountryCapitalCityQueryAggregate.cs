@@ -13,7 +13,7 @@ namespace DomainFramework.Tests
 
         public CapitalCityEntity CapitalCity => GetCapitalCityLoadOperation.LinkedEntity;
 
-        public CountryCapitalCityQueryAggregate()
+        public CountryCapitalCityQueryAggregate() : base(null, null)
         {
             RepositoryContext = new DataAccess.RepositoryContext("SqlServerTest.DomainFrameworkOneToOneTest.ConnectionString");
 
@@ -35,7 +35,7 @@ namespace DomainFramework.Tests
             );
         }
 
-        public override void PopulateDto(CountryEntity entity)
+        public override void PopulateDto()
         {
         }
     }

@@ -12,12 +12,38 @@ namespace UserWithUserLogins.UserBoundedContext
     {
         public override (int, IEnumerable<UserLogin>) Get(int? userId, CollectionQueryParameters queryParameters)
         {
-            throw new NotImplementedException();
+            var result = Query<UserLogin>
+                .Collection()
+                .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
+                .StoredProcedure("[UserBoundedContext].[pUser_GetUserLogins]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(
+                    p => p.Name("userId").Value(userId.Value)
+                )
+                .Execute();
+
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
         public async override Task<(int, IEnumerable<UserLogin>)> GetAsync(int? userId, CollectionQueryParameters queryParameters)
         {
-            throw new NotImplementedException();
+            var result = await Query<UserLogin>
+                .Collection()
+                .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
+                .StoredProcedure("[UserBoundedContext].[pUser_GetUserLogins]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(
+                    p => p.Name("userId").Value(userId.Value)
+                )
+                .ExecuteAsync();
+
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
         public override IEnumerable<UserLogin> GetAll(int? userId)
@@ -25,7 +51,7 @@ namespace UserWithUserLogins.UserBoundedContext
             var result = Query<UserLogin>
                 .Collection()
                 .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
-                .StoredProcedure("[UserBoundedContext].[pGetAll_UserLogins_For_User]")
+                .StoredProcedure("[UserBoundedContext].[pUser_GetAllUserLogins]")
                 .Parameters(
                     p => p.Name("userId").Value(userId.Value)
                 )
@@ -39,7 +65,7 @@ namespace UserWithUserLogins.UserBoundedContext
             var result = await Query<UserLogin>
                 .Collection()
                 .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
-                .StoredProcedure("[UserBoundedContext].[pGetAll_UserLogins_For_User]")
+                .StoredProcedure("[UserBoundedContext].[pUser_GetAllUserLogins]")
                 .Parameters(
                     p => p.Name("userId").Value(userId.Value)
                 )

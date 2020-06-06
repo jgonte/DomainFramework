@@ -35,7 +35,7 @@ namespace DomainFramework.Tests
                 });
         }
 
-        protected override Command CreateUpdateCommand(EmployeeEntity entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(EmployeeEntity entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -52,7 +52,7 @@ namespace DomainFramework.Tests
                 );
         }
 
-        protected override Command CreateDeleteCommand(EmployeeEntity entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(EmployeeEntity entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()

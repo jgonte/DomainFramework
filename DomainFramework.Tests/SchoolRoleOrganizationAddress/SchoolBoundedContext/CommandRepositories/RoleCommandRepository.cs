@@ -41,7 +41,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             await ((SingleQuery<Role>)command).ExecuteAsync();
         }
 
-        protected override Command CreateUpdateCommand(Role entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(Role entity, IAuthenticatedUser user, string selector)
         {
             if (user != null)
             {
@@ -72,7 +72,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCommand(Role entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(Role entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -97,25 +97,25 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCollectionCommand(Role entity, IAuthenticatedUser user, string selector)
+        protected override Command CreateDeleteLinksCommand(Role entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
-                .StoredProcedure("[SchoolBoundedContext].[pRole_DeleteOrganization]")
+                .StoredProcedure("[SchoolBoundedContext].[pRole_UnlinkOrganization]")
                 .Parameters(
                     p => p.Name("roleId").Value(entity.Id)
                 );
         }
 
-        protected override bool HandleDeleteCollection(Command command)
+        protected override bool HandleDeleteLinks(Command command)
         {
             var result = ((NonQueryCommand)command).Execute();
 
             return result.AffectedRows > 0;
         }
 
-        protected async override Task<bool> HandleDeleteCollectionAsync(Command command)
+        protected async override Task<bool> HandleDeleteLinksAsync(Command command)
         {
             var result = await ((NonQueryCommand)command).ExecuteAsync();
 

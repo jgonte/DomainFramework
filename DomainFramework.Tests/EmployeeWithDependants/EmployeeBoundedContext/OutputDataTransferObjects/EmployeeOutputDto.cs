@@ -8,7 +8,9 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
     {
         public DateTime HireDate { get; set; }
 
-        public List<PersonOutputDto> Dependants { get; set; } = new List<PersonOutputDto>();
+        public PhoneNumberOutputDto CellPhone { get; set; }
+
+        public IEnumerable<PersonOutputDto> Dependants { get; set; }
 
     }
 }

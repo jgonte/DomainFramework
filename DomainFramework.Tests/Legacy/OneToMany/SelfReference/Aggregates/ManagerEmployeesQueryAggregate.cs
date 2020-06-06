@@ -10,7 +10,7 @@ namespace DomainFramework.Tests
 
         public IEnumerable<PersonEntity3> Employees => GetEmployeesLoadOperation.LinkedEntities;
 
-        public ManagerEmployeesQueryAggregate(DataAccess.RepositoryContext context) : base(context)
+        public ManagerEmployeesQueryAggregate(DataAccess.RepositoryContext context) : base(context, null)
         {
             GetEmployeesLoadOperation = new GetCollectionLinkedEntityQueryOperation<PersonEntity3>
             {
@@ -30,7 +30,7 @@ namespace DomainFramework.Tests
             );
         }
 
-        public override void PopulateDto(PersonEntity3 entity)
+        public override void PopulateDto()
         {
         }
     }

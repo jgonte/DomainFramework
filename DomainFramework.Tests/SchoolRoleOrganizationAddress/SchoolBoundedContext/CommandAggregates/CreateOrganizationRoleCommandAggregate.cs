@@ -34,7 +34,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 }
             };
 
-            Enqueue(new InsertEntityCommandOperation<OrganizationRole>(RootEntity));
+            Enqueue(new InsertEntityCommandOperation<OrganizationRole>(RootEntity, dependencies));
         }
 
     }

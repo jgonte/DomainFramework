@@ -7,13 +7,13 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
 {
     public class SaveMechanicInputDto : IInputDataTransferObject
     {
-        public int? Id { get; set; }
+        public int? MechanicId { get; set; }
 
         public string Name { get; set; }
 
         public VehicleInputDto Vehicle { get; set; }
 
-        public void Validate(ValidationResult result)
+        public virtual void Validate(ValidationResult result)
         {
             Name.ValidateNotEmpty(result, nameof(Name));
 

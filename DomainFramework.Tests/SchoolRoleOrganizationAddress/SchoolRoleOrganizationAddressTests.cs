@@ -52,6 +52,9 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 Organization = new OrganizationInputDto
                 {
                     Name = "School1",
+                    OrganizationRole = new OrganizationRoleInputDto
+                    {
+                    },
                     Address = new AddressInputDto
                     {
                         Street = "Street1"

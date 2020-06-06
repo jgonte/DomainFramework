@@ -55,14 +55,14 @@ namespace UserWithUserLogins.UserBoundedContext
             {
                 UserName = "user",
                 Email = "user@example.com",
-                UserLogins = new List<CreateUserLoginInputDto>
+                UserLogins = new List<UserLoginInputDto>
                 {
-                    new CreateUserLoginInputDto
+                    new UserLoginInputDto
                     {
                         Provider = "provider1",
                         UserKey = "userKey1"
                     },
-                    new CreateUserLoginInputDto
+                    new UserLoginInputDto
                     {
                         Provider = "provider2",
                         UserKey = "userKey2"
@@ -102,10 +102,10 @@ namespace UserWithUserLogins.UserBoundedContext
             // Add a user login
             var addUserLoginCommandAggregate = new AddUserLoginCommandAggregate(new UserAddUserLoginInputDto
             {
-                Id = userDto.Id,
-                UserLogins = new List<AddUserLoginInputDto>
+                UserId = userDto.Id,
+                UserLogins = new List<UserLoginInputDto>
                 {
-                    new AddUserLoginInputDto
+                    new UserLoginInputDto
                     {
                         Provider = "provider3",
                         UserKey = "userKey3"

@@ -63,9 +63,9 @@ namespace ClassesWithStudents.ClassBoundedContext
 
                             default:
                                 {
-                                    var @class = (Class)dependencies.ElementAt(0).Entity;
+                                    var @class = (Class)dependencies.Single(d => d.Selector == "Classes").Entity;
 
-                                    var student = (Student)dependencies.ElementAt(1).Entity;
+                                    var student = (Student)dependencies.Single(d => d.Selector == "Students").Entity;
 
                                     entity.Id = new ClassEnrollmentId
                                     {
@@ -96,7 +96,7 @@ namespace ClassesWithStudents.ClassBoundedContext
             await ((NonQueryCommand)command).ExecuteAsync();
         }
 
-        protected override Command CreateUpdateCommand(ClassEnrollment entity, IAuthenticatedUser user)
+        protected override Command CreateUpdateCommand(ClassEnrollment entity, IAuthenticatedUser user, string selector)
         {
             if (user != null)
             {
@@ -129,7 +129,7 @@ namespace ClassesWithStudents.ClassBoundedContext
             return result.AffectedRows > 0;
         }
 
-        protected override Command CreateDeleteCommand(ClassEnrollment entity, IAuthenticatedUser user)
+        protected override Command CreateDeleteCommand(ClassEnrollment entity, IAuthenticatedUser user, string selector)
         {
             return Command
                 .NonQuery()
@@ -149,44 +149,6 @@ namespace ClassesWithStudents.ClassBoundedContext
         }
 
         protected async override Task<bool> HandleDeleteAsync(Command command)
-        {
-            var result = await ((NonQueryCommand)command).ExecuteAsync();
-
-            return result.AffectedRows > 0;
-        }
-
-        protected override Command CreateDeleteCollectionCommand(ClassEnrollment entity, IAuthenticatedUser user, string selector)
-        {
-            switch (selector)
-            {
-                case "Students": return Command
-                    .NonQuery()
-                    .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
-                    .StoredProcedure("[ClassBoundedContext].[pClassEnrollment_DeleteStudents]")
-                    .Parameters(
-                        p => p.Name("classId").Value(entity.Id.ClassId)
-                    );
-
-                case "Classes": return Command
-                    .NonQuery()
-                    .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
-                    .StoredProcedure("[ClassBoundedContext].[pClassEnrollment_DeleteClasses]")
-                    .Parameters(
-                        p => p.Name("studentId").Value(entity.Id.StudentId)
-                    );
-
-                default: throw new InvalidOperationException();
-            }
-        }
-
-        protected override bool HandleDeleteCollection(Command command)
-        {
-            var result = ((NonQueryCommand)command).Execute();
-
-            return result.AffectedRows > 0;
-        }
-
-        protected async override Task<bool> HandleDeleteCollectionAsync(Command command)
         {
             var result = await ((NonQueryCommand)command).ExecuteAsync();
 

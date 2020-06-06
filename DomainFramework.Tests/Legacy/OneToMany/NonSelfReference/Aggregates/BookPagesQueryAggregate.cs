@@ -14,7 +14,7 @@ namespace DomainFramework.Tests
         {
         }
 
-        public BookPagesQueryAggregate(RepositoryContext context) : base(context)
+        public BookPagesQueryAggregate(RepositoryContext context) : base(context, null)
         {
             GetPagesLoadOperation = new GetCollectionLinkedEntityQueryOperation<PageEntity>
             {
@@ -34,7 +34,7 @@ namespace DomainFramework.Tests
             );
         }
 
-        public override void PopulateDto(BookEntity entity)
+        public override void PopulateDto()
         {
             OutputDto.Id = RootEntity.Id;
 

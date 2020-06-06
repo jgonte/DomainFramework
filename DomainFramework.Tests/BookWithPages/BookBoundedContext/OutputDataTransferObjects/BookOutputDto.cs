@@ -18,7 +18,7 @@ namespace BookWithPages.BookBoundedContext
 
         public int BookId { get; set; }
 
-        public List<PageOutputDto> Pages { get; set; } = new List<PageOutputDto>();
+        public IEnumerable<PageOutputDto> Pages { get; set; }
 
     }
 }

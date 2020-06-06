@@ -27,12 +27,14 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
 
             RegisterCommandRepositoryFactory<Person>(() => new PersonCommandRepository());
 
+            var employeeDependency = (Employee)dependencies?.SingleOrDefault()?.Entity;
+
             RootEntity = new Employee
             {
-                Id = employee.Id,
+                Id = employee.EmployeeId,
                 HireDate = employee.HireDate,
                 Name = employee.Name,
-                ProviderEmployeeId = employee.ProviderEmployeeId,
+                ProviderEmployeeId = (employeeDependency != null) ? employeeDependency.Id : employee.ProviderEmployeeId,
                 CellPhone = new PhoneNumber
                 {
                     AreaCode = employee.CellPhone.AreaCode,
@@ -41,24 +43,37 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
                 }
             };
 
-            Enqueue(new SaveEntityCommandOperation<Employee>(RootEntity));
+            Enqueue(new SaveEntityCommandOperation<Employee>(RootEntity, dependencies));
 
-            Enqueue(new DeleteEntityCollectionCommandOperation<Employee>(RootEntity, "Dependants"));
+            Enqueue(new DeleteLinksCommandOperation<Employee>(RootEntity, "UnlinkDependantsFromEmployee"));
 
             if (employee.Dependants?.Any() == true)
             {
-                foreach (var person in employee.Dependants)
+                foreach (var dto in employee.Dependants)
                 {
-                    Enqueue(new AddLinkedEntityCommandOperation<Employee, Person>(RootEntity, () => new Person
+                    ILinkedAggregateCommandOperation operation;
+
+                    if (dto is PersonInputDto)
                     {
-                        Name = person.Name,
-                        CellPhone = new PhoneNumber
-                        {
-                            AreaCode = person.CellPhone.AreaCode,
-                            Exchange = person.CellPhone.Exchange,
-                            Number = person.CellPhone.Number
-                        }
-                    }, "Dependants"));
+                        operation = new AddLinkedAggregateCommandOperation<Employee, SavePersonCommandAggregate, PersonInputDto>(
+                            RootEntity,
+                            (PersonInputDto)dto,
+                            new EntityDependency[]
+                            {
+                                new EntityDependency
+                                {
+                                    Entity = RootEntity,
+                                    Selector = "Dependants"
+                                }
+                            }
+                        );
+
+                        Enqueue(operation);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
             }
         }

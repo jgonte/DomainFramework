@@ -15,7 +15,7 @@ namespace DomainFramework.Core
             _dependencies = dependencies;
 
             _selector = selector;
-    }
+        }
 
         public override void Execute(IRepositoryContext repositoryContext, IAuthenticatedUser user, IUnitOfWork unitOfWork)
         {

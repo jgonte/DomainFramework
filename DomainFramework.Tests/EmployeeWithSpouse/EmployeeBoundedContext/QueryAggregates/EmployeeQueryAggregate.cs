@@ -8,13 +8,13 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
 {
     public class EmployeeQueryAggregate : GetByIdQueryAggregate<Employee, int?, EmployeeOutputDto>
     {
-        private EmployeeQueryAggregate _employeeQueryAggregate;
+        public GetLinkedAggregateQuerySingleItemOperation<int?, Person, PersonOutputDto> GetSpouseLinkedAggregateQueryOperation { get; set; }
 
-        public GetSingleLinkedEntityQueryOperation<Person> GetSpouseQueryOperation { get; }
+        public EmployeeQueryAggregate() : this(null)
+        {
+        }
 
-        public Person Spouse => GetSpouseQueryOperation.LinkedEntity;
-
-        public EmployeeQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(EmployeeWithSpouseConnectionClass.GetConnectionName()))
+        public EmployeeQueryAggregate(HashSet<(string, IEntity)> processedEntities = null) : base(new DomainFramework.DataAccess.RepositoryContext(EmployeeWithSpouseConnectionClass.GetConnectionName()), processedEntities)
         {
             var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 
@@ -22,99 +22,66 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
 
             PersonQueryRepository.Register(context);
 
-            GetSpouseQueryOperation = new GetSingleLinkedEntityQueryOperation<Person>
+            GetSpouseLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int?, Person, PersonOutputDto>
             {
+                OnBeforeExecute = entity =>
+                {
+                    if (ProcessedEntities.Contains(("Spouse", entity)))
+                    {
+                        return false;
+                    }
+
+                    ProcessedEntities.Add(("Spouse", entity));
+
+                    return true;
+                },
                 GetLinkedEntity = (repository, entity, user) => ((PersonQueryRepository)repository).GetSpouseForPerson(RootEntity.Id),
-                GetLinkedEntityAsync = async (repository, entity, user) => await ((PersonQueryRepository)repository).GetSpouseForPersonAsync(RootEntity.Id)
+                GetLinkedEntityAsync = async (repository, entity, user) => await ((PersonQueryRepository)repository).GetSpouseForPersonAsync(RootEntity.Id),
+                CreateLinkedQueryAggregate = entity => 
+                {
+                    if (entity is Employee)
+                    {
+                        return new EmployeeQueryAggregate(new HashSet<(string, IEntity)>
+                        {
+                            ("Spouse", entity)
+                        });
+                    }
+                    else if (entity is Person)
+                    {
+                        return new PersonQueryAggregate();
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException();
+                    }
+                }
             };
 
-            QueryOperations.Enqueue(GetSpouseQueryOperation);
+            QueryOperations.Enqueue(GetSpouseLinkedAggregateQueryOperation);
         }
 
-        public PhoneNumberOutputDto GetCellPhoneDto(Person person) => 
-            (person.CellPhone.IsEmpty()) ? null : new PhoneNumberOutputDto
+        public override void PopulateDto()
+        {
+            OutputDto.Id = RootEntity.Id.Value;
+
+            OutputDto.HireDate = RootEntity.HireDate;
+
+            OutputDto.Name = RootEntity.Name;
+
+            OutputDto.MarriedToPersonId = RootEntity.MarriedToPersonId;
+
+            OutputDto.CellPhone = GetCellPhoneDto();
+
+            OutputDto.Spouse = GetSpouseLinkedAggregateQueryOperation.OutputDto;
+        }
+
+        public PhoneNumberOutputDto GetCellPhoneDto() => 
+            (RootEntity.CellPhone.IsEmpty()) ? null : new PhoneNumberOutputDto
             {
-                AreaCode = person.CellPhone.AreaCode,
-                Exchange = person.CellPhone.Exchange,
-                Number = person.CellPhone.Number
+                AreaCode = RootEntity.CellPhone.AreaCode,
+                Exchange = RootEntity.CellPhone.Exchange,
+                Number = RootEntity.CellPhone.Number
             };
-
-        public PersonOutputDto GetSpouseDto()
-        {
-            if (Spouse != null)
-            {
-                if (Spouse is Employee)
-                {
-                    var employee = (Employee)Spouse;
-
-                    var dto = new EmployeeOutputDto
-                    {
-                        Id = employee.Id.Value,
-                        HireDate = employee.HireDate,
-                        Name = employee.Name,
-                        MarriedToPersonId = employee.MarriedToPersonId,
-                        CellPhone = (employee.CellPhone.IsEmpty()) ? null : new PhoneNumberOutputDto
-                        {
-                            AreaCode = employee.CellPhone.AreaCode,
-                            Exchange = employee.CellPhone.Exchange,
-                            Number = employee.CellPhone.Number
-                        }
-                    };
-
-                    if (_employeeQueryAggregate == null)
-                    {
-                        _employeeQueryAggregate = new EmployeeQueryAggregate();
-                    }
-
-                    if (_employeeQueryAggregate.RootEntity == null)
-                    {
-                        _employeeQueryAggregate.RootEntity = employee;
-
-                        _employeeQueryAggregate.LoadLinks();
-
-                        dto.Spouse = _employeeQueryAggregate.GetSpouseDto();
-
-                        _employeeQueryAggregate.RootEntity = null;
-                    }
-
-                    return dto;
-                }
-                else
-                {
-                    var dto = new PersonOutputDto
-                    {
-                        Id = Spouse.Id.Value,
-                        Name = Spouse.Name,
-                        MarriedToPersonId = Spouse.MarriedToPersonId,
-                        CellPhone = (Spouse.CellPhone.IsEmpty()) ? null : new PhoneNumberOutputDto
-                        {
-                            AreaCode = Spouse.CellPhone.AreaCode,
-                            Exchange = Spouse.CellPhone.Exchange,
-                            Number = Spouse.CellPhone.Number
-                        }
-                    };
-
-                    return dto;
-                }
-            }
-
-            return null;
-        }
-
-        public override void PopulateDto(Employee entity)
-        {
-            OutputDto.Id = entity.Id.Value;
-
-            OutputDto.HireDate = entity.HireDate;
-
-            OutputDto.Name = entity.Name;
-
-            OutputDto.MarriedToPersonId = entity.MarriedToPersonId;
-
-            OutputDto.CellPhone = GetCellPhoneDto(entity);
-
-            OutputDto.Spouse = GetSpouseDto();
-        }
 
     }
 }

@@ -23,21 +23,24 @@ namespace UserWithUserLogins.UserBoundedContext
 
         private void Initialize(UserAddUserLoginInputDto user, EntityDependency[] dependencies)
         {
+            RegisterCommandRepositoryFactory<User>(() => new UserCommandRepository());
+
             RegisterCommandRepositoryFactory<User_UserLogins_CommandRepository.RepositoryKey>(() => new User_UserLogins_CommandRepository());
 
             RootEntity = new User
             {
-                Id = user.Id,
-                UserLogins = user.UserLogins.Select(dto => new UserLogin
+                Id = user.UserId
+            };
+
+            foreach (var dto in user.UserLogins)
+            {
+                var userLoginValueObject = new UserLogin
                 {
                     Provider = dto.Provider,
                     UserKey = dto.UserKey
-                }).ToList()
-            };
+                };
 
-            foreach (var userLogin in RootEntity.UserLogins)
-            {
-                Enqueue(new AddLinkedValueObjectCommandOperation<User, UserLogin, User_UserLogins_CommandRepository.RepositoryKey>(RootEntity, () => userLogin));
+                Enqueue(new AddLinkedValueObjectCommandOperation<User, UserLogin, User_UserLogins_CommandRepository.RepositoryKey>(RootEntity, userLoginValueObject));
             }
         }
 
