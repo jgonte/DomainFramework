@@ -488,7 +488,7 @@ BEGIN
     END
     ELSE
     BEGIN
-        SET @$filter = N'c.[ClassId] = @classId AND ' + @$filter;
+        SET @$filter = N'(c.[ClassId] = @classId) AND (' + @$filter + ')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]
@@ -508,17 +508,38 @@ END;
 GO
 
 CREATE PROCEDURE [ClassBoundedContext].[Student_GetNotEnrolled]
-    @classId INT
+    @classId INT,
+    @$select NVARCHAR(MAX) = NULL,
+    @$filter NVARCHAR(MAX) = NULL,
+    @$orderby NVARCHAR(MAX) = NULL,
+    @$skip NVARCHAR(10) = NULL,
+    @$top NVARCHAR(10) = NULL,
+    @count INT OUTPUT
 AS
 BEGIN
-    SELECT
-        s.[StudentId] AS "Id",
-        s.[FirstName] AS "FirstName"
-    FROM [ClassesWithStudents].[ClassBoundedContext].[Student] s
-    LEFT OUTER JOIN [ClassesWithStudents].[ClassBoundedContext].[ClassEnrollment] c
-        ON s.[StudentId] = c.[StudentId]
-    WHERE c.[ClassId] <> @classId
-    OR c.[ClassId] IS NULL;
+    IF @$filter IS NULL
+    BEGIN
+        SET @$filter = N'c.[ClassId] <> @classId
+OR c.[ClassId] IS NULL';
+    END
+    ELSE
+    BEGIN
+        SET @$filter = N'(c.[ClassId] <> @classId
+OR c.[ClassId] IS NULL) AND (' + @$filter + ')';
+    END;
+
+    EXEC [dbo].[pExecuteDynamicQuery]
+        @$select = @$select,
+        @$filter = @$filter,
+        @$orderby = @$orderby,
+        @$skip = @$skip,
+        @$top = @$top,
+        @selectList = N'    s.[StudentId] AS "Id",
+    s.[FirstName] AS "FirstName"',
+        @from = N'[ClassesWithStudents].[ClassBoundedContext].[Student] s
+LEFT OUTER JOIN [ClassesWithStudents].[ClassBoundedContext].[ClassEnrollment] c
+    ON s.[StudentId] = c.[StudentId]',
+        @count = @count OUTPUT
 
 END;
 GO

@@ -183,7 +183,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 
             var getCountriesQueryAggregate = new GetCountriesQueryAggregate();
 
-            var countryDtos = getCountriesQueryAggregate.Get(queryParameters: null, user: null);
+            var countryDtos = getCountriesQueryAggregate.Get(queryParameters: null);
 
             Assert.AreEqual(2, countryDtos.Item1);
 

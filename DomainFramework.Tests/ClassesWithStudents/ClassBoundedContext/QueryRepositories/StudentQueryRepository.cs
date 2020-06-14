@@ -154,32 +154,40 @@ namespace ClassesWithStudents.ClassBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public IEnumerable<Student> GetNotEnrolled(int? classId, CollectionQueryParameters queryParameters)
+        public (int, IEnumerable<Student>) GetNotEnrolled(int? classId, CollectionQueryParameters queryParameters)
         {
             var result = Query<Student>
                 .Collection()
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
                 .StoredProcedure("[ClassBoundedContext].[Student_GetNotEnrolled]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
                     p => p.Name("classId").Value(classId.Value)
                 )
                 .Execute();
 
-            return result.Data;
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
-        public async Task<IEnumerable<Student>> GetNotEnrolledAsync(int? classId, CollectionQueryParameters queryParameters)
+        public async Task<(int, IEnumerable<Student>)> GetNotEnrolledAsync(int? classId, CollectionQueryParameters queryParameters)
         {
             var result = await Query<Student>
                 .Collection()
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
                 .StoredProcedure("[ClassBoundedContext].[Student_GetNotEnrolled]")
+                .QueryParameters(queryParameters)
+                .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
                     p => p.Name("classId").Value(classId.Value)
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            var count = (string)result.GetParameter("count").Value;
+
+            return (int.Parse(count), result.Data);
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

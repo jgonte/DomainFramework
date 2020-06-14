@@ -554,7 +554,7 @@ BEGIN
     END
     ELSE
     BEGIN
-        SET @$filter = N'c1.[Relates_CourseId] = @courseId AND ' + @$filter;
+        SET @$filter = N'(c1.[Relates_CourseId] = @courseId) AND (' + @$filter + ')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]
@@ -589,7 +589,7 @@ BEGIN
     END
     ELSE
     BEGIN
-        SET @$filter = N'p.[Requires_CourseId] = @courseId AND ' + @$filter;
+        SET @$filter = N'(p.[Requires_CourseId] = @courseId) AND (' + @$filter + ')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]
@@ -624,7 +624,7 @@ BEGIN
     END
     ELSE
     BEGIN
-        SET @$filter = N'c1.[IsRelatedTo_CourseId] = @courseId AND ' + @$filter;
+        SET @$filter = N'(c1.[IsRelatedTo_CourseId] = @courseId) AND (' + @$filter + ')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]
@@ -659,7 +659,7 @@ BEGIN
     END
     ELSE
     BEGIN
-        SET @$filter = N'p.[IsRequiredBy_CourseId] = @courseId AND ' + @$filter;
+        SET @$filter = N'(p.[IsRequiredBy_CourseId] = @courseId) AND (' + @$filter + ')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]

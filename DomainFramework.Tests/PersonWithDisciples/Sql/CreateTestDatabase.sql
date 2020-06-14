@@ -235,7 +235,7 @@ BEGIN
     END
     ELSE
     BEGIN
-        SET @$filter = N'p.[LeaderId] = @personId AND ' + @$filter;
+        SET @$filter = N'(p.[LeaderId] = @personId) AND (' + @$filter + ')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]

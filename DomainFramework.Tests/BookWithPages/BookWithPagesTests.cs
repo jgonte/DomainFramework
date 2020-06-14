@@ -140,7 +140,7 @@ namespace BookWithPages.BookBoundedContext
             var bookId = saveCommandAggregate.RootEntity.Id;
 
             // Read
-            var queryAggregate = new BookQueryAggregate();
+            var queryAggregate = new GetBookByIdQueryAggregate();
 
             var bookDto = queryAggregate.Get(bookId);
 
@@ -210,7 +210,7 @@ namespace BookWithPages.BookBoundedContext
             saveCommandAggregate.Save();
 
             // Read update
-            queryAggregate = new BookQueryAggregate();
+            queryAggregate = new GetBookByIdQueryAggregate();
 
             bookDto = queryAggregate.Get(bookId);
 
@@ -270,7 +270,7 @@ namespace BookWithPages.BookBoundedContext
             addPagesCommandAggregate.Save();
 
             // Read added pages
-            queryAggregate = new BookQueryAggregate();
+            queryAggregate = new GetBookByIdQueryAggregate();
 
             bookDto = queryAggregate.Get(bookId);
 

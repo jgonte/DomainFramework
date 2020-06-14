@@ -75,7 +75,7 @@ namespace SimpleLogs.SimpleLogsBoundedContext
             // Read them
             var getSimpleLogsQueryAggregate = new GetSimpleLogsQueryAggregate();
 
-            var (count, logs) = getSimpleLogsQueryAggregate.Get(queryParameters: null, user: null);
+            var (count, logs) = getSimpleLogsQueryAggregate.Get(queryParameters: null);
 
             Assert.AreEqual(5, count);
 
@@ -92,7 +92,7 @@ namespace SimpleLogs.SimpleLogsBoundedContext
             // Read them
             getSimpleLogsQueryAggregate = new GetSimpleLogsQueryAggregate();
 
-            (count, logs) = getSimpleLogsQueryAggregate.Get(queryParameters: null, user: null);
+            (count, logs) = getSimpleLogsQueryAggregate.Get(queryParameters: null);
 
             Assert.AreEqual(2, count);
         }

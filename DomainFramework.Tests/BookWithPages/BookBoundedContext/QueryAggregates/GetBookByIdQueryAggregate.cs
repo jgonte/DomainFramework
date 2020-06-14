@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace BookWithPages.BookBoundedContext
 {
-    public class BookQueryAggregate : GetByIdQueryAggregate<Book, int?, BookOutputDto>
+    public class GetBookByIdQueryAggregate : GetByIdQueryAggregate<Book, int?, BookOutputDto>
     {
         public GetAllLinkedAggregateQueryCollectionOperation<int?, Page, PageOutputDto> GetAllPagesLinkedAggregateQueryOperation { get; set; }
 
-        public BookQueryAggregate() : this(null)
+        public GetBookByIdQueryAggregate() : this(null)
         {
         }
 
-        public BookQueryAggregate(HashSet<(string, IEntity)> processedEntities = null) : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()), processedEntities)
+        public GetBookByIdQueryAggregate(HashSet<(string, IEntity)> processedEntities = null) : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()), processedEntities)
         {
             var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 

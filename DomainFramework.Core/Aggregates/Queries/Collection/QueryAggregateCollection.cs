@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
@@ -14,6 +17,60 @@ namespace DomainFramework.Core
         public QueryAggregateCollection(RepositoryContext context)
         {
             RepositoryContext = context;
+        }
+
+        public (int, IEnumerable<TOutputDto>) Get(Tuple<int, IEnumerable<IEntity>> data)
+        {
+            Aggregates = new List<TAggregate>();
+
+            var (count, entities) = data;
+
+            foreach (var entity in entities)
+            {
+                var aggregate = new TAggregate
+                {
+                    RepositoryContext = RepositoryContext,
+                    RootEntity = (TEntity)entity
+                };
+
+                aggregate.LoadLinks();
+
+                aggregate.PopulateDto();
+
+                ((List<TAggregate>)Aggregates).Add(aggregate);
+            }
+
+            return (count, Aggregates.Select(a => (TOutputDto)a.OutputDto));
+        }
+
+        protected async Task<(int, IEnumerable<TOutputDto>)> GetAsync(Tuple<int, IEnumerable<IEntity>> data)
+        {
+            Aggregates = new List<TAggregate>();
+
+            var (count, entities) = data;
+
+            var tasks = new Queue<Task>();
+
+            foreach (var entity in entities)
+            {
+                var aggregate = new TAggregate
+                {
+                    RepositoryContext = RepositoryContext,
+                    RootEntity = (TEntity)entity
+                };
+
+                tasks.Enqueue(
+                    aggregate.LoadLinksAsync()
+                );
+
+                aggregate.PopulateDto();
+
+                ((List<TAggregate>)Aggregates).Add(aggregate);
+            }
+
+            await Task.WhenAll(tasks);
+
+            return (count, Aggregates.Select(a => (TOutputDto)a.OutputDto));
         }
     }
 }

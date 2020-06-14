@@ -354,7 +354,7 @@ BEGIN
     END
     ELSE
     BEGIN
-        SET @$filter = N'p.[RequiredCourseId] = @courseId AND ' + @$filter;
+        SET @$filter = N'(p.[RequiredCourseId] = @courseId) AND (' + @$filter + ')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]
@@ -389,7 +389,7 @@ BEGIN
     END
     ELSE
     BEGIN
-        SET @$filter = N'p.[CourseId] = @courseId AND ' + @$filter;
+        SET @$filter = N'(p.[CourseId] = @courseId) AND (' + @$filter + ')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]

@@ -702,7 +702,7 @@ BEGIN
     END
     ELSE
     BEGIN
-        SET @$filter = N'p.[OrganizationId] = @organizationId AND ' + @$filter;
+        SET @$filter = N'(p.[OrganizationId] = @organizationId) AND (' + @$filter + ')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]
@@ -737,7 +737,7 @@ BEGIN
     END
     ELSE
     BEGIN
-        SET @$filter = N'p.[PersonId] = @personId AND ' + @$filter;
+        SET @$filter = N'(p.[PersonId] = @personId) AND (' + @$filter + ')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]

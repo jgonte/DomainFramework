@@ -291,7 +291,7 @@ BEGIN
     END
     ELSE
     BEGIN
-        SET @$filter = N'u.[UserId] = @userId AND ' + @$filter;
+        SET @$filter = N'(u.[UserId] = @userId) AND (' + @$filter + ')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]

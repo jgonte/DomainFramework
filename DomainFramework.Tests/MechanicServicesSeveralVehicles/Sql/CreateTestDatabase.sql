@@ -730,7 +730,7 @@ BEGIN
     END
     ELSE
     BEGIN
-        SET @$filter = N'v.[VehicleId] = @vehicleId AND ' + @$filter;
+        SET @$filter = N'(v.[VehicleId] = @vehicleId) AND (' + @$filter + ')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]
@@ -762,7 +762,7 @@ BEGIN
     END
     ELSE
     BEGIN
-        SET @$filter = N'c.[CarId] = @carId AND ' + @$filter;
+        SET @$filter = N'(c.[CarId] = @carId) AND (' + @$filter + ')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]
@@ -939,7 +939,7 @@ BEGIN
     END
     ELSE
     BEGIN
-        SET @$filter = N't.[TruckId] = @truckId AND ' + @$filter;
+        SET @$filter = N'(t.[TruckId] = @truckId) AND (' + @$filter + ')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]
