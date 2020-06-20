@@ -38,7 +38,7 @@ namespace EntityWithMultiValuedValueObject.TestBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.TestEntityId = RootEntity.Id.Value;
 
             OutputDto.Text = RootEntity.Text;
 

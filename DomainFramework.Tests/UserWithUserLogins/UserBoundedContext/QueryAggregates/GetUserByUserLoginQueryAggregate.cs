@@ -70,7 +70,7 @@ namespace UserWithUserLogins.UserBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.UserId = RootEntity.Id.Value;
 
             OutputDto.UserName = RootEntity.UserName;
 

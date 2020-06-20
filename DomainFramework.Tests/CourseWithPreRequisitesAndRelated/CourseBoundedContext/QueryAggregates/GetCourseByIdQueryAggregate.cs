@@ -31,7 +31,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
 
                     return entities.ToList();
                 },
-                CreateLinkedQueryAggregate = entity => 
+                CreateLinkedQueryAggregate = entity =>
                 {
                     if (entity is Course)
                     {
@@ -58,7 +58,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
 
                     return entities.ToList();
                 },
-                CreateLinkedQueryAggregate = entity => 
+                CreateLinkedQueryAggregate = entity =>
                 {
                     if (entity is Course)
                     {
@@ -79,7 +79,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.CourseId = RootEntity.Id.Value;
 
             OutputDto.Description = RootEntity.Description;
 

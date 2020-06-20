@@ -21,7 +21,7 @@ namespace EmployeePerson.EmployeeBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.PersonId = RootEntity.Id.Value;
 
             OutputDto.HireDate = RootEntity.HireDate;
 

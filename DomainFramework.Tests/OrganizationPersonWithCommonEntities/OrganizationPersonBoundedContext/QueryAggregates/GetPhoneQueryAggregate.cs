@@ -21,7 +21,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.PhoneId = RootEntity.Id.Value;
 
             OutputDto.Number = RootEntity.Number;
 

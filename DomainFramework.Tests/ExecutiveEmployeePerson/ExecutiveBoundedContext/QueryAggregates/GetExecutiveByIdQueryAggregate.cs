@@ -21,7 +21,7 @@ namespace ExecutiveEmployeePerson.ExecutiveBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.PersonId = RootEntity.Id.Value;
 
             OutputDto.Bonus = RootEntity.Bonus;
 

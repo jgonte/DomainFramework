@@ -698,11 +698,11 @@ AS
 BEGIN
     IF @$filter IS NULL
     BEGIN
-        SET @$filter = N'p.[OrganizationId] = @organizationId';
+        SET @$filter = N'p.[OrganizationId] = ' + CAST(@organizationId AS NVARCHAR(10));
     END
     ELSE
     BEGIN
-        SET @$filter = N'(p.[OrganizationId] = @organizationId) AND (' + @$filter + ')';
+        SET @$filter = N'(' + N'p.[OrganizationId] = ' + CAST(@organizationId AS NVARCHAR(10)) + N') AND (' + @$filter + N')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]
@@ -733,11 +733,11 @@ AS
 BEGIN
     IF @$filter IS NULL
     BEGIN
-        SET @$filter = N'p.[PersonId] = @personId';
+        SET @$filter = N'p.[PersonId] = ' + CAST(@personId AS NVARCHAR(10));
     END
     ELSE
     BEGIN
-        SET @$filter = N'(p.[PersonId] = @personId) AND (' + @$filter + ')';
+        SET @$filter = N'(' + N'p.[PersonId] = ' + CAST(@personId AS NVARCHAR(10)) + N') AND (' + @$filter + N')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]

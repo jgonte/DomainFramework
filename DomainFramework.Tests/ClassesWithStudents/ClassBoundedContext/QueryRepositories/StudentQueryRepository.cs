@@ -154,7 +154,7 @@ namespace ClassesWithStudents.ClassBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public (int, IEnumerable<Student>) GetNotEnrolled(int? classId, CollectionQueryParameters queryParameters)
+        public (int, IEnumerable<Student>) GetNotEnrolled(CollectionQueryParameters queryParameters)
         {
             var result = Query<Student>
                 .Collection()
@@ -162,9 +162,6 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .StoredProcedure("[ClassBoundedContext].[Student_GetNotEnrolled]")
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
-                .Parameters(
-                    p => p.Name("classId").Value(classId.Value)
-                )
                 .Execute();
 
             var count = (string)result.GetParameter("count").Value;
@@ -172,7 +169,7 @@ namespace ClassesWithStudents.ClassBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async Task<(int, IEnumerable<Student>)> GetNotEnrolledAsync(int? classId, CollectionQueryParameters queryParameters)
+        public async Task<(int, IEnumerable<Student>)> GetNotEnrolledAsync(CollectionQueryParameters queryParameters)
         {
             var result = await Query<Student>
                 .Collection()
@@ -180,9 +177,6 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .StoredProcedure("[ClassBoundedContext].[Student_GetNotEnrolled]")
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
-                .Parameters(
-                    p => p.Name("classId").Value(classId.Value)
-                )
                 .ExecuteAsync();
 
             var count = (string)result.GetParameter("count").Value;

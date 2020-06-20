@@ -31,7 +31,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
                     return entities.ToList();
                 },
-                CreateLinkedQueryAggregate = entity => 
+                CreateLinkedQueryAggregate = entity =>
                 {
                     if (entity is Manager)
                     {
@@ -56,7 +56,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.EmployeeId = RootEntity.Id.Value;
 
             OutputDto.Department = RootEntity.Department;
 

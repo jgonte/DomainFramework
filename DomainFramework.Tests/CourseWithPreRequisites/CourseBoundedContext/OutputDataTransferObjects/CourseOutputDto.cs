@@ -6,7 +6,7 @@ namespace CourseWithPreRequisites.CourseBoundedContext
 {
     public class CourseOutputDto : IOutputDataTransferObject
     {
-        public int Id { get; set; }
+        public int CourseId { get; set; }
 
         public string Description { get; set; }
 

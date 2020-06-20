@@ -31,7 +31,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
                     return entities.ToList();
                 },
-                CreateLinkedQueryAggregate = entity => 
+                CreateLinkedQueryAggregate = entity =>
                 {
                     if (entity is Car)
                     {
@@ -57,7 +57,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.MechanicId = RootEntity.Id.Value;
 
             OutputDto.Name = RootEntity.Name;
 

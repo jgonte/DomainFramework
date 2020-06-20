@@ -27,7 +27,7 @@ namespace BookWithPages.BookBoundedContext
 
                     return entities.ToList();
                 },
-                CreateLinkedQueryAggregate = entity => 
+                CreateLinkedQueryAggregate = entity =>
                 {
                     if (entity is Page)
                     {

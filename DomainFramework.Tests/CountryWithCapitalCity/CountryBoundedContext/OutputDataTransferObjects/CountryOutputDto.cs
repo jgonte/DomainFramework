@@ -6,7 +6,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 {
     public class CountryOutputDto : IOutputDataTransferObject
     {
-        public string Id { get; set; }
+        public string CountryCode { get; set; }
 
         public string Name { get; set; }
 

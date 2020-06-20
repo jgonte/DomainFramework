@@ -484,11 +484,11 @@ AS
 BEGIN
     IF @$filter IS NULL
     BEGIN
-        SET @$filter = N'c.[ClassId] = @classId';
+        SET @$filter = N'c.[ClassId] = ' + CAST(@classId AS NVARCHAR(10));
     END
     ELSE
     BEGIN
-        SET @$filter = N'(c.[ClassId] = @classId) AND (' + @$filter + ')';
+        SET @$filter = N'(' + N'c.[ClassId] = ' + CAST(@classId AS NVARCHAR(10)) + N') AND (' + @$filter + N')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]
@@ -508,7 +508,6 @@ END;
 GO
 
 CREATE PROCEDURE [ClassBoundedContext].[Student_GetNotEnrolled]
-    @classId INT,
     @$select NVARCHAR(MAX) = NULL,
     @$filter NVARCHAR(MAX) = NULL,
     @$orderby NVARCHAR(MAX) = NULL,
@@ -519,13 +518,13 @@ AS
 BEGIN
     IF @$filter IS NULL
     BEGIN
-        SET @$filter = N'c.[ClassId] <> @classId
-OR c.[ClassId] IS NULL';
+        SET @$filter = N'c.[ClassId] <> ' + CAST(@classId AS NVARCHAR(10))
+         + N' OR ' + N'c.[ClassId] IS NULL';
     END
     ELSE
     BEGIN
-        SET @$filter = N'(c.[ClassId] <> @classId
-OR c.[ClassId] IS NULL) AND (' + @$filter + ')';
+        SET @$filter = N'(' + N'c.[ClassId] <> ' + CAST(@classId AS NVARCHAR(10))
+ + N' OR ' + N'c.[ClassId] IS NULL' + N') AND (' + @$filter + N')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]

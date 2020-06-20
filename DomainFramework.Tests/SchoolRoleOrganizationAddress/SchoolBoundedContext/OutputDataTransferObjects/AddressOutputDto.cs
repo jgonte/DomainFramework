@@ -6,7 +6,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
     public class AddressOutputDto : IOutputDataTransferObject
     {
-        public int Id { get; set; }
+        public int AddressId { get; set; }
 
         public string Street { get; set; }
 

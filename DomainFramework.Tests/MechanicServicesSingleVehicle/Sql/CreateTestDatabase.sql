@@ -726,11 +726,11 @@ AS
 BEGIN
     IF @$filter IS NULL
     BEGIN
-        SET @$filter = N'v.[VehicleId] = @vehicleId';
+        SET @$filter = N'v.[VehicleId] = ' + CAST(@vehicleId AS NVARCHAR(10));
     END
     ELSE
     BEGIN
-        SET @$filter = N'(v.[VehicleId] = @vehicleId) AND (' + @$filter + ')';
+        SET @$filter = N'(' + N'v.[VehicleId] = ' + CAST(@vehicleId AS NVARCHAR(10)) + N') AND (' + @$filter + N')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]
@@ -758,11 +758,11 @@ AS
 BEGIN
     IF @$filter IS NULL
     BEGIN
-        SET @$filter = N'c.[CarId] = @carId';
+        SET @$filter = N'c.[CarId] = ' + CAST(@carId AS NVARCHAR(10));
     END
     ELSE
     BEGIN
-        SET @$filter = N'(c.[CarId] = @carId) AND (' + @$filter + ')';
+        SET @$filter = N'(' + N'c.[CarId] = ' + CAST(@carId AS NVARCHAR(10)) + N') AND (' + @$filter + N')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]
@@ -935,11 +935,11 @@ AS
 BEGIN
     IF @$filter IS NULL
     BEGIN
-        SET @$filter = N't.[TruckId] = @truckId';
+        SET @$filter = N't.[TruckId] = ' + CAST(@truckId AS NVARCHAR(10));
     END
     ELSE
     BEGIN
-        SET @$filter = N'(t.[TruckId] = @truckId) AND (' + @$filter + ')';
+        SET @$filter = N'(' + N't.[TruckId] = ' + CAST(@truckId AS NVARCHAR(10)) + N') AND (' + @$filter + N')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]

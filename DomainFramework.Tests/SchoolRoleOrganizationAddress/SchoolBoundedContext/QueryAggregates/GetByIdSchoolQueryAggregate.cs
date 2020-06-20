@@ -37,7 +37,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 },
                 GetLinkedEntity = (repository, entity, user) => ((OrganizationQueryRepository)repository).GetOrganizationForRole(RootEntity.Id),
                 GetLinkedEntityAsync = async (repository, entity, user) => await ((OrganizationQueryRepository)repository).GetOrganizationForRoleAsync(RootEntity.Id),
-                CreateLinkedQueryAggregate = entity => 
+                CreateLinkedQueryAggregate = entity =>
                 {
                     if (entity is School)
                     {
@@ -62,7 +62,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.RoleId = RootEntity.Id.Value;
 
             OutputDto.IsCharter = RootEntity.IsCharter;
 

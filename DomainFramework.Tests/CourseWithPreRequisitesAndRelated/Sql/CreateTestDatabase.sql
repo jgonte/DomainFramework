@@ -550,11 +550,11 @@ AS
 BEGIN
     IF @$filter IS NULL
     BEGIN
-        SET @$filter = N'c1.[Relates_CourseId] = @courseId';
+        SET @$filter = N'c1.[Relates_CourseId] = ' + CAST(@courseId AS NVARCHAR(10));
     END
     ELSE
     BEGIN
-        SET @$filter = N'(c1.[Relates_CourseId] = @courseId) AND (' + @$filter + ')';
+        SET @$filter = N'(' + N'c1.[Relates_CourseId] = ' + CAST(@courseId AS NVARCHAR(10)) + N') AND (' + @$filter + N')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]
@@ -585,11 +585,11 @@ AS
 BEGIN
     IF @$filter IS NULL
     BEGIN
-        SET @$filter = N'p.[Requires_CourseId] = @courseId';
+        SET @$filter = N'p.[Requires_CourseId] = ' + CAST(@courseId AS NVARCHAR(10));
     END
     ELSE
     BEGIN
-        SET @$filter = N'(p.[Requires_CourseId] = @courseId) AND (' + @$filter + ')';
+        SET @$filter = N'(' + N'p.[Requires_CourseId] = ' + CAST(@courseId AS NVARCHAR(10)) + N') AND (' + @$filter + N')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]
@@ -620,11 +620,11 @@ AS
 BEGIN
     IF @$filter IS NULL
     BEGIN
-        SET @$filter = N'c1.[IsRelatedTo_CourseId] = @courseId';
+        SET @$filter = N'c1.[IsRelatedTo_CourseId] = ' + CAST(@courseId AS NVARCHAR(10));
     END
     ELSE
     BEGIN
-        SET @$filter = N'(c1.[IsRelatedTo_CourseId] = @courseId) AND (' + @$filter + ')';
+        SET @$filter = N'(' + N'c1.[IsRelatedTo_CourseId] = ' + CAST(@courseId AS NVARCHAR(10)) + N') AND (' + @$filter + N')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]
@@ -655,11 +655,11 @@ AS
 BEGIN
     IF @$filter IS NULL
     BEGIN
-        SET @$filter = N'p.[IsRequiredBy_CourseId] = @courseId';
+        SET @$filter = N'p.[IsRequiredBy_CourseId] = ' + CAST(@courseId AS NVARCHAR(10));
     END
     ELSE
     BEGIN
-        SET @$filter = N'(p.[IsRequiredBy_CourseId] = @courseId) AND (' + @$filter + ')';
+        SET @$filter = N'(' + N'p.[IsRequiredBy_CourseId] = ' + CAST(@courseId AS NVARCHAR(10)) + N') AND (' + @$filter + N')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]

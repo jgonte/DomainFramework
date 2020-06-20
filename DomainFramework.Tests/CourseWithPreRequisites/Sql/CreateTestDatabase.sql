@@ -350,11 +350,11 @@ AS
 BEGIN
     IF @$filter IS NULL
     BEGIN
-        SET @$filter = N'p.[RequiredCourseId] = @courseId';
+        SET @$filter = N'p.[RequiredCourseId] = ' + CAST(@courseId AS NVARCHAR(10));
     END
     ELSE
     BEGIN
-        SET @$filter = N'(p.[RequiredCourseId] = @courseId) AND (' + @$filter + ')';
+        SET @$filter = N'(' + N'p.[RequiredCourseId] = ' + CAST(@courseId AS NVARCHAR(10)) + N') AND (' + @$filter + N')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]
@@ -385,11 +385,11 @@ AS
 BEGIN
     IF @$filter IS NULL
     BEGIN
-        SET @$filter = N'p.[CourseId] = @courseId';
+        SET @$filter = N'p.[CourseId] = ' + CAST(@courseId AS NVARCHAR(10));
     END
     ELSE
     BEGIN
-        SET @$filter = N'(p.[CourseId] = @courseId) AND (' + @$filter + ')';
+        SET @$filter = N'(' + N'p.[CourseId] = ' + CAST(@courseId AS NVARCHAR(10)) + N') AND (' + @$filter + N')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]

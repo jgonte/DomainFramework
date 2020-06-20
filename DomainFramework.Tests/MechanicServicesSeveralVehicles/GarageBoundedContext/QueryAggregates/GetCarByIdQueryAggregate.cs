@@ -55,7 +55,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.VehicleId = RootEntity.Id.Value;
 
             OutputDto.Passengers = RootEntity.Passengers;
 

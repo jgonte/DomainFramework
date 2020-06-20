@@ -37,7 +37,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
                 },
                 GetLinkedEntity = (repository, entity, user) => ((VehicleQueryRepository)repository).GetVehicleForMechanic(RootEntity.Id),
                 GetLinkedEntityAsync = async (repository, entity, user) => await ((VehicleQueryRepository)repository).GetVehicleForMechanicAsync(RootEntity.Id),
-                CreateLinkedQueryAggregate = entity => 
+                CreateLinkedQueryAggregate = entity =>
                 {
                     if (entity is Car)
                     {
@@ -63,7 +63,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.MechanicId = RootEntity.Id.Value;
 
             OutputDto.Name = RootEntity.Name;
 

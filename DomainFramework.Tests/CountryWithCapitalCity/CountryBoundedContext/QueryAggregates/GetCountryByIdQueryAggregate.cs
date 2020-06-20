@@ -37,7 +37,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
                 },
                 GetLinkedEntity = (repository, entity, user) => ((CapitalCityQueryRepository)repository).GetCapitalCityForCountry(RootEntity.Id),
                 GetLinkedEntityAsync = async (repository, entity, user) => await ((CapitalCityQueryRepository)repository).GetCapitalCityForCountryAsync(RootEntity.Id),
-                CreateLinkedQueryAggregate = entity => 
+                CreateLinkedQueryAggregate = entity =>
                 {
                     if (entity is CapitalCity)
                     {
@@ -55,7 +55,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id;
+            OutputDto.CountryCode = RootEntity.Id;
 
             OutputDto.Name = RootEntity.Name;
 

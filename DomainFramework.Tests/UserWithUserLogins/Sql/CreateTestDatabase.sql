@@ -287,11 +287,11 @@ AS
 BEGIN
     IF @$filter IS NULL
     BEGIN
-        SET @$filter = N'u.[UserId] = @userId';
+        SET @$filter = N'u.[UserId] = ' + CAST(@userId AS NVARCHAR(10));
     END
     ELSE
     BEGIN
-        SET @$filter = N'(u.[UserId] = @userId) AND (' + @$filter + ')';
+        SET @$filter = N'(' + N'u.[UserId] = ' + CAST(@userId AS NVARCHAR(10)) + N') AND (' + @$filter + N')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]

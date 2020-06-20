@@ -6,6 +6,8 @@ namespace BookWithPages.BookBoundedContext
 {
     public class BookOutputDto : IOutputDataTransferObject
     {
+        public int BookId { get; set; }
+
         public string Title { get; set; }
 
         public Book.Categories Category { get; set; }
@@ -15,8 +17,6 @@ namespace BookWithPages.BookBoundedContext
         public Guid PublisherId { get; set; }
 
         public bool IsHardCopy { get; set; }
-
-        public int BookId { get; set; }
 
         public IEnumerable<PageOutputDto> Pages { get; set; }
 

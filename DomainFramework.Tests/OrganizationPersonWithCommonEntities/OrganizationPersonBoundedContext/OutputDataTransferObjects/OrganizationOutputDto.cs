@@ -6,7 +6,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 {
     public class OrganizationOutputDto : IOutputDataTransferObject
     {
-        public int Id { get; set; }
+        public int OrganizationId { get; set; }
 
         public string Name { get; set; }
 

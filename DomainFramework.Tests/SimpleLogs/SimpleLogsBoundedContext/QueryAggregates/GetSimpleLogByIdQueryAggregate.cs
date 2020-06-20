@@ -21,7 +21,7 @@ namespace SimpleLogs.SimpleLogsBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.SimpleLogId = RootEntity.Id.Value;
 
             OutputDto.MessageType = RootEntity.MessageType;
 

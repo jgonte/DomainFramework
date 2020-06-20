@@ -21,7 +21,7 @@ namespace ClassesWithStudents.ClassBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.StudentId = RootEntity.Id.Value;
 
             OutputDto.FirstName = RootEntity.FirstName;
         }

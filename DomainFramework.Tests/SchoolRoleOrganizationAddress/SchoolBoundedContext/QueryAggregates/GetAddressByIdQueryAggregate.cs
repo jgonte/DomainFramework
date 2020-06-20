@@ -21,7 +21,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.AddressId = RootEntity.Id.Value;
 
             OutputDto.Street = RootEntity.Street;
         }

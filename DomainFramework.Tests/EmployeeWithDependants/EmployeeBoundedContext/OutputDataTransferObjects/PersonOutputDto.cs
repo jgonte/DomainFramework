@@ -6,7 +6,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
 {
     public class PersonOutputDto : IOutputDataTransferObject
     {
-        public int Id { get; set; }
+        public int PersonId { get; set; }
 
         public string Name { get; set; }
 

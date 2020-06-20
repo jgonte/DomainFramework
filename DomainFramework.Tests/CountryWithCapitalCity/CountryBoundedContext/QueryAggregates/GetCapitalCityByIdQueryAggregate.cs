@@ -21,7 +21,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.CapitalCityId = RootEntity.Id.Value;
 
             OutputDto.Name = RootEntity.Name;
 

@@ -31,7 +31,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
 
                     return entities.ToList();
                 },
-                CreateLinkedQueryAggregate = entity => 
+                CreateLinkedQueryAggregate = entity =>
                 {
                     if (entity is Person)
                     {
@@ -58,7 +58,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
 
                     return entities.ToList();
                 },
-                CreateLinkedQueryAggregate = entity => 
+                CreateLinkedQueryAggregate = entity =>
                 {
                     if (entity is Person)
                     {
@@ -79,7 +79,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.PersonId = RootEntity.Id.Value;
 
             OutputDto.Name = RootEntity.Name;
 

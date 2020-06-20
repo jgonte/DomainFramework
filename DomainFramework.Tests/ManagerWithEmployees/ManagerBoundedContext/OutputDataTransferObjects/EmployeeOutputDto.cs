@@ -6,7 +6,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 {
     public class EmployeeOutputDto : IOutputDataTransferObject
     {
-        public int Id { get; set; }
+        public int EmployeeId { get; set; }
 
         public string Name { get; set; }
 

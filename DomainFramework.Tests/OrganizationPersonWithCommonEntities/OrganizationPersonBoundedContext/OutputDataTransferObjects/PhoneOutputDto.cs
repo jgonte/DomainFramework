@@ -6,7 +6,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 {
     public class PhoneOutputDto : IOutputDataTransferObject
     {
-        public int Id { get; set; }
+        public int PhoneId { get; set; }
 
         public string Number { get; set; }
 

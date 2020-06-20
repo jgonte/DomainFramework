@@ -37,7 +37,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
                 },
                 GetLinkedEntity = (repository, entity, user) => ((PersonQueryRepository)repository).GetMarriedToForPerson(RootEntity.Id),
                 GetLinkedEntityAsync = async (repository, entity, user) => await ((PersonQueryRepository)repository).GetMarriedToForPersonAsync(RootEntity.Id),
-                CreateLinkedQueryAggregate = entity => 
+                CreateLinkedQueryAggregate = entity =>
                 {
                     if (entity is Person)
                     {
@@ -70,7 +70,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
                 },
                 GetLinkedEntity = (repository, entity, user) => ((PersonQueryRepository)repository).GetBestFriendOfForPerson(RootEntity.Id),
                 GetLinkedEntityAsync = async (repository, entity, user) => await ((PersonQueryRepository)repository).GetBestFriendOfForPersonAsync(RootEntity.Id),
-                CreateLinkedQueryAggregate = entity => 
+                CreateLinkedQueryAggregate = entity =>
                 {
                     if (entity is Person)
                     {
@@ -91,7 +91,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.PersonId = RootEntity.Id.Value;
 
             OutputDto.Name = RootEntity.Name;
 

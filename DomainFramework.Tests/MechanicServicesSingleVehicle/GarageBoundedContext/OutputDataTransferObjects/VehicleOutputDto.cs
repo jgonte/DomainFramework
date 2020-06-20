@@ -6,7 +6,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
 {
     public class VehicleOutputDto : IOutputDataTransferObject
     {
-        public int Id { get; set; }
+        public int VehicleId { get; set; }
 
         public string Model { get; set; }
 

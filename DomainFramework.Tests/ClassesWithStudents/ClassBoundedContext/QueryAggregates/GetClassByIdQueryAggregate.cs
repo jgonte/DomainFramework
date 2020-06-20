@@ -31,7 +31,7 @@ namespace ClassesWithStudents.ClassBoundedContext
 
                     return entities.ToList();
                 },
-                CreateLinkedQueryAggregate = entity => 
+                CreateLinkedQueryAggregate = entity =>
                 {
                     if (entity is Student)
                     {
@@ -49,7 +49,7 @@ namespace ClassesWithStudents.ClassBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.ClassId = RootEntity.Id.Value;
 
             OutputDto.Name = RootEntity.Name;
 

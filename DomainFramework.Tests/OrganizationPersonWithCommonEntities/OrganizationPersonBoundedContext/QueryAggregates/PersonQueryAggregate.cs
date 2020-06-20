@@ -35,7 +35,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 
                     return entities.ToList();
                 },
-                CreateLinkedQueryAggregate = entity => 
+                CreateLinkedQueryAggregate = entity =>
                 {
                     if (entity is Phone)
                     {
@@ -65,7 +65,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 },
                 GetLinkedEntity = (repository, entity, user) => ((AddressQueryRepository)repository).GetAddressForPerson(RootEntity.Id),
                 GetLinkedEntityAsync = async (repository, entity, user) => await ((AddressQueryRepository)repository).GetAddressForPersonAsync(RootEntity.Id),
-                CreateLinkedQueryAggregate = entity => 
+                CreateLinkedQueryAggregate = entity =>
                 {
                     if (entity is Address)
                     {
@@ -83,7 +83,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.PersonId = RootEntity.Id.Value;
 
             OutputDto.Name = RootEntity.Name;
 

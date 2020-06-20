@@ -6,7 +6,7 @@ namespace EntityWithMultiValuedValueObject.TestBoundedContext
 {
     public class TestEntityOutputDto : IOutputDataTransferObject
     {
-        public int Id { get; set; }
+        public int TestEntityId { get; set; }
 
         public string Text { get; set; }
 

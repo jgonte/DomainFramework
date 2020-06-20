@@ -37,7 +37,7 @@ namespace PersonWithSpouseAndDependants.PersonBoundedContext
                 },
                 GetLinkedEntity = (repository, entity, user) => ((PersonQueryRepository)repository).GetSpouseForPerson(RootEntity.Id),
                 GetLinkedEntityAsync = async (repository, entity, user) => await ((PersonQueryRepository)repository).GetSpouseForPersonAsync(RootEntity.Id),
-                CreateLinkedQueryAggregate = entity => 
+                CreateLinkedQueryAggregate = entity =>
                 {
                     if (entity is Person)
                     {
@@ -64,7 +64,7 @@ namespace PersonWithSpouseAndDependants.PersonBoundedContext
 
                     return entities.ToList();
                 },
-                CreateLinkedQueryAggregate = entity => 
+                CreateLinkedQueryAggregate = entity =>
                 {
                     if (entity is Person)
                     {
@@ -85,7 +85,7 @@ namespace PersonWithSpouseAndDependants.PersonBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.Id = RootEntity.Id.Value;
+            OutputDto.PersonId = RootEntity.Id.Value;
 
             OutputDto.Name = RootEntity.Name;
 

@@ -6,7 +6,7 @@ namespace SimpleLogs.SimpleLogsBoundedContext
 {
     public class SimpleLogOutputDto : IOutputDataTransferObject
     {
-        public int Id { get; set; }
+        public int SimpleLogId { get; set; }
 
         public string MessageType { get; set; }
 
