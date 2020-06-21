@@ -68,7 +68,7 @@ namespace RegisterUser.UserBoundedContext
 
             var userDto = queryAggregate.Get(username: "user1");
 
-            Assert.AreEqual(userId, userDto.Id);
+            Assert.AreEqual(userId, userDto.UserId);
 
             Assert.AreEqual("user1", userDto.Username);
 

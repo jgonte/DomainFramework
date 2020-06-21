@@ -64,7 +64,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
             var mechanicDto = queryAggregate.Get(mechanicId);
 
-            Assert.AreEqual(mechanicId, mechanicDto.Id);
+            Assert.AreEqual(mechanicId, mechanicDto.MechanicId);
 
             Assert.AreEqual("Sasha", mechanicDto.Name);
 
@@ -84,7 +84,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
             mechanicDto = queryAggregate.Get(mechanicId);
 
-            Assert.AreEqual(mechanicId, mechanicDto.Id);
+            Assert.AreEqual(mechanicId, mechanicDto.MechanicId);
 
             Assert.AreEqual("Alexander", mechanicDto.Name);
 
@@ -221,7 +221,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
             var mechanicDto = queryAggregate.Get(mechanicId);
 
-            Assert.AreEqual(mechanicId, mechanicDto.Id);
+            Assert.AreEqual(mechanicId, mechanicDto.MechanicId);
 
             Assert.AreEqual("Sasha", mechanicDto.Name);
 
@@ -235,7 +235,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
             Assert.AreEqual(3, ((TruckOutputDto)vehicleDto).Inspections.Count());
 
-            Assert.AreEqual(mechanicDto.Id, vehicleDto.MechanicId);
+            Assert.AreEqual(mechanicDto.MechanicId, vehicleDto.MechanicId);
 
             vehicleDto = mechanicDto.Vehicles.ElementAt(1);
 
@@ -245,7 +245,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
             Assert.AreEqual(2, ((CarOutputDto)vehicleDto).Doors.Count());
 
-            Assert.AreEqual(mechanicDto.Id, vehicleDto.MechanicId);
+            Assert.AreEqual(mechanicDto.MechanicId, vehicleDto.MechanicId);
 
             vehicleDto = mechanicDto.Vehicles.ElementAt(2);
 
@@ -253,7 +253,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
             Assert.AreEqual(2, vehicleDto.Cylinders.Count());
 
-            Assert.AreEqual(mechanicDto.Id, vehicleDto.MechanicId);
+            Assert.AreEqual(mechanicDto.MechanicId, vehicleDto.MechanicId);
 
             // Update
             commandAggregate = new SaveMechanicCommandAggregate(new SaveMechanicInputDto
@@ -306,7 +306,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
             mechanicDto = queryAggregate.Get(mechanicId);
 
-            Assert.AreEqual(mechanicId, mechanicDto.Id);
+            Assert.AreEqual(mechanicId, mechanicDto.MechanicId);
 
             Assert.AreEqual("Alexander", mechanicDto.Name);
 
@@ -314,19 +314,19 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
             Assert.AreEqual("Toyota", vehicleDto.Model);
 
-            Assert.AreEqual(mechanicDto.Id, vehicleDto.MechanicId);
+            Assert.AreEqual(mechanicDto.MechanicId, vehicleDto.MechanicId);
 
             vehicleDto = mechanicDto.Vehicles.ElementAt(1);
 
             Assert.AreEqual("BMW", vehicleDto.Model);
 
-            Assert.AreEqual(mechanicDto.Id, vehicleDto.MechanicId);
+            Assert.AreEqual(mechanicDto.MechanicId, vehicleDto.MechanicId);
 
             vehicleDto = mechanicDto.Vehicles.ElementAt(2);
 
             Assert.AreEqual("Ford", vehicleDto.Model);
 
-            Assert.AreEqual(mechanicDto.Id, vehicleDto.MechanicId);
+            Assert.AreEqual(mechanicDto.MechanicId, vehicleDto.MechanicId);
 
             // Delete
             //var deleteAggregate = new DeleteMechanicCommandAggregate(new DeleteMechanicInputDto

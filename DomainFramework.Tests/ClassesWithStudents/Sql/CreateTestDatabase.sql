@@ -518,13 +518,11 @@ AS
 BEGIN
     IF @$filter IS NULL
     BEGIN
-        SET @$filter = N'c.[ClassId] <> ' + CAST(@classId AS NVARCHAR(10))
-         + N' OR ' + N'c.[ClassId] IS NULL';
+        SET @$filter = N'c.[ClassId] IS NULL';
     END
     ELSE
     BEGIN
-        SET @$filter = N'(' + N'c.[ClassId] <> ' + CAST(@classId AS NVARCHAR(10))
- + N' OR ' + N'c.[ClassId] IS NULL' + N') AND (' + @$filter + N')';
+        SET @$filter = N'(' + N'c.[ClassId] IS NULL' + N') AND (' + @$filter + N')';
     END;
 
     EXEC [dbo].[pExecuteDynamicQuery]

@@ -130,7 +130,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 
             var countryDto = queryAggregate.Get(countryCode);
 
-            Assert.AreEqual(countryCode, countryDto.Id);
+            Assert.AreEqual(countryCode, countryDto.CountryCode);
 
             Assert.AreEqual("Japon", countryDto.Name);
 
@@ -158,7 +158,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 
             countryDto = queryAggregate.Get(countryCode);
 
-            Assert.AreEqual(countryCode, countryDto.Id);
+            Assert.AreEqual(countryCode, countryDto.CountryCode);
 
             Assert.AreEqual("Japan", countryDto.Name);
 
@@ -189,7 +189,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 
             countryDto = countryDtos.Item2.ElementAt(0);
 
-            Assert.AreEqual("jp", countryDto.Id);
+            Assert.AreEqual("jp", countryDto.CountryCode);
 
             Assert.AreEqual("Japan", countryDto.Name);
 
@@ -201,7 +201,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 
             countryDto = countryDtos.Item2.ElementAt(1);
 
-            Assert.AreEqual("no", countryDto.Id);
+            Assert.AreEqual("no", countryDto.CountryCode);
 
             Assert.AreEqual("Norway", countryDto.Name);
 

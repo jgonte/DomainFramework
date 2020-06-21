@@ -80,7 +80,7 @@ namespace EntityWithMultiValuedValueObject.TestBoundedContext
 
             var dto = queryAggregate.Get(entityId);
 
-            Assert.AreEqual(entityId, dto.Id);
+            Assert.AreEqual(entityId, dto.TestEntityId);
 
             Assert.AreEqual("Some text", dto.Text);
 
@@ -125,7 +125,7 @@ namespace EntityWithMultiValuedValueObject.TestBoundedContext
 
             dto = queryAggregate.Get(entityId);
 
-            Assert.AreEqual(entityId, dto.Id);
+            Assert.AreEqual(entityId, dto.TestEntityId);
 
             Assert.AreEqual("Some replaced text", dto.Text);
 
@@ -169,7 +169,7 @@ namespace EntityWithMultiValuedValueObject.TestBoundedContext
 
             dto = queryAggregate.Get(entityId);
 
-            Assert.AreEqual(entityId, dto.Id);
+            Assert.AreEqual(entityId, dto.TestEntityId);
 
             Assert.AreEqual("Some replaced text", dto.Text);
 

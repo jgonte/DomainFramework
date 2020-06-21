@@ -79,7 +79,7 @@ namespace UserWithUserLogins.UserBoundedContext
 
             var userDto = getUserByUserLoginQueryAggregate.Get(provider: "provider2", userKey: "userKey2");
 
-            Assert.AreEqual(userId, userDto.Id);
+            Assert.AreEqual(userId, userDto.UserId);
 
             Assert.AreEqual("user", userDto.UserName);
 
@@ -102,7 +102,7 @@ namespace UserWithUserLogins.UserBoundedContext
             // Add a user login
             var addUserLoginCommandAggregate = new AddUserLoginCommandAggregate(new UserAddUserLoginInputDto
             {
-                UserId = userDto.Id,
+                UserId = userDto.UserId,
                 UserLogins = new List<UserLoginInputDto>
                 {
                     new UserLoginInputDto
@@ -120,7 +120,7 @@ namespace UserWithUserLogins.UserBoundedContext
 
             userDto = getUserByUserLoginQueryAggregate.Get(provider: "provider3", userKey: "userKey3");
 
-            Assert.AreEqual(userId, userDto.Id);
+            Assert.AreEqual(userId, userDto.UserId);
 
             Assert.AreEqual("user", userDto.UserName);
 
@@ -151,7 +151,7 @@ namespace UserWithUserLogins.UserBoundedContext
 
             userDto = getUserByNormalizedEmailQueryAggregate.Get(email: "user@example.com");
 
-            Assert.AreEqual(userId, userDto.Id);
+            Assert.AreEqual(userId, userDto.UserId);
 
             Assert.AreEqual("user", userDto.UserName);
 

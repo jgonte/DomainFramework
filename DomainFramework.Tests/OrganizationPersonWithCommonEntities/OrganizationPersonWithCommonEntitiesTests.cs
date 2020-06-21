@@ -81,7 +81,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 
             var personDto = personQueryAggregate.Get(personId);
 
-            Assert.AreEqual(personId, personDto.Id);
+            Assert.AreEqual(personId, personDto.PersonId);
 
             Assert.AreEqual("Fiona", personDto.Name);
 
@@ -126,7 +126,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 
             var organizationDto = organizationQueryAggregate.Get(organizationId);
 
-            Assert.AreEqual(organizationId, organizationDto.Id);
+            Assert.AreEqual(organizationId, organizationDto.OrganizationId);
 
             Assert.AreEqual("My Company Inc.", organizationDto.Name);
 

@@ -72,7 +72,7 @@ namespace EmployeePerson.EmployeeBoundedContext
 
             var employeeDto = queryAggregate.Get(employeeId);
 
-            Assert.AreEqual(employeeId, employeeDto.Id);
+            Assert.AreEqual(employeeId, employeeDto.PersonId);
 
             Assert.AreEqual("Pablito", employeeDto.Name);
 
@@ -108,7 +108,7 @@ namespace EmployeePerson.EmployeeBoundedContext
 
             employeeDto = queryAggregate.Get(employeeId);
 
-            Assert.AreEqual(employeeId, employeeDto.Id);
+            Assert.AreEqual(employeeId, employeeDto.PersonId);
 
             Assert.AreEqual("Camila", employeeDto.Name);
 

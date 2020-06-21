@@ -70,7 +70,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
 
             var executiveDto = queryAggregate.Get(executiveId);
 
-            Assert.AreEqual(executiveId, executiveDto.Id);
+            Assert.AreEqual(executiveId, executiveDto.PersonId);
 
             Assert.AreEqual("Bill", executiveDto.Name);
 
@@ -100,7 +100,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
 
             executiveDto = queryAggregate.Get(executiveId);
 
-            Assert.AreEqual(executiveId, executiveDto.Id);
+            Assert.AreEqual(executiveId, executiveDto.PersonId);
 
             Assert.AreEqual("William", executiveDto.Name);
 

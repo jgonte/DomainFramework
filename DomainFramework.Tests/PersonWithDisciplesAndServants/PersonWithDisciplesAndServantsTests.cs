@@ -102,7 +102,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
 
             var personDto = queryAggregate.Get(personId);
 
-            Assert.AreEqual(personId, personDto.Id);
+            Assert.AreEqual(personId, personDto.PersonId);
 
             Assert.AreEqual("Master Shifu", personDto.Name);
 

@@ -77,11 +77,11 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
             Assert.IsTrue(school.IsCharter);
 
-            Assert.AreEqual(1, school.Organization.Id);
+            Assert.AreEqual(1, school.Organization.OrganizationId);
 
             Assert.AreEqual("School1", school.Organization.Name);
 
-            Assert.AreEqual(1, school.Organization.Address.Id);
+            Assert.AreEqual(1, school.Organization.Address.AddressId);
 
             Assert.AreEqual("Street1", school.Organization.Address.Street);
 

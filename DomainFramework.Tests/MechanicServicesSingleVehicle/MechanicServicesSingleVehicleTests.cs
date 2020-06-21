@@ -64,7 +64,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
 
             var mechanicDto = queryAggregate.Get(mechanicId);
 
-            Assert.AreEqual(mechanicId, mechanicDto.Id);
+            Assert.AreEqual(mechanicId, mechanicDto.MechanicId);
 
             Assert.AreEqual("Sasha", mechanicDto.Name);
 
@@ -84,7 +84,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
 
             mechanicDto = queryAggregate.Get(mechanicId);
 
-            Assert.AreEqual(mechanicId, mechanicDto.Id);
+            Assert.AreEqual(mechanicId, mechanicDto.MechanicId);
 
             Assert.AreEqual("Alexander", mechanicDto.Name);
 
@@ -145,7 +145,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
 
             var mechanicDto = queryAggregate.Get(mechanicId);
 
-            Assert.AreEqual(mechanicId, mechanicDto.Id);
+            Assert.AreEqual(mechanicId, mechanicDto.MechanicId);
 
             Assert.AreEqual("Sasha", mechanicDto.Name);
 
@@ -155,7 +155,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
 
             Assert.AreEqual(4, vehicleDto.Cylinders.Count());
 
-            Assert.AreEqual(mechanicDto.Id, vehicleDto.MechanicId);
+            Assert.AreEqual(mechanicDto.MechanicId, vehicleDto.MechanicId);
 
             // Update
             commandAggregate = new SaveMechanicCommandAggregate(new SaveMechanicInputDto
@@ -183,7 +183,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
 
             mechanicDto = queryAggregate.Get(mechanicId);
 
-            Assert.AreEqual(mechanicId, mechanicDto.Id);
+            Assert.AreEqual(mechanicId, mechanicDto.MechanicId);
 
             Assert.AreEqual("Alexander", mechanicDto.Name);
 
@@ -191,7 +191,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
 
             Assert.AreEqual("Toyota", vehicleDto.Model);
 
-            Assert.AreEqual(mechanicDto.Id, vehicleDto.MechanicId);
+            Assert.AreEqual(mechanicDto.MechanicId, vehicleDto.MechanicId);
 
             // Delete
             //var deleteAggregate = new DeleteMechanicCommandAggregate(new DeleteMechanicInputDto

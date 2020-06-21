@@ -71,7 +71,7 @@ namespace PersonWithSpouse.PersonBoundedContext
 
             var personDto = queryAggregate.Get(personId);
 
-            Assert.AreEqual(personId, personDto.Id);
+            Assert.AreEqual(personId, personDto.PersonId);
 
             Assert.AreEqual("Fiona", personDto.Name);
 
@@ -80,7 +80,7 @@ namespace PersonWithSpouse.PersonBoundedContext
             // Test the bi-directionality of the association
             queryAggregate = new GetPersonByIdQueryAggregate();
 
-            personDto = queryAggregate.Get(personDto.MarriedTo.Id);
+            personDto = queryAggregate.Get(personDto.MarriedTo.PersonId);
 
             Assert.AreEqual("Shrek", personDto.Name);
 

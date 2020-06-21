@@ -96,7 +96,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
 
             var classDto = getCourseByIdQueryAggregate.Get(courseId);
 
-            Assert.AreEqual(courseId, classDto.Id);
+            Assert.AreEqual(courseId, classDto.CourseId);
 
             Assert.AreEqual("Some Course", classDto.Description);
 

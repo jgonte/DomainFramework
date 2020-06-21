@@ -77,7 +77,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
 
             var fionaDto = queryAggregate.Get(personId);
 
-            Assert.AreEqual(personId, fionaDto.Id);
+            Assert.AreEqual(personId, fionaDto.PersonId);
 
             Assert.AreEqual("Fiona", fionaDto.Name);
 
@@ -88,7 +88,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
             // Test the bi-directionality of the MarriedTo association
             queryAggregate = new PersonQueryAggregate();
 
-            var shrekDto = queryAggregate.Get(fionaDto.MarriedTo.Id);
+            var shrekDto = queryAggregate.Get(fionaDto.MarriedTo.PersonId);
 
             Assert.AreEqual("Shrek", shrekDto.Name);
 
@@ -97,7 +97,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
             // Test the bi-directionality of the BestFriendOf association
             queryAggregate = new PersonQueryAggregate();
 
-            var donkeyDto = queryAggregate.Get(fionaDto.BestFriendOf.Id);
+            var donkeyDto = queryAggregate.Get(fionaDto.BestFriendOf.PersonId);
 
             Assert.AreEqual("Donkey", donkeyDto.Name);
 

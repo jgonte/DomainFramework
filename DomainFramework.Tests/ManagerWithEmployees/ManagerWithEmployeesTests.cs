@@ -65,7 +65,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
             var managerDto = queryAggregate.Get(managerId);
 
-            Assert.AreEqual(managerId, managerDto.Id);
+            Assert.AreEqual(managerId, managerDto.EmployeeId);
 
             Assert.AreEqual("IT", managerDto.Department);
 
@@ -88,7 +88,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
             managerDto = queryAggregate.Get(managerId);
 
-            Assert.AreEqual(managerId, managerDto.Id);
+            Assert.AreEqual(managerId, managerDto.EmployeeId);
 
             Assert.AreEqual("Information Technology", managerDto.Department);
 
@@ -143,7 +143,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
             var managerDto = queryAggregate.Get(managerId);
 
-            Assert.AreEqual(managerId, managerDto.Id);
+            Assert.AreEqual(managerId, managerDto.EmployeeId);
 
             Assert.AreEqual("IT", managerDto.Department);
 
@@ -155,19 +155,19 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
             Assert.AreEqual("Yana", employeeDto.Name);
 
-            Assert.AreEqual(managerDto.Id, employeeDto.SupervisorId);
+            Assert.AreEqual(managerDto.EmployeeId, employeeDto.SupervisorId);
 
             employeeDto = managerDto.Employees.ElementAt(1);
 
             Assert.AreEqual("Mark", employeeDto.Name);
 
-            Assert.AreEqual(managerDto.Id, employeeDto.SupervisorId);
+            Assert.AreEqual(managerDto.EmployeeId, employeeDto.SupervisorId);
 
             employeeDto = managerDto.Employees.ElementAt(2);
 
             Assert.AreEqual("Sarah", employeeDto.Name);
 
-            Assert.AreEqual(managerDto.Id, employeeDto.SupervisorId);
+            Assert.AreEqual(managerDto.EmployeeId, employeeDto.SupervisorId);
 
             // Update
             commandAggregate = new SaveManagerCommandAggregate(new SaveManagerInputDto
@@ -199,7 +199,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
             managerDto = queryAggregate.Get(managerId);
 
-            Assert.AreEqual(managerId, managerDto.Id);
+            Assert.AreEqual(managerId, managerDto.EmployeeId);
 
             Assert.AreEqual("Information Technology", managerDto.Department);
 
@@ -209,19 +209,19 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
             Assert.AreEqual("Jorge", employeeDto.Name);
 
-            Assert.AreEqual(managerDto.Id, employeeDto.SupervisorId);
+            Assert.AreEqual(managerDto.EmployeeId, employeeDto.SupervisorId);
 
             employeeDto = managerDto.Employees.ElementAt(1);
 
             Assert.AreEqual("Moshe", employeeDto.Name);
 
-            Assert.AreEqual(managerDto.Id, employeeDto.SupervisorId);
+            Assert.AreEqual(managerDto.EmployeeId, employeeDto.SupervisorId);
 
             employeeDto = managerDto.Employees.ElementAt(2);
 
             Assert.AreEqual("Daphni", employeeDto.Name);
 
-            Assert.AreEqual(managerDto.Id, employeeDto.SupervisorId);
+            Assert.AreEqual(managerDto.EmployeeId, employeeDto.SupervisorId);
 
             // Read again using the GetAllEmployeesForManagerQueryAggregate
             //var queryLinkedAggregate = new GetAllEmployeesForManagerQueryAggregate();

@@ -118,7 +118,7 @@ namespace ClassesWithStudents.ClassBoundedContext
 
             var classDto = getClassByIdQueryAggregate.Get(classId);
 
-            Assert.AreEqual(classId, classDto.Id);
+            Assert.AreEqual(classId, classDto.ClassId);
 
             Assert.AreEqual("Programming", classDto.Name);
 
@@ -126,19 +126,19 @@ namespace ClassesWithStudents.ClassBoundedContext
 
             var student = classDto.Students.ElementAt(0);
 
-            Assert.IsNotNull(student.Id);
+            Assert.IsNotNull(student.StudentId);
 
             Assert.AreEqual("Sarah", student.FirstName);
 
             student = classDto.Students.ElementAt(1);
 
-            Assert.IsNotNull(student.Id);
+            Assert.IsNotNull(student.StudentId);
 
             Assert.AreEqual("Mark", student.FirstName);
 
             student = classDto.Students.ElementAt(2);
 
-            Assert.IsNotNull(student.Id);
+            Assert.IsNotNull(student.StudentId);
 
             Assert.AreEqual("Yana", student.FirstName);
 
@@ -186,7 +186,7 @@ namespace ClassesWithStudents.ClassBoundedContext
 
             classDto = getClassByIdQueryAggregate.Get(classId);
 
-            Assert.AreEqual(classId, classDto.Id);
+            Assert.AreEqual(classId, classDto.ClassId);
 
             Assert.AreEqual("Programming", classDto.Name);
 
@@ -194,19 +194,19 @@ namespace ClassesWithStudents.ClassBoundedContext
 
             student = classDto.Students.ElementAt(0);
 
-            Assert.IsNotNull(student.Id);
+            Assert.IsNotNull(student.StudentId);
 
             Assert.AreEqual("Jorge", student.FirstName);
 
             student = classDto.Students.ElementAt(1);
 
-            Assert.IsNotNull(student.Id);
+            Assert.IsNotNull(student.StudentId);
 
             Assert.AreEqual("Moshe", student.FirstName);
 
             student = classDto.Students.ElementAt(2);
 
-            Assert.IsNotNull(student.Id);
+            Assert.IsNotNull(student.StudentId);
 
             Assert.AreEqual("Daphni", student.FirstName);
         }
