@@ -69,8 +69,8 @@ namespace ClassesWithStudents.ClassBoundedContext
 
                                     entity.Id = new ClassEnrollmentId
                                     {
-                                        ClassId = @class.Id.Value,
-                                        StudentId = student.Id.Value
+                                        ClassId = @class.Id,
+                                        StudentId = student.Id
                                     };
 
                                     cmd.Parameters(

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CourseWithPreRequisites.CourseBoundedContext
 {
-    public class GetCourseByIdQueryAggregate : GetByIdQueryAggregate<Course, int?, CourseOutputDto>
+    public class GetCourseByIdQueryAggregate : GetByIdQueryAggregate<Course, int, CourseOutputDto>
     {
-        public GetAllLinkedAggregateQueryCollectionOperation<int?, Course, CourseOutputDto> GetAllRequiresLinkedAggregateQueryOperation { get; set; }
+        public GetAllLinkedAggregateQueryCollectionOperation<int, Course, CourseOutputDto> GetAllRequiresLinkedAggregateQueryOperation { get; set; }
 
         public GetCourseByIdQueryAggregate() : this(null)
         {
@@ -20,7 +20,7 @@ namespace CourseWithPreRequisites.CourseBoundedContext
 
             CourseQueryRepository.Register(context);
 
-            GetAllRequiresLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Course, CourseOutputDto>
+            GetAllRequiresLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int, Course, CourseOutputDto>
             {
                 GetAllLinkedEntities = (repository, entity, user) => ((CourseQueryRepository)repository).GetAllRequiresForCourse(RootEntity.Id).ToList(),
                 GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
@@ -50,7 +50,7 @@ namespace CourseWithPreRequisites.CourseBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.CourseId = RootEntity.Id.Value;
+            OutputDto.CourseId = RootEntity.Id;
 
             OutputDto.Description = RootEntity.Description;
 

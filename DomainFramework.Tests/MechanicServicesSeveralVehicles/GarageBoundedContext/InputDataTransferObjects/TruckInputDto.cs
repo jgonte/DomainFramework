@@ -7,7 +7,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 {
     public class TruckInputDto : VehicleInputDto
     {
-        public int? TruckId { get; set; }
+        public int TruckId { get; set; }
 
         public int Weight { get; set; }
 
@@ -17,7 +17,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
         {
             base.Validate(result);
 
-            Weight.ValidateNotZero(result, nameof(Weight));
+            Weight.ValidateRequired(result, nameof(Weight));
 
             foreach (var inspection in Inspections)
             {

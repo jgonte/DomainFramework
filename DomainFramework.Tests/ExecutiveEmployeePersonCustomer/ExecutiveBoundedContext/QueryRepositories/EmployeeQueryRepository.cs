@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
 {
-    public class EmployeeQueryRepository : EntityQueryRepository<Employee, int?>
+    public class EmployeeQueryRepository : EntityQueryRepository<Employee, int>
     {
         public override (int, IEnumerable<Employee>) Get(CollectionQueryParameters queryParameters)
         {
@@ -82,14 +82,14 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             return result.Data;
         }
 
-        public override Employee GetById(int? employeeId)
+        public override Employee GetById(int employeeId)
         {
             var result = Query<Employee>
                 .Single()
                 .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
                 .StoredProcedure("[ExecutiveBoundedContext].[pEmployee_GetById]")
                 .Parameters(
-                    p => p.Name("employeeId").Value(employeeId.Value)
+                    p => p.Name("employeeId").Value(employeeId)
                 )
                 .MapTypes(
                     5,
@@ -101,14 +101,14 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
             return result.Data;
         }
 
-        public async override Task<Employee> GetByIdAsync(int? employeeId)
+        public async override Task<Employee> GetByIdAsync(int employeeId)
         {
             var result = await Query<Employee>
                 .Single()
                 .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
                 .StoredProcedure("[ExecutiveBoundedContext].[pEmployee_GetById]")
                 .Parameters(
-                    p => p.Name("employeeId").Value(employeeId.Value)
+                    p => p.Name("employeeId").Value(employeeId)
                 )
                 .MapTypes(
                     5,

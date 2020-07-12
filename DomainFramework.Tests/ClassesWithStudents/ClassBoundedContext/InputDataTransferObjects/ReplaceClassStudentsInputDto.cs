@@ -13,7 +13,7 @@ namespace ClassesWithStudents.ClassBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            ClassId.ValidateNotZero(result, nameof(ClassId));
+            ClassId.ValidateRequired(result, nameof(ClassId));
 
             foreach (var student in Students)
             {

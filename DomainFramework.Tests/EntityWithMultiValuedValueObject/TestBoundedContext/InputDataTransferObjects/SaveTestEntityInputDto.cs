@@ -7,7 +7,7 @@ namespace EntityWithMultiValuedValueObject.TestBoundedContext
 {
     public class SaveTestEntityInputDto : IInputDataTransferObject
     {
-        public int? TestEntityId { get; set; }
+        public int TestEntityId { get; set; }
 
         public string Text { get; set; }
 
@@ -15,7 +15,7 @@ namespace EntityWithMultiValuedValueObject.TestBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            Text.ValidateNotEmpty(result, nameof(Text));
+            Text.ValidateRequired(result, nameof(Text));
 
             Text.ValidateMaxLength(result, nameof(Text), 50);
 

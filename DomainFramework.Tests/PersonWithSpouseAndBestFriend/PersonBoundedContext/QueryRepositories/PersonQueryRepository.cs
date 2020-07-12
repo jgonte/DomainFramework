@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
 {
-    public class PersonQueryRepository : EntityQueryRepository<Person, int?>
+    public class PersonQueryRepository : EntityQueryRepository<Person, int>
     {
         public override (int, IEnumerable<Person>) Get(CollectionQueryParameters queryParameters)
         {
@@ -62,84 +62,84 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
             return result.Data;
         }
 
-        public override Person GetById(int? personId)
+        public override Person GetById(int personId)
         {
             var result = Query<Person>
                 .Single()
                 .Connection(PersonWithSpouseAndBestFriendConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetById]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<Person> GetByIdAsync(int? personId)
+        public async override Task<Person> GetByIdAsync(int personId)
         {
             var result = await Query<Person>
                 .Single()
                 .Connection(PersonWithSpouseAndBestFriendConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetById]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public Person GetBestFriendOfForPerson(int? personId)
+        public Person GetBestFriendOfForPerson(int personId)
         {
             var result = Query<Person>
                 .Single()
                 .Connection(PersonWithSpouseAndBestFriendConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetBestFriendOf]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<Person> GetBestFriendOfForPersonAsync(int? personId)
+        public async Task<Person> GetBestFriendOfForPersonAsync(int personId)
         {
             var result = await Query<Person>
                 .Single()
                 .Connection(PersonWithSpouseAndBestFriendConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetBestFriendOf]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public Person GetMarriedToForPerson(int? personId)
+        public Person GetMarriedToForPerson(int personId)
         {
             var result = Query<Person>
                 .Single()
                 .Connection(PersonWithSpouseAndBestFriendConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetMarriedTo]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<Person> GetMarriedToForPersonAsync(int? personId)
+        public async Task<Person> GetMarriedToForPersonAsync(int personId)
         {
             var result = await Query<Person>
                 .Single()
                 .Connection(PersonWithSpouseAndBestFriendConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetMarriedTo]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .ExecuteAsync();
 

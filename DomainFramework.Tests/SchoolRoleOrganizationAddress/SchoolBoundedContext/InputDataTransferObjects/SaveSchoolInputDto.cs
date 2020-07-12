@@ -7,7 +7,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
     public class SaveSchoolInputDto : IInputDataTransferObject
     {
-        public int? SchoolId { get; set; }
+        public int SchoolId { get; set; }
 
         public bool IsCharter { get; set; }
 

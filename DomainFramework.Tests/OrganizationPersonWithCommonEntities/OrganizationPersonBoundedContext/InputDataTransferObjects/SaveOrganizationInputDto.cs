@@ -8,7 +8,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 {
     public class SaveOrganizationInputDto : IInputDataTransferObject
     {
-        public int? OrganizationId { get; set; }
+        public int OrganizationId { get; set; }
 
         public string Name { get; set; }
 
@@ -18,7 +18,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            Name.ValidateNotEmpty(result, nameof(Name));
+            Name.ValidateRequired(result, nameof(Name));
 
             Name.ValidateMaxLength(result, nameof(Name), 50);
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 {
-    public class PhoneQueryRepository : EntityQueryRepository<Phone, int?>
+    public class PhoneQueryRepository : EntityQueryRepository<Phone, int>
     {
         public override (int, IEnumerable<Phone>) Get(CollectionQueryParameters queryParameters)
         {
@@ -62,91 +62,91 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
             return result.Data;
         }
 
-        public override Phone GetById(int? phoneId)
+        public override Phone GetById(int phoneId)
         {
             var result = Query<Phone>
                 .Single()
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pPhone_GetById]")
                 .Parameters(
-                    p => p.Name("phoneId").Value(phoneId.Value)
+                    p => p.Name("phoneId").Value(phoneId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<Phone> GetByIdAsync(int? phoneId)
+        public async override Task<Phone> GetByIdAsync(int phoneId)
         {
             var result = await Query<Phone>
                 .Single()
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pPhone_GetById]")
                 .Parameters(
-                    p => p.Name("phoneId").Value(phoneId.Value)
+                    p => p.Name("phoneId").Value(phoneId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public IEnumerable<Phone> GetAllPhonesForOrganization(int? organizationId)
+        public IEnumerable<Phone> GetAllPhonesForOrganization(int organizationId)
         {
             var result = Query<Phone>
                 .Collection()
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pOrganization_GetAllPhones]")
                 .Parameters(
-                    p => p.Name("organizationId").Value(organizationId.Value)
+                    p => p.Name("organizationId").Value(organizationId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<IEnumerable<Phone>> GetAllPhonesForOrganizationAsync(int? organizationId)
+        public async Task<IEnumerable<Phone>> GetAllPhonesForOrganizationAsync(int organizationId)
         {
             var result = await Query<Phone>
                 .Collection()
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pOrganization_GetAllPhones]")
                 .Parameters(
-                    p => p.Name("organizationId").Value(organizationId.Value)
+                    p => p.Name("organizationId").Value(organizationId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public IEnumerable<Phone> GetAllPhonesForPerson(int? personId)
+        public IEnumerable<Phone> GetAllPhonesForPerson(int personId)
         {
             var result = Query<Phone>
                 .Collection()
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pPerson_GetAllPhones]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<IEnumerable<Phone>> GetAllPhonesForPersonAsync(int? personId)
+        public async Task<IEnumerable<Phone>> GetAllPhonesForPersonAsync(int personId)
         {
             var result = await Query<Phone>
                 .Collection()
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pPerson_GetAllPhones]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public (int, IEnumerable<Phone>) GetPhonesForOrganization(int? organizationId, CollectionQueryParameters queryParameters)
+        public (int, IEnumerable<Phone>) GetPhonesForOrganization(int organizationId, CollectionQueryParameters queryParameters)
         {
             var result = Query<Phone>
                 .Collection()
@@ -155,7 +155,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("organizationId").Value(organizationId.Value)
+                    p => p.Name("organizationId").Value(organizationId)
                 )
                 .Execute();
 
@@ -164,7 +164,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async Task<(int, IEnumerable<Phone>)> GetPhonesForOrganizationAsync(int? organizationId, CollectionQueryParameters queryParameters)
+        public async Task<(int, IEnumerable<Phone>)> GetPhonesForOrganizationAsync(int organizationId, CollectionQueryParameters queryParameters)
         {
             var result = await Query<Phone>
                 .Collection()
@@ -173,7 +173,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("organizationId").Value(organizationId.Value)
+                    p => p.Name("organizationId").Value(organizationId)
                 )
                 .ExecuteAsync();
 
@@ -182,7 +182,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public (int, IEnumerable<Phone>) GetPhonesForPerson(int? personId, CollectionQueryParameters queryParameters)
+        public (int, IEnumerable<Phone>) GetPhonesForPerson(int personId, CollectionQueryParameters queryParameters)
         {
             var result = Query<Phone>
                 .Collection()
@@ -191,7 +191,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .Execute();
 
@@ -200,7 +200,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async Task<(int, IEnumerable<Phone>)> GetPhonesForPersonAsync(int? personId, CollectionQueryParameters queryParameters)
+        public async Task<(int, IEnumerable<Phone>)> GetPhonesForPersonAsync(int personId, CollectionQueryParameters queryParameters)
         {
             var result = await Query<Phone>
                 .Collection()
@@ -209,7 +209,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .ExecuteAsync();
 

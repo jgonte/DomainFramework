@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
 {
-    public class CourseQueryRepository : EntityQueryRepository<Course, int?>
+    public class CourseQueryRepository : EntityQueryRepository<Course, int>
     {
         public override (int, IEnumerable<Course>) Get(CollectionQueryParameters queryParameters)
         {
@@ -62,147 +62,147 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
             return result.Data;
         }
 
-        public override Course GetById(int? courseId)
+        public override Course GetById(int courseId)
         {
             var result = Query<Course>
                 .Single()
                 .Connection(CourseWithPreRequisitesAndRelatedConnectionClass.GetConnectionName())
                 .StoredProcedure("[CourseBoundedContext].[pCourse_GetById]")
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<Course> GetByIdAsync(int? courseId)
+        public async override Task<Course> GetByIdAsync(int courseId)
         {
             var result = await Query<Course>
                 .Single()
                 .Connection(CourseWithPreRequisitesAndRelatedConnectionClass.GetConnectionName())
                 .StoredProcedure("[CourseBoundedContext].[pCourse_GetById]")
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public IEnumerable<Course> GetAllIsRelatedToForCourse(int? courseId)
+        public IEnumerable<Course> GetAllIsRelatedToForCourse(int courseId)
         {
             var result = Query<Course>
                 .Collection()
                 .Connection(CourseWithPreRequisitesAndRelatedConnectionClass.GetConnectionName())
                 .StoredProcedure("[CourseBoundedContext].[pCourse_GetAllIsRelatedTo]")
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<IEnumerable<Course>> GetAllIsRelatedToForCourseAsync(int? courseId)
+        public async Task<IEnumerable<Course>> GetAllIsRelatedToForCourseAsync(int courseId)
         {
             var result = await Query<Course>
                 .Collection()
                 .Connection(CourseWithPreRequisitesAndRelatedConnectionClass.GetConnectionName())
                 .StoredProcedure("[CourseBoundedContext].[pCourse_GetAllIsRelatedTo]")
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public IEnumerable<Course> GetAllIsRequiredByForCourse(int? courseId)
+        public IEnumerable<Course> GetAllIsRequiredByForCourse(int courseId)
         {
             var result = Query<Course>
                 .Collection()
                 .Connection(CourseWithPreRequisitesAndRelatedConnectionClass.GetConnectionName())
                 .StoredProcedure("[CourseBoundedContext].[pCourse_GetAllIsRequiredBy]")
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<IEnumerable<Course>> GetAllIsRequiredByForCourseAsync(int? courseId)
+        public async Task<IEnumerable<Course>> GetAllIsRequiredByForCourseAsync(int courseId)
         {
             var result = await Query<Course>
                 .Collection()
                 .Connection(CourseWithPreRequisitesAndRelatedConnectionClass.GetConnectionName())
                 .StoredProcedure("[CourseBoundedContext].[pCourse_GetAllIsRequiredBy]")
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public IEnumerable<Course> GetAllRelatesForCourse(int? courseId)
+        public IEnumerable<Course> GetAllRelatesForCourse(int courseId)
         {
             var result = Query<Course>
                 .Collection()
                 .Connection(CourseWithPreRequisitesAndRelatedConnectionClass.GetConnectionName())
                 .StoredProcedure("[CourseBoundedContext].[pCourse_GetAllRelates]")
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<IEnumerable<Course>> GetAllRelatesForCourseAsync(int? courseId)
+        public async Task<IEnumerable<Course>> GetAllRelatesForCourseAsync(int courseId)
         {
             var result = await Query<Course>
                 .Collection()
                 .Connection(CourseWithPreRequisitesAndRelatedConnectionClass.GetConnectionName())
                 .StoredProcedure("[CourseBoundedContext].[pCourse_GetAllRelates]")
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public IEnumerable<Course> GetAllRequiresForCourse(int? courseId)
+        public IEnumerable<Course> GetAllRequiresForCourse(int courseId)
         {
             var result = Query<Course>
                 .Collection()
                 .Connection(CourseWithPreRequisitesAndRelatedConnectionClass.GetConnectionName())
                 .StoredProcedure("[CourseBoundedContext].[pCourse_GetAllRequires]")
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<IEnumerable<Course>> GetAllRequiresForCourseAsync(int? courseId)
+        public async Task<IEnumerable<Course>> GetAllRequiresForCourseAsync(int courseId)
         {
             var result = await Query<Course>
                 .Collection()
                 .Connection(CourseWithPreRequisitesAndRelatedConnectionClass.GetConnectionName())
                 .StoredProcedure("[CourseBoundedContext].[pCourse_GetAllRequires]")
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public (int, IEnumerable<Course>) GetIsRelatedToForCourse(int? courseId, CollectionQueryParameters queryParameters)
+        public (int, IEnumerable<Course>) GetIsRelatedToForCourse(int courseId, CollectionQueryParameters queryParameters)
         {
             var result = Query<Course>
                 .Collection()
@@ -211,7 +211,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .Execute();
 
@@ -220,7 +220,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async Task<(int, IEnumerable<Course>)> GetIsRelatedToForCourseAsync(int? courseId, CollectionQueryParameters queryParameters)
+        public async Task<(int, IEnumerable<Course>)> GetIsRelatedToForCourseAsync(int courseId, CollectionQueryParameters queryParameters)
         {
             var result = await Query<Course>
                 .Collection()
@@ -229,7 +229,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .ExecuteAsync();
 
@@ -238,7 +238,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public (int, IEnumerable<Course>) GetIsRequiredByForCourse(int? courseId, CollectionQueryParameters queryParameters)
+        public (int, IEnumerable<Course>) GetIsRequiredByForCourse(int courseId, CollectionQueryParameters queryParameters)
         {
             var result = Query<Course>
                 .Collection()
@@ -247,7 +247,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .Execute();
 
@@ -256,7 +256,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async Task<(int, IEnumerable<Course>)> GetIsRequiredByForCourseAsync(int? courseId, CollectionQueryParameters queryParameters)
+        public async Task<(int, IEnumerable<Course>)> GetIsRequiredByForCourseAsync(int courseId, CollectionQueryParameters queryParameters)
         {
             var result = await Query<Course>
                 .Collection()
@@ -265,7 +265,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .ExecuteAsync();
 
@@ -274,7 +274,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public (int, IEnumerable<Course>) GetRelatesForCourse(int? courseId, CollectionQueryParameters queryParameters)
+        public (int, IEnumerable<Course>) GetRelatesForCourse(int courseId, CollectionQueryParameters queryParameters)
         {
             var result = Query<Course>
                 .Collection()
@@ -283,7 +283,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .Execute();
 
@@ -292,7 +292,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async Task<(int, IEnumerable<Course>)> GetRelatesForCourseAsync(int? courseId, CollectionQueryParameters queryParameters)
+        public async Task<(int, IEnumerable<Course>)> GetRelatesForCourseAsync(int courseId, CollectionQueryParameters queryParameters)
         {
             var result = await Query<Course>
                 .Collection()
@@ -301,7 +301,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .ExecuteAsync();
 
@@ -310,7 +310,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public (int, IEnumerable<Course>) GetRequiresForCourse(int? courseId, CollectionQueryParameters queryParameters)
+        public (int, IEnumerable<Course>) GetRequiresForCourse(int courseId, CollectionQueryParameters queryParameters)
         {
             var result = Query<Course>
                 .Collection()
@@ -319,7 +319,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .Execute();
 
@@ -328,7 +328,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async Task<(int, IEnumerable<Course>)> GetRequiresForCourseAsync(int? courseId, CollectionQueryParameters queryParameters)
+        public async Task<(int, IEnumerable<Course>)> GetRequiresForCourseAsync(int courseId, CollectionQueryParameters queryParameters)
         {
             var result = await Query<Course>
                 .Collection()
@@ -337,7 +337,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("courseId").Value(courseId.Value)
+                    p => p.Name("courseId").Value(courseId)
                 )
                 .ExecuteAsync();
 

@@ -7,7 +7,7 @@ namespace EmployeePerson.EmployeeBoundedContext
 {
     public class SaveEmployeeInputDto : IInputDataTransferObject
     {
-        public int? EmployeeId { get; set; }
+        public int EmployeeId { get; set; }
 
         public DateTime HireDate { get; set; }
 
@@ -19,13 +19,13 @@ namespace EmployeePerson.EmployeeBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            HireDate.ValidateNotEmpty(result, nameof(HireDate));
+            HireDate.ValidateRequired(result, nameof(HireDate));
 
-            Name.ValidateNotEmpty(result, nameof(Name));
+            Name.ValidateRequired(result, nameof(Name));
 
             Name.ValidateMaxLength(result, nameof(Name), 50);
 
-            Gender.ValidateNotEmpty(result, nameof(Gender));
+            Gender.ValidateRequired(result, nameof(Gender));
 
             CellPhone?.Validate(result);
         }

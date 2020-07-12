@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EmployeeWithSpouse.EmployeeBoundedContext
 {
-    public class EmployeeQueryRepository : EntityQueryRepository<Employee, int?>
+    public class EmployeeQueryRepository : EntityQueryRepository<Employee, int>
     {
         public override (int, IEnumerable<Employee>) Get(CollectionQueryParameters queryParameters)
         {
@@ -62,42 +62,42 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             return result.Data;
         }
 
-        public override Employee GetById(int? employeeId)
+        public override Employee GetById(int employeeId)
         {
             var result = Query<Employee>
                 .Single()
                 .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
                 .StoredProcedure("[EmployeeBoundedContext].[pEmployee_GetById]")
                 .Parameters(
-                    p => p.Name("employeeId").Value(employeeId.Value)
+                    p => p.Name("employeeId").Value(employeeId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<Employee> GetByIdAsync(int? employeeId)
+        public async override Task<Employee> GetByIdAsync(int employeeId)
         {
             var result = await Query<Employee>
                 .Single()
                 .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
                 .StoredProcedure("[EmployeeBoundedContext].[pEmployee_GetById]")
                 .Parameters(
-                    p => p.Name("employeeId").Value(employeeId.Value)
+                    p => p.Name("employeeId").Value(employeeId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public Person GetSpouseForPerson(int? personId)
+        public Person GetSpouseForPerson(int personId)
         {
             var result = Query<Person>
                 .Single()
                 .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
                 .StoredProcedure("[EmployeeBoundedContext].[pPerson_GetSpouse]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .MapTypes(
                     7,
@@ -109,14 +109,14 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
             return result.Data;
         }
 
-        public async Task<Person> GetSpouseForPersonAsync(int? personId)
+        public async Task<Person> GetSpouseForPersonAsync(int personId)
         {
             var result = await Query<Person>
                 .Single()
                 .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
                 .StoredProcedure("[EmployeeBoundedContext].[pPerson_GetSpouse]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .MapTypes(
                     7,

@@ -15,7 +15,7 @@ namespace ClassesWithStudents.ClassBoundedContext
             StudentQueryRepository.Register(context);
         }
 
-        public (int, IEnumerable<StudentOutputDto>) Get(int? classId, CollectionQueryParameters queryParameters)
+        public (int, IEnumerable<StudentOutputDto>) Get(int classId, CollectionQueryParameters queryParameters)
         {
             var repository = (StudentQueryRepository)RepositoryContext.GetQueryRepository(typeof(Student));
 
@@ -26,7 +26,7 @@ namespace ClassesWithStudents.ClassBoundedContext
             return Get(data);
         }
 
-        public async Task<(int, IEnumerable<StudentOutputDto>)> GetAsync(int? classId, CollectionQueryParameters queryParameters)
+        public async Task<(int, IEnumerable<StudentOutputDto>)> GetAsync(int classId, CollectionQueryParameters queryParameters)
         {
             var repository = (StudentQueryRepository)RepositoryContext.GetQueryRepository(typeof(Student));
 

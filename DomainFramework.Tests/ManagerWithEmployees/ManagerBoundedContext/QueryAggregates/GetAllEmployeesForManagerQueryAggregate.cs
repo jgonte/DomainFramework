@@ -15,7 +15,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
             EmployeeQueryRepository.Register(context);
         }
 
-        public (int, IEnumerable<EmployeeOutputDto>) Get(int? managerId)
+        public (int, IEnumerable<EmployeeOutputDto>) Get(int managerId)
         {
             var repository = (EmployeeQueryRepository)RepositoryContext.GetQueryRepository(typeof(Employee));
 
@@ -26,7 +26,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
             return Get(data);
         }
 
-        public async Task<(int, IEnumerable<EmployeeOutputDto>)> GetAsync(int? managerId)
+        public async Task<(int, IEnumerable<EmployeeOutputDto>)> GetAsync(int managerId)
         {
             var repository = (EmployeeQueryRepository)RepositoryContext.GetQueryRepository(typeof(Employee));
 

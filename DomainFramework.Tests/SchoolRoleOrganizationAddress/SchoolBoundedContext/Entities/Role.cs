@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
-    public class Role : Entity<int?>
+    public class Role : Entity<int>
     {
         public int CreatedBy { get; set; }
 

@@ -11,6 +11,7 @@ namespace SimpleLogs.SimpleLogsBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
+            When.ValidateRequired(result, nameof(When));
         }
 
     }

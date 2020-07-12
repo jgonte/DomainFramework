@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ManagerWithEmployees.ManagerBoundedContext
 {
-    public class EmployeeQueryRepository : EntityQueryRepository<Employee, int?>
+    public class EmployeeQueryRepository : EntityQueryRepository<Employee, int>
     {
         public override (int, IEnumerable<Employee>) Get(CollectionQueryParameters queryParameters)
         {
@@ -82,14 +82,14 @@ namespace ManagerWithEmployees.ManagerBoundedContext
             return result.Data;
         }
 
-        public override Employee GetById(int? employeeId)
+        public override Employee GetById(int employeeId)
         {
             var result = Query<Employee>
                 .Single()
                 .Connection(ManagerWithEmployeesConnectionClass.GetConnectionName())
                 .StoredProcedure("[ManagerBoundedContext].[pEmployee_GetById]")
                 .Parameters(
-                    p => p.Name("employeeId").Value(employeeId.Value)
+                    p => p.Name("employeeId").Value(employeeId)
                 )
                 .MapTypes(
                     4,
@@ -101,14 +101,14 @@ namespace ManagerWithEmployees.ManagerBoundedContext
             return result.Data;
         }
 
-        public async override Task<Employee> GetByIdAsync(int? employeeId)
+        public async override Task<Employee> GetByIdAsync(int employeeId)
         {
             var result = await Query<Employee>
                 .Single()
                 .Connection(ManagerWithEmployeesConnectionClass.GetConnectionName())
                 .StoredProcedure("[ManagerBoundedContext].[pEmployee_GetById]")
                 .Parameters(
-                    p => p.Name("employeeId").Value(employeeId.Value)
+                    p => p.Name("employeeId").Value(employeeId)
                 )
                 .MapTypes(
                     4,
@@ -120,14 +120,14 @@ namespace ManagerWithEmployees.ManagerBoundedContext
             return result.Data;
         }
 
-        public IEnumerable<Employee> GetAllEmployeesForManager(int? managerId)
+        public IEnumerable<Employee> GetAllEmployeesForManager(int managerId)
         {
             var result = Query<Employee>
                 .Collection()
                 .Connection(ManagerWithEmployeesConnectionClass.GetConnectionName())
                 .StoredProcedure("[ManagerBoundedContext].[pManager_GetAllEmployees]")
                 .Parameters(
-                    p => p.Name("managerId").Value(managerId.Value)
+                    p => p.Name("managerId").Value(managerId)
                 )
                 .MapTypes(
                     4,
@@ -139,14 +139,14 @@ namespace ManagerWithEmployees.ManagerBoundedContext
             return result.Data;
         }
 
-        public async Task<IEnumerable<Employee>> GetAllEmployeesForManagerAsync(int? managerId)
+        public async Task<IEnumerable<Employee>> GetAllEmployeesForManagerAsync(int managerId)
         {
             var result = await Query<Employee>
                 .Collection()
                 .Connection(ManagerWithEmployeesConnectionClass.GetConnectionName())
                 .StoredProcedure("[ManagerBoundedContext].[pManager_GetAllEmployees]")
                 .Parameters(
-                    p => p.Name("managerId").Value(managerId.Value)
+                    p => p.Name("managerId").Value(managerId)
                 )
                 .MapTypes(
                     4,

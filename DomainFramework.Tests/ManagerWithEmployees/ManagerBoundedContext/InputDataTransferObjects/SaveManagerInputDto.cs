@@ -7,7 +7,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 {
     public class SaveManagerInputDto : IInputDataTransferObject
     {
-        public int? ManagerId { get; set; }
+        public int ManagerId { get; set; }
 
         public string Department { get; set; }
 
@@ -19,11 +19,11 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            Department.ValidateNotEmpty(result, nameof(Department));
+            Department.ValidateRequired(result, nameof(Department));
 
             Department.ValidateMaxLength(result, nameof(Department), 50);
 
-            Name.ValidateNotEmpty(result, nameof(Name));
+            Name.ValidateRequired(result, nameof(Name));
 
             Name.ValidateMaxLength(result, nameof(Name), 50);
 

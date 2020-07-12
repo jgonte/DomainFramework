@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EmployeePerson.EmployeeBoundedContext
 {
-    public class EmployeeQueryRepository : EntityQueryRepository<Employee, int?>
+    public class EmployeeQueryRepository : EntityQueryRepository<Employee, int>
     {
         public override (int, IEnumerable<Employee>) Get(CollectionQueryParameters queryParameters)
         {
@@ -62,28 +62,28 @@ namespace EmployeePerson.EmployeeBoundedContext
             return result.Data;
         }
 
-        public override Employee GetById(int? employeeId)
+        public override Employee GetById(int employeeId)
         {
             var result = Query<Employee>
                 .Single()
                 .Connection(EmployeePersonConnectionClass.GetConnectionName())
                 .StoredProcedure("[EmployeeBoundedContext].[pEmployee_GetById]")
                 .Parameters(
-                    p => p.Name("employeeId").Value(employeeId.Value)
+                    p => p.Name("employeeId").Value(employeeId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<Employee> GetByIdAsync(int? employeeId)
+        public async override Task<Employee> GetByIdAsync(int employeeId)
         {
             var result = await Query<Employee>
                 .Single()
                 .Connection(EmployeePersonConnectionClass.GetConnectionName())
                 .StoredProcedure("[EmployeeBoundedContext].[pEmployee_GetById]")
                 .Parameters(
-                    p => p.Name("employeeId").Value(employeeId.Value)
+                    p => p.Name("employeeId").Value(employeeId)
                 )
                 .ExecuteAsync();
 

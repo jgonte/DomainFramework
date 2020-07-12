@@ -13,11 +13,11 @@ namespace SimpleLogs.SimpleLogsBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            MessageType.ValidateNotEmpty(result, nameof(MessageType));
+            MessageType.ValidateRequired(result, nameof(MessageType));
 
             MessageType.ValidateMaxLength(result, nameof(MessageType), 1);
 
-            Message.ValidateNotEmpty(result, nameof(Message));
+            Message.ValidateRequired(result, nameof(Message));
 
             Message.ValidateMaxLength(result, nameof(Message), 50);
         }

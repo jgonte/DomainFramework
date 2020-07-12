@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace EntityWithMultiValuedValueObject.TestBoundedContext
 {
-    public class TestEntityQueryAggregate : GetByIdQueryAggregate<TestEntity, int, TestEntityOutputDto>
+    public class GetTestEntityByIdQueryAggregate : GetByIdQueryAggregate<TestEntity, int, TestEntityOutputDto>
     {
         public GetCollectionLinkedValueObjectQueryOperation<TestEntity, TypeValue, TestEntity_TypeValues1_QueryRepository.RepositoryKey> GetTypeValues1Operation { get; private set; }
 
-        public TestEntityQueryAggregate() : this(null)
+        public GetTestEntityByIdQueryAggregate() : this(null)
         {
         }
 
-        public TestEntityQueryAggregate(HashSet<(string, IEntity)> processedEntities = null) : base(new DomainFramework.DataAccess.RepositoryContext(EntityWithMultiValuedValueObjectConnectionClass.GetConnectionName()), processedEntities)
+        public GetTestEntityByIdQueryAggregate(HashSet<(string, IEntity)> processedEntities = null) : base(new DomainFramework.DataAccess.RepositoryContext(EntityWithMultiValuedValueObjectConnectionClass.GetConnectionName()), processedEntities)
         {
             var context = (DomainFramework.DataAccess.RepositoryContext)RepositoryContext;
 

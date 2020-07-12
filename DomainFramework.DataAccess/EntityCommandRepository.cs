@@ -20,7 +20,8 @@ namespace DomainFramework.DataAccess
 
         public virtual void Save(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            if (entity.Id == null)
+            if (entity.Id == null ||
+                entity.Id.Equals(entity.GetDefaultIdentifierValue()))
             {
                 Insert(entity, user, unitOfWork, selector);
             }
@@ -150,7 +151,8 @@ namespace DomainFramework.DataAccess
 
         public async Task SaveAsync(TEntity entity, IAuthenticatedUser user, IUnitOfWork unitOfWork, string selector)
         {
-            if (entity.Id == null)
+            if (entity.Id == null ||
+                entity.Id.Equals(entity.GetDefaultIdentifierValue()))
             {
                 await InsertAsync(entity, user, unitOfWork, selector);
             }

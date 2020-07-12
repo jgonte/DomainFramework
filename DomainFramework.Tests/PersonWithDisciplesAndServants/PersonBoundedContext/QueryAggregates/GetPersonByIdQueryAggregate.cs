@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace PersonWithDisciplesAndServants.PersonBoundedContext
 {
-    public class GetPersonByIdQueryAggregate : GetByIdQueryAggregate<Person, int?, PersonOutputDto>
+    public class GetPersonByIdQueryAggregate : GetByIdQueryAggregate<Person, int, PersonOutputDto>
     {
-        public GetAllLinkedAggregateQueryCollectionOperation<int?, Person, PersonOutputDto> GetAllDisciplesLinkedAggregateQueryOperation { get; set; }
+        public GetAllLinkedAggregateQueryCollectionOperation<int, Person, PersonOutputDto> GetAllDisciplesLinkedAggregateQueryOperation { get; set; }
 
-        public GetAllLinkedAggregateQueryCollectionOperation<int?, Person, PersonOutputDto> GetAllServantsLinkedAggregateQueryOperation { get; set; }
+        public GetAllLinkedAggregateQueryCollectionOperation<int, Person, PersonOutputDto> GetAllServantsLinkedAggregateQueryOperation { get; set; }
 
         public GetPersonByIdQueryAggregate() : this(null)
         {
@@ -22,7 +22,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
 
             PersonQueryRepository.Register(context);
 
-            GetAllDisciplesLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Person, PersonOutputDto>
+            GetAllDisciplesLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int, Person, PersonOutputDto>
             {
                 GetAllLinkedEntities = (repository, entity, user) => ((PersonQueryRepository)repository).GetAllDisciplesForPerson(RootEntity.Id).ToList(),
                 GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
@@ -49,7 +49,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
 
             QueryOperations.Enqueue(GetAllDisciplesLinkedAggregateQueryOperation);
 
-            GetAllServantsLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Person, PersonOutputDto>
+            GetAllServantsLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int, Person, PersonOutputDto>
             {
                 GetAllLinkedEntities = (repository, entity, user) => ((PersonQueryRepository)repository).GetAllServantsForPerson(RootEntity.Id).ToList(),
                 GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
@@ -79,7 +79,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.PersonId = RootEntity.Id.Value;
+            OutputDto.PersonId = RootEntity.Id;
 
             OutputDto.Name = RootEntity.Name;
 

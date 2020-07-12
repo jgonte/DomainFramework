@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace EmployeeWithSpouse.EmployeeBoundedContext
 {
-    public class EmployeeQueryAggregate : GetByIdQueryAggregate<Employee, int?, EmployeeOutputDto>
+    public class EmployeeQueryAggregate : GetByIdQueryAggregate<Employee, int, EmployeeOutputDto>
     {
-        public GetLinkedAggregateQuerySingleItemOperation<int?, Person, PersonOutputDto> GetSpouseLinkedAggregateQueryOperation { get; set; }
+        public GetLinkedAggregateQuerySingleItemOperation<int, Person, PersonOutputDto> GetSpouseLinkedAggregateQueryOperation { get; set; }
 
         public EmployeeQueryAggregate() : this(null)
         {
@@ -22,7 +22,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
 
             PersonQueryRepository.Register(context);
 
-            GetSpouseLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int?, Person, PersonOutputDto>
+            GetSpouseLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int, Person, PersonOutputDto>
             {
                 OnBeforeExecute = entity =>
                 {
@@ -62,7 +62,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.PersonId = RootEntity.Id.Value;
+            OutputDto.PersonId = RootEntity.Id;
 
             OutputDto.HireDate = RootEntity.HireDate;
 

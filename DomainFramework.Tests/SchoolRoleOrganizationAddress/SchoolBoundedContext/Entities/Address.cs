@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
-    public class Address : Entity<int?>
+    public class Address : Entity<int>
     {
         /// <summary>
         /// The street

@@ -68,8 +68,8 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
 
                                     entity.Id = new PreRequisiteId
                                     {
-                                        Requires_CourseId = requiresCourse.Id.Value,
-                                        IsRequiredBy_CourseId = isRequiredByCourse.Id.Value
+                                        Requires_CourseId = requiresCourse.Id,
+                                        IsRequiredBy_CourseId = isRequiredByCourse.Id
                                     };
 
                                     cmd.Parameters(

@@ -16,13 +16,13 @@ namespace UserWithUserLogins.UserBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            UserName.ValidateNotEmpty(result, nameof(UserName));
+            UserName.ValidateRequired(result, nameof(UserName));
 
             UserName.ValidateMaxLength(result, nameof(UserName), 256);
 
             Email.ValidateEmail(result, nameof(Email));
 
-            Email.ValidateNotEmpty(result, nameof(Email));
+            Email.ValidateRequired(result, nameof(Email));
 
             Email.ValidateMaxLength(result, nameof(Email), 256);
 

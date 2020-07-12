@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace UserWithUserLogins.UserBoundedContext
 {
-    public class User : Entity<int?>
+    public class User : Entity<int>
     {
         /// <summary>
         /// The user name

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
 {
-    public class GetCourseByIdQueryAggregate : GetByIdQueryAggregate<Course, int?, CourseOutputDto>
+    public class GetCourseByIdQueryAggregate : GetByIdQueryAggregate<Course, int, CourseOutputDto>
     {
-        public GetAllLinkedAggregateQueryCollectionOperation<int?, Course, CourseOutputDto> GetAllRelatesLinkedAggregateQueryOperation { get; set; }
+        public GetAllLinkedAggregateQueryCollectionOperation<int, Course, CourseOutputDto> GetAllRelatesLinkedAggregateQueryOperation { get; set; }
 
-        public GetAllLinkedAggregateQueryCollectionOperation<int?, Course, CourseOutputDto> GetAllRequiresLinkedAggregateQueryOperation { get; set; }
+        public GetAllLinkedAggregateQueryCollectionOperation<int, Course, CourseOutputDto> GetAllRequiresLinkedAggregateQueryOperation { get; set; }
 
         public GetCourseByIdQueryAggregate() : this(null)
         {
@@ -22,7 +22,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
 
             CourseQueryRepository.Register(context);
 
-            GetAllRelatesLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Course, CourseOutputDto>
+            GetAllRelatesLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int, Course, CourseOutputDto>
             {
                 GetAllLinkedEntities = (repository, entity, user) => ((CourseQueryRepository)repository).GetAllRelatesForCourse(RootEntity.Id).ToList(),
                 GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
@@ -49,7 +49,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
 
             QueryOperations.Enqueue(GetAllRelatesLinkedAggregateQueryOperation);
 
-            GetAllRequiresLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Course, CourseOutputDto>
+            GetAllRequiresLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int, Course, CourseOutputDto>
             {
                 GetAllLinkedEntities = (repository, entity, user) => ((CourseQueryRepository)repository).GetAllRequiresForCourse(RootEntity.Id).ToList(),
                 GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
@@ -79,7 +79,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.CourseId = RootEntity.Id.Value;
+            OutputDto.CourseId = RootEntity.Id;
 
             OutputDto.Description = RootEntity.Description;
 

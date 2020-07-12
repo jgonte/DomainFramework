@@ -7,7 +7,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
     public class OrganizationInputDto : IInputDataTransferObject
     {
-        public int? OrganizationId { get; set; }
+        public int OrganizationId { get; set; }
 
         public string Name { get; set; }
 
@@ -24,7 +24,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            Name.ValidateNotEmpty(result, nameof(Name));
+            Name.ValidateRequired(result, nameof(Name));
 
             Name.ValidateMaxLength(result, nameof(Name), 50);
 

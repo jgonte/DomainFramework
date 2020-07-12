@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 {
-    public class Mechanic : Entity<int?>
+    public class Mechanic : Entity<int>
     {
         public string Name { get; set; }
 

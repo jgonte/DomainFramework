@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace EmployeeWithDependants.EmployeeBoundedContext
 {
-    public class GetByIdEmployeeQueryAggregate : GetByIdQueryAggregate<Employee, int?, EmployeeOutputDto>
+    public class GetByIdEmployeeQueryAggregate : GetByIdQueryAggregate<Employee, int, EmployeeOutputDto>
     {
-        public GetAllLinkedAggregateQueryCollectionOperation<int?, Person, PersonOutputDto> GetAllDependantsLinkedAggregateQueryOperation { get; set; }
+        public GetAllLinkedAggregateQueryCollectionOperation<int, Person, PersonOutputDto> GetAllDependantsLinkedAggregateQueryOperation { get; set; }
 
         public GetByIdEmployeeQueryAggregate() : this(null)
         {
@@ -22,7 +22,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
 
             PersonQueryRepository.Register(context);
 
-            GetAllDependantsLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Person, PersonOutputDto>
+            GetAllDependantsLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int, Person, PersonOutputDto>
             {
                 GetAllLinkedEntities = (repository, entity, user) => ((PersonQueryRepository)repository).GetAllDependantsForEmployee(RootEntity.Id).ToList(),
                 GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
@@ -56,7 +56,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.PersonId = RootEntity.Id.Value;
+            OutputDto.PersonId = RootEntity.Id;
 
             OutputDto.HireDate = RootEntity.HireDate;
 

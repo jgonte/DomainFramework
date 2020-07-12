@@ -68,8 +68,8 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
                                     entity.Id = new OrganizationRoleId
                                     {
-                                        OrganizationId = organization.Id.Value,
-                                        RoleId = role.Id.Value
+                                        OrganizationId = organization.Id,
+                                        RoleId = role.Id
                                     };
 
                                     cmd.Parameters(

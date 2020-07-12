@@ -5,30 +5,37 @@ using System.Linq;
 
 namespace BookWithPages.BookBoundedContext
 {
-    public class AddBookPagesCommandAggregate : CommandAggregate<Book>
+    public class CreateBookCommandAggregate : CommandAggregate<Book>
     {
-        public AddBookPagesCommandAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
+        public CreateBookCommandAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
         {
         }
 
-        public AddBookPagesCommandAggregate(BookAddPagesInputDto book, EntityDependency[] dependencies = null) : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
+        public CreateBookCommandAggregate(SaveBookInputDto book, EntityDependency[] dependencies = null) : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
         {
             Initialize(book, dependencies);
         }
 
         public override void Initialize(IInputDataTransferObject book, EntityDependency[] dependencies)
         {
-            Initialize((BookAddPagesInputDto)book, dependencies);
+            Initialize((SaveBookInputDto)book, dependencies);
         }
 
-        private void Initialize(BookAddPagesInputDto book, EntityDependency[] dependencies)
+        private void Initialize(SaveBookInputDto book, EntityDependency[] dependencies)
         {
             RegisterCommandRepositoryFactory<Book>(() => new BookCommandRepository());
 
             RootEntity = new Book
             {
-                Id = book.BookId
+                Id = book.BookId,
+                Title = book.Title,
+                Category = book.Category,
+                DatePublished = book.DatePublished,
+                PublisherId = book.PublisherId,
+                IsHardCopy = book.IsHardCopy
             };
+
+            Enqueue(new InsertEntityCommandOperation<Book>(RootEntity, dependencies));
 
             if (book.Pages?.Any() == true)
             {

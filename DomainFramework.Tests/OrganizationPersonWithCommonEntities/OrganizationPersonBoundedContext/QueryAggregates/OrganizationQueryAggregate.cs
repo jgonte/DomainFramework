@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 {
-    public class OrganizationQueryAggregate : GetByIdQueryAggregate<Organization, int?, OrganizationOutputDto>
+    public class OrganizationQueryAggregate : GetByIdQueryAggregate<Organization, int, OrganizationOutputDto>
     {
-        public GetAllLinkedAggregateQueryCollectionOperation<int?, Phone, PhoneOutputDto> GetAllPhonesLinkedAggregateQueryOperation { get; set; }
+        public GetAllLinkedAggregateQueryCollectionOperation<int, Phone, PhoneOutputDto> GetAllPhonesLinkedAggregateQueryOperation { get; set; }
 
-        public GetLinkedAggregateQuerySingleItemOperation<int?, Address, AddressOutputDto> GetAddressLinkedAggregateQueryOperation { get; set; }
+        public GetLinkedAggregateQuerySingleItemOperation<int, Address, AddressOutputDto> GetAddressLinkedAggregateQueryOperation { get; set; }
 
         public OrganizationQueryAggregate() : this(null)
         {
@@ -26,7 +26,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 
             AddressQueryRepository.Register(context);
 
-            GetAllPhonesLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Phone, PhoneOutputDto>
+            GetAllPhonesLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int, Phone, PhoneOutputDto>
             {
                 GetAllLinkedEntities = (repository, entity, user) => ((PhoneQueryRepository)repository).GetAllPhonesForOrganization(RootEntity.Id).ToList(),
                 GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
@@ -50,7 +50,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 
             QueryOperations.Enqueue(GetAllPhonesLinkedAggregateQueryOperation);
 
-            GetAddressLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int?, Address, AddressOutputDto>
+            GetAddressLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int, Address, AddressOutputDto>
             {
                 OnBeforeExecute = entity =>
                 {
@@ -83,7 +83,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.OrganizationId = RootEntity.Id.Value;
+            OutputDto.OrganizationId = RootEntity.Id;
 
             OutputDto.Name = RootEntity.Name;
 

@@ -13,9 +13,9 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            Requires_CourseId.ValidateNotZero(result, nameof(Requires_CourseId));
+            Requires_CourseId.ValidateRequired(result, nameof(Requires_CourseId));
 
-            IsRequiredBy_CourseId.ValidateNotZero(result, nameof(IsRequiredBy_CourseId));
+            IsRequiredBy_CourseId.ValidateRequired(result, nameof(IsRequiredBy_CourseId));
         }
 
     }

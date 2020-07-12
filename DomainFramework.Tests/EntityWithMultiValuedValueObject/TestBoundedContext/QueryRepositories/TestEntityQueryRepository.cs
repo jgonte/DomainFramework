@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EntityWithMultiValuedValueObject.TestBoundedContext
 {
-    public class TestEntityQueryRepository : EntityQueryRepository<TestEntity, int?>
+    public class TestEntityQueryRepository : EntityQueryRepository<TestEntity, int>
     {
         public override (int, IEnumerable<TestEntity>) Get(CollectionQueryParameters queryParameters)
         {
@@ -62,28 +62,28 @@ namespace EntityWithMultiValuedValueObject.TestBoundedContext
             return result.Data;
         }
 
-        public override TestEntity GetById(int? testEntityId)
+        public override TestEntity GetById(int testEntityId)
         {
             var result = Query<TestEntity>
                 .Single()
                 .Connection(EntityWithMultiValuedValueObjectConnectionClass.GetConnectionName())
                 .StoredProcedure("[pTestEntity_GetById]")
                 .Parameters(
-                    p => p.Name("testEntityId").Value(testEntityId.Value)
+                    p => p.Name("testEntityId").Value(testEntityId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<TestEntity> GetByIdAsync(int? testEntityId)
+        public async override Task<TestEntity> GetByIdAsync(int testEntityId)
         {
             var result = await Query<TestEntity>
                 .Single()
                 .Connection(EntityWithMultiValuedValueObjectConnectionClass.GetConnectionName())
                 .StoredProcedure("[pTestEntity_GetById]")
                 .Parameters(
-                    p => p.Name("testEntityId").Value(testEntityId.Value)
+                    p => p.Name("testEntityId").Value(testEntityId)
                 )
                 .ExecuteAsync();
 

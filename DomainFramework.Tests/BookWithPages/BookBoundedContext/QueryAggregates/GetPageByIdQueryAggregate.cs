@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BookWithPages.BookBoundedContext
 {
-    public class GetPageByIdQueryAggregate : GetByIdQueryAggregate<Page, int?, PageOutputDto>
+    public class GetPageByIdQueryAggregate : GetByIdQueryAggregate<Page, int, PageOutputDto>
     {
         public GetPageByIdQueryAggregate() : this(null)
         {
@@ -21,7 +21,7 @@ namespace BookWithPages.BookBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.PageId = RootEntity.Id.Value;
+            OutputDto.PageId = RootEntity.Id;
 
             OutputDto.Index = RootEntity.Index;
 

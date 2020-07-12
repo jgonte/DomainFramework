@@ -8,7 +8,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 {
     public class CarInputDto : VehicleInputDto
     {
-        public int? CarId { get; set; }
+        public int CarId { get; set; }
 
         public int Passengers { get; set; }
 
@@ -18,7 +18,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
         {
             base.Validate(result);
 
-            Passengers.ValidateNotZero(result, nameof(Passengers));
+            Passengers.ValidateRequired(result, nameof(Passengers));
 
             var doorsCount = (uint)Doors.Where(item => item != null).Count();
 

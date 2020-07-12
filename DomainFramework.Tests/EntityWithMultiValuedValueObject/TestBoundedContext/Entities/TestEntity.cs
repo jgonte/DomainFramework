@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace EntityWithMultiValuedValueObject.TestBoundedContext
 {
-    public class TestEntity : Entity<int?>
+    public class TestEntity : Entity<int>
     {
         public string Text { get; set; }
 

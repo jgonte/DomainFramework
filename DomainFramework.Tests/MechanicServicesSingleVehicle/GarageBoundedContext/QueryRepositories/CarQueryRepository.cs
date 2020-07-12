@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MechanicServicesSingleVehicle.GarageBoundedContext
 {
-    public class CarQueryRepository : EntityQueryRepository<Car, int?>
+    public class CarQueryRepository : EntityQueryRepository<Car, int>
     {
         public override (int, IEnumerable<Car>) Get(CollectionQueryParameters queryParameters)
         {
@@ -62,42 +62,42 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             return result.Data;
         }
 
-        public override Car GetById(int? carId)
+        public override Car GetById(int carId)
         {
             var result = Query<Car>
                 .Single()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pCar_GetById]")
                 .Parameters(
-                    p => p.Name("carId").Value(carId.Value)
+                    p => p.Name("carId").Value(carId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<Car> GetByIdAsync(int? carId)
+        public async override Task<Car> GetByIdAsync(int carId)
         {
             var result = await Query<Car>
                 .Single()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pCar_GetById]")
                 .Parameters(
-                    p => p.Name("carId").Value(carId.Value)
+                    p => p.Name("carId").Value(carId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public Vehicle GetVehicleForMechanic(int? mechanicId)
+        public Vehicle GetVehicleForMechanic(int mechanicId)
         {
             var result = Query<Vehicle>
                 .Single()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pMechanic_GetVehicle]")
                 .Parameters(
-                    p => p.Name("mechanicId").Value(mechanicId.Value)
+                    p => p.Name("mechanicId").Value(mechanicId)
                 )
                 .MapTypes(
                     5,
@@ -110,14 +110,14 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             return result.Data;
         }
 
-        public async Task<Vehicle> GetVehicleForMechanicAsync(int? mechanicId)
+        public async Task<Vehicle> GetVehicleForMechanicAsync(int mechanicId)
         {
             var result = await Query<Vehicle>
                 .Single()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pMechanic_GetVehicle]")
                 .Parameters(
-                    p => p.Name("mechanicId").Value(mechanicId.Value)
+                    p => p.Name("mechanicId").Value(mechanicId)
                 )
                 .MapTypes(
                     5,

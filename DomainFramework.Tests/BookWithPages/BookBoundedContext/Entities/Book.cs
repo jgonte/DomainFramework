@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BookWithPages.BookBoundedContext
 {
-    public class Book : Entity<int?>
+    public class Book : Entity<int>
     {
         public enum Categories
         {

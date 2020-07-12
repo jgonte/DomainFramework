@@ -12,6 +12,11 @@ namespace DomainFramework.Core
         // do not make this property virtual
         public TKey Id { get; set; }
 
+        public object GetDefaultIdentifierValue()
+        {
+            return default(TKey);
+        }
+
         object IEntity.Id { get => Id; set => Id = (TKey)value; }
 
         ///// <summary>

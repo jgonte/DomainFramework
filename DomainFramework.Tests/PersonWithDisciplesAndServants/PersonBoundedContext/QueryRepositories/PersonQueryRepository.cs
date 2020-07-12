@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PersonWithDisciplesAndServants.PersonBoundedContext
 {
-    public class PersonQueryRepository : EntityQueryRepository<Person, int?>
+    public class PersonQueryRepository : EntityQueryRepository<Person, int>
     {
         public override (int, IEnumerable<Person>) Get(CollectionQueryParameters queryParameters)
         {
@@ -62,91 +62,91 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
             return result.Data;
         }
 
-        public override Person GetById(int? personId)
+        public override Person GetById(int personId)
         {
             var result = Query<Person>
                 .Single()
                 .Connection(PersonWithDisciplesAndServantsConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetById]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<Person> GetByIdAsync(int? personId)
+        public async override Task<Person> GetByIdAsync(int personId)
         {
             var result = await Query<Person>
                 .Single()
                 .Connection(PersonWithDisciplesAndServantsConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetById]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public IEnumerable<Person> GetAllDisciplesForPerson(int? personId)
+        public IEnumerable<Person> GetAllDisciplesForPerson(int personId)
         {
             var result = Query<Person>
                 .Collection()
                 .Connection(PersonWithDisciplesAndServantsConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetAllDisciples]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<IEnumerable<Person>> GetAllDisciplesForPersonAsync(int? personId)
+        public async Task<IEnumerable<Person>> GetAllDisciplesForPersonAsync(int personId)
         {
             var result = await Query<Person>
                 .Collection()
                 .Connection(PersonWithDisciplesAndServantsConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetAllDisciples]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public IEnumerable<Person> GetAllServantsForPerson(int? personId)
+        public IEnumerable<Person> GetAllServantsForPerson(int personId)
         {
             var result = Query<Person>
                 .Collection()
                 .Connection(PersonWithDisciplesAndServantsConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetAllServants]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<IEnumerable<Person>> GetAllServantsForPersonAsync(int? personId)
+        public async Task<IEnumerable<Person>> GetAllServantsForPersonAsync(int personId)
         {
             var result = await Query<Person>
                 .Collection()
                 .Connection(PersonWithDisciplesAndServantsConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetAllServants]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public (int, IEnumerable<Person>) GetDisciplesForPerson(int? personId, CollectionQueryParameters queryParameters)
+        public (int, IEnumerable<Person>) GetDisciplesForPerson(int personId, CollectionQueryParameters queryParameters)
         {
             var result = Query<Person>
                 .Collection()
@@ -155,7 +155,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .Execute();
 
@@ -164,7 +164,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async Task<(int, IEnumerable<Person>)> GetDisciplesForPersonAsync(int? personId, CollectionQueryParameters queryParameters)
+        public async Task<(int, IEnumerable<Person>)> GetDisciplesForPersonAsync(int personId, CollectionQueryParameters queryParameters)
         {
             var result = await Query<Person>
                 .Collection()
@@ -173,7 +173,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .ExecuteAsync();
 
@@ -182,7 +182,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public (int, IEnumerable<Person>) GetServantsForPerson(int? personId, CollectionQueryParameters queryParameters)
+        public (int, IEnumerable<Person>) GetServantsForPerson(int personId, CollectionQueryParameters queryParameters)
         {
             var result = Query<Person>
                 .Collection()
@@ -191,7 +191,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .Execute();
 
@@ -200,7 +200,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async Task<(int, IEnumerable<Person>)> GetServantsForPersonAsync(int? personId, CollectionQueryParameters queryParameters)
+        public async Task<(int, IEnumerable<Person>)> GetServantsForPersonAsync(int personId, CollectionQueryParameters queryParameters)
         {
             var result = await Query<Person>
                 .Collection()
@@ -209,7 +209,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .ExecuteAsync();
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ManagerWithEmployees.ManagerBoundedContext
 {
-    public class GetEmployeeByIdAggregate : GetByIdQueryAggregate<Employee, int?, EmployeeOutputDto>
+    public class GetEmployeeByIdAggregate : GetByIdQueryAggregate<Employee, int, EmployeeOutputDto>
     {
         public GetEmployeeByIdAggregate() : this(null)
         {
@@ -21,7 +21,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.EmployeeId = RootEntity.Id.Value;
+            OutputDto.EmployeeId = RootEntity.Id;
 
             OutputDto.Name = RootEntity.Name;
 

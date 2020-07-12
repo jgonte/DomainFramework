@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
 {
-    public class PersonQueryAggregate : GetByIdQueryAggregate<Person, int?, PersonOutputDto>
+    public class PersonQueryAggregate : GetByIdQueryAggregate<Person, int, PersonOutputDto>
     {
-        public GetLinkedAggregateQuerySingleItemOperation<int?, Person, PersonOutputDto> GetMarriedToLinkedAggregateQueryOperation { get; set; }
+        public GetLinkedAggregateQuerySingleItemOperation<int, Person, PersonOutputDto> GetMarriedToLinkedAggregateQueryOperation { get; set; }
 
-        public GetLinkedAggregateQuerySingleItemOperation<int?, Person, PersonOutputDto> GetBestFriendOfLinkedAggregateQueryOperation { get; set; }
+        public GetLinkedAggregateQuerySingleItemOperation<int, Person, PersonOutputDto> GetBestFriendOfLinkedAggregateQueryOperation { get; set; }
 
         public PersonQueryAggregate() : this(null)
         {
@@ -22,7 +22,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
 
             PersonQueryRepository.Register(context);
 
-            GetMarriedToLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int?, Person, PersonOutputDto>
+            GetMarriedToLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int, Person, PersonOutputDto>
             {
                 OnBeforeExecute = entity =>
                 {
@@ -55,7 +55,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
 
             QueryOperations.Enqueue(GetMarriedToLinkedAggregateQueryOperation);
 
-            GetBestFriendOfLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int?, Person, PersonOutputDto>
+            GetBestFriendOfLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int, Person, PersonOutputDto>
             {
                 OnBeforeExecute = entity =>
                 {
@@ -91,7 +91,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.PersonId = RootEntity.Id.Value;
+            OutputDto.PersonId = RootEntity.Id;
 
             OutputDto.Name = RootEntity.Name;
 

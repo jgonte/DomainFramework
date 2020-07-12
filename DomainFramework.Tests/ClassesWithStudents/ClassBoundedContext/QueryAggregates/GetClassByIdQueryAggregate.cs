@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ClassesWithStudents.ClassBoundedContext
 {
-    public class GetClassByIdQueryAggregate : GetByIdQueryAggregate<Class, int?, ClassOutputDto>
+    public class GetClassByIdQueryAggregate : GetByIdQueryAggregate<Class, int, ClassOutputDto>
     {
-        public GetAllLinkedAggregateQueryCollectionOperation<int?, Student, StudentOutputDto> GetAllStudentsLinkedAggregateQueryOperation { get; set; }
+        public GetAllLinkedAggregateQueryCollectionOperation<int, Student, StudentOutputDto> GetAllStudentsLinkedAggregateQueryOperation { get; set; }
 
         public GetClassByIdQueryAggregate() : this(null)
         {
@@ -22,7 +22,7 @@ namespace ClassesWithStudents.ClassBoundedContext
 
             StudentQueryRepository.Register(context);
 
-            GetAllStudentsLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Student, StudentOutputDto>
+            GetAllStudentsLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int, Student, StudentOutputDto>
             {
                 GetAllLinkedEntities = (repository, entity, user) => ((StudentQueryRepository)repository).GetAllStudentsForClass(RootEntity.Id).ToList(),
                 GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
@@ -49,7 +49,7 @@ namespace ClassesWithStudents.ClassBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.ClassId = RootEntity.Id.Value;
+            OutputDto.ClassId = RootEntity.Id;
 
             OutputDto.Name = RootEntity.Name;
 

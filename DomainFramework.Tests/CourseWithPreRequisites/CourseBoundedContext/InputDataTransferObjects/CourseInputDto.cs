@@ -7,7 +7,7 @@ namespace CourseWithPreRequisites.CourseBoundedContext
 {
     public class CourseInputDto : IInputDataTransferObject
     {
-        public int? CourseId { get; set; }
+        public int CourseId { get; set; }
 
         public string Description { get; set; }
 
@@ -17,7 +17,7 @@ namespace CourseWithPreRequisites.CourseBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            Description.ValidateNotEmpty(result, nameof(Description));
+            Description.ValidateRequired(result, nameof(Description));
 
             Description.ValidateMaxLength(result, nameof(Description), 50);
 

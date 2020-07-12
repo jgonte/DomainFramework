@@ -146,7 +146,7 @@ namespace EntityWithMultiValuedValueObject.TestBoundedContext
             // Add an extra data types without deleting the existing ones
             var addTypeValueCommandAggregate = new AddTypeValue1CommandAggregate(new AddTypeValues1InputDto
             {
-                TestEntityId = entityId.Value,
+                TestEntityId = entityId,
                 TypeValues1 = new List<TypeValueInputDto>
                 {
                     new TypeValueInputDto

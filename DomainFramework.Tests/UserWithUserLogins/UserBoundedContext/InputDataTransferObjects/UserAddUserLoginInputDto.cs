@@ -14,7 +14,7 @@ namespace UserWithUserLogins.UserBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            UserId.ValidateNotZero(result, nameof(UserId));
+            UserId.ValidateRequired(result, nameof(UserId));
 
             var userLoginsCount = (uint)UserLogins.Where(item => item != null).Count();
 

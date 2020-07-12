@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CourseWithPreRequisites.CourseBoundedContext
 {
-    public class Course : Entity<int?>
+    public class Course : Entity<int>
     {
         public string Description { get; set; }
 

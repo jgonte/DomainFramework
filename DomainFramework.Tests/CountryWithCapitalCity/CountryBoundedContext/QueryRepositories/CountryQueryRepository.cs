@@ -90,28 +90,28 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             return result.Data;
         }
 
-        public Country GetCountryForCapitalCity(int? capitalCityId)
+        public Country GetCountryForCapitalCity(int capitalCityId)
         {
             var result = Query<Country>
                 .Single()
                 .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
                 .StoredProcedure("[CountryBoundedContext].[pCapitalCity_GetCountry]")
                 .Parameters(
-                    p => p.Name("capitalCityId").Value(capitalCityId.Value)
+                    p => p.Name("capitalCityId").Value(capitalCityId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<Country> GetCountryForCapitalCityAsync(int? capitalCityId)
+        public async Task<Country> GetCountryForCapitalCityAsync(int capitalCityId)
         {
             var result = await Query<Country>
                 .Single()
                 .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
                 .StoredProcedure("[CountryBoundedContext].[pCapitalCity_GetCountry]")
                 .Parameters(
-                    p => p.Name("capitalCityId").Value(capitalCityId.Value)
+                    p => p.Name("capitalCityId").Value(capitalCityId)
                 )
                 .ExecuteAsync();
 

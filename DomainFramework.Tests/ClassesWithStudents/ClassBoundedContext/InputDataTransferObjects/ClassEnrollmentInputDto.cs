@@ -15,11 +15,11 @@ namespace ClassesWithStudents.ClassBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            ClassId.ValidateNotZero(result, nameof(ClassId));
+            ClassId.ValidateRequired(result, nameof(ClassId));
 
-            StudentId.ValidateNotZero(result, nameof(StudentId));
+            StudentId.ValidateRequired(result, nameof(StudentId));
 
-            StartedDateTime.ValidateNotEmpty(result, nameof(StartedDateTime));
+            StartedDateTime.ValidateRequired(result, nameof(StartedDateTime));
         }
 
     }

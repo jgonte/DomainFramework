@@ -6,9 +6,9 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
     public class OrganizationRoleId
     {
-        public int? OrganizationId { get; set; }
+        public int OrganizationId { get; set; }
 
-        public int? RoleId { get; set; }
+        public int RoleId { get; set; }
 
     }
 

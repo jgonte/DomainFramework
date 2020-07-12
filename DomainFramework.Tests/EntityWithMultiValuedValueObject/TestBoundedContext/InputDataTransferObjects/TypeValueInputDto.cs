@@ -13,9 +13,9 @@ namespace EntityWithMultiValuedValueObject.TestBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            ((int)DataType).ValidateNotZero(result, nameof(DataType));
+            DataType.ValidateRequired(result, nameof(DataType));
 
-            Data.ValidateNotEmpty(result, nameof(Data));
+            Data.ValidateRequired(result, nameof(Data));
 
             Data.ValidateMaxLength(result, nameof(Data), 200);
         }

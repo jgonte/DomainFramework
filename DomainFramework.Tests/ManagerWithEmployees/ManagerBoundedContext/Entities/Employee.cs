@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ManagerWithEmployees.ManagerBoundedContext
 {
-    public class Employee : Entity<int?>
+    public class Employee : Entity<int>
     {
         public string Name { get; set; }
 

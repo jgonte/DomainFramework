@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClassesWithStudents.ClassBoundedContext
 {
-    public class GetStudentByIdQueryAggregate : GetByIdQueryAggregate<Student, int?, StudentOutputDto>
+    public class GetStudentByIdQueryAggregate : GetByIdQueryAggregate<Student, int, StudentOutputDto>
     {
         public GetStudentByIdQueryAggregate() : this(null)
         {
@@ -21,7 +21,7 @@ namespace ClassesWithStudents.ClassBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.StudentId = RootEntity.Id.Value;
+            OutputDto.StudentId = RootEntity.Id;
 
             OutputDto.FirstName = RootEntity.FirstName;
         }

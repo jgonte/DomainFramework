@@ -11,9 +11,9 @@ namespace DomainFramework.Tests.OneToOne.SelfReference
 
         public void Validate(ValidationResult result)
         {
-            FirstName.ValidateNotEmpty(result, nameof(FirstName));
+            FirstName.ValidateRequired(result, nameof(FirstName));
 
-            SpouseName.ValidateNotEmpty(result, nameof(SpouseName));
+            SpouseName.ValidateRequired(result, nameof(SpouseName));
         }
     }
 }

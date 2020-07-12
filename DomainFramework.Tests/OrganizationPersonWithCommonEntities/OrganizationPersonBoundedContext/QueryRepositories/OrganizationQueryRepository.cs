@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 {
-    public class OrganizationQueryRepository : EntityQueryRepository<Organization, int?>
+    public class OrganizationQueryRepository : EntityQueryRepository<Organization, int>
     {
         public override (int, IEnumerable<Organization>) Get(CollectionQueryParameters queryParameters)
         {
@@ -62,28 +62,28 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
             return result.Data;
         }
 
-        public override Organization GetById(int? organizationId)
+        public override Organization GetById(int organizationId)
         {
             var result = Query<Organization>
                 .Single()
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pOrganization_GetById]")
                 .Parameters(
-                    p => p.Name("organizationId").Value(organizationId.Value)
+                    p => p.Name("organizationId").Value(organizationId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<Organization> GetByIdAsync(int? organizationId)
+        public async override Task<Organization> GetByIdAsync(int organizationId)
         {
             var result = await Query<Organization>
                 .Single()
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pOrganization_GetById]")
                 .Parameters(
-                    p => p.Name("organizationId").Value(organizationId.Value)
+                    p => p.Name("organizationId").Value(organizationId)
                 )
                 .ExecuteAsync();
 

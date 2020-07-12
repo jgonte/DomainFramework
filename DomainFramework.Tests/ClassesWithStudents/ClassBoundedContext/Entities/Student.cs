@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ClassesWithStudents.ClassBoundedContext
 {
-    public class Student : Entity<int?>
+    public class Student : Entity<int>
     {
         public string FirstName { get; set; }
 

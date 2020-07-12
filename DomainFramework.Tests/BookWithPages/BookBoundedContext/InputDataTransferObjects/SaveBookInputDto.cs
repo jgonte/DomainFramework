@@ -7,7 +7,7 @@ namespace BookWithPages.BookBoundedContext
 {
     public class SaveBookInputDto : IInputDataTransferObject
     {
-        public int? BookId { get; set; }
+        public int BookId { get; set; }
 
         public string Title { get; set; }
 
@@ -23,15 +23,15 @@ namespace BookWithPages.BookBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            Title.ValidateNotEmpty(result, nameof(Title));
+            Title.ValidateRequired(result, nameof(Title));
 
             Title.ValidateMaxLength(result, nameof(Title), 150);
 
-            ((int)Category).ValidateNotZero(result, nameof(Category));
+            Category.ValidateRequired(result, nameof(Category));
 
-            DatePublished.ValidateNotEmpty(result, nameof(DatePublished));
+            DatePublished.ValidateRequired(result, nameof(DatePublished));
 
-            PublisherId.ValidateNotEmpty(result, nameof(PublisherId));
+            PublisherId.ValidateRequired(result, nameof(PublisherId));
 
             foreach (var page in Pages)
             {

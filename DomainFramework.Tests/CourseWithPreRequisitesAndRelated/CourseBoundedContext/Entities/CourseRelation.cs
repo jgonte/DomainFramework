@@ -6,9 +6,9 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
 {
     public class CourseRelationId
     {
-        public int? Relates_CourseId { get; set; }
+        public int Relates_CourseId { get; set; }
 
-        public int? IsRelatedTo_CourseId { get; set; }
+        public int IsRelatedTo_CourseId { get; set; }
 
     }
 

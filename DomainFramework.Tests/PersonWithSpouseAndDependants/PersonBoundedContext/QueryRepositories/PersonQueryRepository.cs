@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PersonWithSpouseAndDependants.PersonBoundedContext
 {
-    public class PersonQueryRepository : EntityQueryRepository<Person, int?>
+    public class PersonQueryRepository : EntityQueryRepository<Person, int>
     {
         public override (int, IEnumerable<Person>) Get(CollectionQueryParameters queryParameters)
         {
@@ -62,84 +62,84 @@ namespace PersonWithSpouseAndDependants.PersonBoundedContext
             return result.Data;
         }
 
-        public override Person GetById(int? personId)
+        public override Person GetById(int personId)
         {
             var result = Query<Person>
                 .Single()
                 .Connection(PersonWithSpouseAndDependantsConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetById]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<Person> GetByIdAsync(int? personId)
+        public async override Task<Person> GetByIdAsync(int personId)
         {
             var result = await Query<Person>
                 .Single()
                 .Connection(PersonWithSpouseAndDependantsConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetById]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public IEnumerable<Person> GetAllDependantsForPerson(int? personId)
+        public IEnumerable<Person> GetAllDependantsForPerson(int personId)
         {
             var result = Query<Person>
                 .Collection()
                 .Connection(PersonWithSpouseAndDependantsConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetAllDependants]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<IEnumerable<Person>> GetAllDependantsForPersonAsync(int? personId)
+        public async Task<IEnumerable<Person>> GetAllDependantsForPersonAsync(int personId)
         {
             var result = await Query<Person>
                 .Collection()
                 .Connection(PersonWithSpouseAndDependantsConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetAllDependants]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public Person GetSpouseForPerson(int? personId)
+        public Person GetSpouseForPerson(int personId)
         {
             var result = Query<Person>
                 .Single()
                 .Connection(PersonWithSpouseAndDependantsConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetSpouse]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<Person> GetSpouseForPersonAsync(int? personId)
+        public async Task<Person> GetSpouseForPersonAsync(int personId)
         {
             var result = await Query<Person>
                 .Single()
                 .Connection(PersonWithSpouseAndDependantsConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetSpouse]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .ExecuteAsync();
 

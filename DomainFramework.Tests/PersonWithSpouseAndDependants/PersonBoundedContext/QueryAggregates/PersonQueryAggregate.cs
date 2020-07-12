@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace PersonWithSpouseAndDependants.PersonBoundedContext
 {
-    public class PersonQueryAggregate : GetByIdQueryAggregate<Person, int?, PersonOutputDto>
+    public class PersonQueryAggregate : GetByIdQueryAggregate<Person, int, PersonOutputDto>
     {
-        public GetLinkedAggregateQuerySingleItemOperation<int?, Person, PersonOutputDto> GetSpouseLinkedAggregateQueryOperation { get; set; }
+        public GetLinkedAggregateQuerySingleItemOperation<int, Person, PersonOutputDto> GetSpouseLinkedAggregateQueryOperation { get; set; }
 
-        public GetAllLinkedAggregateQueryCollectionOperation<int?, Person, PersonOutputDto> GetAllDependantsLinkedAggregateQueryOperation { get; set; }
+        public GetAllLinkedAggregateQueryCollectionOperation<int, Person, PersonOutputDto> GetAllDependantsLinkedAggregateQueryOperation { get; set; }
 
         public PersonQueryAggregate() : this(null)
         {
@@ -22,7 +22,7 @@ namespace PersonWithSpouseAndDependants.PersonBoundedContext
 
             PersonQueryRepository.Register(context);
 
-            GetSpouseLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int?, Person, PersonOutputDto>
+            GetSpouseLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int, Person, PersonOutputDto>
             {
                 OnBeforeExecute = entity =>
                 {
@@ -55,7 +55,7 @@ namespace PersonWithSpouseAndDependants.PersonBoundedContext
 
             QueryOperations.Enqueue(GetSpouseLinkedAggregateQueryOperation);
 
-            GetAllDependantsLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Person, PersonOutputDto>
+            GetAllDependantsLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int, Person, PersonOutputDto>
             {
                 GetAllLinkedEntities = (repository, entity, user) => ((PersonQueryRepository)repository).GetAllDependantsForPerson(RootEntity.Id).ToList(),
                 GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
@@ -85,7 +85,7 @@ namespace PersonWithSpouseAndDependants.PersonBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.PersonId = RootEntity.Id.Value;
+            OutputDto.PersonId = RootEntity.Id;
 
             OutputDto.Name = RootEntity.Name;
 

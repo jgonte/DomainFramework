@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
-    public class SchoolQueryRepository : EntityQueryRepository<School, int?>
+    public class SchoolQueryRepository : EntityQueryRepository<School, int>
     {
         public override (int, IEnumerable<School>) Get(CollectionQueryParameters queryParameters)
         {
@@ -62,28 +62,28 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.Data;
         }
 
-        public override School GetById(int? schoolId)
+        public override School GetById(int schoolId)
         {
             var result = Query<School>
                 .Single()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
                 .StoredProcedure("[SchoolBoundedContext].[pSchool_GetById]")
                 .Parameters(
-                    p => p.Name("schoolId").Value(schoolId.Value)
+                    p => p.Name("schoolId").Value(schoolId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<School> GetByIdAsync(int? schoolId)
+        public async override Task<School> GetByIdAsync(int schoolId)
         {
             var result = await Query<School>
                 .Single()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
                 .StoredProcedure("[SchoolBoundedContext].[pSchool_GetById]")
                 .Parameters(
-                    p => p.Name("schoolId").Value(schoolId.Value)
+                    p => p.Name("schoolId").Value(schoolId)
                 )
                 .ExecuteAsync();
 

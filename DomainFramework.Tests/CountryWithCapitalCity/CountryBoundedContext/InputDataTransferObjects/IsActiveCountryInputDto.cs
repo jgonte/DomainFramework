@@ -11,7 +11,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            CountryCode.ValidateNotEmpty(result, nameof(CountryCode));
+            CountryCode.ValidateRequired(result, nameof(CountryCode));
 
             CountryCode.ValidateMaxLength(result, nameof(CountryCode), 2);
         }

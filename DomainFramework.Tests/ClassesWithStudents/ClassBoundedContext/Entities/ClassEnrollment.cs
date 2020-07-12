@@ -6,9 +6,9 @@ namespace ClassesWithStudents.ClassBoundedContext
 {
     public class ClassEnrollmentId
     {
-        public int? ClassId { get; set; }
+        public int ClassId { get; set; }
 
-        public int? StudentId { get; set; }
+        public int StudentId { get; set; }
 
     }
 

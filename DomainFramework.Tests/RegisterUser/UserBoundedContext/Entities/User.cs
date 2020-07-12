@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace RegisterUser.UserBoundedContext
 {
-    public class User : Entity<int?>
+    public class User : Entity<int>
     {
         /// <summary>
         /// The system identifier of the user

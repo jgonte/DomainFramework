@@ -17,21 +17,21 @@ namespace RegisterUser.UserBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            Username.ValidateNotEmpty(result, nameof(Username));
+            Username.ValidateRequired(result, nameof(Username));
 
             Username.ValidateMaxLength(result, nameof(Username), 50);
 
             Email.ValidateEmail(result, nameof(Email));
 
-            Email.ValidateNotEmpty(result, nameof(Email));
+            Email.ValidateRequired(result, nameof(Email));
 
             Email.ValidateMaxLength(result, nameof(Email), 256);
 
-            Password.ValidateNotEmpty(result, nameof(Password));
+            Password.ValidateRequired(result, nameof(Password));
 
             Password.ValidateMaxLength(result, nameof(Password), 32);
 
-            ConfirmPassword.ValidateNotEmpty(result, nameof(ConfirmPassword));
+            ConfirmPassword.ValidateRequired(result, nameof(ConfirmPassword));
 
             ConfirmPassword.ValidateMaxLength(result, nameof(ConfirmPassword), 32);
 

@@ -7,7 +7,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
 {
     public class PersonInputDto : IInputDataTransferObject
     {
-        public int? PersonId { get; set; }
+        public int PersonId { get; set; }
 
         public string Name { get; set; }
 
@@ -23,11 +23,11 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            Name.ValidateNotEmpty(result, nameof(Name));
+            Name.ValidateRequired(result, nameof(Name));
 
             Name.ValidateMaxLength(result, nameof(Name), 50);
 
-            Gender.ValidateNotEmpty(result, nameof(Gender));
+            Gender.ValidateRequired(result, nameof(Gender));
 
             foreach (var person in Disciples)
             {

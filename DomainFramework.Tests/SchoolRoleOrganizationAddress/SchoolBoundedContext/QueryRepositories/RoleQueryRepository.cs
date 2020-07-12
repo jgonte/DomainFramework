@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
-    public class RoleQueryRepository : EntityQueryRepository<Role, int?>
+    public class RoleQueryRepository : EntityQueryRepository<Role, int>
     {
         public override (int, IEnumerable<Role>) Get(CollectionQueryParameters queryParameters)
         {
@@ -82,14 +82,14 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.Data;
         }
 
-        public override Role GetById(int? roleId)
+        public override Role GetById(int roleId)
         {
             var result = Query<Role>
                 .Single()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
                 .StoredProcedure("[SchoolBoundedContext].[pRole_GetById]")
                 .Parameters(
-                    p => p.Name("roleId").Value(roleId.Value)
+                    p => p.Name("roleId").Value(roleId)
                 )
                 .MapTypes(
                     2,
@@ -101,14 +101,14 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
             return result.Data;
         }
 
-        public async override Task<Role> GetByIdAsync(int? roleId)
+        public async override Task<Role> GetByIdAsync(int roleId)
         {
             var result = await Query<Role>
                 .Single()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
                 .StoredProcedure("[SchoolBoundedContext].[pRole_GetById]")
                 .Parameters(
-                    p => p.Name("roleId").Value(roleId.Value)
+                    p => p.Name("roleId").Value(roleId)
                 )
                 .MapTypes(
                     2,

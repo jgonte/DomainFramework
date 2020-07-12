@@ -111,7 +111,7 @@ namespace BookWithPages.BookBoundedContext
         public void Save_Book_With_Pages_Tests()
         {
             // Insert
-            var saveCommandAggregate = new SaveBookCommandAggregate(new SaveBookInputDto
+            var createBookCommandAggregate = new CreateBookCommandAggregate(new SaveBookInputDto
             {
                 Title = "Programming C#",
                 DatePublished = new DateTime(2001, 11, 13),
@@ -135,9 +135,9 @@ namespace BookWithPages.BookBoundedContext
                 }
             });
 
-            saveCommandAggregate.Save();
+            createBookCommandAggregate.Save();
 
-            var bookId = saveCommandAggregate.RootEntity.Id;
+            var bookId = createBookCommandAggregate.RootEntity.Id;
 
             // Read
             var queryAggregate = new GetBookByIdQueryAggregate();
@@ -181,7 +181,7 @@ namespace BookWithPages.BookBoundedContext
             Assert.AreEqual(bookId, pageDto.BookId);
 
             // Update
-            saveCommandAggregate = new SaveBookCommandAggregate(new SaveBookInputDto
+            var updateBookCommandAggregate = new UpdateBookCommandAggregate(new SaveBookInputDto
             {
                 BookId = bookId,
                 Title = "Programming C# 2nd Edition",
@@ -207,7 +207,7 @@ namespace BookWithPages.BookBoundedContext
                 }
             });
 
-            saveCommandAggregate.Save();
+            updateBookCommandAggregate.Save();
 
             // Read update
             queryAggregate = new GetBookByIdQueryAggregate();
@@ -253,7 +253,7 @@ namespace BookWithPages.BookBoundedContext
             // Add pages to the book
             var addPagesCommandAggregate = new AddBookPagesCommandAggregate(new BookAddPagesInputDto
             {
-                BookId = bookId.Value,
+                BookId = bookId,
                 Pages = new List<SavePageInputDto>
                 {
                     new SavePageInputDto
@@ -329,7 +329,7 @@ namespace BookWithPages.BookBoundedContext
             // Delete
             var deleteAggregate = new DeleteBookCommandAggregate(new DeleteBookInputDto
             {
-                BookId = bookId.Value
+                BookId = bookId
             });
 
             deleteAggregate.Save();

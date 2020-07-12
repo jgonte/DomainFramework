@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MechanicServicesSingleVehicle.GarageBoundedContext
 {
-    public class MechanicQueryAggregate : GetByIdQueryAggregate<Mechanic, int?, MechanicOutputDto>
+    public class MechanicQueryAggregate : GetByIdQueryAggregate<Mechanic, int, MechanicOutputDto>
     {
-        public GetLinkedAggregateQuerySingleItemOperation<int?, Vehicle, VehicleOutputDto> GetVehicleLinkedAggregateQueryOperation { get; set; }
+        public GetLinkedAggregateQuerySingleItemOperation<int, Vehicle, VehicleOutputDto> GetVehicleLinkedAggregateQueryOperation { get; set; }
 
         public MechanicQueryAggregate() : this(null)
         {
@@ -22,7 +22,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
 
             VehicleQueryRepository.Register(context);
 
-            GetVehicleLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int?, Vehicle, VehicleOutputDto>
+            GetVehicleLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int, Vehicle, VehicleOutputDto>
             {
                 OnBeforeExecute = entity =>
                 {
@@ -63,7 +63,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.MechanicId = RootEntity.Id.Value;
+            OutputDto.MechanicId = RootEntity.Id;
 
             OutputDto.Name = RootEntity.Name;
 

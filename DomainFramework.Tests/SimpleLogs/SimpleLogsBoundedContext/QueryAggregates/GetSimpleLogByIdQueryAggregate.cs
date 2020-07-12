@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SimpleLogs.SimpleLogsBoundedContext
 {
-    public class GetSimpleLogByIdQueryAggregate : GetByIdQueryAggregate<SimpleLog, int?, SimpleLogOutputDto>
+    public class GetSimpleLogByIdQueryAggregate : GetByIdQueryAggregate<SimpleLog, int, SimpleLogOutputDto>
     {
         public GetSimpleLogByIdQueryAggregate() : this(null)
         {
@@ -21,7 +21,7 @@ namespace SimpleLogs.SimpleLogsBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.SimpleLogId = RootEntity.Id.Value;
+            OutputDto.SimpleLogId = RootEntity.Id;
 
             OutputDto.MessageType = RootEntity.MessageType;
 

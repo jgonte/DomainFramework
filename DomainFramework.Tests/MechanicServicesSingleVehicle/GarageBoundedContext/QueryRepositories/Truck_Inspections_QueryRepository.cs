@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace MechanicServicesSingleVehicle.GarageBoundedContext
 {
-    public class Truck_Inspections_QueryRepository : ValueObjectQueryRepository<int?, Inspection>
+    public class Truck_Inspections_QueryRepository : ValueObjectQueryRepository<int, Inspection>
     {
-        public override (int, IEnumerable<Inspection>) Get(int? truckId, CollectionQueryParameters queryParameters)
+        public override (int, IEnumerable<Inspection>) Get(int truckId, CollectionQueryParameters queryParameters)
         {
             var result = Query<Inspection>
                 .Collection()
@@ -19,7 +19,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("truckId").Value(truckId.Value)
+                    p => p.Name("truckId").Value(truckId)
                 )
                 .Execute();
 
@@ -28,7 +28,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async override Task<(int, IEnumerable<Inspection>)> GetAsync(int? truckId, CollectionQueryParameters queryParameters)
+        public async override Task<(int, IEnumerable<Inspection>)> GetAsync(int truckId, CollectionQueryParameters queryParameters)
         {
             var result = await Query<Inspection>
                 .Collection()
@@ -37,7 +37,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("truckId").Value(truckId.Value)
+                    p => p.Name("truckId").Value(truckId)
                 )
                 .ExecuteAsync();
 
@@ -46,28 +46,28 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public override IEnumerable<Inspection> GetAll(int? truckId)
+        public override IEnumerable<Inspection> GetAll(int truckId)
         {
             var result = Query<Inspection>
                 .Collection()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pTruck_GetAllInspections]")
                 .Parameters(
-                    p => p.Name("truckId").Value(truckId.Value)
+                    p => p.Name("truckId").Value(truckId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<IEnumerable<Inspection>> GetAllAsync(int? truckId)
+        public async override Task<IEnumerable<Inspection>> GetAllAsync(int truckId)
         {
             var result = await Query<Inspection>
                 .Collection()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pTruck_GetAllInspections]")
                 .Parameters(
-                    p => p.Name("truckId").Value(truckId.Value)
+                    p => p.Name("truckId").Value(truckId)
                 )
                 .ExecuteAsync();
 

@@ -13,7 +13,7 @@ namespace EntityWithMultiValuedValueObject.TestBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            TestEntityId.ValidateNotZero(result, nameof(TestEntityId));
+            TestEntityId.ValidateRequired(result, nameof(TestEntityId));
 
             foreach (var typeValue in TypeValues1)
             {

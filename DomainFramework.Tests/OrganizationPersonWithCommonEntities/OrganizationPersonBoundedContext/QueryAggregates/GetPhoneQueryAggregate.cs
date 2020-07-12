@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 {
-    public class GetPhoneQueryAggregate : GetByIdQueryAggregate<Phone, int?, PhoneOutputDto>
+    public class GetPhoneQueryAggregate : GetByIdQueryAggregate<Phone, int, PhoneOutputDto>
     {
         public GetPhoneQueryAggregate() : this(null)
         {
@@ -21,7 +21,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.PhoneId = RootEntity.Id.Value;
+            OutputDto.PhoneId = RootEntity.Id;
 
             OutputDto.Number = RootEntity.Number;
 

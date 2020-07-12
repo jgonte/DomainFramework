@@ -7,7 +7,7 @@ namespace BookWithPages.BookBoundedContext
 {
     public class SavePageInputDto : IInputDataTransferObject
     {
-        public int? PageId { get; set; }
+        public int PageId { get; set; }
 
         public int Index { get; set; }
 
@@ -15,7 +15,7 @@ namespace BookWithPages.BookBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            Index.ValidateNotZero(result, nameof(Index));
+            Index.ValidateRequired(result, nameof(Index));
         }
 
     }

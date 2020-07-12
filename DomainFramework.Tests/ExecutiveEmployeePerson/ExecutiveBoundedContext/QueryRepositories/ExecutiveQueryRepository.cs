@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ExecutiveEmployeePerson.ExecutiveBoundedContext
 {
-    public class ExecutiveQueryRepository : EntityQueryRepository<Executive, int?>
+    public class ExecutiveQueryRepository : EntityQueryRepository<Executive, int>
     {
         public override (int, IEnumerable<Executive>) Get(CollectionQueryParameters queryParameters)
         {
@@ -62,28 +62,28 @@ namespace ExecutiveEmployeePerson.ExecutiveBoundedContext
             return result.Data;
         }
 
-        public override Executive GetById(int? executiveId)
+        public override Executive GetById(int executiveId)
         {
             var result = Query<Executive>
                 .Single()
                 .Connection(ExecutiveEmployeePersonConnectionClass.GetConnectionName())
                 .StoredProcedure("[ExecutiveBoundedContext].[pExecutive_GetById]")
                 .Parameters(
-                    p => p.Name("executiveId").Value(executiveId.Value)
+                    p => p.Name("executiveId").Value(executiveId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<Executive> GetByIdAsync(int? executiveId)
+        public async override Task<Executive> GetByIdAsync(int executiveId)
         {
             var result = await Query<Executive>
                 .Single()
                 .Connection(ExecutiveEmployeePersonConnectionClass.GetConnectionName())
                 .StoredProcedure("[ExecutiveBoundedContext].[pExecutive_GetById]")
                 .Parameters(
-                    p => p.Name("executiveId").Value(executiveId.Value)
+                    p => p.Name("executiveId").Value(executiveId)
                 )
                 .ExecuteAsync();
 

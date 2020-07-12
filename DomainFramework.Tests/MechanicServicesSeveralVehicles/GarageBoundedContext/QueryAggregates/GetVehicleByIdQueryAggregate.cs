@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 {
-    public class GetVehicleByIdQueryAggregate : GetByIdQueryAggregate<Vehicle, int?, VehicleOutputDto>
+    public class GetVehicleByIdQueryAggregate : GetByIdQueryAggregate<Vehicle, int, VehicleOutputDto>
     {
         public GetCollectionLinkedValueObjectQueryOperation<Vehicle, Cylinder, Vehicle_Cylinders_QueryRepository.RepositoryKey> GetCylindersOperation { get; private set; }
 
@@ -38,7 +38,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.VehicleId = RootEntity.Id.Value;
+            OutputDto.VehicleId = RootEntity.Id;
 
             OutputDto.Model = RootEntity.Model;
 

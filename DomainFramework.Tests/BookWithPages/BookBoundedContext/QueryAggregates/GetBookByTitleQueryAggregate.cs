@@ -8,7 +8,7 @@ namespace BookWithPages.BookBoundedContext
 {
     public class GetBookByTitleQueryAggregate : QueryAggregate<Book, BookOutputDto>
     {
-        public GetAllLinkedAggregateQueryCollectionOperation<int?, Page, PageOutputDto> GetAllPagesLinkedAggregateQueryOperation { get; set; }
+        public GetAllLinkedAggregateQueryCollectionOperation<int, Page, PageOutputDto> GetAllPagesLinkedAggregateQueryOperation { get; set; }
 
         public GetBookByTitleQueryAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
         {
@@ -18,7 +18,7 @@ namespace BookWithPages.BookBoundedContext
 
             PageQueryRepository.Register(context);
 
-            GetAllPagesLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Page, PageOutputDto>
+            GetAllPagesLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int, Page, PageOutputDto>
             {
                 GetAllLinkedEntities = (repository, entity, user) => ((PageQueryRepository)repository).GetAllPagesForBook(RootEntity.Id).ToList(),
                 GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
@@ -81,7 +81,7 @@ namespace BookWithPages.BookBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.BookId = RootEntity.Id.Value;
+            OutputDto.BookId = RootEntity.Id;
 
             OutputDto.Title = RootEntity.Title;
 

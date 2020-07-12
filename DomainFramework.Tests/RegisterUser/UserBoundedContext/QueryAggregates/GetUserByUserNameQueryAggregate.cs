@@ -53,7 +53,7 @@ namespace RegisterUser.UserBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.UserId = RootEntity.Id.Value;
+            OutputDto.UserId = RootEntity.Id;
 
             OutputDto.SubjectId = RootEntity.SubjectId;
 

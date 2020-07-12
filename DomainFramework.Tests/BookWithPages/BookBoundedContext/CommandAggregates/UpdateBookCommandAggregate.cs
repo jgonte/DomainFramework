@@ -5,13 +5,13 @@ using System.Linq;
 
 namespace BookWithPages.BookBoundedContext
 {
-    public class SaveBookCommandAggregate : CommandAggregate<Book>
+    public class UpdateBookCommandAggregate : CommandAggregate<Book>
     {
-        public SaveBookCommandAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
+        public UpdateBookCommandAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
         {
         }
 
-        public SaveBookCommandAggregate(SaveBookInputDto book, EntityDependency[] dependencies = null) : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
+        public UpdateBookCommandAggregate(SaveBookInputDto book, EntityDependency[] dependencies = null) : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
         {
             Initialize(book, dependencies);
         }
@@ -35,7 +35,7 @@ namespace BookWithPages.BookBoundedContext
                 IsHardCopy = book.IsHardCopy
             };
 
-            Enqueue(new SaveEntityCommandOperation<Book>(RootEntity, dependencies));
+            Enqueue(new UpdateEntityCommandOperation<Book>(RootEntity, dependencies));
 
             Enqueue(new DeleteLinksCommandOperation<Book>(RootEntity, "UnlinkPagesFromBook"));
 
@@ -47,7 +47,7 @@ namespace BookWithPages.BookBoundedContext
 
                     if (dto is SavePageInputDto)
                     {
-                        operation = new AddLinkedAggregateCommandOperation<Book, SavePageCommandAggregate, SavePageInputDto>(
+                        operation = new AddLinkedAggregateCommandOperation<Book, CreatePageCommandAggregate, SavePageInputDto>(
                             RootEntity,
                             (SavePageInputDto)dto,
                             new EntityDependency[]

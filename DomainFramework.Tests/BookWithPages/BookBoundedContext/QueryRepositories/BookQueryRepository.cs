@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BookWithPages.BookBoundedContext
 {
-    public class BookQueryRepository : EntityQueryRepository<Book, int?>
+    public class BookQueryRepository : EntityQueryRepository<Book, int>
     {
         public override (int, IEnumerable<Book>) Get(CollectionQueryParameters queryParameters)
         {
@@ -90,56 +90,56 @@ namespace BookWithPages.BookBoundedContext
             return result.Data;
         }
 
-        public override Book GetById(int? bookId)
+        public override Book GetById(int bookId)
         {
             var result = Query<Book>
                 .Single()
                 .Connection(BookWithPagesConnectionClass.GetConnectionName())
                 .StoredProcedure("[BookBoundedContext].[pBook_GetById]")
                 .Parameters(
-                    p => p.Name("bookId").Value(bookId.Value)
+                    p => p.Name("bookId").Value(bookId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<Book> GetByIdAsync(int? bookId)
+        public async override Task<Book> GetByIdAsync(int bookId)
         {
             var result = await Query<Book>
                 .Single()
                 .Connection(BookWithPagesConnectionClass.GetConnectionName())
                 .StoredProcedure("[BookBoundedContext].[pBook_GetById]")
                 .Parameters(
-                    p => p.Name("bookId").Value(bookId.Value)
+                    p => p.Name("bookId").Value(bookId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public Book GetBookForPage(int? pageId)
+        public Book GetBookForPage(int pageId)
         {
             var result = Query<Book>
                 .Single()
                 .Connection(BookWithPagesConnectionClass.GetConnectionName())
                 .StoredProcedure("[BookBoundedContext].[pPage_GetBook]")
                 .Parameters(
-                    p => p.Name("pageId").Value(pageId.Value)
+                    p => p.Name("pageId").Value(pageId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<Book> GetBookForPageAsync(int? pageId)
+        public async Task<Book> GetBookForPageAsync(int pageId)
         {
             var result = await Query<Book>
                 .Single()
                 .Connection(BookWithPagesConnectionClass.GetConnectionName())
                 .StoredProcedure("[BookBoundedContext].[pPage_GetBook]")
                 .Parameters(
-                    p => p.Name("pageId").Value(pageId.Value)
+                    p => p.Name("pageId").Value(pageId)
                 )
                 .ExecuteAsync();
 

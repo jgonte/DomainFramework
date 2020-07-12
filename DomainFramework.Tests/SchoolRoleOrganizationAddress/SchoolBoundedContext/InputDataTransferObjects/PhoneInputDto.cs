@@ -11,7 +11,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            Number.ValidateNotEmpty(result, nameof(Number));
+            Number.ValidateRequired(result, nameof(Number));
 
             Number.ValidateMaxLength(result, nameof(Number), 10);
         }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RegisterUser.UserBoundedContext
 {
-    public class UserQueryRepository : EntityQueryRepository<User, int?>
+    public class UserQueryRepository : EntityQueryRepository<User, int>
     {
         public User GetUserByUserName(string username)
         {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BookWithPages.BookBoundedContext
 {
-    public class Page : Entity<int?>
+    public class Page : Entity<int>
     {
         public int Index { get; set; }
 

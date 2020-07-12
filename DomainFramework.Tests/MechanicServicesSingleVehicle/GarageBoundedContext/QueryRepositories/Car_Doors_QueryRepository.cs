@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace MechanicServicesSingleVehicle.GarageBoundedContext
 {
-    public class Car_Doors_QueryRepository : ValueObjectQueryRepository<int?, Door>
+    public class Car_Doors_QueryRepository : ValueObjectQueryRepository<int, Door>
     {
-        public override (int, IEnumerable<Door>) Get(int? carId, CollectionQueryParameters queryParameters)
+        public override (int, IEnumerable<Door>) Get(int carId, CollectionQueryParameters queryParameters)
         {
             var result = Query<Door>
                 .Collection()
@@ -19,7 +19,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("carId").Value(carId.Value)
+                    p => p.Name("carId").Value(carId)
                 )
                 .Execute();
 
@@ -28,7 +28,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async override Task<(int, IEnumerable<Door>)> GetAsync(int? carId, CollectionQueryParameters queryParameters)
+        public async override Task<(int, IEnumerable<Door>)> GetAsync(int carId, CollectionQueryParameters queryParameters)
         {
             var result = await Query<Door>
                 .Collection()
@@ -37,7 +37,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("carId").Value(carId.Value)
+                    p => p.Name("carId").Value(carId)
                 )
                 .ExecuteAsync();
 
@@ -46,28 +46,28 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public override IEnumerable<Door> GetAll(int? carId)
+        public override IEnumerable<Door> GetAll(int carId)
         {
             var result = Query<Door>
                 .Collection()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pCar_GetAllDoors]")
                 .Parameters(
-                    p => p.Name("carId").Value(carId.Value)
+                    p => p.Name("carId").Value(carId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<IEnumerable<Door>> GetAllAsync(int? carId)
+        public async override Task<IEnumerable<Door>> GetAllAsync(int carId)
         {
             var result = await Query<Door>
                 .Collection()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pCar_GetAllDoors]")
                 .Parameters(
-                    p => p.Name("carId").Value(carId.Value)
+                    p => p.Name("carId").Value(carId)
                 )
                 .ExecuteAsync();
 

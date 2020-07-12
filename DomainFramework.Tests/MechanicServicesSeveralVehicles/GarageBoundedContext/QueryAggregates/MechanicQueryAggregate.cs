@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 {
-    public class MechanicQueryAggregate : GetByIdQueryAggregate<Mechanic, int?, MechanicOutputDto>
+    public class MechanicQueryAggregate : GetByIdQueryAggregate<Mechanic, int, MechanicOutputDto>
     {
-        public GetAllLinkedAggregateQueryCollectionOperation<int?, Vehicle, VehicleOutputDto> GetAllVehiclesLinkedAggregateQueryOperation { get; set; }
+        public GetAllLinkedAggregateQueryCollectionOperation<int, Vehicle, VehicleOutputDto> GetAllVehiclesLinkedAggregateQueryOperation { get; set; }
 
         public MechanicQueryAggregate() : this(null)
         {
@@ -22,7 +22,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
             VehicleQueryRepository.Register(context);
 
-            GetAllVehiclesLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Vehicle, VehicleOutputDto>
+            GetAllVehiclesLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int, Vehicle, VehicleOutputDto>
             {
                 GetAllLinkedEntities = (repository, entity, user) => ((VehicleQueryRepository)repository).GetAllVehiclesForMechanic(RootEntity.Id).ToList(),
                 GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
@@ -57,7 +57,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.MechanicId = RootEntity.Id.Value;
+            OutputDto.MechanicId = RootEntity.Id;
 
             OutputDto.Name = RootEntity.Name;
 

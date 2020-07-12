@@ -13,7 +13,7 @@ namespace ClassesWithStudents.ClassBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            FirstName.ValidateNotEmpty(result, nameof(FirstName));
+            FirstName.ValidateRequired(result, nameof(FirstName));
 
             FirstName.ValidateMaxLength(result, nameof(FirstName), 50);
 

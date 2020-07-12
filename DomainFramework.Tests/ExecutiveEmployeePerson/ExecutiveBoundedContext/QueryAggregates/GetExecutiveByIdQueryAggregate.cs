@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ExecutiveEmployeePerson.ExecutiveBoundedContext
 {
-    public class GetExecutiveByIdQueryAggregate : GetByIdQueryAggregate<Executive, int?, ExecutiveOutputDto>
+    public class GetExecutiveByIdQueryAggregate : GetByIdQueryAggregate<Executive, int, ExecutiveOutputDto>
     {
         public GetExecutiveByIdQueryAggregate() : this(null)
         {
@@ -21,7 +21,7 @@ namespace ExecutiveEmployeePerson.ExecutiveBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.PersonId = RootEntity.Id.Value;
+            OutputDto.PersonId = RootEntity.Id;
 
             OutputDto.Bonus = RootEntity.Bonus;
 

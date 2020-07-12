@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CountryWithCapitalCity.CountryBoundedContext
 {
-    public class GetCapitalCityByIdQueryAggregate : GetByIdQueryAggregate<CapitalCity, int?, CapitalCityOutputDto>
+    public class GetCapitalCityByIdQueryAggregate : GetByIdQueryAggregate<CapitalCity, int, CapitalCityOutputDto>
     {
         public GetCapitalCityByIdQueryAggregate() : this(null)
         {
@@ -21,7 +21,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.CapitalCityId = RootEntity.Id.Value;
+            OutputDto.CapitalCityId = RootEntity.Id;
 
             OutputDto.Name = RootEntity.Name;
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace UserWithUserLogins.UserBoundedContext
 {
-    public class UserQueryRepository : EntityQueryRepository<User, int?>
+    public class UserQueryRepository : EntityQueryRepository<User, int>
     {
         public override (int, IEnumerable<User>) Get(CollectionQueryParameters queryParameters)
         {
@@ -62,28 +62,28 @@ namespace UserWithUserLogins.UserBoundedContext
             return result.Data;
         }
 
-        public override User GetById(int? userId)
+        public override User GetById(int userId)
         {
             var result = Query<User>
                 .Single()
                 .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
                 .StoredProcedure("[UserBoundedContext].[pUser_GetById]")
                 .Parameters(
-                    p => p.Name("userId").Value(userId.Value)
+                    p => p.Name("userId").Value(userId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<User> GetByIdAsync(int? userId)
+        public async override Task<User> GetByIdAsync(int userId)
         {
             var result = await Query<User>
                 .Single()
                 .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
                 .StoredProcedure("[UserBoundedContext].[pUser_GetById]")
                 .Parameters(
-                    p => p.Name("userId").Value(userId.Value)
+                    p => p.Name("userId").Value(userId)
                 )
                 .ExecuteAsync();
 

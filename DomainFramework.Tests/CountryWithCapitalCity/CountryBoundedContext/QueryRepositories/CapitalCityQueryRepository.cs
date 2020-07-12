@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CountryWithCapitalCity.CountryBoundedContext
 {
-    public class CapitalCityQueryRepository : EntityQueryRepository<CapitalCity, int?>
+    public class CapitalCityQueryRepository : EntityQueryRepository<CapitalCity, int>
     {
         public override (int, IEnumerable<CapitalCity>) Get(CollectionQueryParameters queryParameters)
         {
@@ -62,28 +62,28 @@ namespace CountryWithCapitalCity.CountryBoundedContext
             return result.Data;
         }
 
-        public override CapitalCity GetById(int? capitalCityId)
+        public override CapitalCity GetById(int capitalCityId)
         {
             var result = Query<CapitalCity>
                 .Single()
                 .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
                 .StoredProcedure("[CountryBoundedContext].[pCapitalCity_GetById]")
                 .Parameters(
-                    p => p.Name("capitalCityId").Value(capitalCityId.Value)
+                    p => p.Name("capitalCityId").Value(capitalCityId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<CapitalCity> GetByIdAsync(int? capitalCityId)
+        public async override Task<CapitalCity> GetByIdAsync(int capitalCityId)
         {
             var result = await Query<CapitalCity>
                 .Single()
                 .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
                 .StoredProcedure("[CountryBoundedContext].[pCapitalCity_GetById]")
                 .Parameters(
-                    p => p.Name("capitalCityId").Value(capitalCityId.Value)
+                    p => p.Name("capitalCityId").Value(capitalCityId)
                 )
                 .ExecuteAsync();
 

@@ -8,7 +8,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 {
     public class VehicleInputDto : IInputDataTransferObject
     {
-        public int? VehicleId { get; set; }
+        public int VehicleId { get; set; }
 
         public string Model { get; set; }
 
@@ -18,7 +18,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            Model.ValidateNotEmpty(result, nameof(Model));
+            Model.ValidateRequired(result, nameof(Model));
 
             Model.ValidateMaxLength(result, nameof(Model), 50);
 

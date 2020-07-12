@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ManagerWithEmployees.ManagerBoundedContext
 {
-    public class ManagerQueryAggregate : GetByIdQueryAggregate<Manager, int?, ManagerOutputDto>
+    public class ManagerQueryAggregate : GetByIdQueryAggregate<Manager, int, ManagerOutputDto>
     {
-        public GetAllLinkedAggregateQueryCollectionOperation<int?, Employee, EmployeeOutputDto> GetAllEmployeesLinkedAggregateQueryOperation { get; set; }
+        public GetAllLinkedAggregateQueryCollectionOperation<int, Employee, EmployeeOutputDto> GetAllEmployeesLinkedAggregateQueryOperation { get; set; }
 
         public ManagerQueryAggregate() : this(null)
         {
@@ -22,7 +22,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
             EmployeeQueryRepository.Register(context);
 
-            GetAllEmployeesLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Employee, EmployeeOutputDto>
+            GetAllEmployeesLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int, Employee, EmployeeOutputDto>
             {
                 GetAllLinkedEntities = (repository, entity, user) => ((EmployeeQueryRepository)repository).GetAllEmployeesForManager(RootEntity.Id).ToList(),
                 GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
@@ -56,7 +56,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.EmployeeId = RootEntity.Id.Value;
+            OutputDto.EmployeeId = RootEntity.Id;
 
             OutputDto.Department = RootEntity.Department;
 

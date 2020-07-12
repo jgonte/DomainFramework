@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 {
-    public class Phone : Entity<int?>
+    public class Phone : Entity<int>
     {
         public string Number { get; set; }
 

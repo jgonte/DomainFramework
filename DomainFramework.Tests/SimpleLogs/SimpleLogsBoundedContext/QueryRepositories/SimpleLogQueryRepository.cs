@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SimpleLogs.SimpleLogsBoundedContext
 {
-    public class SimpleLogQueryRepository : EntityQueryRepository<SimpleLog, int?>
+    public class SimpleLogQueryRepository : EntityQueryRepository<SimpleLog, int>
     {
         public override (int, IEnumerable<SimpleLog>) Get(CollectionQueryParameters queryParameters)
         {
@@ -62,28 +62,28 @@ namespace SimpleLogs.SimpleLogsBoundedContext
             return result.Data;
         }
 
-        public override SimpleLog GetById(int? simpleLogId)
+        public override SimpleLog GetById(int simpleLogId)
         {
             var result = Query<SimpleLog>
                 .Single()
                 .Connection(SimpleLogsConnectionClass.GetConnectionName())
                 .StoredProcedure("[SimpleLogsBoundedContext].[pSimpleLog_GetById]")
                 .Parameters(
-                    p => p.Name("simpleLogId").Value(simpleLogId.Value)
+                    p => p.Name("simpleLogId").Value(simpleLogId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<SimpleLog> GetByIdAsync(int? simpleLogId)
+        public async override Task<SimpleLog> GetByIdAsync(int simpleLogId)
         {
             var result = await Query<SimpleLog>
                 .Single()
                 .Connection(SimpleLogsConnectionClass.GetConnectionName())
                 .StoredProcedure("[SimpleLogsBoundedContext].[pSimpleLog_GetById]")
                 .Parameters(
-                    p => p.Name("simpleLogId").Value(simpleLogId.Value)
+                    p => p.Name("simpleLogId").Value(simpleLogId)
                 )
                 .ExecuteAsync();
 

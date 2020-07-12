@@ -7,7 +7,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 {
     public class SavePhoneInputDto : IInputDataTransferObject
     {
-        public int? PhoneId { get; set; }
+        public int PhoneId { get; set; }
 
         public string Number { get; set; }
 
@@ -17,7 +17,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            Number.ValidateNotEmpty(result, nameof(Number));
+            Number.ValidateRequired(result, nameof(Number));
 
             Number.ValidateMaxLength(result, nameof(Number), 15);
         }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 {
-    public class AddressQueryRepository : EntityQueryRepository<Address, int?>
+    public class AddressQueryRepository : EntityQueryRepository<Address, int>
     {
         public override (int, IEnumerable<Address>) Get(CollectionQueryParameters queryParameters)
         {
@@ -62,84 +62,84 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
             return result.Data;
         }
 
-        public override Address GetById(int? addressId)
+        public override Address GetById(int addressId)
         {
             var result = Query<Address>
                 .Single()
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pAddress_GetById]")
                 .Parameters(
-                    p => p.Name("addressId").Value(addressId.Value)
+                    p => p.Name("addressId").Value(addressId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<Address> GetByIdAsync(int? addressId)
+        public async override Task<Address> GetByIdAsync(int addressId)
         {
             var result = await Query<Address>
                 .Single()
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pAddress_GetById]")
                 .Parameters(
-                    p => p.Name("addressId").Value(addressId.Value)
+                    p => p.Name("addressId").Value(addressId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public Address GetAddressForOrganization(int? organizationId)
+        public Address GetAddressForOrganization(int organizationId)
         {
             var result = Query<Address>
                 .Single()
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pOrganization_GetAddress]")
                 .Parameters(
-                    p => p.Name("organizationId").Value(organizationId.Value)
+                    p => p.Name("organizationId").Value(organizationId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<Address> GetAddressForOrganizationAsync(int? organizationId)
+        public async Task<Address> GetAddressForOrganizationAsync(int organizationId)
         {
             var result = await Query<Address>
                 .Single()
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pOrganization_GetAddress]")
                 .Parameters(
-                    p => p.Name("organizationId").Value(organizationId.Value)
+                    p => p.Name("organizationId").Value(organizationId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public Address GetAddressForPerson(int? personId)
+        public Address GetAddressForPerson(int personId)
         {
             var result = Query<Address>
                 .Single()
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pPerson_GetAddress]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<Address> GetAddressForPersonAsync(int? personId)
+        public async Task<Address> GetAddressForPersonAsync(int personId)
         {
             var result = await Query<Address>
                 .Single()
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pPerson_GetAddress]")
                 .Parameters(
-                    p => p.Name("personId").Value(personId.Value)
+                    p => p.Name("personId").Value(personId)
                 )
                 .ExecuteAsync();
 

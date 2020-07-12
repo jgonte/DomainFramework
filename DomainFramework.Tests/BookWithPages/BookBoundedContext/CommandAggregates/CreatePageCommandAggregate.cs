@@ -5,13 +5,13 @@ using System.Linq;
 
 namespace BookWithPages.BookBoundedContext
 {
-    public class SavePageCommandAggregate : CommandAggregate<Page>
+    public class CreatePageCommandAggregate : CommandAggregate<Page>
     {
-        public SavePageCommandAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
+        public CreatePageCommandAggregate() : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
         {
         }
 
-        public SavePageCommandAggregate(SavePageInputDto page, EntityDependency[] dependencies = null) : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
+        public CreatePageCommandAggregate(SavePageInputDto page, EntityDependency[] dependencies = null) : base(new DomainFramework.DataAccess.RepositoryContext(BookWithPagesConnectionClass.GetConnectionName()))
         {
             Initialize(page, dependencies);
         }
@@ -34,7 +34,7 @@ namespace BookWithPages.BookBoundedContext
                 BookId = (bookDependency != null) ? bookDependency.Id : page.BookId
             };
 
-            Enqueue(new SaveEntityCommandOperation<Page>(RootEntity, dependencies));
+            Enqueue(new InsertEntityCommandOperation<Page>(RootEntity, dependencies));
         }
 
     }

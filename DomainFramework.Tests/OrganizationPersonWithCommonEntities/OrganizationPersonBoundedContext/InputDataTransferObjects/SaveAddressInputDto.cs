@@ -7,7 +7,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 {
     public class SaveAddressInputDto : IInputDataTransferObject
     {
-        public int? AddressId { get; set; }
+        public int AddressId { get; set; }
 
         public string Street { get; set; }
 
@@ -17,7 +17,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            Street.ValidateNotEmpty(result, nameof(Street));
+            Street.ValidateRequired(result, nameof(Street));
 
             Street.ValidateMaxLength(result, nameof(Street), 25);
         }

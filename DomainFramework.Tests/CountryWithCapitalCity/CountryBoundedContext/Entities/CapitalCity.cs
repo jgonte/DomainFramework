@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CountryWithCapitalCity.CountryBoundedContext
 {
-    public class CapitalCity : Entity<int?>
+    public class CapitalCity : Entity<int>
     {
         public string Name { get; set; }
 

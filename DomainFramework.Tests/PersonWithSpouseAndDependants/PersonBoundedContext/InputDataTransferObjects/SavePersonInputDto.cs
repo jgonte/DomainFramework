@@ -7,7 +7,7 @@ namespace PersonWithSpouseAndDependants.PersonBoundedContext
 {
     public class SavePersonInputDto : IInputDataTransferObject
     {
-        public int? PersonId { get; set; }
+        public int PersonId { get; set; }
 
         public string Name { get; set; }
 
@@ -21,7 +21,7 @@ namespace PersonWithSpouseAndDependants.PersonBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            Name.ValidateNotEmpty(result, nameof(Name));
+            Name.ValidateRequired(result, nameof(Name));
 
             Name.ValidateMaxLength(result, nameof(Name), 50);
 

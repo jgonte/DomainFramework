@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace PersonWithDisciples.PersonBoundedContext
 {
-    public class GetPersonByIdQueryAggregate : GetByIdQueryAggregate<Person, int?, PersonOutputDto>
+    public class GetPersonByIdQueryAggregate : GetByIdQueryAggregate<Person, int, PersonOutputDto>
     {
-        public GetAllLinkedAggregateQueryCollectionOperation<int?, Person, PersonOutputDto> GetAllDisciplesLinkedAggregateQueryOperation { get; set; }
+        public GetAllLinkedAggregateQueryCollectionOperation<int, Person, PersonOutputDto> GetAllDisciplesLinkedAggregateQueryOperation { get; set; }
 
         public GetPersonByIdQueryAggregate() : this(null)
         {
@@ -20,7 +20,7 @@ namespace PersonWithDisciples.PersonBoundedContext
 
             PersonQueryRepository.Register(context);
 
-            GetAllDisciplesLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int?, Person, PersonOutputDto>
+            GetAllDisciplesLinkedAggregateQueryOperation = new GetAllLinkedAggregateQueryCollectionOperation<int, Person, PersonOutputDto>
             {
                 GetAllLinkedEntities = (repository, entity, user) => ((PersonQueryRepository)repository).GetAllDisciplesForPerson(RootEntity.Id).ToList(),
                 GetAllLinkedEntitiesAsync = async (repository, entity, user) =>
@@ -50,7 +50,7 @@ namespace PersonWithDisciples.PersonBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.PersonId = RootEntity.Id.Value;
+            OutputDto.PersonId = RootEntity.Id;
 
             OutputDto.Name = RootEntity.Name;
 

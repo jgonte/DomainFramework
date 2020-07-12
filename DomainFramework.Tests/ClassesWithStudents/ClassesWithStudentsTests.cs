@@ -104,7 +104,7 @@ namespace ClassesWithStudents.ClassBoundedContext
             {
                 var createEnrollmentCommandAggregate = new CreateClassEnrollmentCommandAggregate(new ClassEnrollmentInputDto
                 {
-                    ClassId = classId.Value,
+                    ClassId = classId,
                     StudentId = studentId.Value,
                     StartedDateTime = enrollmentDates.ElementAt(i++)
                 });
@@ -145,7 +145,7 @@ namespace ClassesWithStudents.ClassBoundedContext
             // Replace the students
             var replaceEnrollmentCommandAggregate = new ReplaceClassStudentsCommandAggregate(new ReplaceClassStudentsInputDto
             {
-                ClassId = classId.Value,
+                ClassId = classId,
                 Students = new List<StudentInputDto>
                 {
                     new StudentInputDto
@@ -154,7 +154,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                         Enrollment = new ClassEnrollmentInputDto
                         {
                             StartedDateTime = new DateTime(2010, 3, 11, 9, 16, 37),
-                            ClassId = classId.Value
+                            ClassId = classId
                         }
                         
                     },
@@ -164,7 +164,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                         Enrollment = new ClassEnrollmentInputDto
                         {
                             StartedDateTime = new DateTime(2011, 4, 12, 10, 16, 37),
-                            ClassId = classId.Value
+                            ClassId = classId
                         }
                     },
                     new StudentInputDto
@@ -173,7 +173,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                         Enrollment = new ClassEnrollmentInputDto
                         {
                             StartedDateTime =new DateTime(2012, 5, 13, 11, 16, 37),
-                            ClassId = classId.Value
+                            ClassId = classId
                         }
                     }
                 }

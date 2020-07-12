@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SimpleLogs.SimpleLogsBoundedContext
 {
-    public class SimpleLog : Entity<int?>
+    public class SimpleLog : Entity<int>
     {
         public string MessageType { get; set; }
 

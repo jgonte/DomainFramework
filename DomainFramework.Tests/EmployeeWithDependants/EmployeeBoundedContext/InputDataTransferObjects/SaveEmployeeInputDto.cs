@@ -7,7 +7,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
 {
     public class SaveEmployeeInputDto : PersonInputDto
     {
-        public int? EmployeeId { get; set; }
+        public int EmployeeId { get; set; }
 
         public DateTime HireDate { get; set; }
 
@@ -19,7 +19,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
         {
             base.Validate(result);
 
-            HireDate.ValidateNotEmpty(result, nameof(HireDate));
+            HireDate.ValidateRequired(result, nameof(HireDate));
 
             CellPhone.Validate(result);
 

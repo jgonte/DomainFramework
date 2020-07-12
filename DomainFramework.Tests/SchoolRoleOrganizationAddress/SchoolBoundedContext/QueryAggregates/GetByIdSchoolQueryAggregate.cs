@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
-    public class GetByIdSchoolQueryAggregate : GetByIdQueryAggregate<School, int?, SchoolOutputDto>
+    public class GetByIdSchoolQueryAggregate : GetByIdQueryAggregate<School, int, SchoolOutputDto>
     {
-        public GetLinkedAggregateQuerySingleItemOperation<int?, Organization, OrganizationOutputDto> GetOrganizationLinkedAggregateQueryOperation { get; set; }
+        public GetLinkedAggregateQuerySingleItemOperation<int, Organization, OrganizationOutputDto> GetOrganizationLinkedAggregateQueryOperation { get; set; }
 
         public GetByIdSchoolQueryAggregate() : this(null)
         {
@@ -22,7 +22,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
             OrganizationQueryRepository.Register(context);
 
-            GetOrganizationLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int?, Organization, OrganizationOutputDto>
+            GetOrganizationLinkedAggregateQueryOperation = new GetLinkedAggregateQuerySingleItemOperation<int, Organization, OrganizationOutputDto>
             {
                 OnBeforeExecute = entity =>
                 {
@@ -62,7 +62,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.RoleId = RootEntity.Id.Value;
+            OutputDto.RoleId = RootEntity.Id;
 
             OutputDto.IsCharter = RootEntity.IsCharter;
 

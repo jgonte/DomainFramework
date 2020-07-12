@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
-    public class GetAddressByIdQueryAggregate : GetByIdQueryAggregate<Address, int?, AddressOutputDto>
+    public class GetAddressByIdQueryAggregate : GetByIdQueryAggregate<Address, int, AddressOutputDto>
     {
         public GetAddressByIdQueryAggregate() : this(null)
         {
@@ -21,7 +21,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 
         public override void PopulateDto()
         {
-            OutputDto.AddressId = RootEntity.Id.Value;
+            OutputDto.AddressId = RootEntity.Id;
 
             OutputDto.Street = RootEntity.Street;
         }

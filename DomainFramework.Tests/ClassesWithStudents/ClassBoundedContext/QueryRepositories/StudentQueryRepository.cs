@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ClassesWithStudents.ClassBoundedContext
 {
-    public class StudentQueryRepository : EntityQueryRepository<Student, int?>
+    public class StudentQueryRepository : EntityQueryRepository<Student, int>
     {
         public override (int, IEnumerable<Student>) Get(CollectionQueryParameters queryParameters)
         {
@@ -62,63 +62,63 @@ namespace ClassesWithStudents.ClassBoundedContext
             return result.Data;
         }
 
-        public override Student GetById(int? studentId)
+        public override Student GetById(int studentId)
         {
             var result = Query<Student>
                 .Single()
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
                 .StoredProcedure("[ClassBoundedContext].[pStudent_GetById]")
                 .Parameters(
-                    p => p.Name("studentId").Value(studentId.Value)
+                    p => p.Name("studentId").Value(studentId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async override Task<Student> GetByIdAsync(int? studentId)
+        public async override Task<Student> GetByIdAsync(int studentId)
         {
             var result = await Query<Student>
                 .Single()
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
                 .StoredProcedure("[ClassBoundedContext].[pStudent_GetById]")
                 .Parameters(
-                    p => p.Name("studentId").Value(studentId.Value)
+                    p => p.Name("studentId").Value(studentId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public IEnumerable<Student> GetAllStudentsForClass(int? classId)
+        public IEnumerable<Student> GetAllStudentsForClass(int classId)
         {
             var result = Query<Student>
                 .Collection()
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
                 .StoredProcedure("[ClassBoundedContext].[pClass_GetAllStudents]")
                 .Parameters(
-                    p => p.Name("classId").Value(classId.Value)
+                    p => p.Name("classId").Value(classId)
                 )
                 .Execute();
 
             return result.Data;
         }
 
-        public async Task<IEnumerable<Student>> GetAllStudentsForClassAsync(int? classId)
+        public async Task<IEnumerable<Student>> GetAllStudentsForClassAsync(int classId)
         {
             var result = await Query<Student>
                 .Collection()
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
                 .StoredProcedure("[ClassBoundedContext].[pClass_GetAllStudents]")
                 .Parameters(
-                    p => p.Name("classId").Value(classId.Value)
+                    p => p.Name("classId").Value(classId)
                 )
                 .ExecuteAsync();
 
             return result.Data;
         }
 
-        public (int, IEnumerable<Student>) GetEnrolled(int? classId, CollectionQueryParameters queryParameters)
+        public (int, IEnumerable<Student>) GetEnrolled(int classId, CollectionQueryParameters queryParameters)
         {
             var result = Query<Student>
                 .Collection()
@@ -127,7 +127,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("classId").Value(classId.Value)
+                    p => p.Name("classId").Value(classId)
                 )
                 .Execute();
 
@@ -136,7 +136,7 @@ namespace ClassesWithStudents.ClassBoundedContext
             return (int.Parse(count), result.Data);
         }
 
-        public async Task<(int, IEnumerable<Student>)> GetEnrolledAsync(int? classId, CollectionQueryParameters queryParameters)
+        public async Task<(int, IEnumerable<Student>)> GetEnrolledAsync(int classId, CollectionQueryParameters queryParameters)
         {
             var result = await Query<Student>
                 .Collection()
@@ -145,7 +145,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .QueryParameters(queryParameters)
                 .Parameters(p => p.Name("count").Size(20).Output())
                 .Parameters(
-                    p => p.Name("classId").Value(classId.Value)
+                    p => p.Name("classId").Value(classId)
                 )
                 .ExecuteAsync();
 

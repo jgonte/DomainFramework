@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DomainFramework.Core
 {
+    [Obsolete]
     public class SaveEntityCommandOperation<TEntity> : CommandOperation<TEntity>
         where TEntity : IEntity
     {

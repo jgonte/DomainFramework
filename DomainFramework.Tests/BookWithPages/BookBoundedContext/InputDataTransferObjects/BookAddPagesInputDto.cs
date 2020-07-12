@@ -13,7 +13,7 @@ namespace BookWithPages.BookBoundedContext
 
         public virtual void Validate(ValidationResult result)
         {
-            BookId.ValidateNotZero(result, nameof(BookId));
+            BookId.ValidateRequired(result, nameof(BookId));
 
             foreach (var page in Pages)
             {
