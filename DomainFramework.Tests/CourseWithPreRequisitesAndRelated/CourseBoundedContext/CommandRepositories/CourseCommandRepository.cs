@@ -4,6 +4,7 @@ using DomainFramework.DataAccess;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
 {
@@ -123,6 +124,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                     .NonQuery()
                     .Connection(CourseWithPreRequisitesAndRelatedConnectionClass.GetConnectionName())
                     .StoredProcedure("[CourseBoundedContext].[pCourse_UnlinkRelates]")
+                    .ThrowWhenNoRecordIsUpdated(false)
                     .Parameters(
                         p => p.Name("courseId").Value(entity.Id)
                     );
@@ -131,6 +133,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                     .NonQuery()
                     .Connection(CourseWithPreRequisitesAndRelatedConnectionClass.GetConnectionName())
                     .StoredProcedure("[CourseBoundedContext].[pCourse_UnlinkRequires]")
+                    .ThrowWhenNoRecordIsUpdated(false)
                     .Parameters(
                         p => p.Name("courseId").Value(entity.Id)
                     );

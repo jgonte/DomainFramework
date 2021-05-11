@@ -4,6 +4,7 @@ using DomainFramework.DataAccess;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace ManagerWithEmployees.ManagerBoundedContext
 {
@@ -113,6 +114,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
                 .NonQuery()
                 .Connection(ManagerWithEmployeesConnectionClass.GetConnectionName())
                 .StoredProcedure("[ManagerBoundedContext].[pManager_UnlinkEmployees]")
+                .ThrowWhenNoRecordIsUpdated(false)
                 .Parameters(
                     p => p.Name("managerId").Value(entity.Id)
                 );

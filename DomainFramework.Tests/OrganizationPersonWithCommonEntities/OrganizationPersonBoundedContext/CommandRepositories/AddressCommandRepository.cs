@@ -4,6 +4,7 @@ using DomainFramework.DataAccess;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 {

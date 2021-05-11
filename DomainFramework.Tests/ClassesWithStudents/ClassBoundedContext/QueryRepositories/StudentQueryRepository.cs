@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace ClassesWithStudents.ClassBoundedContext
 {
@@ -17,7 +18,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
                 .StoredProcedure("[ClassBoundedContext].[pStudent_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Execute();
 
             var count = (string)result.GetParameter("count").Value;
@@ -32,7 +33,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
                 .StoredProcedure("[ClassBoundedContext].[pStudent_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
             var count = (string)result.GetParameter("count").Value;
@@ -125,7 +126,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
                 .StoredProcedure("[ClassBoundedContext].[Student_GetEnrolled]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Parameters(
                     p => p.Name("classId").Value(classId)
                 )
@@ -143,7 +144,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
                 .StoredProcedure("[ClassBoundedContext].[Student_GetEnrolled]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Parameters(
                     p => p.Name("classId").Value(classId)
                 )
@@ -161,7 +162,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
                 .StoredProcedure("[ClassBoundedContext].[Student_GetNotEnrolled]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Execute();
 
             var count = (string)result.GetParameter("count").Value;
@@ -176,7 +177,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .Connection(ClassesWithStudentsConnectionClass.GetConnectionName())
                 .StoredProcedure("[ClassBoundedContext].[Student_GetNotEnrolled]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
             var count = (string)result.GetParameter("count").Value;

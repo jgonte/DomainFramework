@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
@@ -17,7 +18,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
                 .StoredProcedure("[SchoolBoundedContext].[pRole_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .MapTypes(
                     2,
                     tm => tm.Type(typeof(School)).Index(1),
@@ -37,7 +38,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
                 .StoredProcedure("[SchoolBoundedContext].[pRole_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .MapTypes(
                     2,
                     tm => tm.Type(typeof(School)).Index(1),

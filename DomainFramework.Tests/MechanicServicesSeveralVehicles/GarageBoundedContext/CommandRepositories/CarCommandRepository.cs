@@ -4,6 +4,7 @@ using DomainFramework.DataAccess;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 {
@@ -123,6 +124,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                     .NonQuery()
                     .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
                     .StoredProcedure("[GarageBoundedContext].[pVehicle_DeleteCylinders]")
+                    .ThrowWhenNoRecordIsUpdated(false)
                     .Parameters(
                         p => p.Name("vehicleId").Value(entity.Id)
                     );
@@ -131,6 +133,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                     .NonQuery()
                     .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
                     .StoredProcedure("[GarageBoundedContext].[pCar_DeleteDoors]")
+                    .ThrowWhenNoRecordIsUpdated(false)
                     .Parameters(
                         p => p.Name("carId").Value(entity.Id)
                     );

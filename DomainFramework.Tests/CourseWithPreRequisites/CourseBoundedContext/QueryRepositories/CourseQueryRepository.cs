@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace CourseWithPreRequisites.CourseBoundedContext
 {
@@ -17,7 +18,7 @@ namespace CourseWithPreRequisites.CourseBoundedContext
                 .Connection(CourseWithPreRequisitesConnectionClass.GetConnectionName())
                 .StoredProcedure("[CourseBoundedContext].[pCourse_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Execute();
 
             var count = (string)result.GetParameter("count").Value;
@@ -32,7 +33,7 @@ namespace CourseWithPreRequisites.CourseBoundedContext
                 .Connection(CourseWithPreRequisitesConnectionClass.GetConnectionName())
                 .StoredProcedure("[CourseBoundedContext].[pCourse_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
             var count = (string)result.GetParameter("count").Value;
@@ -153,7 +154,7 @@ namespace CourseWithPreRequisites.CourseBoundedContext
                 .Connection(CourseWithPreRequisitesConnectionClass.GetConnectionName())
                 .StoredProcedure("[CourseBoundedContext].[pCourse_GetIsRequiredBy]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Parameters(
                     p => p.Name("courseId").Value(courseId)
                 )
@@ -171,7 +172,7 @@ namespace CourseWithPreRequisites.CourseBoundedContext
                 .Connection(CourseWithPreRequisitesConnectionClass.GetConnectionName())
                 .StoredProcedure("[CourseBoundedContext].[pCourse_GetIsRequiredBy]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Parameters(
                     p => p.Name("courseId").Value(courseId)
                 )
@@ -189,7 +190,7 @@ namespace CourseWithPreRequisites.CourseBoundedContext
                 .Connection(CourseWithPreRequisitesConnectionClass.GetConnectionName())
                 .StoredProcedure("[CourseBoundedContext].[pCourse_GetRequires]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Parameters(
                     p => p.Name("courseId").Value(courseId)
                 )
@@ -207,7 +208,7 @@ namespace CourseWithPreRequisites.CourseBoundedContext
                 .Connection(CourseWithPreRequisitesConnectionClass.GetConnectionName())
                 .StoredProcedure("[CourseBoundedContext].[pCourse_GetRequires]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Parameters(
                     p => p.Name("courseId").Value(courseId)
                 )

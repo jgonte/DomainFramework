@@ -4,6 +4,7 @@ using DomainFramework.DataAccess;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
 {
@@ -164,6 +165,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
                     .NonQuery()
                     .Connection(PersonWithSpouseAndBestFriendConnectionClass.GetConnectionName())
                     .StoredProcedure("[PersonBoundedContext].[pPerson_UnlinkBestFriendOf]")
+                    .ThrowWhenNoRecordIsUpdated(false)
                     .Parameters(
                         p => p.Name("personId").Value(entity.Id)
                     );
@@ -172,6 +174,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
                     .NonQuery()
                     .Connection(PersonWithSpouseAndBestFriendConnectionClass.GetConnectionName())
                     .StoredProcedure("[PersonBoundedContext].[pPerson_UnlinkMarriedTo]")
+                    .ThrowWhenNoRecordIsUpdated(false)
                     .Parameters(
                         p => p.Name("personId").Value(entity.Id)
                     );

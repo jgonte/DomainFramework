@@ -3,6 +3,7 @@ using DomainFramework.Core;
 using DomainFramework.DataAccess;
 using System;
 using System.Linq.Expressions;
+using Utilities;
 
 namespace DomainFramework.Tests.EntityWithValueObjects
 {

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace CountryWithCapitalCity.CountryBoundedContext
 {
@@ -17,12 +18,12 @@ namespace CountryWithCapitalCity.CountryBoundedContext
                 .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
                 .StoredProcedure("[CountryBoundedContext].[pCountry_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
+            var count = (int)result.GetParameter("count").Value;
 
-            return (int.Parse(count), result.Data);
+            return (count, result.Data);
         }
 
         public async override Task<(int, IEnumerable<Country>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -32,7 +33,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
                 .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
                 .StoredProcedure("[CountryBoundedContext].[pCountry_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
             var count = (string)result.GetParameter("count").Value;

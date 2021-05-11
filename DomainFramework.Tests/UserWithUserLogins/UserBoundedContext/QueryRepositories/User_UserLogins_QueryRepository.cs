@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace UserWithUserLogins.UserBoundedContext
 {
@@ -17,7 +18,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
                 .StoredProcedure("[UserBoundedContext].[pUser_GetUserLogins]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Parameters(
                     p => p.Name("userId").Value(userId)
                 )
@@ -35,7 +36,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
                 .StoredProcedure("[UserBoundedContext].[pUser_GetUserLogins]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Parameters(
                     p => p.Name("userId").Value(userId)
                 )

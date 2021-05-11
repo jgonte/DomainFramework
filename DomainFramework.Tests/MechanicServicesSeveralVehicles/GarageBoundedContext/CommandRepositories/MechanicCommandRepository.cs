@@ -4,6 +4,7 @@ using DomainFramework.DataAccess;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace MechanicServicesSeveralVehicles.GarageBoundedContext
 {
@@ -105,6 +106,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 .NonQuery()
                 .Connection(MechanicServicesSeveralVehiclesConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pMechanic_UnlinkVehicles]")
+                .ThrowWhenNoRecordIsUpdated(false)
                 .Parameters(
                     p => p.Name("mechanicId").Value(entity.Id)
                 );

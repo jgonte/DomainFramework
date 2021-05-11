@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace ManagerWithEmployees.ManagerBoundedContext
 {
@@ -17,7 +18,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
                 .Connection(ManagerWithEmployeesConnectionClass.GetConnectionName())
                 .StoredProcedure("[ManagerBoundedContext].[pManager_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Execute();
 
             var count = (string)result.GetParameter("count").Value;
@@ -32,7 +33,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
                 .Connection(ManagerWithEmployeesConnectionClass.GetConnectionName())
                 .StoredProcedure("[ManagerBoundedContext].[pManager_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
             var count = (string)result.GetParameter("count").Value;

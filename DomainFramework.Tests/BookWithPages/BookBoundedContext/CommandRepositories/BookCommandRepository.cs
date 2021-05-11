@@ -2,8 +2,11 @@ using DataAccess;
 using DomainFramework.Core;
 using DomainFramework.DataAccess;
 using System;
+using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace BookWithPages.BookBoundedContext
 {
@@ -16,22 +19,42 @@ namespace BookWithPages.BookBoundedContext
                 entity.CreatedBy = (int)user.Id;
             }
 
-            var command = Query<Book>
-                .Single()
+            var command = Command
+                .NonQuery()
                 .Connection(BookWithPagesConnectionClass.GetConnectionName())
                 .StoredProcedure("[BookBoundedContext].[pBook_Insert]")
                 .Parameters(
-                    p => p.Name("title").Value(entity.Title),
-                    p => p.Name("category").Value(entity.Category),
-                    p => p.Name("datePublished").Value(entity.DatePublished),
-                    p => p.Name("publisherId").Value(entity.PublisherId),
-                    p => p.Name("isHardCopy").Value(entity.IsHardCopy),
-                    p => p.Name("createdBy").Value(entity.CreatedBy)
+                    //p => p.Set("title", entity.Title),
+                    //p => p.Name("category").Value(entity.Category),
+                    //p => p.Name("datePublished").Value(entity.DatePublished),
+                    //p => p.Name("publisherId").Value(entity.PublisherId),
+                    //p => p.Name("isHardCopy").Value(entity.IsHardCopy),
+                    //p => p.Name("createdBy").Value(entity.CreatedBy),
+                    p => p.Name("bookId").SqlType((int)SqlDbType.Int).IsOutput()
                 )
-                .Instance(entity)
-                .MapProperties(
-                    p => p.Name("Id").Index(0)
-                );
+                .AutoGenerateParameters(entity, excludedProperties: new Expression<Func<Book, object>>[]{
+                        m => m.Id,
+                        m => m.CreatedDateTime,
+                        m => m.UpdatedBy,
+                        m => m.UpdatedDateTime
+                })
+                .Entity(entity)
+                //.MapProperties(
+                //    p => p.Name("Id").Index(0)
+                //)
+                .MapOutputParameters(
+                    map => map.Name("bookId").Property("Id")
+                )
+                //.OnAfterCommandExecuted(cmd =>
+
+                //    entity.Id = (int)cmd.Parameters
+                //    .Where(p => 
+                //        p.Direction == System.Data.ParameterDirection.Output && 
+                //        p.Name == "bookId"
+                //    )
+                //    .Single().Value
+                //)
+                ;
 
             return command;
         }

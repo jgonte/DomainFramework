@@ -1,10 +1,9 @@
 using DataAccess;
 using DomainFramework.Core;
 using DomainFramework.DataAccess;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace BookWithPages.BookBoundedContext
 {
@@ -17,7 +16,7 @@ namespace BookWithPages.BookBoundedContext
                 .Connection(BookWithPagesConnectionClass.GetConnectionName())
                 .StoredProcedure("[BookBoundedContext].[pPage_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Execute();
 
             var count = (string)result.GetParameter("count").Value;
@@ -32,7 +31,7 @@ namespace BookWithPages.BookBoundedContext
                 .Connection(BookWithPagesConnectionClass.GetConnectionName())
                 .StoredProcedure("[BookBoundedContext].[pPage_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
             var count = (string)result.GetParameter("count").Value;

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace MechanicServicesSingleVehicle.GarageBoundedContext
 {
@@ -17,7 +18,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pVehicle_GetCylinders]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Parameters(
                     p => p.Name("vehicleId").Value(vehicleId)
                 )
@@ -35,7 +36,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pVehicle_GetCylinders]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Parameters(
                     p => p.Name("vehicleId").Value(vehicleId)
                 )

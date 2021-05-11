@@ -4,6 +4,7 @@ using DomainFramework.DataAccess;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 {
@@ -107,6 +108,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                     .NonQuery()
                     .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                     .StoredProcedure("[OrganizationPersonBoundedContext].[pPerson_UnlinkAddress]")
+                    .ThrowWhenNoRecordIsUpdated(false)
                     .Parameters(
                         p => p.Name("personId").Value(entity.Id)
                     );
@@ -115,6 +117,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                     .NonQuery()
                     .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                     .StoredProcedure("[OrganizationPersonBoundedContext].[pPerson_UnlinkPhones]")
+                    .ThrowWhenNoRecordIsUpdated(false)
                     .Parameters(
                         p => p.Name("personId").Value(entity.Id)
                     );

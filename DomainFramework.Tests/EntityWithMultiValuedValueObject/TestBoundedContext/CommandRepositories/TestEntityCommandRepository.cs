@@ -4,6 +4,7 @@ using DomainFramework.DataAccess;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace EntityWithMultiValuedValueObject.TestBoundedContext
 {
@@ -105,6 +106,7 @@ namespace EntityWithMultiValuedValueObject.TestBoundedContext
                 .NonQuery()
                 .Connection(EntityWithMultiValuedValueObjectConnectionClass.GetConnectionName())
                 .StoredProcedure("[pTestEntity_DeleteTypeValues1]")
+                .ThrowWhenNoRecordIsUpdated(false)
                 .Parameters(
                     p => p.Name("testEntityId").Value(entity.Id)
                 );

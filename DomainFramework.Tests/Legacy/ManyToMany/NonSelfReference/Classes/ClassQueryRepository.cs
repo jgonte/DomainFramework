@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 using DomainFramework.Core;
 using System.Collections.Generic;
+using Utilities;
 
 namespace DomainFramework.Tests
 {

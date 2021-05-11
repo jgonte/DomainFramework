@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace ManagerWithEmployees.ManagerBoundedContext
 {
@@ -17,7 +18,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
                 .Connection(ManagerWithEmployeesConnectionClass.GetConnectionName())
                 .StoredProcedure("[ManagerBoundedContext].[pEmployee_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .MapTypes(
                     4,
                     tm => tm.Type(typeof(Manager)).Index(1),
@@ -37,7 +38,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
                 .Connection(ManagerWithEmployeesConnectionClass.GetConnectionName())
                 .StoredProcedure("[ManagerBoundedContext].[pEmployee_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .MapTypes(
                     4,
                     tm => tm.Type(typeof(Manager)).Index(1),

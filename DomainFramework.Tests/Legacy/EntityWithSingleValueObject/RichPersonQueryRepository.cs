@@ -2,6 +2,7 @@
 using DomainFramework.Core;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace DomainFramework.Tests.EntityWithValueObjects
 {

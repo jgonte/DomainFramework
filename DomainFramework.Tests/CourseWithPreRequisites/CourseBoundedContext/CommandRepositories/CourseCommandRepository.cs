@@ -4,6 +4,7 @@ using DomainFramework.DataAccess;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace CourseWithPreRequisites.CourseBoundedContext
 {
@@ -113,6 +114,7 @@ namespace CourseWithPreRequisites.CourseBoundedContext
 
                 case "UnlinkRequiresFromCourse": return Command
                     .NonQuery()
+                    .ThrowWhenNoRecordIsUpdated(false)
                     .Connection(CourseWithPreRequisitesConnectionClass.GetConnectionName())
                     .StoredProcedure("[CourseBoundedContext].[pCourse_UnlinkRequires]")
                     .Parameters(

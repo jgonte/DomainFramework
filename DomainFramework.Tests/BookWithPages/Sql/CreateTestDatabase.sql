@@ -81,7 +81,8 @@ CREATE PROCEDURE [BookBoundedContext].[pBook_Insert]
     @datePublished DATE,
     @publisherId UNIQUEIDENTIFIER,
     @isHardCopy BIT,
-    @createdBy INT
+    @createdBy INT,
+	@bookId INT OUTPUT
 AS
 BEGIN
     DECLARE @bookOutputData TABLE
@@ -112,7 +113,7 @@ BEGIN
     );
 
     SELECT
-        [BookId]
+        @bookId = [BookId]
     FROM @bookOutputData;
 
 END;

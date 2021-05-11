@@ -4,6 +4,7 @@ using DomainFramework.DataAccess;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace CountryWithCapitalCity.CountryBoundedContext
 {
@@ -36,7 +37,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
                     }
 
                     cmd.Parameters(
-                        p => p.Name("countryCode").Value(entity.CountryCode)
+                        p => p.Set("countryCode", entity.CountryCode)
                     );
                 })
                 .Instance(entity)

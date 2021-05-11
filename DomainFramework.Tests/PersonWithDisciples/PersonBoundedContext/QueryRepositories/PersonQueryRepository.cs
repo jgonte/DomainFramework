@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace PersonWithDisciples.PersonBoundedContext
 {
@@ -17,7 +18,7 @@ namespace PersonWithDisciples.PersonBoundedContext
                 .Connection(PersonWithDisciplesConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Execute();
 
             var count = (string)result.GetParameter("count").Value;
@@ -32,7 +33,7 @@ namespace PersonWithDisciples.PersonBoundedContext
                 .Connection(PersonWithDisciplesConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
             var count = (string)result.GetParameter("count").Value;
@@ -125,7 +126,7 @@ namespace PersonWithDisciples.PersonBoundedContext
                 .Connection(PersonWithDisciplesConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetDisciples]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Parameters(
                     p => p.Name("personId").Value(personId)
                 )
@@ -143,7 +144,7 @@ namespace PersonWithDisciples.PersonBoundedContext
                 .Connection(PersonWithDisciplesConnectionClass.GetConnectionName())
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetDisciples]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Parameters(
                     p => p.Name("personId").Value(personId)
                 )

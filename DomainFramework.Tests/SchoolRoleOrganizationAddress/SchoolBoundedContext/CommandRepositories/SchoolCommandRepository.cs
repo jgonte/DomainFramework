@@ -4,6 +4,7 @@ using DomainFramework.DataAccess;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
 {
@@ -106,6 +107,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 .NonQuery()
                 .Connection(SchoolRoleOrganizationAddressConnectionClass.GetConnectionName())
                 .StoredProcedure("[SchoolBoundedContext].[pRole_UnlinkOrganization]")
+                .ThrowWhenNoRecordIsUpdated(false)
                 .Parameters(
                     p => p.Name("roleId").Value(entity.Id)
                 );

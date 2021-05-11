@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DomainFramework.Core;
+using Utilities;
 
 namespace DomainFramework.Tests
 {

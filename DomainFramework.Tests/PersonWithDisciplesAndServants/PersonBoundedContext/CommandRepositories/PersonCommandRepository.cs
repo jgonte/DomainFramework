@@ -4,6 +4,7 @@ using DomainFramework.DataAccess;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace PersonWithDisciplesAndServants.PersonBoundedContext
 {
@@ -137,6 +138,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
                     .NonQuery()
                     .Connection(PersonWithDisciplesAndServantsConnectionClass.GetConnectionName())
                     .StoredProcedure("[PersonBoundedContext].[pPerson_UnlinkDisciples]")
+                    .ThrowWhenNoRecordIsUpdated(false)
                     .Parameters(
                         p => p.Name("personId").Value(entity.Id)
                     );
@@ -145,6 +147,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
                     .NonQuery()
                     .Connection(PersonWithDisciplesAndServantsConnectionClass.GetConnectionName())
                     .StoredProcedure("[PersonBoundedContext].[pPerson_UnlinkServants]")
+                    .ThrowWhenNoRecordIsUpdated(false)
                     .Parameters(
                         p => p.Name("personId").Value(entity.Id)
                     );

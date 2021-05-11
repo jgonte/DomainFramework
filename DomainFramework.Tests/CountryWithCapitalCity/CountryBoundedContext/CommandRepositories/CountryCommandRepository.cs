@@ -4,6 +4,7 @@ using DomainFramework.DataAccess;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace CountryWithCapitalCity.CountryBoundedContext
 {
@@ -63,7 +64,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
                     .Connection(CountryWithCapitalCityConnectionClass.GetConnectionName())
                     .StoredProcedure("[CountryBoundedContext].[pCountry_Inactivate]")
                     .Parameters(
-                        p => p.Name("countryCode").Value(entity.Id),
+                        p => p.Set("countryCode", entity.Id),
                         p => p.Name("updatedBy").Value(entity.UpdatedBy)
                     );
 

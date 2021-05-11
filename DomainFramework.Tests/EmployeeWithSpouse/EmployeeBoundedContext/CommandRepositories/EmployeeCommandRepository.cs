@@ -4,6 +4,7 @@ using DomainFramework.DataAccess;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace EmployeeWithSpouse.EmployeeBoundedContext
 {
@@ -136,6 +137,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
                 .NonQuery()
                 .Connection(EmployeeWithSpouseConnectionClass.GetConnectionName())
                 .StoredProcedure("[EmployeeBoundedContext].[pPerson_UnlinkSpouse]")
+                .ThrowWhenNoRecordIsUpdated(false)
                 .Parameters(
                     p => p.Name("personId").Value(entity.Id)
                 );

@@ -4,6 +4,7 @@ using DomainFramework.DataAccess;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace MechanicServicesSingleVehicle.GarageBoundedContext
 {
@@ -46,6 +47,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
                 .NonQuery()
                 .Connection(MechanicServicesSingleVehicleConnectionClass.GetConnectionName())
                 .StoredProcedure("[GarageBoundedContext].[pTruck_DeleteInspections]")
+                .ThrowWhenNoRecordIsUpdated(false)
                 .OnBeforeCommandExecuted(cmd =>
                 {
                     var dependencies = Dependencies();

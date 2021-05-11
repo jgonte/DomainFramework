@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
 {
@@ -17,7 +18,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pPhone_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Execute();
 
             var count = (string)result.GetParameter("count").Value;
@@ -32,7 +33,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pPhone_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
             var count = (string)result.GetParameter("count").Value;
@@ -153,7 +154,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pOrganization_GetPhones]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Parameters(
                     p => p.Name("organizationId").Value(organizationId)
                 )
@@ -171,7 +172,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pOrganization_GetPhones]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Parameters(
                     p => p.Name("organizationId").Value(organizationId)
                 )
@@ -189,7 +190,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pPerson_GetPhones]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Parameters(
                     p => p.Name("personId").Value(personId)
                 )
@@ -207,7 +208,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .Connection(OrganizationPersonWithCommonEntitiesConnectionClass.GetConnectionName())
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pPerson_GetPhones]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Parameters(
                     p => p.Name("personId").Value(personId)
                 )

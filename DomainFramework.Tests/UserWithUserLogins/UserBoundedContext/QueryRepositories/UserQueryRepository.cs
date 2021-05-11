@@ -1,10 +1,10 @@
 using DataAccess;
 using DomainFramework.Core;
 using DomainFramework.DataAccess;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace UserWithUserLogins.UserBoundedContext
 {
@@ -17,7 +17,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
                 .StoredProcedure("[UserBoundedContext].[pUser_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .Execute();
 
             var count = (string)result.GetParameter("count").Value;
@@ -32,7 +32,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 .Connection(UserWithUserLoginsConnectionClass.GetConnectionName())
                 .StoredProcedure("[UserBoundedContext].[pUser_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
             var count = (string)result.GetParameter("count").Value;

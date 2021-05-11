@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
 {
@@ -17,7 +18,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
                 .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
                 .StoredProcedure("[ExecutiveBoundedContext].[pPerson_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .MapTypes(
                     6,
                     tm => tm.Type(typeof(Employee)).Index(1),
@@ -39,7 +40,7 @@ namespace ExecutiveEmployeePersonCustomer.ExecutiveBoundedContext
                 .Connection(ExecutiveEmployeePersonCustomerConnectionClass.GetConnectionName())
                 .StoredProcedure("[ExecutiveBoundedContext].[pPerson_Get]")
                 .QueryParameters(queryParameters)
-                .Parameters(p => p.Name("count").Size(20).Output())
+                .Parameters(p => p.Name("count").Count())
                 .MapTypes(
                     6,
                     tm => tm.Type(typeof(Employee)).Index(1),

@@ -1,6 +1,7 @@
 ﻿using DataAccess;
 using DomainFramework.Core;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace DomainFramework.Tests
 {

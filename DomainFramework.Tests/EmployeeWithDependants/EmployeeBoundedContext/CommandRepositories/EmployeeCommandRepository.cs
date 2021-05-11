@@ -4,6 +4,7 @@ using DomainFramework.DataAccess;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace EmployeeWithDependants.EmployeeBoundedContext
 {
@@ -119,6 +120,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
                 .NonQuery()
                 .Connection(EmployeeWithDependantsConnectionClass.GetConnectionName())
                 .StoredProcedure("[EmployeeBoundedContext].[pEmployee_UnlinkDependants]")
+                .ThrowWhenNoRecordIsUpdated(false)
                 .Parameters(
                     p => p.Name("employeeId").Value(entity.Id)
                 );
