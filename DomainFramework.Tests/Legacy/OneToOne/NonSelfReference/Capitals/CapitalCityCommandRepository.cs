@@ -42,9 +42,8 @@ namespace DomainFramework.Tests
                     p => p.Name("capitalCityId").Value(entity.Id.Value),
                     p => p.Name("countryCode").Value(entity.CountryCode)
                 )
-                .AutoGenerateParameters(
-                    qbeObject: entity
-                );
+                .Record(entity)
+                .AutoGenerateParameters();
         }
 
         protected override void HandleInsert(Command command)

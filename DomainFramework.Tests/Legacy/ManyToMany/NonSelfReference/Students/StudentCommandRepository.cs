@@ -2,7 +2,6 @@
 using DomainFramework.Core;
 using System;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace DomainFramework.Tests
 {
@@ -14,8 +13,8 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Student_Create")
+                .Record(entity)
                 .AutoGenerateParameters(
-                    qbeObject: entity,
                     excludedProperties: new Expression<Func<StudentEntity, object>>[]{
                         m => m.Id,
                     }

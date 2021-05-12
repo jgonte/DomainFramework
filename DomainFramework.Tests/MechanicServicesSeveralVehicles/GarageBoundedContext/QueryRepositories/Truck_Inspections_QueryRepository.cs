@@ -1,7 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
 using DomainFramework.DataAccess;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,9 +23,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 )
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<Inspection>)> GetAsync(int truckId, CollectionQueryParameters queryParameters)
@@ -42,9 +39,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 )
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<Inspection> GetAll(int truckId)
@@ -58,7 +53,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<Inspection>> GetAllAsync(int truckId)
@@ -72,7 +67,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

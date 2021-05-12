@@ -37,7 +37,7 @@ namespace DomainFramework.Tests.EntityWithValueObjects
                 })
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public override async Task<RichPersonEntity> GetByIdAsync(int? id)
@@ -59,7 +59,7 @@ namespace DomainFramework.Tests.EntityWithValueObjects
                 })
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
     }
 }

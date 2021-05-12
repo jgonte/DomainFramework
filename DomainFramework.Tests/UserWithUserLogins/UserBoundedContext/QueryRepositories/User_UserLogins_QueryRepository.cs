@@ -1,7 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
 using DomainFramework.DataAccess;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,9 +23,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 )
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<UserLogin>)> GetAsync(int userId, CollectionQueryParameters queryParameters)
@@ -42,9 +39,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 )
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<UserLogin> GetAll(int userId)
@@ -58,7 +53,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<UserLogin>> GetAllAsync(int userId)
@@ -72,7 +67,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

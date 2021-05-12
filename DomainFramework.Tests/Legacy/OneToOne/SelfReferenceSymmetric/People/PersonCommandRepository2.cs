@@ -3,7 +3,6 @@ using DomainFramework.Core;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Utilities;
 
 namespace DomainFramework.Tests
@@ -32,8 +31,8 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Person_Create")
+                .Record(entity)
                 .AutoGenerateParameters(
-                    qbeObject: entity,
                     excludedProperties: excludedProperties
                 )
                 .Instance(entity)
@@ -91,8 +90,9 @@ namespace DomainFramework.Tests
                 });
             }
 
+            command.Record(entity);
+
             command.AutoGenerateParameters(
-                qbeObject: entity,
                 excludedProperties: new Expression<Func<PersonEntity2, object>>[]{
                     m => m.Id,
                 }

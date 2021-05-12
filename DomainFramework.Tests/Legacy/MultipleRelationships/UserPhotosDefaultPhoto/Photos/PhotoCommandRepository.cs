@@ -16,8 +16,8 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Photo_Create")
+                .Record(entity)
                 .AutoGenerateParameters( // Generate the parameters from the data
-                    qbeObject: entity,
                     excludedProperties: new Expression<Func<PhotoEntity, object>>[]{
                         m => m.Id,
                         m => m.UserId
@@ -49,9 +49,8 @@ namespace DomainFramework.Tests
                     p => p.Name("photoId").Value(entity.Id.Value),
                     p => p.Name("userId").Value(entity.UserId)
                 )
-                .AutoGenerateParameters(
-                    qbeObject: entity
-                );
+                .Record(entity)
+                .AutoGenerateParameters();
         }
 
         protected override Command CreateDeleteCommand(PhotoEntity entity, IAuthenticatedUser user, string selector)

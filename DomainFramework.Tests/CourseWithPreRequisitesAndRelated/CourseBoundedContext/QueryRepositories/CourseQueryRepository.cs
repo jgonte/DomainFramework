@@ -21,9 +21,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<Course>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -36,9 +34,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<Course> GetAll()
@@ -49,7 +45,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 .StoredProcedure("[CourseBoundedContext].[pCourse_GetAll]")
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<Course>> GetAllAsync()
@@ -60,7 +56,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 .StoredProcedure("[CourseBoundedContext].[pCourse_GetAll]")
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override Course GetById(int courseId)
@@ -74,7 +70,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<Course> GetByIdAsync(int courseId)
@@ -88,7 +84,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public IEnumerable<Course> GetAllIsRelatedToForCourse(int courseId)
@@ -102,7 +98,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async Task<IEnumerable<Course>> GetAllIsRelatedToForCourseAsync(int courseId)
@@ -116,7 +112,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public IEnumerable<Course> GetAllIsRequiredByForCourse(int courseId)
@@ -130,7 +126,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async Task<IEnumerable<Course>> GetAllIsRequiredByForCourseAsync(int courseId)
@@ -144,7 +140,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public IEnumerable<Course> GetAllRelatesForCourse(int courseId)
@@ -158,7 +154,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async Task<IEnumerable<Course>> GetAllRelatesForCourseAsync(int courseId)
@@ -172,7 +168,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public IEnumerable<Course> GetAllRequiresForCourse(int courseId)
@@ -186,7 +182,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async Task<IEnumerable<Course>> GetAllRequiresForCourseAsync(int courseId)
@@ -200,7 +196,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public (int, IEnumerable<Course>) GetIsRelatedToForCourse(int courseId, CollectionQueryParameters queryParameters)
@@ -216,9 +212,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async Task<(int, IEnumerable<Course>)> GetIsRelatedToForCourseAsync(int courseId, CollectionQueryParameters queryParameters)
@@ -234,9 +228,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public (int, IEnumerable<Course>) GetIsRequiredByForCourse(int courseId, CollectionQueryParameters queryParameters)
@@ -252,9 +244,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async Task<(int, IEnumerable<Course>)> GetIsRequiredByForCourseAsync(int courseId, CollectionQueryParameters queryParameters)
@@ -270,9 +260,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public (int, IEnumerable<Course>) GetRelatesForCourse(int courseId, CollectionQueryParameters queryParameters)
@@ -288,9 +276,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async Task<(int, IEnumerable<Course>)> GetRelatesForCourseAsync(int courseId, CollectionQueryParameters queryParameters)
@@ -306,9 +292,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public (int, IEnumerable<Course>) GetRequiresForCourse(int courseId, CollectionQueryParameters queryParameters)
@@ -324,9 +308,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async Task<(int, IEnumerable<Course>)> GetRequiresForCourseAsync(int courseId, CollectionQueryParameters queryParameters)
@@ -342,9 +324,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
                 )
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

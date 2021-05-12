@@ -34,7 +34,7 @@ namespace DomainFramework.Tests
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public override async Task<ClassEntity> GetByIdAsync(Guid? id)
@@ -52,7 +52,7 @@ namespace DomainFramework.Tests
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
     }
 }

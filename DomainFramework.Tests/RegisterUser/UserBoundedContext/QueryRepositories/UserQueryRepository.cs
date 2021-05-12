@@ -1,9 +1,5 @@
 using DataAccess;
 using DomainFramework.Core;
-using DomainFramework.DataAccess;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Utilities;
 
@@ -22,7 +18,7 @@ namespace RegisterUser.UserBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async Task<User> GetUserByUserNameAsync(string username)
@@ -36,7 +32,7 @@ namespace RegisterUser.UserBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

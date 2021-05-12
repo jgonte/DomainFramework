@@ -21,9 +21,7 @@ namespace BookWithPages.BookBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<Book>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -36,9 +34,7 @@ namespace BookWithPages.BookBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<Book> GetAll()
@@ -49,7 +45,7 @@ namespace BookWithPages.BookBoundedContext
                 .StoredProcedure("[BookBoundedContext].[pBook_GetAll]")
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<Book>> GetAllAsync()
@@ -60,7 +56,7 @@ namespace BookWithPages.BookBoundedContext
                 .StoredProcedure("[BookBoundedContext].[pBook_GetAll]")
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public Book GetBookByTitle(string title)
@@ -74,7 +70,7 @@ namespace BookWithPages.BookBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async Task<Book> GetBookByTitleAsync(string title)
@@ -88,7 +84,7 @@ namespace BookWithPages.BookBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public override Book GetById(int bookId)
@@ -102,7 +98,7 @@ namespace BookWithPages.BookBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<Book> GetByIdAsync(int bookId)
@@ -116,7 +112,7 @@ namespace BookWithPages.BookBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public Book GetBookForPage(int pageId)
@@ -130,7 +126,7 @@ namespace BookWithPages.BookBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async Task<Book> GetBookForPageAsync(int pageId)
@@ -144,7 +140,7 @@ namespace BookWithPages.BookBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

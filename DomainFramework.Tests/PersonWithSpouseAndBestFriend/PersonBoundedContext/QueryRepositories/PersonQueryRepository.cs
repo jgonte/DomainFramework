@@ -1,7 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
 using DomainFramework.DataAccess;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,9 +20,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<Person>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -36,9 +33,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<Person> GetAll()
@@ -49,7 +44,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetAll]")
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<Person>> GetAllAsync()
@@ -60,7 +55,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetAll]")
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override Person GetById(int personId)
@@ -74,7 +69,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<Person> GetByIdAsync(int personId)
@@ -88,7 +83,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public Person GetBestFriendOfForPerson(int personId)
@@ -102,7 +97,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async Task<Person> GetBestFriendOfForPersonAsync(int personId)
@@ -116,7 +111,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public Person GetMarriedToForPerson(int personId)
@@ -130,7 +125,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async Task<Person> GetMarriedToForPersonAsync(int personId)
@@ -144,7 +139,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

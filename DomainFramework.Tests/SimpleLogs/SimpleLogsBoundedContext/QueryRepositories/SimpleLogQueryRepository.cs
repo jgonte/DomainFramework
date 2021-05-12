@@ -21,9 +21,7 @@ namespace SimpleLogs.SimpleLogsBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (int)result.GetParameter("count").Value;
-
-            return (count, result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<SimpleLog>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -36,9 +34,7 @@ namespace SimpleLogs.SimpleLogsBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<SimpleLog> GetAll()
@@ -49,7 +45,7 @@ namespace SimpleLogs.SimpleLogsBoundedContext
                 .StoredProcedure("[SimpleLogsBoundedContext].[pSimpleLog_GetAll]")
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<SimpleLog>> GetAllAsync()
@@ -60,7 +56,7 @@ namespace SimpleLogs.SimpleLogsBoundedContext
                 .StoredProcedure("[SimpleLogsBoundedContext].[pSimpleLog_GetAll]")
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override SimpleLog GetById(int simpleLogId)
@@ -74,7 +70,7 @@ namespace SimpleLogs.SimpleLogsBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<SimpleLog> GetByIdAsync(int simpleLogId)
@@ -88,7 +84,7 @@ namespace SimpleLogs.SimpleLogsBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

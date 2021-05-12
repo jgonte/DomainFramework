@@ -3,7 +3,6 @@ using DomainFramework.Core;
 using DomainFramework.DataAccess;
 using System;
 using System.Data;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Utilities;
@@ -32,18 +31,18 @@ namespace BookWithPages.BookBoundedContext
                     //p => p.Name("createdBy").Value(entity.CreatedBy),
                     p => p.Name("bookId").SqlType((int)SqlDbType.Int).IsOutput()
                 )
-                .AutoGenerateParameters(entity, excludedProperties: new Expression<Func<Book, object>>[]{
+                .AutoGenerateParameters(excludedProperties: new Expression<Func<Book, object>>[]{
                         m => m.Id,
                         m => m.CreatedDateTime,
                         m => m.UpdatedBy,
                         m => m.UpdatedDateTime
                 })
-                .Entity(entity)
+                .Record(entity)
                 //.MapProperties(
                 //    p => p.Name("Id").Index(0)
                 //)
                 .MapOutputParameters(
-                    map => map.Name("bookId").Property("Id")
+                    map => map.Name("bookId").Property<Book>(b => b.Id)
                 )
                 //.OnAfterCommandExecuted(cmd =>
 

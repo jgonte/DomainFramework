@@ -1,7 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
 using DomainFramework.DataAccess;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,9 +20,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (int)result.GetParameter("count").Value;
-
-            return (count, result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<Country>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -36,9 +33,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<Country> GetAll()
@@ -49,7 +44,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
                 .StoredProcedure("[CountryBoundedContext].[pCountry_GetAll]")
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<Country>> GetAllAsync()
@@ -60,7 +55,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
                 .StoredProcedure("[CountryBoundedContext].[pCountry_GetAll]")
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override Country GetById(string countryCode)
@@ -74,7 +69,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<Country> GetByIdAsync(string countryCode)
@@ -88,7 +83,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public Country GetCountryForCapitalCity(int capitalCityId)
@@ -102,7 +97,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async Task<Country> GetCountryForCapitalCityAsync(int capitalCityId)
@@ -116,7 +111,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

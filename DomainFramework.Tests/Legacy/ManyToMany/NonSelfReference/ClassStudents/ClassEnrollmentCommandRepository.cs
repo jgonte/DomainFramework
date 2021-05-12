@@ -15,9 +15,8 @@ namespace DomainFramework.Tests
                 .NonQuery()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_ClassEnrollment_Create")
-                .AutoGenerateParameters(
-                    qbeObject: entity
-                )
+                .Record(entity)
+                .AutoGenerateParameters()
                 .OnBeforeCommandExecuted(cmd =>
             {
                 if (!Dependencies().Any())

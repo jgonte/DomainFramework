@@ -21,9 +21,9 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
+            var count = (int)result.GetParameter("count").Value;
 
-            return (int.Parse(count), result.Data);
+            return (count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<Class>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -36,9 +36,9 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
+            var count = (int)result.GetParameter("count").Value;
 
-            return (int.Parse(count), result.Data);
+            return (count, result.Records);
         }
 
         public override IEnumerable<Class> GetAll()
@@ -49,7 +49,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .StoredProcedure("[ClassBoundedContext].[pClass_GetAll]")
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<Class>> GetAllAsync()
@@ -60,7 +60,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .StoredProcedure("[ClassBoundedContext].[pClass_GetAll]")
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override Class GetById(int classId)
@@ -74,7 +74,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<Class> GetByIdAsync(int classId)
@@ -88,7 +88,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public IEnumerable<Class> GetAllClassesForStudent(int studentId)
@@ -102,7 +102,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async Task<IEnumerable<Class>> GetAllClassesForStudentAsync(int studentId)
@@ -116,7 +116,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

@@ -21,9 +21,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<Organization>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -36,9 +34,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<Organization> GetAll()
@@ -49,7 +45,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 .StoredProcedure("[SchoolBoundedContext].[pOrganization_GetAll]")
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<Organization>> GetAllAsync()
@@ -60,7 +56,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 .StoredProcedure("[SchoolBoundedContext].[pOrganization_GetAll]")
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override Organization GetById(int organizationId)
@@ -74,7 +70,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<Organization> GetByIdAsync(int organizationId)
@@ -88,7 +84,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public Organization GetOrganizationForRole(int roleId)
@@ -102,7 +98,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async Task<Organization> GetOrganizationForRoleAsync(int roleId)
@@ -116,7 +112,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

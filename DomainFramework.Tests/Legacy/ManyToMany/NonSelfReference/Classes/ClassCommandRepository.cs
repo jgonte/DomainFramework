@@ -13,8 +13,8 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Class_Create")
+                .Record(entity)
                 .AutoGenerateParameters(
-                    qbeObject: entity,
                     excludedProperties: new Expression<Func<ClassEntity, object>>[]{
                         m => m.Id,
                     }
@@ -31,9 +31,8 @@ namespace DomainFramework.Tests
                 .NonQuery()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Class_Update")
-                .AutoGenerateParameters(
-                    qbeObject: entity
-                );
+                .Record(entity)
+                .AutoGenerateParameters();
         }
     }
 }

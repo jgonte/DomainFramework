@@ -1,9 +1,7 @@
 using DataAccess;
 using DomainFramework.Core;
-using DomainFramework.DataAccess;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Utilities;
 
@@ -32,7 +30,7 @@ namespace EntityWithMultiValuedValueObject.TestBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<TypeValue>> GetAllAsync(int testEntityId)
@@ -46,7 +44,7 @@ namespace EntityWithMultiValuedValueObject.TestBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

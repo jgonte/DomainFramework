@@ -1,7 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
 using DomainFramework.DataAccess;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,9 +20,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<Address>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -36,9 +33,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<Address> GetAll()
@@ -49,7 +44,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pAddress_GetAll]")
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<Address>> GetAllAsync()
@@ -60,7 +55,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pAddress_GetAll]")
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override Address GetById(int addressId)
@@ -74,7 +69,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<Address> GetByIdAsync(int addressId)
@@ -88,7 +83,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public Address GetAddressForOrganization(int organizationId)
@@ -102,7 +97,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async Task<Address> GetAddressForOrganizationAsync(int organizationId)
@@ -116,7 +111,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public Address GetAddressForPerson(int personId)
@@ -130,7 +125,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async Task<Address> GetAddressForPersonAsync(int personId)
@@ -144,7 +139,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

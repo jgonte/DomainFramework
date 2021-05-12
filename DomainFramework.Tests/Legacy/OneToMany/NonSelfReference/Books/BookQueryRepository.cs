@@ -22,7 +22,7 @@ namespace DomainFramework.Tests
                 })
                 .Execute();
 
-            return (result.Data.Count, result.Data);
+            return (result.Count, result.Records);
         }
 
         public override Task<(int, IEnumerable<BookEntity>)> GetAsync(CollectionQueryParameters parameters)
@@ -47,7 +47,7 @@ namespace DomainFramework.Tests
                 })
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public override async Task<BookEntity> GetByIdAsync(int? id)
@@ -67,7 +67,7 @@ namespace DomainFramework.Tests
                 })
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
     }
 }

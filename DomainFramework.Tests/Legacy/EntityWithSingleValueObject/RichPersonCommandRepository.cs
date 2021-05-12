@@ -15,8 +15,8 @@ namespace DomainFramework.Tests.EntityWithValueObjects
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_RichPerson_Create")
+                .Record(entity)
                 .AutoGenerateParameters(
-                    qbeObject: entity,
                     excludedProperties: new Expression<Func<RichPersonEntity, object>>[]{
                         m => m.Id,
                         m => m.Capital
@@ -37,8 +37,8 @@ namespace DomainFramework.Tests.EntityWithValueObjects
                 .NonQuery()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_RichPerson_Update")
+                .Record(entity)
                 .AutoGenerateParameters(
-                    qbeObject: entity,
                     excludedProperties: new Expression<Func<RichPersonEntity, object>>[]{
                         m => m.Id,
                         m => m.Capital

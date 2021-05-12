@@ -16,8 +16,8 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_User_Create")
+                .Record(entity)
                 .AutoGenerateParameters(
-                    qbeObject: entity,
                     excludedProperties: new Expression<Func<UserEntity, object>>[]{
                         m => m.Id,
                         m => m.DefaultPhotoId
@@ -51,8 +51,8 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_User_Update")
+                .Record(entity)
                 .AutoGenerateParameters(
-                    qbeObject: entity,
                     excludedProperties: excludedProperties
                 )
                 .Instance(entity)

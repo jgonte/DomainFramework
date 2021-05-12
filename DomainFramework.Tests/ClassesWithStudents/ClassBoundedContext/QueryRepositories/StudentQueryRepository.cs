@@ -21,9 +21,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<Student>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -36,9 +34,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<Student> GetAll()
@@ -49,7 +45,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .StoredProcedure("[ClassBoundedContext].[pStudent_GetAll]")
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<Student>> GetAllAsync()
@@ -60,7 +56,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .StoredProcedure("[ClassBoundedContext].[pStudent_GetAll]")
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override Student GetById(int studentId)
@@ -74,7 +70,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<Student> GetByIdAsync(int studentId)
@@ -88,7 +84,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public IEnumerable<Student> GetAllStudentsForClass(int classId)
@@ -102,7 +98,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async Task<IEnumerable<Student>> GetAllStudentsForClassAsync(int classId)
@@ -116,7 +112,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public (int, IEnumerable<Student>) GetEnrolled(int classId, CollectionQueryParameters queryParameters)
@@ -132,9 +128,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 )
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async Task<(int, IEnumerable<Student>)> GetEnrolledAsync(int classId, CollectionQueryParameters queryParameters)
@@ -150,9 +144,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 )
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public (int, IEnumerable<Student>) GetNotEnrolled(CollectionQueryParameters queryParameters)
@@ -165,9 +157,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async Task<(int, IEnumerable<Student>)> GetNotEnrolledAsync(CollectionQueryParameters queryParameters)
@@ -180,9 +170,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

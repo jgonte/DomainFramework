@@ -16,8 +16,8 @@ namespace DomainFramework.Tests
                 .NonQuery()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Executive_Create")
+                .Record(entity)
                 .AutoGenerateParameters(
-                    qbeObject: entity,
                     excludedProperties: new Expression<Func<ExecutiveEntity, object>>[]{
                         m => m.Id
                     }
@@ -46,8 +46,8 @@ namespace DomainFramework.Tests
                 .Parameters(
                     p => p.Name("executiveId").Value(entity.Id.Value)
                 )
+                .Record(entity)
                 .AutoGenerateParameters(
-                    qbeObject: entity,
                     excludedProperties: new Expression<Func<ExecutiveEntity, object>>[]{
                         m => m.Id
                     }

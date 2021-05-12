@@ -21,9 +21,7 @@ namespace PersonWithDisciples.PersonBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<Person>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -36,9 +34,7 @@ namespace PersonWithDisciples.PersonBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<Person> GetAll()
@@ -49,7 +45,7 @@ namespace PersonWithDisciples.PersonBoundedContext
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetAll]")
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<Person>> GetAllAsync()
@@ -60,7 +56,7 @@ namespace PersonWithDisciples.PersonBoundedContext
                 .StoredProcedure("[PersonBoundedContext].[pPerson_GetAll]")
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override Person GetById(int personId)
@@ -74,7 +70,7 @@ namespace PersonWithDisciples.PersonBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<Person> GetByIdAsync(int personId)
@@ -88,7 +84,7 @@ namespace PersonWithDisciples.PersonBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public IEnumerable<Person> GetAllDisciplesForPerson(int personId)
@@ -102,7 +98,7 @@ namespace PersonWithDisciples.PersonBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async Task<IEnumerable<Person>> GetAllDisciplesForPersonAsync(int personId)
@@ -116,7 +112,7 @@ namespace PersonWithDisciples.PersonBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public (int, IEnumerable<Person>) GetDisciplesForPerson(int personId, CollectionQueryParameters queryParameters)
@@ -132,9 +128,7 @@ namespace PersonWithDisciples.PersonBoundedContext
                 )
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async Task<(int, IEnumerable<Person>)> GetDisciplesForPersonAsync(int personId, CollectionQueryParameters queryParameters)
@@ -150,9 +144,7 @@ namespace PersonWithDisciples.PersonBoundedContext
                 )
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

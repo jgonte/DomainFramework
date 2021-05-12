@@ -29,7 +29,7 @@ namespace DomainFramework.Tests
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public override async Task<PersonEntity2> GetByIdAsync(int? id)
@@ -43,7 +43,7 @@ namespace DomainFramework.Tests
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public PersonEntity2 GetForPerson(int? id)
@@ -57,7 +57,7 @@ namespace DomainFramework.Tests
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async Task<PersonEntity2> GetForPersonAsync(int? id)
@@ -71,7 +71,7 @@ namespace DomainFramework.Tests
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
     }
 }

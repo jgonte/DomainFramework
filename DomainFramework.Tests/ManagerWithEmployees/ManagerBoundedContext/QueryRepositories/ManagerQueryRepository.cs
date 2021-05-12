@@ -21,9 +21,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<Manager>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -36,9 +34,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<Manager> GetAll()
@@ -49,7 +45,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
                 .StoredProcedure("[ManagerBoundedContext].[pManager_GetAll]")
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<Manager>> GetAllAsync()
@@ -60,7 +56,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
                 .StoredProcedure("[ManagerBoundedContext].[pManager_GetAll]")
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override Manager GetById(int managerId)
@@ -74,7 +70,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<Manager> GetByIdAsync(int managerId)
@@ -88,7 +84,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public IEnumerable<Employee> GetAllEmployeesForManager(int managerId)
@@ -107,7 +103,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async Task<IEnumerable<Employee>> GetAllEmployeesForManagerAsync(int managerId)
@@ -126,7 +122,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

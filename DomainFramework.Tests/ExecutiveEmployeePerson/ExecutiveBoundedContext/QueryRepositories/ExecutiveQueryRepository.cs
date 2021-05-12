@@ -21,9 +21,7 @@ namespace ExecutiveEmployeePerson.ExecutiveBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<Executive>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -36,9 +34,7 @@ namespace ExecutiveEmployeePerson.ExecutiveBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<Executive> GetAll()
@@ -49,7 +45,7 @@ namespace ExecutiveEmployeePerson.ExecutiveBoundedContext
                 .StoredProcedure("[ExecutiveBoundedContext].[pExecutive_GetAll]")
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<Executive>> GetAllAsync()
@@ -60,7 +56,7 @@ namespace ExecutiveEmployeePerson.ExecutiveBoundedContext
                 .StoredProcedure("[ExecutiveBoundedContext].[pExecutive_GetAll]")
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override Executive GetById(int executiveId)
@@ -74,7 +70,7 @@ namespace ExecutiveEmployeePerson.ExecutiveBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<Executive> GetByIdAsync(int executiveId)
@@ -88,7 +84,7 @@ namespace ExecutiveEmployeePerson.ExecutiveBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

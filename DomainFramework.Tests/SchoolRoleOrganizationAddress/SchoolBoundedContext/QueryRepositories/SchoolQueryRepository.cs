@@ -21,9 +21,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<School>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -36,9 +34,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<School> GetAll()
@@ -49,7 +45,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 .StoredProcedure("[SchoolBoundedContext].[pSchool_GetAll]")
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<School>> GetAllAsync()
@@ -60,7 +56,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 .StoredProcedure("[SchoolBoundedContext].[pSchool_GetAll]")
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override School GetById(int schoolId)
@@ -74,7 +70,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<School> GetByIdAsync(int schoolId)
@@ -88,7 +84,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

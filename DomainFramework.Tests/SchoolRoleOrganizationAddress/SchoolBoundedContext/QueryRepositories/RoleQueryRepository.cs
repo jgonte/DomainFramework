@@ -26,9 +26,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 )
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<Role>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -46,9 +44,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 )
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<Role> GetAll()
@@ -64,7 +60,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<Role>> GetAllAsync()
@@ -80,7 +76,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override Role GetById(int roleId)
@@ -99,7 +95,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<Role> GetByIdAsync(int roleId)
@@ -118,7 +114,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

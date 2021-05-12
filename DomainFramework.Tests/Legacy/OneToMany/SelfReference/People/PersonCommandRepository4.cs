@@ -32,8 +32,8 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Person_Create")
+                .Record(entity)
                 .AutoGenerateParameters(
-                    qbeObject: entity,
                     excludedProperties: excludedProperties
                 )
                 .Instance(entity)
@@ -96,8 +96,9 @@ namespace DomainFramework.Tests
                 });
             }
 
+            command.Record(entity);
+
             command.AutoGenerateParameters(
-                qbeObject: entity,
                 excludedProperties: excludedProperties
             );
 

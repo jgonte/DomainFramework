@@ -1,7 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
 using DomainFramework.DataAccess;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,9 +20,7 @@ namespace EmployeePerson.EmployeeBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<Employee>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -36,9 +33,7 @@ namespace EmployeePerson.EmployeeBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<Employee> GetAll()
@@ -49,7 +44,7 @@ namespace EmployeePerson.EmployeeBoundedContext
                 .StoredProcedure("[EmployeeBoundedContext].[pEmployee_GetAll]")
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<Employee>> GetAllAsync()
@@ -60,7 +55,7 @@ namespace EmployeePerson.EmployeeBoundedContext
                 .StoredProcedure("[EmployeeBoundedContext].[pEmployee_GetAll]")
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override Employee GetById(int employeeId)
@@ -74,7 +69,7 @@ namespace EmployeePerson.EmployeeBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<Employee> GetByIdAsync(int employeeId)
@@ -88,7 +83,7 @@ namespace EmployeePerson.EmployeeBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

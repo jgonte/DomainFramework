@@ -21,9 +21,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<Phone>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -36,9 +34,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<Phone> GetAll()
@@ -49,7 +45,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pPhone_GetAll]")
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<Phone>> GetAllAsync()
@@ -60,7 +56,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 .StoredProcedure("[OrganizationPersonBoundedContext].[pPhone_GetAll]")
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override Phone GetById(int phoneId)
@@ -74,7 +70,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<Phone> GetByIdAsync(int phoneId)
@@ -88,7 +84,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public IEnumerable<Phone> GetAllPhonesForOrganization(int organizationId)
@@ -102,7 +98,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async Task<IEnumerable<Phone>> GetAllPhonesForOrganizationAsync(int organizationId)
@@ -116,7 +112,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public IEnumerable<Phone> GetAllPhonesForPerson(int personId)
@@ -130,7 +126,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async Task<IEnumerable<Phone>> GetAllPhonesForPersonAsync(int personId)
@@ -144,7 +140,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public (int, IEnumerable<Phone>) GetPhonesForOrganization(int organizationId, CollectionQueryParameters queryParameters)
@@ -160,9 +156,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 )
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async Task<(int, IEnumerable<Phone>)> GetPhonesForOrganizationAsync(int organizationId, CollectionQueryParameters queryParameters)
@@ -178,9 +172,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 )
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public (int, IEnumerable<Phone>) GetPhonesForPerson(int personId, CollectionQueryParameters queryParameters)
@@ -196,9 +188,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 )
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async Task<(int, IEnumerable<Phone>)> GetPhonesForPersonAsync(int personId, CollectionQueryParameters queryParameters)
@@ -214,9 +204,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                 )
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

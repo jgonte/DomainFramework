@@ -16,7 +16,7 @@ namespace DomainFramework.Tests
                 .StoredProcedure("p_Person_GetAll")
                 .Execute();
 
-            return (result.Data.Count, result.Data);
+            return (result.Count, result.Records);
         }
 
         public override async Task<(int, IEnumerable<PersonEntity3>)> GetAsync(CollectionQueryParameters parameters)
@@ -27,7 +27,7 @@ namespace DomainFramework.Tests
                 .StoredProcedure("p_Person_GetAll")
                 .ExecuteAsync();
 
-            return (result.Data.Count, result.Data);
+            return (result.Count, result.Records);
         }
 
         public async Task<IEnumerable<PersonEntity3>> GetForManagerAsync(int? id)
@@ -41,7 +41,7 @@ namespace DomainFramework.Tests
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override PersonEntity3 GetById(int? id)
@@ -55,7 +55,7 @@ namespace DomainFramework.Tests
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public override async Task<PersonEntity3> GetByIdAsync(int? id)
@@ -69,7 +69,7 @@ namespace DomainFramework.Tests
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
     }
 }

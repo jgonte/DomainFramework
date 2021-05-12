@@ -1,7 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
 using DomainFramework.DataAccess;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,9 +25,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
                 )
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<Person>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -46,9 +43,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
                 )
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<Person> GetAll()
@@ -64,7 +59,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<Person>> GetAllAsync()
@@ -80,7 +75,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override Person GetById(int personId)
@@ -99,7 +94,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<Person> GetByIdAsync(int personId)
@@ -118,7 +113,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public Person GetSpouseForPerson(int personId)
@@ -137,7 +132,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async Task<Person> GetSpouseForPersonAsync(int personId)
@@ -156,7 +151,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

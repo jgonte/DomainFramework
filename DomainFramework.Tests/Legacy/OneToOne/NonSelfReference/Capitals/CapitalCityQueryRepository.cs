@@ -37,7 +37,7 @@ namespace DomainFramework.Tests
                 })
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public override async Task<CapitalCityEntity> GetByIdAsync(int? id)
@@ -59,7 +59,7 @@ namespace DomainFramework.Tests
                 })
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public CapitalCityEntity GetForCountry(string countryCode)
@@ -81,7 +81,7 @@ namespace DomainFramework.Tests
                 })
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async Task<CapitalCityEntity> GetForCountryAsync(string countryCode)
@@ -103,7 +103,7 @@ namespace DomainFramework.Tests
                 })
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
     }
 }

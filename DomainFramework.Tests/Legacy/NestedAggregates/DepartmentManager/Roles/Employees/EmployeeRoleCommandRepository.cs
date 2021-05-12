@@ -16,8 +16,8 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_EmployeeRole_Create")
+                .Record(entity)
                 .AutoGenerateParameters(
-                    qbeObject: entity,
                     excludedProperties: new Expression<Func<EmployeeRoleEntity, object>>[]{
                         m => m.Id,
                         m => m.DepartmentId
@@ -50,9 +50,8 @@ namespace DomainFramework.Tests
                 .Parameters(
                     p => p.Name("personId").Value(entity.Id.Value)
                 )
-                .AutoGenerateParameters(
-                    qbeObject: entity
-                );
+                .Record(entity)
+                .AutoGenerateParameters();
         }
 
         protected override Command CreateDeleteCommand(EmployeeRoleEntity entity, IAuthenticatedUser user, string selector)

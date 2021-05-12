@@ -15,8 +15,8 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Person_Create")
+                .Record(entity)
                 .AutoGenerateParameters(
-                    qbeObject: entity,
                     excludedProperties: new Expression<Func<PersonEntity, object>>[]{
                         m => m.Id
                     }
@@ -50,8 +50,9 @@ namespace DomainFramework.Tests
                 });
             }
 
+            command.Record(entity);
+
             command.AutoGenerateParameters(
-                qbeObject: entity,
                 excludedProperties: new Expression<Func<PersonEntity, object>>[]{
                     m => m.Id,
                 }

@@ -20,9 +20,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<User>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -35,9 +33,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<User> GetAll()
@@ -48,7 +44,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 .StoredProcedure("[UserBoundedContext].[pUser_GetAll]")
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<User>> GetAllAsync()
@@ -59,7 +55,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 .StoredProcedure("[UserBoundedContext].[pUser_GetAll]")
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override User GetById(int userId)
@@ -73,7 +69,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<User> GetByIdAsync(int userId)
@@ -87,7 +83,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public User GetUserByNormalizedEmail(string email)
@@ -101,7 +97,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async Task<User> GetUserByNormalizedEmailAsync(string email)
@@ -115,7 +111,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public User GetUserByUserLogin(string provider, string userKey)
@@ -130,7 +126,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async Task<User> GetUserByUserLoginAsync(string provider, string userKey)
@@ -145,7 +141,7 @@ namespace UserWithUserLogins.UserBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

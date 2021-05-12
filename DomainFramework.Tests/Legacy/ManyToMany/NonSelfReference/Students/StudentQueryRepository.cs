@@ -30,9 +30,9 @@ namespace DomainFramework.Tests
                 )
                 .Execute();
 
-            result.Data.Id = id.Value;
+            result.Record.Id = id.Value;
 
-            return result.Data;
+            return result.Record;
         }
 
         public override async Task<StudentEntity> GetByIdAsync(Guid? id)
@@ -46,9 +46,9 @@ namespace DomainFramework.Tests
                 )
                 .ExecuteAsync();
 
-            result.Data.Id = id.Value;
+            result.Record.Id = id.Value;
 
-            return result.Data;
+            return result.Record;
         }
 
         public IEnumerable<StudentEntity> GetForClass(Guid? id)
@@ -62,7 +62,7 @@ namespace DomainFramework.Tests
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async Task<IEnumerable<StudentEntity>> GetForClassAsync(Guid? id)
@@ -76,7 +76,7 @@ namespace DomainFramework.Tests
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
     }
 }

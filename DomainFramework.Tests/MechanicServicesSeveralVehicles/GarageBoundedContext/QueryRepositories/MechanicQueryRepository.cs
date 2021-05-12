@@ -21,9 +21,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .Execute();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public async override Task<(int, IEnumerable<Mechanic>)> GetAsync(CollectionQueryParameters queryParameters)
@@ -36,9 +34,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 .Parameters(p => p.Name("count").Count())
                 .ExecuteAsync();
 
-            var count = (string)result.GetParameter("count").Value;
-
-            return (int.Parse(count), result.Data);
+            return (result.Count, result.Records);
         }
 
         public override IEnumerable<Mechanic> GetAll()
@@ -49,7 +45,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 .StoredProcedure("[GarageBoundedContext].[pMechanic_GetAll]")
                 .Execute();
 
-            return result.Data;
+            return result.Records;
         }
 
         public async override Task<IEnumerable<Mechanic>> GetAllAsync()
@@ -60,7 +56,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 .StoredProcedure("[GarageBoundedContext].[pMechanic_GetAll]")
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Records;
         }
 
         public override Mechanic GetById(int mechanicId)
@@ -74,7 +70,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async override Task<Mechanic> GetByIdAsync(int mechanicId)
@@ -88,7 +84,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public Mechanic GetMechanicForVehicle(int vehicleId)
@@ -102,7 +98,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 )
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public async Task<Mechanic> GetMechanicForVehicleAsync(int vehicleId)
@@ -116,7 +112,7 @@ namespace MechanicServicesSeveralVehicles.GarageBoundedContext
                 )
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
 
         public static void Register(DomainFramework.DataAccess.RepositoryContext context)

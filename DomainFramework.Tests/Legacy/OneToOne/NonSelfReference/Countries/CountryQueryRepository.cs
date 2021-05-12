@@ -24,7 +24,7 @@ namespace DomainFramework.Tests
                 })
                 .Execute();
 
-            return result.Data;
+            return result.Record;
         }
 
         public override async Task<CountryEntity> GetByIdAsync(string id)
@@ -44,7 +44,7 @@ namespace DomainFramework.Tests
                 })
                 .ExecuteAsync();
 
-            return result.Data;
+            return result.Record;
         }
     }
 }
