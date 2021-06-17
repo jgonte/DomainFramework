@@ -39,7 +39,7 @@ namespace BookWithPages.BookBoundedContext
                         p => p.Name("bookId").Value(entity.BookId)
                     );
                 })
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

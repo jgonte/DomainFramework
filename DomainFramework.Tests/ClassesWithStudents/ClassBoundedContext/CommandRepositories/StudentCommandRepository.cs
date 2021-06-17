@@ -25,7 +25,7 @@ namespace ClassesWithStudents.ClassBoundedContext
                     p => p.Name("firstName").Value(entity.FirstName),
                     p => p.Name("createdBy").Value(entity.CreatedBy)
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

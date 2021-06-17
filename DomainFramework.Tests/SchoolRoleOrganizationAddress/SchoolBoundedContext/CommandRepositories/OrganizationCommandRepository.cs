@@ -41,7 +41,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                         p => p.Name("addressId").Value(entity.AddressId)
                     );
                 })
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

@@ -39,7 +39,7 @@ namespace EmployeeWithDependants.EmployeeBoundedContext
                         p => p.Name("providerEmployeeId").Value(entity.ProviderEmployeeId)
                     );
                 })
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

@@ -29,7 +29,7 @@ namespace EmployeePerson.EmployeeBoundedContext
                     p => p.Name("cellPhone_Exchange").Value(entity.CellPhone?.Exchange),
                     p => p.Name("cellPhone_Number").Value(entity.CellPhone?.Number)
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

@@ -51,7 +51,7 @@ namespace PersonWithSpouseAndDependants.PersonBoundedContext
                         p => p.Name("providerPersonId").Value(entity.ProviderPersonId)
                     );
                 })
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

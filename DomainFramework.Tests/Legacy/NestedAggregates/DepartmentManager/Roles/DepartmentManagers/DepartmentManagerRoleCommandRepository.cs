@@ -33,11 +33,11 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_DepartmentManagerRole_Create")
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters(
                     excludedProperties: excludedProperties
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     pm => pm.Map<DepartmentManagerRoleEntity>(m => m.Id)//.Index(0),
                 )
@@ -70,7 +70,7 @@ namespace DomainFramework.Tests
                 .Parameters(
                     p => p.Name("employeeRoleId").Value(entity.Id.Value)
                 )
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters();
         }
 

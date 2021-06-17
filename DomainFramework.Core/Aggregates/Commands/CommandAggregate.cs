@@ -29,10 +29,6 @@ namespace DomainFramework.Core
         /// The save operations that are performed inside a unit of work
         /// </summary>
         private Queue<ICommandOperation> _commandOperations { get; set; } = new Queue<ICommandOperation>();
- 
-        public CommandAggregate()
-        {
-        }
 
         public abstract void Initialize(IInputDataTransferObject inputDto, EntityDependency[] dependencies);
 
@@ -55,18 +51,16 @@ namespace DomainFramework.Core
         {
             var ownsUnitOfWork = false;
 
-            var repositoryContext = ((IAggregate)this).RepositoryContext;
-
             if (unitOfWork == null && _commandOperations.Count() > 1)
             {
-                unitOfWork = repositoryContext.CreateUnitOfWork();
+                unitOfWork = RepositoryContext.CreateUnitOfWork();
 
                 ownsUnitOfWork = true;
             }
 
             foreach (var operation in _commandOperations)
             {
-                operation.Execute(repositoryContext, user, unitOfWork);
+                operation.Execute(RepositoryContext, user, unitOfWork);
             }
 
             if (ownsUnitOfWork)
@@ -79,11 +73,9 @@ namespace DomainFramework.Core
         {
             var ownsUnitOfWork = false;
 
-            var repositoryContext = ((IAggregate)this).RepositoryContext;
-
             if (unitOfWork == null && _commandOperations.Count() > 1)
             {
-                unitOfWork = repositoryContext.CreateUnitOfWork();
+                unitOfWork = RepositoryContext.CreateUnitOfWork();
 
                 ownsUnitOfWork = true;
             }
@@ -93,7 +85,7 @@ namespace DomainFramework.Core
             foreach (var operation in _commandOperations)
             {
                 tasks.Enqueue(
-                    operation.ExecuteAsync(repositoryContext, user, unitOfWork)
+                    operation.ExecuteAsync(RepositoryContext, user, unitOfWork)
                 );
             }
 

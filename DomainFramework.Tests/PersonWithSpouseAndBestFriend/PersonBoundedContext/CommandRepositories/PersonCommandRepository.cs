@@ -52,7 +52,7 @@ namespace PersonWithSpouseAndBestFriend.PersonBoundedContext
                         p => p.Name("bestFriendId").Value(entity.BestFriendId)
                     );
                 })
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

@@ -15,7 +15,7 @@ namespace DomainFramework.Tests.EntityWithValueObjects
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_RichPerson_Create")
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters(
                     excludedProperties: new Expression<Func<RichPersonEntity, object>>[]{
                         m => m.Id,
@@ -25,7 +25,7 @@ namespace DomainFramework.Tests.EntityWithValueObjects
                 .Parameters(
                     p => p.Name("moneyAmount").Value(entity.Capital.Value)
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     pm => pm.Map<RichPersonEntity>(m => m.Id)//.Index(0),
                 );
@@ -37,7 +37,7 @@ namespace DomainFramework.Tests.EntityWithValueObjects
                 .NonQuery()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_RichPerson_Update")
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters(
                     excludedProperties: new Expression<Func<RichPersonEntity, object>>[]{
                         m => m.Id,

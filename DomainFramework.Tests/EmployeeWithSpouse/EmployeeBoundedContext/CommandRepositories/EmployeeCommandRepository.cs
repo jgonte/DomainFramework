@@ -39,7 +39,7 @@ namespace EmployeeWithSpouse.EmployeeBoundedContext
                         p => p.Name("marriedToPersonId").Value(entity.MarriedToPersonId)
                     );
                 })
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

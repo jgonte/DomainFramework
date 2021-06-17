@@ -112,9 +112,13 @@ BEGIN
         @createdBy
     );
 
-    SELECT
-        @bookId = [BookId]
-    FROM @bookOutputData;
+	SET @bookId = (SELECT
+       [BookId]
+    FROM @bookOutputData);
+
+    --SELECT
+    --    @bookId = [BookId]
+    --FROM @bookOutputData;
 
 END;
 GO

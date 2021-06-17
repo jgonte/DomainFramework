@@ -32,11 +32,11 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Person_Create")
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters(
                     excludedProperties: excludedProperties
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     pm => pm.Map<PersonEntity3>(m => m.Id)//.Index(0),
                 )
@@ -96,7 +96,7 @@ namespace DomainFramework.Tests
                 });
             }
 
-            command.Record(entity);
+            command.RecordInstance(entity);
 
             command.AutoGenerateParameters(
                 excludedProperties: excludedProperties

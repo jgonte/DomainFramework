@@ -19,7 +19,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                 .Parameters(
                     p => p.Name("street").Value(entity.Street)
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

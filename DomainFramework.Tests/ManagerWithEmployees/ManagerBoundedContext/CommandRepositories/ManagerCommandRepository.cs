@@ -36,7 +36,7 @@ namespace ManagerWithEmployees.ManagerBoundedContext
                         p => p.Name("supervisorId").Value(entity.SupervisorId)
                     );
                 })
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

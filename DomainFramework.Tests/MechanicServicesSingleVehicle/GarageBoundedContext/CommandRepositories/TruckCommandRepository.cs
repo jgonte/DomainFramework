@@ -36,7 +36,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
                         p => p.Name("mechanicId").Value(entity.MechanicId)
                     );
                 })
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

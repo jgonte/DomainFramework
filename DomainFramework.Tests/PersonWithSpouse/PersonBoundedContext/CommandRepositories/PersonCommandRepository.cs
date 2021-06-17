@@ -41,7 +41,7 @@ namespace PersonWithSpouse.PersonBoundedContext
                         p => p.Name("spouseId").Value(entity.SpouseId)
                     );
                 })
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

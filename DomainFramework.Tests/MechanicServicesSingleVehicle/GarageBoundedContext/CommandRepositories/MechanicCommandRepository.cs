@@ -25,7 +25,7 @@ namespace MechanicServicesSingleVehicle.GarageBoundedContext
                     p => p.Name("name").Value(entity.Name),
                     p => p.Name("createdBy").Value(entity.CreatedBy)
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

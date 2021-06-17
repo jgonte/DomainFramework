@@ -16,14 +16,14 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_User_Create")
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters(
                     excludedProperties: new Expression<Func<UserEntity, object>>[]{
                         m => m.Id,
                         m => m.DefaultPhotoId
                     }
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     pm => pm.Map<UserEntity>(m => m.Id)//.Index(0),
                 );
@@ -51,11 +51,11 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_User_Update")
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters(
                     excludedProperties: excludedProperties
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     pm => pm.Map<UserEntity>(m => m.Id)//.Index(0),
                 )

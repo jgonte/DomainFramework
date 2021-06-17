@@ -13,13 +13,13 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Student_Create")
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters(
                     excludedProperties: new Expression<Func<StudentEntity, object>>[]{
                         m => m.Id,
                     }
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     pm => pm.Map<StudentEntity>(m => m.Id)//.Index(0),
                 );

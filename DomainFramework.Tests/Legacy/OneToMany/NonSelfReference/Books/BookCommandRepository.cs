@@ -15,7 +15,7 @@ namespace DomainFramework.Tests
                 .Parameters(
                     p => p.Name("title").Value(entity.Title)
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     pm => pm.Map<BookEntity>(m => m.Id)//.Index(0),
                 );

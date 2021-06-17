@@ -40,7 +40,7 @@ namespace CountryWithCapitalCity.CountryBoundedContext
                         p => p.Set("countryCode", entity.CountryCode)
                     );
                 })
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

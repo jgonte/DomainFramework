@@ -15,13 +15,13 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Person_Create")
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters(
                     excludedProperties: new Expression<Func<PersonEntity, object>>[]{
                         m => m.Id,
                     }
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     pm => pm.Map<PersonEntity>(m => m.Id)//.Index(0),
                 );
@@ -36,7 +36,7 @@ namespace DomainFramework.Tests
                 .Parameters(
                     p => p.Name("personId").Value(entity.Id.Value)
                 )
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters(
                     excludedProperties: new Expression<Func<PersonEntity, object>>[]{
                         m => m.Id,

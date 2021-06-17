@@ -15,7 +15,7 @@ namespace DomainFramework.Tests
                 .NonQuery()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Friendship_Create")
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters()
                 .OnBeforeCommandExecuted(cmd =>
             {

@@ -16,7 +16,7 @@ namespace DomainFramework.Tests
                 .NonQuery()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Employee_Create")
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters(
                     excludedProperties: new Expression<Func<EmployeeEntity, object>>[]{
                         m => m.Id
@@ -45,7 +45,7 @@ namespace DomainFramework.Tests
                 .Parameters(
                     p => p.Name("employeeId").Value(entity.Id.Value)
                 )
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters(
                     excludedProperties: new Expression<Func<EmployeeEntity, object>>[]{
                         m => m.Id

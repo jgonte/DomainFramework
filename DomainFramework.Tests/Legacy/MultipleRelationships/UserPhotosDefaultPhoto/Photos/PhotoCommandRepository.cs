@@ -16,14 +16,14 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Photo_Create")
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters( // Generate the parameters from the data
                     excludedProperties: new Expression<Func<PhotoEntity, object>>[]{
                         m => m.Id,
                         m => m.UserId
                     }
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     pm => pm.Map<PhotoEntity>(m => m.Id)//.Index(0),
                 )
@@ -49,7 +49,7 @@ namespace DomainFramework.Tests
                     p => p.Name("photoId").Value(entity.Id.Value),
                     p => p.Name("userId").Value(entity.UserId)
                 )
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters();
         }
 

@@ -7,6 +7,8 @@ namespace DomainFramework.Core
     {
         public string ConnectionName { get; set; }
 
+        public List<EntityDependency> Dependencies { get; set; } = new List<EntityDependency>();
+
         /// <summary>
         /// Maps the entity or value object to a factory method to create the repository
         /// Only one entity or value object can be mapped to one repository

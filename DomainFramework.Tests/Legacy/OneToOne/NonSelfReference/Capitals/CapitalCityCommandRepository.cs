@@ -16,7 +16,7 @@ namespace DomainFramework.Tests
                 .Parameters(
                     p => p.Name("name").Value(entity.Name)
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     pm => pm.Map<CapitalCityEntity>(m => m.Id)//.Index(0),
                 )
@@ -42,7 +42,7 @@ namespace DomainFramework.Tests
                     p => p.Name("capitalCityId").Value(entity.Id.Value),
                     p => p.Name("countryCode").Value(entity.CountryCode)
                 )
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters();
         }
 

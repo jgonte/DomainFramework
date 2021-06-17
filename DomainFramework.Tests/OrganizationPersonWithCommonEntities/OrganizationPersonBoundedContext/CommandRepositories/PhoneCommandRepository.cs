@@ -48,7 +48,7 @@ namespace OrganizationPersonWithCommonEntities.OrganizationPersonBoundedContext
                         );
                     }
                 })
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

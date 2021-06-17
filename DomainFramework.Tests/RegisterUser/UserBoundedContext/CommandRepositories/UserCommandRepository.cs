@@ -22,7 +22,7 @@ namespace RegisterUser.UserBoundedContext
                     p => p.Name("passwordHash").Value(entity.PasswordHash),
                     p => p.Name("email").Value(entity.Email)
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0),
                     p => p.Name("SubjectId").Index(1)

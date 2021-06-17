@@ -13,13 +13,13 @@ namespace DomainFramework.Tests
                 .Single()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Class_Create")
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters(
                     excludedProperties: new Expression<Func<ClassEntity, object>>[]{
                         m => m.Id,
                     }
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     pm => pm.Map<ClassEntity>(m => m.Id)//.Index(0),
                 );
@@ -31,7 +31,7 @@ namespace DomainFramework.Tests
                 .NonQuery()
                 .Connection(ConnectionName)
                 .StoredProcedure("p_Class_Update")
-                .Record(entity)
+                .RecordInstance(entity)
                 .AutoGenerateParameters();
         }
     }

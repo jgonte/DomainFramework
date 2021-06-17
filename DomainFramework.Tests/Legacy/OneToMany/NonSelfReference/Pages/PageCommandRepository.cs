@@ -16,7 +16,7 @@ namespace DomainFramework.Tests
                 .Parameters(
                     p => p.Name("index").Value(entity.Index)
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     pm => pm.Map<PageEntity>(m => m.Id)//.Index(0),
                 )

@@ -52,7 +52,7 @@ namespace PersonWithDisciplesAndServants.PersonBoundedContext
                         p => p.Name("masterId").Value(entity.MasterId)
                     );
                 })
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

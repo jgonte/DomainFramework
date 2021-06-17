@@ -37,7 +37,7 @@ namespace BookWithPages.BookBoundedContext
                         m => m.UpdatedBy,
                         m => m.UpdatedDateTime
                 })
-                .Record(entity)
+                .RecordInstance(entity)
                 //.MapProperties(
                 //    p => p.Name("Id").Index(0)
                 //)

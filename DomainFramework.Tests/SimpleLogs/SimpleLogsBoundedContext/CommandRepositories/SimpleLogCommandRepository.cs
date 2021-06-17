@@ -1,8 +1,6 @@
 using DataAccess;
 using DomainFramework.Core;
 using DomainFramework.DataAccess;
-using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Utilities;
 
@@ -20,7 +18,7 @@ namespace SimpleLogs.SimpleLogsBoundedContext
                     p => p.Name("messageType").Value(entity.MessageType),
                     p => p.Name("message").Value(entity.Message)
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0),
                     p => p.Name("When").Index(1)

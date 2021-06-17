@@ -21,10 +21,7 @@ namespace DomainFramework.Core
         {
             var repository = (IEntityCommandRepository)repositoryContext.CreateCommandRepository(typeof(TEntity));
 
-            if (_dependencies?.Any() == true)
-            {
-                repository.Dependencies = () => _dependencies;
-            }
+            AddDependenciesToRepository(repositoryContext, repository);
 
             repository.Insert(Entity, user, unitOfWork, _selector);
         }
@@ -33,12 +30,22 @@ namespace DomainFramework.Core
         {
             var repository = (IEntityCommandRepository)repositoryContext.CreateCommandRepository(typeof(TEntity));
 
-            if (_dependencies?.Any() == true)
-            {
-                repository.Dependencies = () => _dependencies;
-            }
+            AddDependenciesToRepository(repositoryContext, repository);
 
             await repository.InsertAsync(Entity, user, unitOfWork, _selector);
+        }
+
+        private void AddDependenciesToRepository(IRepositoryContext repositoryContext, IEntityCommandRepository repository)
+        {
+            var dependencies = (_dependencies ?? Enumerable.Empty<EntityDependency>())
+                .Union(
+                    repositoryContext.Dependencies
+                );
+
+            if (dependencies.Any())
+            {
+                repository.Dependencies = () => dependencies;
+            }
         }
     }
 }

@@ -25,7 +25,7 @@ namespace SchoolRoleOrganizationAddress.SchoolBoundedContext
                     p => p.Name("isCharter").Value(entity.IsCharter),
                     p => p.Name("createdBy").Value(entity.CreatedBy)
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

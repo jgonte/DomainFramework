@@ -41,7 +41,7 @@ namespace PersonWithDisciples.PersonBoundedContext
                         p => p.Name("leaderId").Value(entity.LeaderId)
                     );
                 })
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );

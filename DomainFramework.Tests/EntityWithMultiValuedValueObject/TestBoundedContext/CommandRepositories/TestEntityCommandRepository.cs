@@ -25,7 +25,7 @@ namespace EntityWithMultiValuedValueObject.TestBoundedContext
                     p => p.Name("text").Value(entity.Text),
                     p => p.Name("createdBy").Value(entity.CreatedBy)
                 )
-                .Instance(entity)
+                .RecordInstance(entity)
                 .MapProperties(
                     p => p.Name("Id").Index(0)
                 );
