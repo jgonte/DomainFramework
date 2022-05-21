@@ -24,7 +24,7 @@ namespace EntityWithMultiValuedValueObject.TestBoundedContext
         {
             // Create the test database
             var script = File.ReadAllText(
-                @"C:\tmp\Dev\Projects\Development\DomainFramework.Solution\DomainFramework.Tests\EntityWithMultiValuedValueObject\Sql\CreateTestDatabase.sql"
+                @"C:\Dev\Projects\Development\DomainFramework.Solution\DomainFramework.Tests\EntityWithMultiValuedValueObject\Sql\CreateTestDatabase.sql"
             );
 
             ScriptRunner.Run(ConnectionManager.GetConnection("Master").ConnectionString, script);

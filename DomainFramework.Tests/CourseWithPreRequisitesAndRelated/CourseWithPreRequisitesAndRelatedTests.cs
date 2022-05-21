@@ -22,7 +22,7 @@ namespace CourseWithPreRequisitesAndRelated.CourseBoundedContext
         {
             // Create the test database
             var script = File.ReadAllText(
-                @"C:\tmp\Dev\Projects\Development\DomainFramework.Solution\DomainFramework.Tests\CourseWithPreRequisitesAndRelated\Sql\CreateTestDatabase.sql");
+                @"C:\Dev\Projects\Development\DomainFramework.Solution\DomainFramework.Tests\CourseWithPreRequisitesAndRelated\Sql\CreateTestDatabase.sql");
 
             ScriptRunner.Run(ConnectionManager.GetConnection("Master").ConnectionString, script);
         }

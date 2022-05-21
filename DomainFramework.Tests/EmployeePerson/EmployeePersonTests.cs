@@ -20,7 +20,7 @@ namespace EmployeePerson.EmployeeBoundedContext
         {
             // Create the test database
             var script = File.ReadAllText(
-                @"C:\tmp\Dev\Projects\Development\DomainFramework.Solution\DomainFramework.Tests\EmployeePerson\Sql\CreateTestDatabase.sql"
+                @"C:\Dev\Projects\Development\DomainFramework.Solution\DomainFramework.Tests\EmployeePerson\Sql\CreateTestDatabase.sql"
             );
 
             ScriptRunner.Run(ConnectionManager.GetConnection("Master").ConnectionString, script);
