@@ -53,20 +53,25 @@ namespace DomainFramework.Core
 
             foreach (var linkedEntity in linkedEntities)
             {
-                var aggregate = CreateLinkedQueryAggregate(linkedEntity);
-
-                aggregate.RootEntity = linkedEntity;
-
                 tasks.Enqueue(
-                    aggregate.LoadLinksAsync()
+                    LoadLinkedAggregateAsync(linkedEntity)
                 );
-
-                aggregate.PopulateDto();
-
-                _outputDtos.Add(aggregate.OutputDto);
             }
 
             await Task.WhenAll(tasks);
+        }
+
+        private async Task LoadLinkedAggregateAsync(IEntity linkedEntity)
+        {
+            var aggregate = CreateLinkedQueryAggregate(linkedEntity);
+
+            aggregate.RootEntity = linkedEntity;
+
+            await aggregate.LoadLinksAsync();
+
+            aggregate.PopulateDto();
+
+            _outputDtos.Add(aggregate.OutputDto);
         }
     }
 }

@@ -60,24 +60,29 @@ namespace DomainFramework.Core
 
             foreach (var entity in entities)
             {
-                var aggregate = new TAggregate
-                {
-                    RepositoryContext = RepositoryContext,
-                    RootEntity = (TEntity)entity
-                };
-
                 tasks.Enqueue(
-                    aggregate.LoadLinksAsync()
+                    LoadAggregateAsync(entity)
                 );
-
-                aggregate.PopulateDto();
-
-                ((List<TAggregate>)Aggregates).Add(aggregate);
             }
 
             await Task.WhenAll(tasks);
 
             return Aggregates.Select(a => (TOutputDto)a.OutputDto);
+        }
+
+        private async Task LoadAggregateAsync(IEntity entity)
+        {
+            var aggregate = new TAggregate
+            {
+                RepositoryContext = RepositoryContext,
+                RootEntity = (TEntity)entity
+            };
+
+            await aggregate.LoadLinksAsync();
+
+            aggregate.PopulateDto();
+
+            ((List<TAggregate>)Aggregates).Add(aggregate);
         }
     }
 }

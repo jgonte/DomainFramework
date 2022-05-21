@@ -8,7 +8,7 @@ namespace DomainFramework.Core
     public abstract class QueryAggregateCollection<TEntity, TOutputDto, TAggregate> : IQueryAggregateCollection<TEntity, TAggregate>
         where TEntity : IEntity
         where TOutputDto : IOutputDataTransferObject, new()
-        where TAggregate : IQueryAggregate, new()       
+        where TAggregate : IQueryAggregate, new()
     {
         public IRepositoryContext RepositoryContext { get; set; }
 
@@ -53,24 +53,29 @@ namespace DomainFramework.Core
 
             foreach (var entity in entities)
             {
-                var aggregate = new TAggregate
-                {
-                    RepositoryContext = RepositoryContext,
-                    RootEntity = (TEntity)entity
-                };
-
                 tasks.Enqueue(
-                    aggregate.LoadLinksAsync()
+                    LoadAggregateAsync(entity)
                 );
-
-                aggregate.PopulateDto();
-
-                ((List<TAggregate>)Aggregates).Add(aggregate);
             }
 
             await Task.WhenAll(tasks);
 
             return (count, Aggregates.Select(a => (TOutputDto)a.OutputDto));
+        }
+
+        private async Task LoadAggregateAsync(IEntity entity)
+        {
+            var aggregate = new TAggregate
+            {
+                RepositoryContext = RepositoryContext,
+                RootEntity = (TEntity)entity
+            };
+
+            await aggregate.LoadLinksAsync();
+
+            aggregate.PopulateDto();
+
+            ((List<TAggregate>)Aggregates).Add(aggregate);
         }
     }
 }
