@@ -60,16 +60,10 @@ namespace DomainFramework.Core
     
         public async Task LoadLinksAsync(IAuthenticatedUser user = null)
         {
-            var tasks = new Queue<Task>();
-
             foreach (var operation in QueryOperations)
             {
-                tasks.Enqueue(
-                    operation.ExecuteAsync(RepositoryContext, RootEntity, user)
-                );
+                await operation.ExecuteAsync(RepositoryContext, RootEntity, user);
             }
-
-            await Task.WhenAll(tasks);
         }
 
         public abstract void PopulateDto();

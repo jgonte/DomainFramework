@@ -23,11 +23,9 @@ namespace DomainFramework.Core
         {
             var repository = repositoryContext.GetQueryRepository(typeof(TEntity));
 
-            var linkedEntities = GetAllLinkedEntities((IEntityQueryRepository)repository, (TKey)entity.Id, user);
-
             _outputDtos.Clear();
 
-            foreach (var linkedEntity in linkedEntities)
+            foreach (var linkedEntity in GetAllLinkedEntities((IEntityQueryRepository)repository, (TKey)entity.Id, user))
             {
                 var aggregate = CreateLinkedQueryAggregate(linkedEntity);
 
@@ -45,20 +43,12 @@ namespace DomainFramework.Core
         {
             var repository = repositoryContext.GetQueryRepository(typeof(TEntity));
 
-            var linkedEntities = await GetAllLinkedEntitiesAsync((IEntityQueryRepository)repository, (TKey)entity.Id, user);
-
             _outputDtos.Clear();
 
-            var tasks = new Queue<Task>();
-
-            foreach (var linkedEntity in linkedEntities)
+            foreach (var linkedEntity in await GetAllLinkedEntitiesAsync((IEntityQueryRepository)repository, (TKey)entity.Id, user))
             {
-                tasks.Enqueue(
-                    LoadLinkedAggregateAsync(linkedEntity)
-                );
+                await LoadLinkedAggregateAsync(linkedEntity);
             }
-
-            await Task.WhenAll(tasks);
         }
 
         private async Task LoadLinkedAggregateAsync(IEntity linkedEntity)
